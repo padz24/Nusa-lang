@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.4.0 — Nusa Docs 0.4.0</title>
+<meta name="description" content="0.4.0 v0.4.0 Release notes # — Static Type System (2026-09-05) Milestone type system sesuai MASTER PROMPT: anotasi, tipe dasar, type checking, kompati">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.4.0.html">
+<meta property="og:title" content="Changelog 0.4.0 — Nusa Docs 0.4.0">
+<meta property="og:description" content="0.4.0 v0.4.0 Release notes # — Static Type System (2026-09-05) Milestone type system sesuai MASTER PROMPT: anotasi, tipe dasar, type checking, kompati">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.4.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.4.0">
+<meta name="nusa:keywords" content="changelog, 0.4.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.4.0", "category": "changelog", "version": "0.4.0", "content": "0.4.0 v0.4.0 Release notes # — Static Type System (2026-09-05) Milestone type system sesuai MASTER PROMPT: anotasi, tipe dasar, type checking, kompatibilitas, inferensi sederhana, function type checking. Tanpa generics / advanced types. Ditambahkan # Modul compiler/types/ : Type (value, copyable) —", "code_example": "", "keywords": "changelog, 0.4.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.4.0.html">0.4.0</a></p><article><h1>0.4.0</h1><span class="badge historic">v0.4.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Static Type System (2026-09-05)</p>
+<p>Milestone type system sesuai MASTER PROMPT: anotasi, tipe dasar,</p>
+<p>type checking, kompatibilitas, inferensi sederhana, function type</p>
+<p>checking. Tanpa generics / advanced types.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Modul <code>compiler/types/</code>: <code>Type</code> (value, copyable) — <code>i64</code>, <code>bool</code>,</li>
+</ul>
+<p>  <code>string</code>, <code>void</code>, <code>Func(params, ret)</code>, <code>Error</code> anti-kaskade;</p>
+<p>  <code>name()</code> (<code>fn() -&gt; void</code>) + <code>operator==</code> struktural.</p>
+<ul>
+<li>Lexer: keywords reserved <code>i64 bool string void</code> (+ token tests).</li>
+<li>Parser: <code>let name[: Type] = expr</code> (<code>parseType()</code> + error `expected</li>
+</ul>
+<p>  type<code>); </code>LetStmt::declaredType<code>; dump </code>(let age: i64 15)`.</p>
+<ul>
+<li><code>TypeChecker</code> (<code>compiler/semantic/</code>): anotasi vs inisialisasi</li>
+</ul>
+<p>  (`mismatched types ... declared as &#x27;i64&#x27; but initializer has type</p>
+<p>  &#x27;string&#x27;`), inferensi tanpa anotasi, operand aritmetika/perbandingan</p>
+<p>  <code>i64</code>, equality sejenis non-string/void, unary <code>i64</code>, <code>void</code> ditolak</p>
+<p>  untuk variabel &amp; <code>print</code>, <code>main : fn() -&gt; void</code>. Error dikumpulkan,</p>
+<p>  diagnostic konsisten dengan semantic.</p>
+<ul>
+<li>Driver pipeline: lex → parse → semantic → <strong>typecheck</strong> → codegen.</li>
+<li>Contoh <code>examples/types.ns</code> → <code>15/true/Nusa/30</code>.</li>
+<li>Tests: <code>test_typecheck</code> baru (11 cek), lexer +2, parser +4, codegen +1</li>
+</ul>
+<p>  (<code>alloca i64/i1</code> beranotasi), <code>e2e_types</code> baru (nilai + mismatch</p>
+<p>  verbatim + inferensi + <code>1+true</code> + <code>void</code>).</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>9/9 passed</strong>.</li>
+<li>Contoh master verbatim berjalan (<code>15/true/Nusa</code>); AArch64 executable;</li>
+</ul>
+<p>  IR (<code>alloca i64/i1/ptr</code>) terverifikasi.</p>
+<ul>
+<li>Error master verbatim: <code>let x: i64 = &quot;hello&quot;</code> → <code>mismatched types</code>,</li>
+</ul>
+<p>  exit 1, tanpa crash.</p>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>Single <code>fn main()</code> flat scope; tanpa assignment terpisah; tanpa</li>
+</ul>
+<p>  generics/traits/polymorphism (roadmap 1.x/2.x); parameter &amp; return</p>
+<p>  fungsi = v0.5.0.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.4.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

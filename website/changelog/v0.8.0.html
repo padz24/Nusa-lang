@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.8.0 — Nusa Docs 0.8.0</title>
+<meta name="description" content="0.8.0 v0.8.0 Release notes # — Struct &amp;amp; Module (2026-09-05) Milestone struct &amp;amp; module sesuai MASTER PROMPT: deklarasi struct, konstruksi liter">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.8.0.html">
+<meta property="og:title" content="Changelog 0.8.0 — Nusa Docs 0.8.0">
+<meta property="og:description" content="0.8.0 v0.8.0 Release notes # — Struct &amp;amp; Module (2026-09-05) Milestone struct &amp;amp; module sesuai MASTER PROMPT: deklarasi struct, konstruksi liter">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.8.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.8.0">
+<meta name="nusa:keywords" content="changelog, 0.8.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.8.0", "category": "changelog", "version": "0.8.0", "content": "0.8.0 v0.8.0 Release notes # — Struct &amp; Module (2026-09-05) Milestone struct &amp; module sesuai MASTER PROMPT: deklarasi struct, konstruksi literal, akses field (termasuk nested), named LLVM types, plus module loader — import multi-file dengan namespace merge, visibilitas dasar, dan deteksi ci", "code_example": "", "keywords": "changelog, 0.8.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.8.0.html">0.8.0</a></p><article><h1>0.8.0</h1><span class="badge historic">v0.8.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Struct &amp; Module (2026-09-05)</p>
+<p>Milestone struct &amp; module sesuai MASTER PROMPT: deklarasi struct,</p>
+<p>konstruksi literal, akses field (termasuk nested), named LLVM types,</p>
+<p>plus module loader — <code>import</code> multi-file dengan namespace merge,</p>
+<p>visibilitas dasar, dan deteksi circular import. Tanpa package manager.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Lexer: keywords reserved <code>struct</code>, <code>import</code>; token <code>.</code> (Dot) untuk</li>
+</ul>
+<p>  field access (tanpa ambiguitas float — Nusa hanya punya integer).</p>
+<ul>
+<li>Tipe bernama: <code>TypeKind::Struct</code> + <code>sname</code> + factory <code>Type::named()</code>;</li>
+</ul>
+<p>  <code>name()</code> mengembalikan nama struct; <code>==</code> struktural per nama.</p>
+<p>  <code>parseType</code> menerima <code>Ident</code> sebagai tipe (keberadaan dicek checker →</p>
+<p>  <code>unknown type &#x27;Foo&#x27;</code>).</p>
+<ul>
+<li>AST: <code>StructDecl</code>/<code>StructField</code>/<code>Import</code> top-level</li>
+</ul>
+<p>  (<code>Program{imports, structs, functions}</code>); <code>StructLit</code> (<code>(Person …)</code>)</p>
+<p>  dan <code>FieldAccess</code> (<code>(field base f)</code>); dump <code>(struct P …)</code>,</p>
+<p>  <code>(import m)</code>.</p>
+<ul>
+<li>Parser: loop top-level <code>import</code>/<code>struct</code>/<code>fn</code> bebas campur;</li>
+</ul>
+<p>  <code>struct P { f: T; … }</code> (<code>;</code> opsional); literal <code>P { f: v, … }</code>;</p>
+<p>  postfix <code>.f</code> berantai dan bercampur index (<code>a.b[0]</code>, <code>a[0].b</code>).</p>
+<p>  Ambiguitas <code>if c {</code> (block) vs literal dipecahkan lookahead 2-token</p>
+<p>  (<code>{</code> diikuti <code>}</code>/<code>field :</code> → literal), tanpa backtracking.</p>
+<ul>
+<li>Semantic: namespace struct terpisah (ala Rust — koeksis dengan fungsi);</li>
+</ul>
+<p>  tabel definisi; literal dicek (unknown field + daftar field sebagai</p>
+<p>  hint, duplikat, missing); privacy <code>_</code> antar-file untuk call dan</p>
+<p>  konstruksi (<code>is private to module</code>); reserved <code>len</code>/<code>exit</code>/<code>print</code>.</p>
+<p>  Field access diteruskan ke checker (butuh tipe base).</p>
+<ul>
+<li>TypeChecker: tabel struct (dup field, resolve tipe incl. unknown,</li>
+</ul>
+<p>  tolak field <code>void</code>/array — array butuh ukuran statis); literal vs</p>
+<p>  deklarasi per field (<code>mismatched field type</code>); akses → tipe field</p>
+<p>  (unknown + daftar field); nested struct didukung penuh; tolak</p>
+<p>  print/<code>==</code>/param/return struct dengan pesan jelas. Bonus: <code>let x</code></p>
+<p>  dari nilai <code>void</code> kini ditolak (bug laten sejak v0.5.0).</p>
+<ul>
+<li>Codegen: named LLVM struct types two-phase (<code>%Person = type {…}</code>,</li>
+</ul>
+<p>  forward-ref antar-struct OK); nilai struct = pointer (tanpa load);</p>
+<p>  konstruksi = alloca + store per field urutan deklarasi (nested via</p>
+<p>  copy agregat); akses = StructGEP + load (skalar) / pointer (nested);</p>
+<p>  <code>let</code>/<code>assign</code> via <code>storeGenValue</code> terpadu (skalar langsung, agregat</p>
+<p>  terverifikasi); guard param/return struct; <code>verifyModule</code> wajib.</p>
+<ul>
+<li>Module loader (<code>compiler/driver/Modules</code>): <code>import m;</code> →</li>
+</ul>
+<p>  <code>&lt;dir&gt;/m.ns</code>; DFS + visited (dedupe) + stack rantai</p>
+<p>  (<code>circular import detected: a -&gt; b -&gt; a</code>); identitas absolut,</p>
+<p>  tampil relatif; <code>std::filesystem</code> via <code>error_code</code> (build</p>
+<p>  <code>-fno-exceptions</code>); diagnostic per file (engine per modul);</p>
+<p>  merge deps-dulu; <code>imports</code> dikonsumsi. Driver: lex/parse per modul</p>
+<p>  diganti loader; semantic→codegen jalan di program gabungan.</p>
+<ul>
+<li>Contoh: <code>examples/person.ns</code> → <code>Nusa/1</code>; <code>examples/math.ns</code> +</li>
+</ul>
+<p>  <code>examples/main.ns</code> (import + struct lintas modul) → <code>6/Ada</code>.</p>
+<ul>
+<li>Tests: lexer 16 (+struct/import/dot), parser 49 (+struct/import/field,</li>
+</ul>
+<p>  regresi ambiguitas <code>testBareIdentCondition</code>), semantic 31 (+struct/</p>
+<p>  field/privacy), typecheck 54 (+field/nested/unknown/param), codegen 19</p>
+<p>  (+named type/nested IR), <code>e2e_struct_module</code> baru (10 kasus: person,</p>
+<p>  modul, nested, lintas-modul, privacy, circular, import hilang,</p>
+<p>  dup struct, tipe field, param struct).</p>
+<h3 id="diperbaiki-temuan-selama-milestone">Diperbaiki (temuan selama milestone) <a href="#diperbaiki-temuan-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li>Bug nyata: <code>if c {</code> / <code>while done {</code> dispekulasi sebagai struct literal</li>
+</ul>
+<p>  (<code>expected field name</code>) — diperbaiki dengan lookahead, terbukti oleh</p>
+<p>  kembalinya 5 test yang sempat gagal (branch-return, e2e_control, …).</p>
+<ul>
+<li>Ekspektasi test disesuaikan desain: <code>testBadTypeFails</code> →</li>
+</ul>
+<p>  <code>testNamedTypeParses</code> (tipe bernama valid di grammar); unknown-field</p>
+<p>  kini 2 diagnostic valid (unknown + missing).</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>13/13 passed</strong>.</li>
+<li>Contoh master verbatim: struct → <code>Nusa</code> + <code>1</code>; modul → <code>21</code> + <code>Nusa</code>;</li>
+</ul>
+<p>  AArch64 executable; IR <code>%Person = type { ptr, i64 }</code> + GEP field.</p>
+<ul>
+<li>Circular <code>a ↔ b</code> → rantai jelas, exit 1; privacy <code>_secret</code> lintas</li>
+</ul>
+<p>  modul → ditolak; import hilang → pesan + hint.</p>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>Struct: tanpa field array, param/return struct, <code>==</code>/print struct;</li>
+</ul>
+<p>  field selalu publik; tanpa methods/traits.</p>
+<ul>
+<li>Modul: flat tetangga (tanpa subdir/<code>::</code>/package manager — sesuai master);</li>
+</ul>
+<p>  merge dengan konflik = error duplikat.</p>
+<ul>
+<li>Tanpa generics (sesuai master).</li>
+<li><code>nusa check/test/fmt/doc</code> belum ada (roadmap v0.9.0).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.8.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

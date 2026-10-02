@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>traits.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="traits.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Trait Nusa — v1.3.0 (Phase 22) # Mekanisme abstraksi Nusa: trait m">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/traits.html">
+<meta property="og:title" content="traits.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="traits.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Trait Nusa — v1.3.0 (Phase 22) # Mekanisme abstraksi Nusa: trait m">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="traits.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="traits, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "traits.md", "category": "docs", "version": "3.0.0", "content": "traits.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Trait Nusa — v1.3.0 (Phase 22) # Mekanisme abstraksi Nusa: trait mendeklarasikan metode, impl mengimplementasikannya untuk tipe konkret, panggilan p.m(...) di-resolve statis (ditulis ulang menjadi fungsi biasa berma", "code_example": "", "keywords": "traits, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/traits.html">traits.md</a></p><article><h1>traits.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="trait-nusa-v1-3-0-phase-22">Trait Nusa — v1.3.0 (Phase 22) <a href="#trait-nusa-v1-3-0-phase-22" aria-label="taut">#</a></h1>
+<p>Mekanisme abstraksi Nusa: trait mendeklarasikan metode, <code>impl</code></p>
+<p>mengimplementasikannya untuk tipe konkret, panggilan <code>p.m(...)</code></p>
+<p>di-resolve statis (ditulis ulang menjadi fungsi biasa bermangled).</p>
+<pre data-lang="nusa"><code class="lang-nusa">trait Printable {
+    fn print(self);
+    fn describe(self) -&gt; string;
+}
+struct Person { name: string; }
+impl Printable for Person {
+    fn print(self) { print(self.name); }
+    fn describe(self) -&gt; string { return self.name; }
+}
+fn main() {
+    let p = Person { name: &quot;Nusa&quot; };
+    p.print();               // → Printable_print_Person(p)
+    print(p.describe());
+}</code></pre>
+<h2 id="deklarasi">Deklarasi <a href="#deklarasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>trait Name { fn m(self, …) …; }</code> — metode TANPA body. Param pertama</li>
+</ul>
+<p>  WAJIB <code>self</code> telanjang (tanpa anotasi); <code>self: T</code> ditolak parser.</p>
+<ul>
+<li>Nama trait menghuni namespace sendiri (<code>trait Foo</code> + <code>struct Foo</code></li>
+</ul>
+<p>  boleh koeksis). Duplikat trait/metode ditolak. <code>fn main</code> dilarang</p>
+<p>  sebagai metode. Metode generik (<code>fn m&lt;T&gt;</code>) ditolak (v1.3.0).</p>
+<ul>
+<li>Keyword reserved: <code>trait</code>, <code>impl</code>, <code>for</code>, <code>self</code>.</li>
+</ul>
+<h2 id="implementasi">Implementasi <a href="#implementasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>impl Trait for Type { … }</code> — target: struct (biasa/generik</li>
+</ul>
+<p>  konkret), primitif (<code>i64</code>/<code>bool</code>/<code>string</code>); array/fn/void ditolak.</p>
+<ul>
+<li>Tiap metode: tanpa tparams, <code>self</code> pertama, nama ada di trait,</li>
+</ul>
+<p>  signature COCOK (substitusi <code>self</code> → target): arity, param, return.</p>
+<ul>
+<li>Metode hilang → <code>missing method</code>; asing → <code>is not a member</code>;</li>
+</ul>
+<p>  duplikat impl (trait+tipe sama) ditolak.</p>
+<ul>
+<li>Metode menjadi fungsi biasa bernama-mangled</li>
+</ul>
+<p>  (<code>Trait_method_Type</code>, mis. <code>Printable_print_Person</code>,</p>
+<p>  <code>Describe_describe_Point_i64</code>) — tabrakan dengan fungsi user</p>
+<p>  ditolak jelas.</p>
+<h2 id="panggilan">Panggilan <a href="#panggilan" aria-label="taut">#</a></h2>
+<ul>
+<li><code>recv.method(args)</code> — receiver struct/primitif/instance generik.</li>
+</ul>
+<p>  Resolve: (tipe, nama) → tepat satu implementasi.</p>
+<ul>
+<li>Tak dikenal → <code>unknown method</code> + daftar metode tipe itu; ganda</li>
+</ul>
+<p>  (dua trait) → <code>ambiguous method</code> + daftar trait.</p>
+<ul>
+<li><code>p.field</code> tanpa parens tetap field access; bila field tak ada tapi</li>
+</ul>
+<p>  metode ada → hint <code>did you mean to call the method?</code>.</p>
+<ul>
+<li>Privacy <code>_</code> dicerminkan dari fungsi (lintas-file ditolak).</li>
+<li>Tanpa closure: metode sebagai value tak didukung; <code>p.m</code> (tanpa <code>()</code>)</li>
+</ul>
+<p>  adalah field access biasa.</p>
+<h2 id="bounds-constraints">Bounds (constraints) <a href="#bounds-constraints" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">fn f&lt;T: Printable&gt;(v: T) -&gt; string { return v.show(); }
+fn g&lt;T: Show + Count&gt;(v: T) -&gt; i64 { return v.show2(); }
+struct Box&lt;T: Show&gt; { v: T; }</code></pre>
+<ul>
+<li>Bounds di tparam fungsi dan struct (<code>+</code> untuk ganda); nama trait</li>
+</ul>
+<p>  harus dikenal (dicek semantic).</p>
+<ul>
+<li>Dicek saat instansiasi pada tipe KONKRET: `type &#x27;X&#x27; does not</li>
+</ul>
+<p>  implement trait &#x27;Y&#x27;<code> + saran </code>impl`.</p>
+<ul>
+<li>Body generik tak pernah dicek langsung (model C++): panggilan</li>
+</ul>
+<p>  metode di body ter-resolve saat instance konkret.</p>
+<h2 id="batasan-v1-3-0">Batasan (v1.3.0) <a href="#batasan-v1-3-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa metode generik, tanpa impl generik (<code>impl&lt;T&gt; …</code>),</li>
+</ul>
+<p>  tanpa supertrait, tanpa body default, tanpa tipe <code>Self</code></p>
+<p>  (<code>-&gt; Self</code> → <code>unknown type</code>), tanpa associated function/statik.</p>
+<ul>
+<li>Tanpa dynamic dispatch (semua statis/monomorphisasi).</li>
+<li>Koherensi: impl harus unik program-wide (duplikat ditolak);</li>
+</ul>
+<p>  evasi via alias (<code>type X = …</code> ganda) tak terdeteksi — limitasi.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

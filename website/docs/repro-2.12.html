@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>repro-2.12.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="repro-2.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reproducible Builds — Design (Phase 61, target 2.12.0) # Statu">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/repro-2.12.html">
+<meta property="og:title" content="repro-2.12.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="repro-2.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reproducible Builds — Design (Phase 61, target 2.12.0) # Statu">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="repro-2.12.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="repro-2.12, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "repro-2.12.md", "category": "docs", "version": "3.0.0", "content": "repro-2.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reproducible Builds — Design (Phase 61, target 2.12.0) # Status: audit → Implementation (milestone 1: tarball deterministik + pin compiler di lock). Jaminan terdokumentasi §4. Spec tak berubah. 1. Audit non-dete", "code_example": "", "keywords": "repro-2.12, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/repro-2.12.html">repro-2.12.md</a></p><article><h1>repro-2.12.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="reproducible-builds-design-phase-61-target-2-12-0">Reproducible Builds — Design (Phase 61, target 2.12.0) <a href="#reproducible-builds-design-phase-61-target-2-12-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: tarball deterministik</p>
+<p>+ pin compiler di lock). Jaminan terdokumentasi §4. Spec tak berubah.</p>
+<h2 id="1-audit-non-determinisme-2-11-0">1. Audit non-determinisme (2.11.0) <a href="#1-audit-non-determinisme-2-11-0" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Sumber</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>tar -czf</code> publish</td><td>NON-DETERMINISTIK (mtime/uid/gid/urutan + gzip timestamp; komentar kode mengakui &quot;gzip tak deterministik&quot;)</td></tr>
+<tr><td>Lock resolution</td><td>deterministik (sorted + first-match registry + tulis terurut)</td></tr>
+<tr><td>Checksum konten</td><td>deterministik (<code>dirChecksum</code> terurut)</td></tr>
+<tr><td>Compiler</td><td>minimum (<code>compiler =</code>), BUKAN pin → compiler beda = hasil beda</td></tr>
+<tr><td>Biner <code>.ll</code>/exe</td><td><code>source_filename</code> = path input (path-beda = byte-beda); urutan build = CLI; selebihnya deterministik LLVM-O0</td></tr>
+</tbody></table>
+<h2 id="2-milestone-1">2. Milestone 1 <a href="#2-milestone-1" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Tarball deterministik</strong>: `tar --sort=name --mtime=&#x27;@0&#x27;</li>
+</ul>
+<p>   --owner=0 --group=0 --numeric-owner -cf - … | gzip -n -c`</p>
+<p>   (terverifikasi byte-identik di toolchain ini). Republish konten</p>
+<p>   identik → byte identik (cabang &quot;segarkan hash transport&quot; menjadi</p>
+<p>   no-op alami; logika dipertahankan).</p>
+<ul>
+<li><strong>Pin compiler di lock</strong>: <code>writeLock</code> emitsi header</li>
+</ul>
+<p>   <code>[meta] compiler = &quot;&lt;exact&gt;&quot;</code>; <code>lockFresh</code> menolak bila absen</p>
+<p>   atau beda (<code>run pkg update</code>). Lock lama (pra-2.12) menjadi</p>
+<p>   basi SEKALI (self-heal via update; nol fixture lock di repo).</p>
+<ul>
+<li><strong>Jaminan</strong> (§4, jujur): path-sama + lock-sama + compiler-sama</li>
+</ul>
+<p>   ⇒ tarball byte-identik &amp; biner byte-identik (diuji <code>--fresh</code></p>
+<p>   ganda + <code>cmp</code>).</p>
+<h2 id="3-ditunda">3. DITUNDA <a href="#3-ditunda" aria-label="taut">#</a></h2>
+<p>Normalisasi path di <code>.ll</code> (source_filename absolut; butuh mode</p>
+<p><code>--remap-path</code> tersendiri), <code>.deb</code> reproducible (timestamp</p>
+<p>dpkg-deb), bootstrap bit-identik lintas-mesin, signed artifacts.</p>
+<h2 id="4-jaminan-reproduksibilitas-v2-12">4. Jaminan reproduksibilitas v2.12 <a href="#4-jaminan-reproduksibilitas-v2-12" aria-label="taut">#</a></h2>
+<p>Dijamin: (a) resolusi deps deterministik untuk registry-order</p>
+<p>sama; (b) <code>nusa.lock</code> mencatat compiler eksak; (c) tarball</p>
+<p>publish byte-deterministik; (d) build ulang <code>--fresh</code> di path</p>
+<p>sama byte-identik. TIDAK dijamin: lintas path direktori (path</p>
+<p>tertulis di IR), lintas versi compiler/LLVM, lintas platform.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

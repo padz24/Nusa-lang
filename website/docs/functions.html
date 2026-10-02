@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>functions.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="functions.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Fungsi Nusa — v2.0.0 # fn add(a: i64, b: i64) -&amp;gt; i64 { retur">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/functions.html">
+<meta property="og:title" content="functions.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="functions.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Fungsi Nusa — v2.0.0 # fn add(a: i64, b: i64) -&amp;gt; i64 { retur">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="functions.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="functions, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "functions.md", "category": "docs", "version": "3.0.0", "content": "functions.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Fungsi Nusa — v2.0.0 # fn add(a: i64, b: i64) -&gt; i64 { return a + b; } fn main() { let result = add(10, 20); print(result); // 30 } Deklarasi # FuncDecl := &quot;fn&quot; Ident &quot;(&quot; [Param (&quot;,&qu", "code_example": "", "keywords": "functions, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/functions.html">functions.md</a></p><article><h1>functions.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="fungsi-nusa-v2-0-0">Fungsi Nusa — v2.0.0 <a href="#fungsi-nusa-v2-0-0" aria-label="taut">#</a></h1>
+<pre data-lang="nusa"><code class="lang-nusa">fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}
+
+fn main() {
+    let result = add(10, 20);
+    print(result); // 30
+}</code></pre>
+<h2 id="deklarasi">Deklarasi <a href="#deklarasi" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">FuncDecl := &quot;fn&quot; Ident &quot;(&quot; [Param (&quot;,&quot; Param)*] &quot;)&quot; [&quot;-&gt;&quot; Type] Block
+Param    := Ident &quot;:&quot; Type</code></pre>
+<ul>
+<li>Anotasi parameter <strong>wajib</strong>; <code>-&gt; T</code> absen berarti <code>void</code>.</li>
+<li><code>main</code>: tanpa parameter, return <code>void</code>; wajib ada tepat satu;</li>
+</ul>
+<p>  tak bisa dipanggil; menjadi <code>i32 @main</code> (return 0) di executable.</p>
+<ul>
+<li>Nama reserved: <code>print</code>, <code>len</code>, <code>input</code>, <code>assert</code>, <code>str_*</code>,</li>
+</ul>
+<p>  <code>parse_int</code>, <code>file_*</code>, <code>array_*</code>, <code>puts</code>, <code>printf</code>, <code>exit</code>.</p>
+<ul>
+<li>Duplikat nama fungsi → error. Forward reference dan rekursi bisa</li>
+</ul>
+<p>  (two-pass di semantic, checker, dan codegen).</p>
+<h2 id="panggilan">Panggilan <a href="#panggilan" aria-label="taut">#</a></h2>
+<ul>
+<li>Arity dan tipe tiap argumen dicek (<code>wrong number of arguments</code>,</li>
+</ul>
+<p>  <code>mismatched argument type</code>). Hasil = return type terdeklarasi.</p>
+<ul>
+<li>Panggilan bersarang bebas: <code>add(mul(2, 3), 4)</code>.</li>
+<li>Panggilan fungsi <code>void</code> sebagai statement: <code>greet(&quot;Nusa&quot;);</code></li>
+</ul>
+<p>  (nilainya dibuang).</p>
+<h2 id="return-dan-local-scope">Return dan local scope <a href="#return-dan-local-scope" aria-label="taut">#</a></h2>
+<ul>
+<li>Tiap fungsi punya local scope (parameter + <code>let</code>); tiap Block scope</li>
+</ul>
+<p>  baru (shadowing antar-scope diizinkan, duplikat se-scope ditolak).</p>
+<ul>
+<li><code>return</code> harus terakhir di block-nya, KECUALI bare <code>return;</code></li>
+</ul>
+<p>  (fungsi <code>void</code>) yang legal di tengah block sejak 2.0 (dulu gagal</p>
+<p>  verifikasi IR di <code>main</code> — bug, kini keluar dengan 0); fungsi</p>
+<p>  non-<code>void</code> harus selalu me-return di semua path (<code>if</code>+<code>else</code></p>
+<p>  dihitung; <code>while</code> tidak — konservatif). Statement sesudah <code>return</code></p>
+<p>  → <code>unreachable code</code>.</p>
+<ul>
+<li><code>return;</code> polos hanya untuk fungsi <code>void</code>; <code>return &lt;expr&gt;</code> di fungsi</li>
+</ul>
+<p>  <code>void</code> ditolak, begitu pula sebaliknya.</p>
+<h2 id="backend">Backend <a href="#backend" aria-label="taut">#</a></h2>
+<p>Setiap <code>fn</code> menjadi LLVM function (<code>i64</code>/<code>i1</code>/<code>ptr</code>/<code>void</code>);</p>
+<p>parameter via alloca+store; call → LLVM <code>call</code>, diverifikasi</p>
+<p><code>verifyModule</code> sebelum emit.</p>
+<h2 id="batasan-stabil-v2-0-0">Batasan (stabil v2.0.0) <a href="#batasan-stabil-v2-0-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Top-level saja (tanpa nested fn). First-class function values</li>
+</ul>
+<p>  didukung: tipe <code>fn(T) -&gt; T</code> + lambda/closure (lihat <code>docs/types.md</code>,</p>
+<p>  <code>docs/closures.md</code>).</p>
+<ul>
+<li>Tanpa param/return array (butuh slices — mendatang); struct</li>
+</ul>
+<p>  by-value didukung sejak v1.2.0.</p>
+<ul>
+<li>Tanpa default argumen, varargs, overloading. Fungsi generik:</li>
+</ul>
+<p>  lihat <code>docs/types.md</code>.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

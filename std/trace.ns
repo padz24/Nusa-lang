@@ -1,0 +1,85 @@
+/// Distributed tracing v1 (Phase 119, v3.20.0): request ID + span +
+/// event terstruktur (satu baris JSON per baris) untuk aplikasi
+/// terdistribusi. Stateless-by-design: ID dari env TRACE_ID
+/// (propagasi antar-layanan) atau dibangkitkan (waktu + acak OS);
+/// state span di-threading manual (tanpa global mutabel).
+/// Konsumen: `nusa trace run` (injeksi ID) + `nusa trace check`
+/// (validasi log). Lihat docs/dist-tooling-3.20.md.
+import process;
+/// Escape minimal untuk nilai JSON (kutip + backslash).
+fn trace_escape(s: string) -> string {
+    let out = "";
+    let i = 0;
+    let n = str_len(s);
+    while i < n {
+        let ch = str_char_at(s, i);
+        if str_eq(ch, "\"") {
+            out = str_concat(out, "\\\"");
+        } else {
+            if str_eq(ch, "\\") {
+                out = str_concat(out, "\\\\");
+            } else {
+                out = str_concat(out, ch);
+            }
+        }
+        i = i + 1;
+    }
+    return out;
+}
+/// ID request baru: "<ms>-<randhex>" — unik cukup tanpa state
+/// (ms wall-clock + 8 hex acak OS; tabrakan butuh ms sama + rand sama).
+fn new_request_id() -> string {
+    return str_concat(str_concat(int_to_str(time_now_ms()), "-"), crypto_rand_hex(4));
+}
+/// ID request berjalan: env TRACE_ID bila ada (propagasi),
+/// selainnya bangkitkan.
+fn current_request_id() -> string {
+    let v = getenv_or("TRACE_ID", "");
+    if str_eq(v, "") {
+        return new_request_id();
+    }
+    return v;
+}
+struct Trace {
+    id: string;
+    op: string;
+    t0: i64;
+}
+/// Mulai span: catat waktu + cetak event begin.
+fn trace_begin(op: string) -> Trace {
+    let id = current_request_id();
+    let t0 = time_now_ms();
+    let s1 = str_concat("{\"type\":\"begin\",\"id\":\"", id);
+    let s2 = str_concat(s1, "\",\"op\":\"");
+    let s3 = str_concat(s2, trace_escape(op));
+    let s4 = str_concat(s3, "\",\"t\":");
+    let s5 = str_concat(s4, int_to_str(t0));
+    print(str_concat(s5, "}"));
+    return Trace {
+        id: id, op: op, t0: t0
+    };
+}
+/// Akhiri span: cetak event end + kembalikan durasi ms.
+fn trace_end(t: Trace) -> i64 {
+    let t1 = time_now_ms();
+    let dt = t1 - t.t0;
+    let s1 = str_concat("{\"type\":\"end\",\"id\":\"", t.id);
+    let s2 = str_concat(s1, "\",\"op\":\"");
+    let s3 = str_concat(s2, trace_escape(t.op));
+    let s4 = str_concat(s3, "\",\"ms\":");
+    let s5 = str_concat(s4, int_to_str(dt));
+    print(str_concat(s5, "}"));
+    return dt;
+}
+/// Satu event terstruktur (status: "ok"/"error"/bebas; note bebas).
+fn trace_event(op: string, status: string, note: string) {
+    let id = current_request_id();
+    let s1 = str_concat("{\"type\":\"event\",\"id\":\"", id);
+    let s2 = str_concat(s1, "\",\"op\":\"");
+    let s3 = str_concat(s2, trace_escape(op));
+    let s4 = str_concat(s3, "\",\"status\":\"");
+    let s5 = str_concat(s4, trace_escape(status));
+    let s6 = str_concat(s5, "\",\"note\":\"");
+    let s7 = str_concat(s6, trace_escape(note));
+    print(str_concat(s7, "\"}"));
+}

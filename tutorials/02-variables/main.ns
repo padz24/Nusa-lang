@@ -1,0 +1,12 @@
+fn main() {
+    let a = 10;
+    let b: i64 = 20;
+    print(a + b);
+    let active: bool = true;
+    print(active);
+    let name: string = "Nusa";
+    print(name);
+    let numbers: [i64] = [1, 2, 3, 4];
+    print(numbers[0]);
+    print(len(numbers));
+}

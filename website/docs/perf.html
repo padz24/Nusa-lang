@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>perf.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="perf.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance — Benchmark &amp;amp; Optimasi (Phase 34, v1.15.0) # Prinsip">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/perf.html">
+<meta property="og:title" content="perf.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="perf.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance — Benchmark &amp;amp; Optimasi (Phase 34, v1.15.0) # Prinsip">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="perf.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="perf, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "perf.md", "category": "docs", "version": "3.0.0", "content": "perf.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance — Benchmark &amp; Optimasi (Phase 34, v1.15.0) # Prinsip: tanpa optimasi tanpa benchmark . Semua angka di bawah diukur di Android AArch64 (Termux, clang 21.1.8) via bench/ + EPOCHREALTIME ; ulangi ≥3x (sel", "code_example": "", "keywords": "perf, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/perf.html">perf.md</a></p><article><h1>perf.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="performance-benchmark-optimasi-phase-34-v1-15-0">Performance — Benchmark &amp; Optimasi (Phase 34, v1.15.0) <a href="#performance-benchmark-optimasi-phase-34-v1-15-0" aria-label="taut">#</a></h1>
+<p>Prinsip: <strong>tanpa optimasi tanpa benchmark</strong>. Semua angka di bawah</p>
+<p>diukur di Android AArch64 (Termux, clang 21.1.8) via <code>bench/</code> +</p>
+<p><code>EPOCHREALTIME</code>; ulangi ≥3x (selang-seling bila membandingkan)</p>
+<p>karena noise termal.</p>
+<h2 id="anatomi-waktu-build-fib-ns-o0">Anatomi waktu build (fib.ns, O0) <a href="#anatomi-waktu-build-fib-ns-o0" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Tahap</th><th>Waktu</th><th>Bagian</th></tr></thead><tbody>
+<tr><td>frontend + IR (<code>--emit-ir</code>)</td><td>~0.21 dtk</td><td>~10%</td></tr>
+<tr><td>kompilasi <code>runtime/nusa_rt.c</code></td><td>~0.76 dtk</td><td>~35%</td></tr>
+<tr><td>link + codegen clang (total <code>build</code>)</td><td>~2.2 dtk</td><td>100%</td></tr>
+</tbody></table>
+<p>File besar (<code>perf2000.ns</code>, 2000 let): frontend ~0.41 dtk —</p>
+<p>frontend BUKAN bottleneck. clang mendominasi (&gt;85%).</p>
+<h2 id="optimasi-yang-diambil-berbukti">Optimasi yang diambil (berbukti) <a href="#optimasi-yang-diambil-berbukti" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Runtime precompiled</strong> (<code>build/nusa_rt.o</code>, target CMake</li>
+</ul>
+<p>   <code>nusa_runtime</code>; driver memakai <code>&lt;exe&gt;/nusa_rt.o</code> bila ada,</p>
+<p>   fallback ke <code>.c</code>): build fib 2.21 → 1.40 dtk (<strong>−36%</strong>,</p>
+<p>   stabil 4 pasang selang-seling). Tanpa perubahan perilaku</p>
+<p>   (objek identik yang dulu dikompilasi per build).</p>
+<ul>
+<li><strong><code>-Wno-override-module</code></strong> di link: hilangkan noise warning</li>
+</ul>
+<p>   triple (kosmetik, nol risiko).</p>
+<ul>
+<li><strong>Flag <code>-O0..-Oz</code></strong> (<code>nusa build -O2</code>, terus ke clang; default</li>
+</ul>
+<p>   O0 = perilaku lama): O2 mengecilkan exe fib 17880 → 16272</p>
+<p>   byte (−9%); runtime fib(30) 88 → 80 mdtk, loopsum 2M iterasi</p>
+<p>   58 → 62 mdtk (noise — tak ada kemenangan runtime signifikan</p>
+<p>   pada IR Nusa saat ini).</p>
+<h2 id="yang-sengaja-tidak-diubah-berbukti-tak-worth-it">Yang SENGAJA tidak diubah (berbukti tak worth it) <a href="#yang-sengaja-tidak-diubah-berbukti-tak-worth-it" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Micro-opt frontend</strong> (lexer/parser/checker): &lt;15% build —</li>
+</ul>
+<p>  Amdahl menolak; kompleksitas tak terbayar.</p>
+<ul>
+<li><strong>Default <code>-O2</code></strong>: kemenangan runtime ~0–10% vs risiko waktu</li>
+</ul>
+<p>  build + perilaku; tetap opt-in eksplisit.</p>
+<ul>
+<li><strong>Incremental compilation</strong> = Phase 35 (bukan di sini).</li>
+</ul>
+<h2 id="cara-ukur-ulang">Cara ukur ulang <a href="#cara-ukur-ulang" aria-label="taut">#</a></h2>
+<pre data-lang="sh"><code class="lang-sh">bash bench/bench.sh build/nusa            # build time + ukuran
+# runtime: bench/programs/*.ns, bangun O0 vs -O2, time manual</code></pre>
+<p>Program bench: <code>fib</code> (rekursi), <code>loopsum</code> (loop 2M),</p>
+<p><code>strcat</code> (alokasi), <code>matchdispatch</code> (rantai if desugar),</p>
+<p><code>closureapply</code> (trampolin). Baseline runtime (O0):</p>
+<p>fib(30) ~88 mdtk, loopsum ~58 mdtk (angka acuan, bukan janji).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

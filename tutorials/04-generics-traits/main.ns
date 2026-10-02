@@ -1,0 +1,25 @@
+fn identity<T>(value: T) -> T {
+    return value;
+}
+trait Show {
+    fn show(self) -> string;
+}
+struct A {
+    x: i64;
+}
+impl Show for A {
+    fn show(self) -> string {
+        return "A";
+    }
+}
+fn f < T: Show >(v: T) -> string {
+    return v.show();
+}
+fn main() {
+    print(identity(41) + 1);
+    print(identity("hi"));
+    print(f(A {
+        x: 1
+    }
+));
+}

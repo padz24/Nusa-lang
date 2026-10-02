@@ -1,0 +1,19 @@
+// Sample `nusa test` target: json stdlib.
+import json;
+fn main() {
+    let o = "{\"name\": \"Nusa\", \"n\": 42, \"ok\": true, \"neg\": -7}";
+    assert(json_has_key(o, "name"));
+    assert(json_has_key(o, "missing") == false);
+    assert(str_eq(json_get_string(o, "name"), "Nusa"));
+    assert(str_eq(json_get_string(o, "n"), ""));
+    assert(json_get_int(o, "n") == 42);
+    assert(json_get_int(o, "neg") == 0 - 7);
+    assert(json_get_int(o, "name") == 0);
+    assert(json_get_bool(o, "ok"));
+    assert(json_get_bool(o, "n") == false);
+    assert(json_valid(o));
+    assert(json_valid("{bad") == false);
+    assert(json_valid("") == false);
+    let nest = "{\"a\": {\"k\": 1}, \"k\": 2}";
+    assert(json_get_int(nest, "k") == 2);
+}

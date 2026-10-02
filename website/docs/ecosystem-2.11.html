@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ecosystem-2.11.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="ecosystem-2.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Ecosystem 2.0 — Design (Phase 60, target 2.11.0) #">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/ecosystem-2.11.html">
+<meta property="og:title" content="ecosystem-2.11.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="ecosystem-2.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Ecosystem 2.0 — Design (Phase 60, target 2.11.0) #">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="ecosystem-2.11.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ecosystem-2.11, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "ecosystem-2.11.md", "category": "docs", "version": "3.0.0", "content": "ecosystem-2.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Ecosystem 2.0 — Design (Phase 60, target 2.11.0) # Status: audit → Implementation (milestone 1: 4 perintah read-only). Spec bahasa tak berubah; tanpa RFC (tooling). 1. Status daftar mandat vs realita", "code_example": "", "keywords": "ecosystem-2.11, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/ecosystem-2.11.html">ecosystem-2.11.md</a></p><article><h1>ecosystem-2.11.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="package-ecosystem-2-0-design-phase-60-target-2-11-0">Package Ecosystem 2.0 — Design (Phase 60, target 2.11.0) <a href="#package-ecosystem-2-0-design-phase-60-target-2-11-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: 4 perintah read-only).</p>
+<p>Spec bahasa tak berubah; tanpa RFC (tooling).</p>
+<h2 id="1-status-daftar-mandat-vs-realita-2-10-0">1. Status daftar mandat vs realita 2.10.0 <a href="#1-status-daftar-mandat-vs-realita-2-10-0" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Mandat</th><th>Status</th></tr></thead><tbody>
+<tr><td>semantic versioning</td><td>ADA (parse/banding/caret, Phase 30/31)</td></tr>
+<tr><td>lock files</td><td>ADA (<code>nusa.lock</code>, pin+checksum)</td></tr>
+<tr><td>dependency graph</td><td>ADA (resolver; belum divisualkan → <code>tree</code>)</td></tr>
+<tr><td>checksums</td><td>ADA (transport + konten, 2-lapis)</td></tr>
+<tr><td>package signing</td><td>BELUM (butuh infra kunci; §3)</td></tr>
+<tr><td>registry mirrors</td><td>ADA-via-env (<code>NUSA_REGISTRY</code> &#x27;:&#x27;-separated, multi-sumber + fallback berurutan) → didokumentasikan sebagai mirrors</td></tr>
+<tr><td>offline cache</td><td>ADA-implisit (cache valid ⇒ tanpa registry) → dibuktikan <code>verify</code></td></tr>
+<tr><td>reproducible resolution</td><td>ADA (<code>lockFresh</code> + tulis terurut) → didokumentasikan</td></tr>
+<tr><td><code>audit/tree/outdated/verify</code></td><td>BELUM → milestone ini</td></tr>
+</tbody></table>
+<h2 id="2-empat-perintah-read-only-top-level-pkg-cermin">2. Empat perintah (read-only; top-level + <code>pkg</code>, cermin <a href="#2-empat-perintah-read-only-top-level-pkg-cermin" aria-label="taut">#</a></h2>
+<p>// search/install/publish; tampil di <code>--help</code>)</p>
+<ul>
+<li><code>tree</code>: graf dependensi dari manifest+lock (rekursi path-dep +</li>
+</ul>
+<p>  pin registry; aman-siklus via visited; format `name version</p>
+<p>  (source)` indentasi). Tanpa lock → resolve dari manifest</p>
+<p>  (peringatan bila lock absen/tak-segar? cukup: pakai lock bila</p>
+<p>  ada, bila tidak dari manifest langsung).</p>
+<ul>
+<li><code>verify</code>: verifikasi ulang — manifest parse; tiap pin lock:</li>
+</ul>
+<p>  path-dep = <code>dirChecksum</code> vs pin, registry = tarball cache vs</p>
+<p>  index (bila cache ada; bila tak ada → SKIP jujur, bukan gagal);</p>
+<p>  <code>packageDirSafe</code> atas dir ter-unpack. Baris OK/FAIL/SKIP per</p>
+<p>  paket; rc != 0 bila ada FAIL.</p>
+<ul>
+<li><code>outdated</code>: tiap registry-dep: versi terkunci vs maksimum di</li>
+</ul>
+<p>  registries (baca index; abaikan bila index hilang). Kolom:</p>
+<p>  <code>name req locked -&gt; latest</code>. Bila lock absen → resolve segar</p>
+<p>  sebagai basis? Sederhana: butuh lock (error jelas bila nihil).</p>
+<ul>
+<li><code>audit</code>: laporan advisory (rc selalu 0 bila terbaca):</li>
+</ul>
+<p>  capability per paket closure (root + path-dep rekursif +</p>
+<p>  manifest cache registry bila ada), checksum tercatat, catatan</p>
+<p>  <code>signing: unavailable (checksums only)</code>. Temuan = info, bukan</p>
+<p>  vonis (tanpa DB advisory).</p>
+<h2 id="3-ditunda-beralasan">3. DITUNDA beralasan <a href="#3-ditunda-beralasan" aria-label="taut">#</a></h2>
+<p>Package signing (ed25519/minisign butuh format kunci + `publish</p>
+<p>--sign` + verifikasi rantai — milestone tersendiri); enforcement</p>
+<p>izin non-native (butuh interposisi syscall); <code>update --dry-run</code>.</p>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_eco2.sh</code>: tree bentuk, verify OK lalu FAIL pasca-tamper,</li>
+</ul>
+<p>  outdated menemukan versi baru, audit memuat capability.</p>
+<ul>
+<li>Seluruh suite hijau; bench identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+// Array utilities.
+//
+// Fixed-size arrays `[T]` cannot cross function boundaries in v0.9.0
+// (no array parameters or returns yet), so generic helpers cannot be
+// written in Nusa itself. Array utilities live as builtins instead:
+//
+// - `len(a)` — number of elements.
+// - `array_sum(a)` — sum of an `[i64]`.
+// - `array_min(a)` / `array_max(a)` — extremes of an `[i64]`.
+//
+// ```nusa
+// let numbers: [i64] = [3, 1, 2];
+// print(len(numbers)); // 3
+// print(array_sum(numbers)); // 6
+// print(array_min(numbers)); // 1
+// ```

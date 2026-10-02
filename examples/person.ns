@@ -1,0 +1,15 @@
+// Contoh struct v0.8.0 (program milestone MASTER PROMPT).
+// Diharapkan mencetak:
+// Nusa
+// 1
+struct Person {
+    name: string;
+    age: i64;
+}
+fn main() {
+    let person = Person {
+        name: "Nusa", age: 1
+    };
+    print(person.name);
+    print(person.age);
+}

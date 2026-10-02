@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>debugging.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="debugging.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugging Nusa (Phase 37, v1.18.0) # nusa build app.ns -o app -">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/debugging.html">
+<meta property="og:title" content="debugging.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="debugging.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugging Nusa (Phase 37, v1.18.0) # nusa build app.ns -o app -">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="debugging.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="debugging, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "debugging.md", "category": "docs", "version": "3.0.0", "content": "debugging.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugging Nusa (Phase 37, v1.18.0) # nusa build app.ns -o app -g # DWARF penuh (juga via `pkg build -g`) Yang dihasilkan ( -g ) # Compile unit + subprogram per fungsi ( DW_TAG_subprogram + DW_AT_decl_line ), para", "code_example": "", "keywords": "debugging, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/debugging.html">debugging.md</a></p><article><h1>debugging.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="debugging-nusa-phase-37-v1-18-0">Debugging Nusa (Phase 37, v1.18.0) <a href="#debugging-nusa-phase-37-v1-18-0" aria-label="taut">#</a></h1>
+<pre data-lang="sh"><code class="lang-sh">nusa build app.ns -o app -g   # DWARF penuh (juga via `pkg build -g`)</code></pre>
+<h2 id="yang-dihasilkan-g">Yang dihasilkan (<code>-g</code>) <a href="#yang-dihasilkan-g" aria-label="taut">#</a></h2>
+<ul>
+<li>Compile unit + subprogram per fungsi (<code>DW_TAG_subprogram</code> +</li>
+</ul>
+<p>  <code>DW_AT_decl_line</code>), parameter formal (<code>DW_TAG_formal_parameter</code>),</p>
+<p>  variabel lokal (<code>DW_TAG_variable</code>: skalar <code>i64</code>/<code>bool</code>/<code>string</code>-</p>
+<p>  sebagai-pointer sejak v1; struct + array sejak v2.15.0), dan</p>
+<p>  line table per statement (<code>DW_AT_decl_line</code> + <code>file_names</code>).</p>
+<ul>
+<li>Struct: <code>DW_TAG_structure_type</code> + member + offset (aturan layout</li>
+</ul>
+<p>  LP64; nested didukung; slot fn/env dilewati). Array:</p>
+<p>  <code>DW_TAG_array_type</code> + bound statis.</p>
+<ul>
+<li>Bahasa host DWARF = C (tak ada tag bahasa Nusa; <code>DW_LANG_C</code>).</li>
+<li>Verifikasi: <code>llvm-dwarfdump --debug-info/--debug-line app</code>.</li>
+</ul>
+<h2 id="pemakaian-interaktif-bila-ada-debugger">Pemakaian interaktif (bila ada debugger) <a href="#pemakaian-interaktif-bila-ada-debugger" aria-label="taut">#</a></h2>
+<p><code>lldb app</code> / <code>gdb app</code> (tidak tersedia di CI Termux ini —</p>
+<p>diverifikasi via <code>llvm-dwarfdump</code>):</p>
+<pre data-lang="text"><code class="lang-text">(lldb) breakpoint set --file app.ns --line 2
+(lldb) run
+(lldb) frame variable c
+(lldb) bt</code></pre>
+<h2 id="batasan-v2-jujur">Batasan v2 (jujur) <a href="#batasan-v2-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Closure env, enum-payload mentah, dan struct berslot-fn tak</li>
+</ul>
+<p>  di-<code>declare</code> (inspek via memori mentah).</p>
+<ul>
+<li>Tanpa lexical block bersarang (satu scope per fungsi) — breakpoint</li>
+</ul>
+<p>  berbasis baris tetap tepat.</p>
+<ul>
+<li>Tanpa pretty-printer Nusa (string tampil sebagai pointer; baca</li>
+</ul>
+<p>  via <code>x/s</code>).</p>
+<ul>
+<li><code>-g</code> + <code>-O2</code> valid (lokasi bisa meleset akibat optimasi —</li>
+</ul>
+<p>  perilaku clang standar).</p>
+<ul>
+<li>Tanpa <code>-g</code>: nol metadata (IR dan biner bersih, teruji).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

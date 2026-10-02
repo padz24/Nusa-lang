@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>closures.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="closures.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Closures &amp;amp; Functional Features (Phase 27, v1.8.0) # Lambda |">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/closures.html">
+<meta property="og:title" content="closures.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="closures.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Closures &amp;amp; Functional Features (Phase 27, v1.8.0) # Lambda |">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="closures.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="closures, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "closures.md", "category": "docs", "version": "3.0.0", "content": "closures.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Closures &amp; Functional Features (Phase 27, v1.8.0) # Lambda |params| body adalah function value yang bisa menangkap (capture) variabel enclosing: fn apply(f: fn(i64) -&gt; i64, x: i64) -&gt; i64 { return f(x);", "code_example": "", "keywords": "closures, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/closures.html">closures.md</a></p><article><h1>closures.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="closures-functional-features-phase-27-v1-8-0">Closures &amp; Functional Features (Phase 27, v1.8.0) <a href="#closures-functional-features-phase-27-v1-8-0" aria-label="taut">#</a></h1>
+<p>Lambda <code>|params| body</code> adalah function value yang bisa menangkap</p>
+<p>(capture) variabel enclosing:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn apply(f: fn(i64) -&gt; i64, x: i64) -&gt; i64 {
+    return f(x);
+}
+fn main() {
+    let k = 10;
+    print(apply(|x| x + k, 1)); // 11
+}</code></pre>
+<p>Body berupa ekspresi tunggal (<code>|x| x + 1</code>) atau blok (<code>|x| { return x + 1; }</code>,</p>
+<p>ekspresi dinormalisasi menjadi <code>return &lt;expr&gt;;</code>).</p>
+<h2 id="aturan-tipe">Aturan tipe <a href="#aturan-tipe" aria-label="taut">#</a></h2>
+<ul>
+<li>Parameter boleh beranotasi (<code>|x: i64| ...</code>) atau diinferensi dari</li>
+</ul>
+<p>  konteks (<code>fn</code>-typed: argumen panggilan, <code>let f: fn... = ...</code>, return).</p>
+<p>  Tanpa keduanya → <code>cannot infer type of lambda parameter</code> (anotasi</p>
+<p>  atau pakai di posisi bertipe-<code>fn</code>).</p>
+<ul>
+<li>Anotasi yang konflik dengan ekspektasi ditolak (`mismatched lambda</li>
+</ul>
+<p>  parameter type<code>); arity harus pas (</code>lambda expects N ...`).</p>
+<ul>
+<li>Return: ekspektasi konkret dicek normal; selebihnya diinferensi dari</li>
+</ul>
+<p>  <code>return</code> body (inkonsisten → <code>inconsistent lambda return types</code>;</p>
+<p>  kosong → <code>cannot infer lambda return type</code> + all-paths berlaku).</p>
+<ul>
+<li>Lambda mengalir ke fungsi generik (<code>opt_map(o, |x| x * 2, 0)</code>):</li>
+</ul>
+<p>  argumen non-lambda mengikat tparams dulu, lambda dicek sesudahnya,</p>
+<p>  return-nya ikut mengikat.</p>
+<h2 id="capture-by-value-snapshot-model-memori">Capture: by-value snapshot (model memori) <a href="#capture-by-value-snapshot-model-memori" aria-label="taut">#</a></h2>
+<ul>
+<li>Free vars body yang merujuk nilai enclosing disalin NILAINYA saat</li>
+</ul>
+<p>  lambda dibuat (snapshot, bukan referensi).</p>
+<ul>
+<li>Dibuat per EKSEKUSI: lambda dalam loop menangkap nilai iterasi</li>
+</ul>
+<p>  berjalan (benar per-iterasi, tanpa gotcha-C).</p>
+<ul>
+<li>Assign ke capture hanya menyentuh salinan privat (outer tak berubah).</li>
+<li>Boleh: <code>i64</code>/<code>bool</code>/<code>string</code>/function values/struct (termasuk enum).</li>
+</ul>
+<p>  Ditolak: array (<code>cannot capture array</code>; salin elemen ke lokal dulu).</p>
+<ul>
+<li>Self-reference tak bisa (<code>let f = |x| f(x)</code> → undefined, cermin</li>
+</ul>
+<p>  <code>let x = x</code>); rekursi pakai fungsi bernama.</p>
+<ul>
+<li>Nested lambda bisa (inner di-lift saat outer dicek; capture param</li>
+</ul>
+<p>  outer dan capture-capture valid).</p>
+<ul>
+<li>Lambda di match guard DITOLAK (`lambdas cannot appear in match</li>
+</ul>
+<p>  guards`) — capture akan membaca binding yang belum materialisasi.</p>
+<h2 id="implementasi-lifting-trampolin-seragam">Implementasi: lifting + trampolin seragam <a href="#implementasi-lifting-trampolin-seragam" aria-label="taut">#</a></h2>
+<ul>
+<li>Tiap lambda → fungsi hidden <code>$lambda_N($env, params...)</code> + struct env</li>
+</ul>
+<p>  <code>$env_N { c0, ... }</code>; body diawali <code>let &lt;cap&gt; = $env.c&lt;j&gt;;</code> (tanpa</p>
+<p>  rewrite manual; shadowing aman via set sekuensial).</p>
+<ul>
+<li>Nilai fn = pair heap <code>{trampoline, env}</code> (program-lifetime, cermin</li>
+</ul>
+<p>  buffer string): referensi-fungsi → <code>{tramp_biasa, null}</code>, lambda →</p>
+<p>  <code>{tramp_lifted, env}</code>.</p>
+<ul>
+<li>Panggilan tak langsung SELALU via trampolin <code>(ptr env, args...)</code>:</li>
+</ul>
+<p>  trampolin plain meneruskan (abaikan env), trampolin lifted cast env</p>
+<p>  + panggil by-value. Panggilan langsung tak tersentuh; <code>let g = f</code></p>
+<p>  dan field fn ikut membawa signature.</p>
+<ul>
+<li>Konsekuensi model memori (§4, §10): pair + env tak pernah dibebaskan</li>
+</ul>
+<p>  (OS merebut saat exit); aman dibagikan antar-thread (lihat</p>
+<p>  <code>docs/concurrency.md</code>) selama capture tak dimutasi balapan.</p>
+<h2 id="batasan-phase-27">Batasan Phase 27 <a href="#batasan-phase-27" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa <code>move</code>/borrow semantics (selalu by-value); tanpa Fn/FnMut/</li>
+</ul>
+<p>  FnOnce tiers; tanpa unsize/coerce khusus.</p>
+<ul>
+<li>Tanpa pola <code>||</code> ganda selain param-kosong; <code>|</code> biner/logis tak ada</li>
+</ul>
+<p>  (hanya lambda).</p>
+<ul>
+<li>Rekursi closure, higher-ranked types, impl-Trait-return-position:</li>
+</ul>
+<p>  belum.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

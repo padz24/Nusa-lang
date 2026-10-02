@@ -1,0 +1,26 @@
+fn produce(c: i64) -> i64 {
+    chan_send(c, 1);
+    chan_send(c, 2);
+    chan_send(c, 3);
+    chan_send(c, 4);
+    chan_send(c, 5);
+    return 0;
+}
+fn work() -> i64 {
+    return 40 + 2;
+}
+fn main() {
+    let h = thread_spawn(work);
+    print(thread_join(h));
+    let c = chan_new();
+    let p = thread_spawn(|| produce(c));
+    let sum = 0;
+    let i = 0;
+    while i < 5 {
+        sum = sum + chan_recv(c);
+        i = i + 1;
+    }
+    thread_join(p);
+    print(sum);
+    chan_free(c);
+}

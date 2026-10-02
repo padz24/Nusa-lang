@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>abi-3.10.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="abi-3.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa ABI 3.10 — Spesifikasi (Phase 109) # Status: normatif atas ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/abi-3.10.html">
+<meta property="og:title" content="abi-3.10.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="abi-3.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa ABI 3.10 — Spesifikasi (Phase 109) # Status: normatif atas ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="abi-3.10.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="abi-3.10, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "abi-3.10.md", "category": "docs", "version": "3.0.0", "content": "abi-3.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa ABI 3.10 — Spesifikasi (Phase 109) # Status: normatif atas codegen 3.0.0 (LLVM 21 backend). &quot;ABI&quot; di sini = kontrak biner antar unit kompilasi Nusa + batas C/FFI + platform. Diturunkan dari compiler", "code_example": "", "keywords": "abi-3.10, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/abi-3.10.html">abi-3.10.md</a></p><article><h1>abi-3.10.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-abi-3-10-spesifikasi-phase-109">Nusa ABI 3.10 — Spesifikasi (Phase 109) <a href="#nusa-abi-3-10-spesifikasi-phase-109" aria-label="taut">#</a></h1>
+<p>Status: normatif atas codegen 3.0.0 (LLVM 21 backend). &quot;ABI&quot; di sini =</p>
+<p>kontrak biner antar unit kompilasi Nusa + batas C/FFI + platform.</p>
+<p>Diturunkan dari <code>compiler/codegen/Codegen.cpp</code> + bukti IR</p>
+<p>(<code>e2e_abi.sh</code> mengunci pola; contoh IR di bawah dari AArch64).</p>
+<h2 id="1-konvensi-pemanggilan-semua-target">1. Konvensi pemanggilan (semua target) <a href="#1-konvensi-pemanggilan-semua-target" aria-label="taut">#</a></h2>
+<ul>
+<li>Default LLVM C calling convention (<code>defaultcc</code>; tanpa anotasi</li>
+</ul>
+<p>  CC eksplisit di IR). Test mengunci <code>define</code> tanpa <code>cc</code> token.</p>
+<ul>
+<li>Entry: <code>define i32 @main(i32, ptr)</code> (argc/argv C; Nusa <code>main</code></li>
+</ul>
+<p>  void; argv disalin ke global internal <code>nusa_argc/nusa_argv</code>).</p>
+<h2 id="2-representasi-primitif">2. Representasi primitif <a href="#2-representasi-primitif" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Nusa</th><th>LLVM IR</th><th>Catatan</th></tr></thead><tbody>
+<tr><td><code>i64</code></td><td><code>i64</code></td><td>wrap (kecuali div)</td></tr>
+<tr><td><code>bool</code></td><td><code>i1</code></td><td>internal (<code>define i1 @isyes(i1)</code>)</td></tr>
+<tr><td><code>string</code></td><td><code>ptr</code></td><td>C-string heap (malloc), NUL-terminated</td></tr>
+<tr><td><code>void</code></td><td><code>void</code></td><td></td></tr>
+<tr><td><code>fn(T)-&gt;U</code> (value)</td><td><code>ptr</code></td><td>pair closure, BUKAN function pointer mentah</td></tr>
+<tr><td><code>[T]</code></td><td><code>[N x T]</code> alloca lokal</td><td>bukan bagian ABI lintas-fungsi (param/return ditolak)</td></tr>
+</tbody></table>
+<h2 id="3-struct-name-type-non-packed-urutan-deklarasi">3. Struct: <code>%Name = type { ... }</code> non-packed, urutan deklarasi <a href="#3-struct-name-type-non-packed-urutan-deklarasi" aria-label="taut">#</a></h2>
+<pre data-lang="llvm"><code class="lang-llvm">%Point = type { i64, ptr, i1 }
+define %Point @mk(i64 %v)</code></pre>
+<p>Layout = LLVM non-packed default (alignment alami target;</p>
+<p>TIDAK <code>packed</code>). Nested struct inline sebagai tipe bernama</p>
+<p>(duplikasi nama = error). By-value di param/return (mis.</p>
+<p><code>define %Point @mk(i64)</code>, <code>define i64 @get(%E)</code>).</p>
+<h2 id="4-enum-hidden-struct-tag-i64-slot">4. Enum: hidden struct <code>{tag: i64, slot...}</code> <a href="#4-enum-hidden-struct-tag-i64-slot" aria-label="taut">#</a></h2>
+<pre data-lang="llvm"><code class="lang-llvm">%E = type { i64, i64 }   /* tag + satu slot payload i64 */</code></pre>
+<p>Field <code>tag: i64</code> pertama; slot <code>v{tag}_{pos}</code> sesudahnya</p>
+<p>(satu slot per posisi payload; varian unit tanpa slot).</p>
+<p>Dispatch via <code>tag</code> + GEP (bukti: <code>q.tag</code> + <code>CreateStructGEP</code>).</p>
+<p>Konstruktor <code>E.Some(7)</code> = literal struct (tak ada simbol).</p>
+<h2 id="5-closure-nusa-closure-type-ptr-ptr">5. Closure: <code>%__nusa_closure = type { ptr, ptr }</code> <a href="#5-closure-nusa-closure-type-ptr-ptr" aria-label="taut">#</a></h2>
+<p><code>{trampoline, env}</code> heap (<code>malloc</code>); param bertipe-<code>fn</code> = <code>ptr</code></p>
+<p>ke pair; panggil = muat trampoline + `call R %tramp(ptr %env,</p>
+<p>args...)<code>. Trampolin per-lambda </code>@&quot;$lambda_N.tramp&quot;`</p>
+<p>(InternalLinkage). Capture by-value ke struct env.</p>
+<h2 id="6-name-mangling-simbol-eksternal-default-visibility">6. Name mangling (simbol eksternal, default visibility) <a href="#6-name-mangling-simbol-eksternal-default-visibility" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Konstruksi</th><th>Bentuk</th><th>Bukti</th></tr></thead><tbody>
+<tr><td>fn biasa</td><td>nama apa adanya</td><td><code>define i64 @add</code></td></tr>
+<tr><td>fn generik</td><td><code>name_T</code> (tipe argumen)</td><td><code>define i64 @id_i64</code></td></tr>
+<tr><td>struct generik</td><td><code>Name_T</code></td><td><code>Point_i64</code> (lih. e2e_structs_gen)</td></tr>
+<tr><td>metode trait</td><td><code>Trait_method_Type</code></td><td><code>define ptr @Show_show_A</code></td></tr>
+<tr><td>lambda</td><td><code>$lambda_N</code> + <code>.tramp</code></td><td><code>@&quot;$lambda_0.tramp&quot;</code> internal</td></tr>
+<tr><td>string literal</td><td><code>.str(.N)</code></td><td>PrivateLinkage</td></tr>
+<tr><td>runtime/program</td><td><code>nusa_argc</code>, <code>nusa_argv</code></td><td>InternalLinkage</td></tr>
+</tbody></table>
+<p>Fungsi Nusa = ExternalLinkage, visibilitas default (tak ada</p>
+<p><code>hidden</code>/<code>dll*</code>/prefix <code>nusa.</code>). Tabrakan nama mangled vs</p>
+<p>deklarasi user = error compile (checker).</p>
+<h2 id="7-batas-c-ffi-vs-nusa-vs-platform">7. Batas C/FFI vs Nusa vs platform <a href="#7-batas-c-ffi-vs-nusa-vs-platform" aria-label="taut">#</a></h2>
+<ul>
+<li>Nusa ABI: §1–§6 (internal; berubah = breaking + RFC + uji ini).</li>
+<li>C ABI: <code>extern fn</code> dideklarasikan saja (<code>declare</code>, tanpa body);</li>
+</ul>
+<p>  <code>bool</code> Nusa (<code>i1</code>) ↔ C <code>int</code> (<code>i32</code>, zext arg + icmp return);</p>
+<p>  <code>string</code> ↔ <code>char*</code>; variadik/struct-return-callback tak didukung</p>
+<p>  (ditolak checker — bukan UB diam). Bukti: `declare i64</p>
+<p>  @myputs(ptr)`.</p>
+<ul>
+<li>Platform ABI: mengikuti target clang (AArch64 Android/Bionic</li>
+</ul>
+<p>  primer; <code>docs/targets.md</code>); asumsi LP64 (tercatat; WASM</p>
+<p>  ILP32 = komputasi murni — lih. <code>docs/wasm-2.18.md</code>).</p>
+<ul>
+<li>Bukan ABI stabil: <code>.ll</code> samping-sumber, fingerprint</li>
+</ul>
+<p>  <code>.nusa-cache/</code>, urutan GEP internal, nama value <code>%</code>.</p>
+<h2 id="8-kunci-mesin">8. Kunci mesin <a href="#8-kunci-mesin" aria-label="taut">#</a></h2>
+<p><code>compiler/tests/e2e_abi.sh</code>: 6 kasus (struct/enum/main/</p>
+<p>mangle/closure/extern) atas <code>--emit-ir</code> dua probe mandiri.</p>
+<p>Perubahan bentuk = FAIL eksplisit (disengaja — drift ABI harus</p>
+<p>melalui RFC + versi mayor).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

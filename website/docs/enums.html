@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>enums.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="enums.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Enums &amp;amp; Algebraic Data Types (Phase 26, v1.7.0) # Enum mendekla">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/enums.html">
+<meta property="og:title" content="enums.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="enums.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Enums &amp;amp; Algebraic Data Types (Phase 26, v1.7.0) # Enum mendekla">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="enums.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="enums, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "enums.md", "category": "docs", "version": "3.0.0", "content": "enums.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Enums &amp; Algebraic Data Types (Phase 26, v1.7.0) # Enum mendeklarasikan tipe jumlah (sum type): sebuah nilai adalah TEPAT SATU dari varian yang didaftar, masing-masing boleh membawa payload posisional: enum Color", "code_example": "", "keywords": "enums, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/enums.html">enums.md</a></p><article><h1>enums.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="enums-algebraic-data-types-phase-26-v1-7-0">Enums &amp; Algebraic Data Types (Phase 26, v1.7.0) <a href="#enums-algebraic-data-types-phase-26-v1-7-0" aria-label="taut">#</a></h1>
+<p>Enum mendeklarasikan tipe jumlah (sum type): sebuah nilai adalah TEPAT</p>
+<p>SATU dari varian yang didaftar, masing-masing boleh membawa payload</p>
+<p>posisional:</p>
+<pre data-lang="nusa"><code class="lang-nusa">enum Color { Red, Green, Blue }
+enum Shape { Circle(i64), Rect(i64, i64), Dot }
+enum Wrap&lt;T&gt; { Val(T), Empty }</code></pre>
+<p>Payload ditulis POSISIONAL ala MASTER (<code>Ok(T)</code>, bukan <code>Ok(value: T)</code>).</p>
+<p>Varian tanpa payload (<code>Red</code>, <code>Dot</code>) = varian unit. Minimal satu varian</p>
+<p>(enum kosong ditolak parser).</p>
+<h2 id="konstruksi-enum-varian">Konstruksi: <code>Enum.Varian(...)</code> <a href="#konstruksi-enum-varian" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">let c: Color = Color.Red;
+let s: Shape = Shape.Circle(5);
+let w: Wrap&lt;i64&gt; = Wrap.Val(7);</code></pre>
+<ul>
+<li>Konstruktor SELALU qualified (<code>E.V(...)</code>); bentuk telanjang <code>V(...)</code></li>
+</ul>
+<p>  ditolak dengan arahan (`&#x27;V&#x27; is a variant of enum &#x27;E&#x27;; construct it</p>
+<p>  qualified`).</p>
+<ul>
+<li>Varian unit boleh tanpa kurung (<code>Color.Red</code>); varian bervayload wajib</li>
+</ul>
+<p>  dengan arity tepat.</p>
+<ul>
+<li><code>E</code> telanjang bukan nilai (<code>cannot use enum &#x27;E&#x27; as a value</code>).</li>
+<li>Nama <code>E</code> menempati namespace tipe bersama struct/alias (duplikat</li>
+</ul>
+<p>  ditolak); <code>E { ... }</code> ala struct literal ditolak</p>
+<p>  (<code>cannot construct enum ... as struct</code>).</p>
+<h2 id="generic-enums">Generic enums <a href="#generic-enums" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">enum Result&lt;T, E&gt; { Ok(T), Err(E) }</code></pre>
+<ul>
+<li>Inferensi payload: <code>Wrap.Val(7)</code> mengikat <code>T = i64</code> (cermin struct</li>
+</ul>
+<p>  generik). Tparam yang tak terikat payload DITOLAK dengan jelas —</p>
+<p>  tulis eksplisit: <code>Wrap&lt;i64&gt;.Empty</code>, <code>Pair&lt;i64, string&gt;.First(4)</code>.</p>
+<ul>
+<li>Bounds trait (<code>enum B&lt;T: Printable&gt;</code>) didukung (cermin struct).</li>
+<li>Tipe payload <code>void</code>/array/fn ditolak (cermin field struct).</li>
+</ul>
+<h2 id="matching">Matching <a href="#matching" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">match s {
+    Circle(r) =&gt; { return r; },
+    Rect(w, h) =&gt; { return w + h; },
+    Dot =&gt; { return 0 - 1; },
+}</code></pre>
+<ul>
+<li>Pola varian posisional (<code>Circle(r)</code>); varian unit boleh telanjang</li>
+</ul>
+<p>  (<code>Red</code>, <code>Dot</code>) — dibaca sebagai varian bila namanya cocok, BUKAN</p>
+<p>  binding.</p>
+<ul>
+<li>Binding Kapital yang BUKAN varian ditolak (<code>unknown variant</code>;</li>
+</ul>
+<p>  binding lowercase bebas — typo Kapital tak diam-diam mengikat).</p>
+<ul>
+<li>Exhaustiveness: SELURUH varian menutup enum (pesan menyebut yang</li>
+</ul>
+<p>  hilang: <code>missing pattern(s) for &#x27;Blue&#x27;</code>); guard menonaktifkan</p>
+<p>  kontribusi seperti biasa.</p>
+<ul>
+<li><code>print</code> nilai enum ditolak (cermin struct) — match lalu print payload.</li>
+</ul>
+<h2 id="metode-trait-atas-enum">Metode &amp; trait atas enum <a href="#metode-trait-atas-enum" aria-label="taut">#</a></h2>
+<p>Enum adalah tipe penuh: <code>impl Trait for E</code> dan panggilan metode</p>
+<p>(<code>c.show()</code>) bekerja via dispatch statis yang sama dengan struct.</p>
+<h2 id="implementasi-hidden-struct-tanpa-codegen-baru">Implementasi: hidden struct (tanpa codegen baru) <a href="#implementasi-hidden-struct-tanpa-codegen-baru" aria-label="taut">#</a></h2>
+<p><code>enum E { V0(..), V1(..) }</code> didesugar checker menjadi hidden struct</p>
+<p><code>E { tag: i64, v0_0: T, ... }</code> (slot <code>v{tag}_{pos}</code> per payload):</p>
+<ul>
+<li>Seluruh mesin struct dipakai ulang: resolveType, template generik +</li>
+</ul>
+<p>  monomorphisasi (<code>E_i64</code>), layout LLVM, trait/method, penolakan print.</p>
+<ul>
+<li>Konstruktor ditulis ulang menjadi StructLit SUBSET (<code>tag</code> + slot</li>
+</ul>
+<p>  aktif); slot non-aktif tak diinisialisasi (undef) — sound karena</p>
+<p>  match hanya membaca slot varian yang cocok dengan <code>tag</code>, <code>==</code> struct</p>
+<p>  ditolak checker, dan tempa manual diblokir di dua lapis.</p>
+<ul>
+<li>Pola varian = uji <code>tag</code> + destruktur slot (tag dianotasi saat</li>
+</ul>
+<p>  validasi; codegen tak tersentuh kecuali toleransi field-hilang dan</p>
+<p>  flag layout).</p>
+<ul>
+<li>Representasi LLVM: struct datar <code>{i64, payload...}</code> — efisien untuk</li>
+</ul>
+<p>  v1 (niche optimization = roadmap).</p>
+<h2 id="batasan-phase-26">Batasan Phase 26 <a href="#batasan-phase-26" aria-label="taut">#</a></h2>
+<ul>
+<li>Konstruktor sintaktis (bukan first-class function; tanpa partial</li>
+</ul>
+<p>  application — closure = Phase 27).</p>
+<ul>
+<li>Tanpa payload bernama, tanpa pola or/range, tanpa diskriminan</li>
+</ul>
+<p>  eksplisit (<code>#[repr]</code>), tanpa exhaustiveness nesting-dalam (hanya</p>
+<p>  top-level).</p>
+<ul>
+<li><code>Option</code>/<code>Result</code> std: encoding struct v1.5.0 DIGANTI enum natif</li>
+</ul>
+<p>  sejak 2.0 (BREAKING B1 — lihat <code>docs/error-handling.md</code> dan</p>
+<p>  <code>docs/migration-2.0.md</code>).</p>
+<ul>
+<li>Struct literal/pattern atas nama enum diblokir; pola struct atas</li>
+</ul>
+<p>  hidden struct tak terjangkau user.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variables — Nusa Docs 3.0.0</title>
+<meta name="description" content="Variables v3.0.0 Overview Deklarasi dengan let, opsional anotasi tipe. Tipe dasar: i64, bool, string, array [T]. Indexing 0-based dengan cek batas run">
+<link rel="canonical" href="https://nusa-lang.org/docs/language/variables.html">
+<meta property="og:title" content="Variables — Nusa Docs 3.0.0">
+<meta property="og:description" content="Variables v3.0.0 Overview Deklarasi dengan let, opsional anotasi tipe. Tipe dasar: i64, bool, string, array [T]. Indexing 0-based dengan cek batas run">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Variables">
+<meta name="nusa:category" content="language">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="let, variables, i64, bool, string, array, len">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Variables", "category": "language", "version": "3.0.0", "content": "Variables v3.0.0 Overview Deklarasi dengan let, opsional anotasi tipe. Tipe dasar: i64, bool, string, array [T]. Indexing 0-based dengan cek batas runtime. Syntax let a = 10; let b: i64 = 20; let active: bool = true; let name: string = &quot;Nusa&quot;; let numbers: [i64] = [1, 2, 3, 4]; print(numb", "code_example": "fn main() {\n    let a = 10;\n    let b: i64 = 20;\n    print(a + b);\n    let active: bool = true;\n    print(active);\n    let name: string = \"Nusa\";\n    print(name);\n    let numbers: [i64] = [1, 2, 3, 4];\n    print(numbers[0]);\n    print(len(numbers));\n}\n", "keywords": "let, variables, i64, bool, string, array, len"}</script>
+</head>
+<body class="kind-language">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/" aria-current="page">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../language/">Indeks</a></li><li><a href="../language/syntax.html">Syntax</a></li><li><a href="../language/variables.html" aria-current="page">Variables</a></li><li><a href="../language/functions.html">Functions</a></li><li><a href="../language/types.html">Types</a></li><li><a href="../language/structs.html">Struct</a></li><li><a href="../language/enums.html">Enum</a></li><li><a href="../language/generics.html">Generics</a></li><li><a href="../language/traits.html">Traits</a></li><li><a href="../language/pattern-matching.html">Pattern Matching</a></li><li><a href="../language/error-handling.html">Error Handling</a></li><li><a href="../language/concurrency.html">Concurrency</a></li><li><a href="../language/modules.html">Modules</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../language/">Language</a> / <a href="../language/variables.html">Variables</a></p><article><h1>Variables</h1><span class="badge historic">v3.0.0</span> <h2>Overview</h2><p>Deklarasi dengan let, opsional anotasi tipe. Tipe dasar: i64, bool, string, array [T]. Indexing 0-based dengan cek batas runtime.</p><h2>Syntax</h2><pre data-lang="nusa"><code class="lang-nusa">let a = 10;
+let b: i64 = 20;
+let active: bool = true;
+let name: string = &quot;Nusa&quot;;
+let numbers: [i64] = [1, 2, 3, 4];
+print(numbers[0]);
+print(len(numbers));</code></pre><h2>Example</h2><pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let a = 10;
+    let b: i64 = 20;
+    print(a + b);
+    let active: bool = true;
+    print(active);
+    let name: string = &quot;Nusa&quot;;
+    print(name);
+    let numbers: [i64] = [1, 2, 3, 4];
+    print(numbers[0]);
+    print(len(numbers));
+}
+</code></pre><details><summary>Output</summary><samp class="out">30
+true
+Nusa
+1
+4</samp></details><p><a class="btn sec" href="../playground/?code=fn%20main%28%29%20%7B%0A%20%20%20%20let%20a%20%3D%2010%3B%0A%20%20%20%20let%20b%3A%20i64%20%3D%2020%3B%0A%20%20%20%20print%28a%20%2B%20b%29%3B%0A%20%20%20%20let%20active%3A%20bool%20%3D%20true%3B%0A%20%20%20%20print%28active%29%3B%0A%20%20%20%20let%20name%3A%20string%20%3D%20%22Nusa%22%3B%0A%20%20%20%20print%28name%29%3B%0A%20%20%20%20let%20numbers%3A%20%5Bi64%5D%20%3D%20%5B1%2C%202%2C%203%2C%204%5D%3B%0A%20%20%20%20print%28numbers%5B0%5D%29%3B%0A%20%20%20%20print%28len%28numbers%29%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Rules</h2><ul><li>Gunakan let untuk semua binding lokal.</li><li>Anotasi wajib bila inferensi ambigu (konteks call/let/return).</li><li>Array homogen; len() builtin.</li></ul><h2>Compiler behavior</h2><p>Semantic: scope + cek duplikat. TypeChecker: propagasi tipe konteks dua putaran untuk generik. OOB index → runtime error + exit 1.</p><div class="warn"><h2>Limitations</h2><ul><li>Tanpa float (i64 saja untuk angka).</li><li>String buram: tanpa ==/substring (lihat stdlib/string).</li></ul></div><h2>Related topics</h2><ul><li><a href="../language/types.html">language/types</a></li><li><a href="../language/functions.html">language/functions</a></li></ul><h2>Spec &amp; Tests</h2><p>Spec: <code>docs/language-spec-2.0.md §5 (types) + docs/types.md</code> · Uji pengunci: <code>tutorials/02-variables + e2e suites typechecker</code></p></article><div class="prevnext"><a href="../language/syntax.html">← Syntax</a><a href="../language/functions.html">Functions →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

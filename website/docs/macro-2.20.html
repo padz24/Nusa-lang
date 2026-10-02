@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>macro-2.20.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="macro-2.20.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Macro System — Evaluasi &amp;amp; Desain (Phase 69, target 2.20.0)">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/macro-2.20.html">
+<meta property="og:title" content="macro-2.20.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="macro-2.20.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Macro System — Evaluasi &amp;amp; Desain (Phase 69, target 2.20.0)">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="macro-2.20.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="macro-2.20, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "macro-2.20.md", "category": "docs", "version": "3.0.0", "content": "macro-2.20.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Macro System — Evaluasi &amp; Desain (Phase 69, target 2.20.0) # Status: evaluasi SELESAI → TIDAK diimplementasikan (di bawah ambang kebutuhan; mandat master kondisional: &quot;jika diperlukan&quot;). Yang diker", "code_example": "", "keywords": "macro-2.20, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/macro-2.20.html">macro-2.20.md</a></p><article><h1>macro-2.20.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="macro-system-evaluasi-desain-phase-69-target-2-20-0">Macro System — Evaluasi &amp; Desain (Phase 69, target 2.20.0) <a href="#macro-system-evaluasi-desain-phase-69-target-2-20-0" aria-label="taut">#</a></h1>
+<p>Status: evaluasi SELESAI → TIDAK diimplementasikan (di bawah</p>
+<p>ambang kebutuhan; mandat master kondisional: &quot;jika diperlukan&quot;).</p>
+<p>Yang dikerjakan: reservasi keyword <code>macro</code> + kriteria pemicu +</p>
+<p>sketsa desain. Spec: +1 reserved word (aditif, non-breaking:</p>
+<p>nol pemakaian di korpus).</p>
+<h2 id="1-evaluasi-kebutuhan-evidence-std-compiler">1. Evaluasi kebutuhan (evidence, std/ + compiler) <a href="#1-evaluasi-kebutuhan-evidence-std-compiler" aria-label="taut">#</a></h2>
+<p>Kandidat yang diperiksa: wrapper tipis thread/sync/net</p>
+<p>(<code>spawn</code>/<code>join</code>, <code>lock_new/free</code>, <code>dial/close</code> — masing-masing</p>
+<p>1 baris, fungsi biasa cukup); kombinator error/generik</p>
+<p>(tercakup generics + traits); pola <code>par_map2</code>/executor</p>
+<p>(terbatas array-param, BUKAN makro); DSL/config (belum ada</p>
+<p>konsumen); derive/clone/debug-print (tanpa refleksi —</p>
+<p>makro tak membantu tanpa itu dulu).</p>
+<p>Kesimpulan: semua di atas tertangani fungsi/generik/trait/builtin.</p>
+<p>BOLEH disappears: nol situs repetisi ≥3 yang menuntut codegen.</p>
+<p>Ambang implementasi (salah satu): (a) 3+ kasus std/ekosistem</p>
+<p>terdokumentasi yang hanya selesai via ekspansi sintaks;</p>
+<p>(b) RFC yang Accepted dengan desain higiene.</p>
+<h2 id="2-yang-direservasi">2. Yang direservasi <a href="#2-yang-direservasi" aria-label="taut">#</a></h2>
+<p><code>macro</code> → <code>TokenKind::Macro</code> (lexer C++ + selfhost, spell,</p>
+<p>diagnostic alami &quot;expected declaration&quot;). Tanpa sintaks —</p>
+<p>pemakaian ditolak parser seperti <code>async</code> (preseden 2.0).</p>
+<h2 id="3-sketsa-desain-bila-ambang-tercapai">3. Sketsa desain (bila ambang tercapai) <a href="#3-sketsa-desain-bila-ambang-tercapai" aria-label="taut">#</a></h2>
+<ul>
+<li>Deklaratif dulu (<code>macro name(pattern) =&gt; expansion</code> atau</li>
+</ul>
+<p>  setara via RFC); prosedural (compile-time Nusa) HANYA bila</p>
+<p>  comptime execution (Phase 70) ada.</p>
+<ul>
+<li>Higiene: identifier introduksi difresh-kan per ekspansi;</li>
+</ul>
+<p>  span call-site dipertahankan untuk diagnostic (<code>file:line:col</code></p>
+<p>  menunjuk pemanggil, ekspansi dapat di-dump via flag).</p>
+<ul>
+<li>Tooling: ekspansi AFTER fmt (fmt memformat sumber, bukan</li>
+</ul>
+<p>  hasil); LSP/diagnostics bekerja pada kode ter-ekspansi</p>
+<p>  DENGAN peta balik span; <code>nusa expand</code> (debug) mencetak hasil.</p>
+<ul>
+<li>Batas: tanpa akses IO/filesystem saat ekspansi; rekursi</li>
+</ul>
+<p>  dibatasi (cermin guard 500); error ekspansi = diagnostic</p>
+<p>  biasa, bukan crash (kontrak hardening).</p>
+<h2 id="4-acceptance-criteria-fase-ini">4. Acceptance criteria fase ini <a href="#4-acceptance-criteria-fase-ini" aria-label="taut">#</a></h2>
+<ul>
+<li><code>macro</code> ter-lex sebagai keyword di kedua lexer; korpus</li>
+</ul>
+<p>  hijau (nol pemakaian); spec + docs sinkron; suite hijau.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

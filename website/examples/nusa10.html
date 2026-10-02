@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nusa10.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="nusa10.ns v3.0.0 // Program uji Nusa 1.0 (verbatim dari MASTER PROMPT). // Harus melalui Lexer → Parser → AST → Semantic → TypeCheck → // LLVM IR → LL">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/nusa10.html">
+<meta property="og:title" content="nusa10.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="nusa10.ns v3.0.0 // Program uji Nusa 1.0 (verbatim dari MASTER PROMPT). // Harus melalui Lexer → Parser → AST → Semantic → TypeCheck → // LLVM IR → LL">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="nusa10.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, nusa10, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "nusa10.ns", "category": "examples", "version": "3.0.0", "content": "nusa10.ns v3.0.0 // Program uji Nusa 1.0 (verbatim dari MASTER PROMPT). // Harus melalui Lexer → Parser → AST → Semantic → TypeCheck → // LLVM IR → LLVM 21.1.8 → AArch64 Android → Executable, // dan mencetak: // Result is greater than 20 // 30 // Nusa struct Person { name: string; age: i64; } fn ad", "code_example": "// Program uji Nusa 1.0 (verbatim dari MASTER PROMPT).\n// Harus melalui Lexer → Parser → AST → Semantic → TypeCheck →\n// LLVM IR → LLVM 21.1.8 → AArch64 Android → Executable,\n// dan mencetak:\n// Result is greater than 20\n// 30\n// Nusa\nstruct Person {\n    name: string;\n    age: i64;\n}\nfn add(a: i64, b: i64) -> i64 {\n    return a + b;\n}\nfn main() {\n    let person = Person {\n        name: \"Nusa\", age: 1\n    };\n    let a: i64 = 10;\n    let b: i64 = 20;\n    let result = add(a, b);\n    if result > 20 {\n        print(\"Result is greater than 20\");\n    }\n    print(result);\n    print(person.name);\n}\n", "keywords": "example, nusa10, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/nusa10.html">nusa10.ns</a></p><article><h1>nusa10.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">// Program uji Nusa 1.0 (verbatim dari MASTER PROMPT).
+// Harus melalui Lexer → Parser → AST → Semantic → TypeCheck →
+// LLVM IR → LLVM 21.1.8 → AArch64 Android → Executable,
+// dan mencetak:
+// Result is greater than 20
+// 30
+// Nusa
+struct Person {
+    name: string;
+    age: i64;
+}
+fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}
+fn main() {
+    let person = Person {
+        name: &quot;Nusa&quot;, age: 1
+    };
+    let a: i64 = 10;
+    let b: i64 = 20;
+    let result = add(a, b);
+    if result &gt; 20 {
+        print(&quot;Result is greater than 20&quot;);
+    }
+    print(result);
+    print(person.name);
+}
+</code></pre><details><summary>Output</summary><samp class="out">Result is greater than 20
+30
+Nusa
+</samp></details><p><a class="btn sec" href="../playground/?code=%2F%2F%20Program%20uji%20Nusa%201.0%20%28verbatim%20dari%20MASTER%20PROMPT%29.%0A%2F%2F%20Harus%20melalui%20Lexer%20%E2%86%92%20Parser%20%E2%86%92%20AST%20%E2%86%92%20Semantic%20%E2%86%92%20TypeCheck%20%E2%86%92%0A%2F%2F%20LLVM%20IR%20%E2%86%92%20LLVM%2021.1.8%20%E2%86%92%20AArch64%20Android%20%E2%86%92%20Executable%2C%0A%2F%2F%20dan%20mencetak%3A%0A%2F%2F%20Result%20is%20greater%20than%2020%0A%2F%2F%2030%0A%2F%2F%20Nusa%0Astruct%20Person%20%7B%0A%20%20%20%20name%3A%20string%3B%0A%20%20%20%20age%3A%20i64%3B%0A%7D%0Afn%20add%28a%3A%20i64%2C%20b%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%20a%20%2B%20b%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20let%20person%20%3D%20Person%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20%22Nusa%22%2C%20age%3A%201%0A%20%20%20%20%7D%3B%0A%20%20%20%20let%20a%3A%20i64%20%3D%2010%3B%0A%20%20%20%20let%20b%3A%20i64%20%3D%2020%3B%0A%20%20%20%20let%20result%20%3D%20add%28a%2C%20b%29%3B%0A%20%20%20%20if%20result%20%3E%2020%20%7B%0A%20%20%20%20%20%20%20%20print%28%22Result%20is%20greater%20than%2020%22%29%3B%0A%20%20%20%20%7D%0A%20%20%20%20print%28result%29%3B%0A%20%20%20%20print%28person.name%29%3B%0A%7D%0A">Coba di playground</a></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

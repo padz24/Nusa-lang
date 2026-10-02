@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>debugging-2.15.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="debugging-2.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugger 2.0 — Design (Phase 64, target 2.15.0) # Status: ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/debugging-2.15.html">
+<meta property="og:title" content="debugging-2.15.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="debugging-2.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugger 2.0 — Design (Phase 64, target 2.15.0) # Status: ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="debugging-2.15.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="debugging-2.15, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "debugging-2.15.md", "category": "docs", "version": "3.0.0", "content": "debugging-2.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugger 2.0 — Design (Phase 64, target 2.15.0) # Status: audit → Implementation (milestone 1: DWARF composite + formal params). Tanpa debugger interaktif/DAP (tanpa engine; alasan §4). Spec tak berubah. 1.", "code_example": "", "keywords": "debugging-2.15, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/debugging-2.15.html">debugging-2.15.md</a></p><article><h1>debugging-2.15.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="debugger-2-0-design-phase-64-target-2-15-0">Debugger 2.0 — Design (Phase 64, target 2.15.0) <a href="#debugger-2-0-design-phase-64-target-2-15-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: DWARF composite +</p>
+<p>formal params). Tanpa debugger interaktif/DAP (tanpa engine;</p>
+<p>alasan §4). Spec tak berubah.</p>
+<h2 id="1-audit-dwarf-v1-2-14-0">1. Audit DWARF v1 (2.14.0) <a href="#1-audit-dwarf-v1-2-14-0" aria-label="taut">#</a></h2>
+<p>Ada: CU, subprogram, line table, lokal skalar (param+let via</p>
+<p><code>createAutoVariable</code>). Celah: struct/array/enum = <code>diType null</code></p>
+<p>→ variabelnya HILANG dari DWARF; parameter bukan formal</p>
+<p>(backtrace/views kurang presisi); DAP nihil.</p>
+<h2 id="2-milestone-1">2. Milestone 1 <a href="#2-milestone-1" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Struct DWARF</strong>: <code>DW_TAG_structure_type</code> + member</li>
+</ul>
+<p>   (<code>DW_TAG_member</code>, offset bit) dari <code>StructLayout</code> codegen</p>
+<p>   (rekursif; cache per nama; guard siklus → fallback null).</p>
+<p>   Offset dihitung aturan layout Nusa (i64 8/8, bool 1/1,</p>
+<p>   string/ptr/fn-ptr 8/8, struct rekursif, align-up) — EKSAS pada</p>
+<p>   semua target LP64 (asumsi LP64 global Phase 33; field array</p>
+<p>   ditolak checker sehingga tak ada kasus sulit).</p>
+<ul>
+<li><strong>Formal parameters</strong>: <code>createParameterVariable</code> + argNo</li>
+</ul>
+<p>   (1-based) untuk param (let tetap auto).</p>
+<ul>
+<li><strong>Array DWARF</strong>: <code>DW_TAG_array_type</code> + subrange <code>[0,N)</code>,</li>
+</ul>
+<p>   N dari tipe alokasi LLVM slot, elemen dari <code>Type.elem</code>.</p>
+<h2 id="3-ditunda-beralasan">3. DITUNDA beralasan <a href="#3-ditunda-beralasan" aria-label="taut">#</a></h2>
+<p>Debugger interaktif/DAP: butuh engine kontrol-proses (ptrace/</p>
+<p>fork-exec + breakpoint/trap) — proyek tersendiri (rates</p>
+<p>risiko; CI tanpa lldb/gdb). Pretty-printer, lexical block</p>
+<p>bersarang: follow-up.</p>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>llvm-dwarfdump</code>: <code>DW_TAG_structure_type Person</code> + member</li>
+</ul>
+<p>  <code>x</code>, <code>DW_TAG_formal_parameter</code>, array bound.</p>
+<ul>
+<li>Unit IR (<code>DW_TAG_structure_type</code>, <code>formal_parameter</code>) +</li>
+</ul>
+<p>  e2e_debug kasus baru hijau; suite hijau; bench identik.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>concurrency.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="concurrency.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Concurrency (Phase 28, v1.9.0) # Model awal Nusa: threads (pt">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/concurrency.html">
+<meta property="og:title" content="concurrency.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="concurrency.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Concurrency (Phase 28, v1.9.0) # Model awal Nusa: threads (pt">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="concurrency.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="concurrency, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "concurrency.md", "category": "docs", "version": "3.0.0", "content": "concurrency.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Concurrency (Phase 28, v1.9.0) # Model awal Nusa: threads (pthread) + channel + mutex + atomik . Target lanjutan ( async / await ) belum. fn work() -&gt; i64 { return 40 + 2; } fn main() { let h = thread_spawn(", "code_example": "", "keywords": "concurrency, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/concurrency.html">concurrency.md</a></p><article><h1>concurrency.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="concurrency-phase-28-v1-9-0">Concurrency (Phase 28, v1.9.0) <a href="#concurrency-phase-28-v1-9-0" aria-label="taut">#</a></h1>
+<p>Model awal Nusa: <strong>threads (pthread) + channel + mutex + atomik</strong>.</p>
+<p>Target lanjutan (<code>async</code>/<code>await</code>) belum.</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn work() -&gt; i64 {
+    return 40 + 2;
+}
+fn main() {
+    let h = thread_spawn(work);
+    print(thread_join(h)); // 42
+}</code></pre>
+<h2 id="threads">Threads <a href="#threads" aria-label="taut">#</a></h2>
+<ul>
+<li><code>thread_spawn(f: fn() -&gt; i64) -&gt; i64</code> — luncurkan thread menjalankan</li>
+</ul>
+<p>  <code>f</code> (fungsi biasa atau closure tanpa parameter); mengembalikan</p>
+<p>  HANDLE opak (i64).</p>
+<ul>
+<li><code>thread_join(h: i64) -&gt; i64</code> — tunggu selesai + kembalikan nilai</li>
+</ul>
+<p>  <code>f</code>; handle direbut kembali (jangan join dua kali).</p>
+<ul>
+<li>Entry adalah trampolin closure: meneruskan capture by-value heap</li>
+</ul>
+<p>  (lihat <code>docs/closures.md</code>) — aman dibagikan untuk DIBACA.</p>
+<ul>
+<li>Gagal spawn (OOM/pthread) → handle <code>0</code>; pakai/<code>join</code>/<code>free</code></li>
+</ul>
+<p>  atas handle <code>0</code>/basi/ganda → <code>runtime error: invalid handle</code> +</p>
+<p>  exit(1) (fail-fast v2.5.0, bukan diam/UB).</p>
+<h2 id="channel-i64">Channel (<code>i64</code>) <a href="#channel-i64" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">let c = chan_new();
+let h = thread_spawn(|| produce(c)); // kirim dari thread
+let sum = chan_recv(c) + chan_recv(c); // FIFO, blokir bila kosong
+thread_join(h);
+chan_free(c);</code></pre>
+<ul>
+<li><code>chan_new() -&gt; i64</code>, <code>chan_send(c, v)</code>, <code>chan_recv(c) -&gt; i64</code></li>
+</ul>
+<p>  (FIFO tak-terbatas; recv memblokir), <code>chan_free(c)</code>.</p>
+<ul>
+<li>Payload <code>i64</code>; v2.0 (RFC-0006): channel bertag untuk <code>bool</code></li>
+</ul>
+<p>  (<code>chan_new_bool/send_bool/recv_bool</code>) dan <code>string</code></p>
+<p>  (<code>chan_new_str/send_str/recv_str</code>). Tag dicatat di handle dan</p>
+<p>  diverifikasi runtime — salah tipe = `runtime error: channel</p>
+<p>  type mismatch<code> + exit(1), bukan garbage. </code>chan_*` lama = tag 0</p>
+<p>  (kompatibel penuh).</p>
+<ul>
+<li>Pola deterministik: jumlahkan hasil N recv (urutan kirim = FIFO),</li>
+</ul>
+<p>  sinkronisasi tanpa sleep.</p>
+<ul>
+<li>v2.7.0: <code>chan_len(c) -&gt; i64</code> — panjang antre sesaat, non-blocking</li>
+</ul>
+<p>  (untuk polling: <code>while chan_len(c) == 0 {}</code> lalu <code>recv</code>; nilai</p>
+<p>  race-tolerant — benar saat dibaca, bisa berubah segera).</p>
+<ul>
+<li>v3.19.0: <code>chan_new_bounded(cap) -&gt; i64</code> — FIFO berkapasitas</li>
+</ul>
+<p>  (cap ≤ 0 = <code>runtime error</code>, bukan rendezvous); `chan_try_send(c,</p>
+<p>  v) -&gt; bool` — false bila penuh tanpa menunggu (tak-terbatas =</p>
+<p>  selalu true). Backpressure: semaphore + produsen-terkendali</p>
+<p>  (lihat <code>docs/dist-3.19.md</code>). Bertag = follow-up.</p>
+<h2 id="mutex">Mutex <a href="#mutex" aria-label="taut">#</a></h2>
+<ul>
+<li><code>mutex_new() -&gt; i64</code>, <code>mutex_lock(m)</code>, <code>mutex_unlock(m)</code>,</li>
+</ul>
+<p>  <code>mutex_try_lock(m) -&gt; i64</code> (1 = terkunci sekarang, 0 = sibuk),</p>
+<p>  <code>mutex_free(m)</code>.</p>
+<ul>
+<li>Nusa tanpa interior mutability: mutex berguna untuk menyerikan</li>
+</ul>
+<p>  EFEK (cetakan, kirim channel) dan melindungi handle bersama.</p>
+<p>  State bersama yang bermutasi = atomic (di bawah).</p>
+<h2 id="atomik-i64">Atomik (<code>i64</code>) <a href="#atomik-i64" aria-label="taut">#</a></h2>
+<ul>
+<li><code>atomic_new(v) -&gt; i64</code>, <code>atomic_get(a)</code>, <code>atomic_set(a, v)</code>,</li>
+</ul>
+<p>  <code>atomic_add(a, delta) -&gt; i64</code> (nilai BARU), <code>atomic_free(a)</code>.</p>
+<ul>
+<li>Sequentially-consistent (<code>__ATOMIC_SEQ_CST</code>); counter lintas</li>
+</ul>
+<p>  thread deterministik pada join.</p>
+<h2 id="utilitas">Utilitas <a href="#utilitas" aria-label="taut">#</a></h2>
+<ul>
+<li><code>sleep_ms(ms)</code> — tidur mili-detik (jangan dipakai untuk</li>
+</ul>
+<p>  sinkronisasi test; pakai join/channel).</p>
+<h2 id="aturan-main-model-memori">Aturan main (model memori) <a href="#aturan-main-model-memori" aria-label="taut">#</a></h2>
+<ul>
+<li>Nilai Nusa = owned; capture closure = salinan heap per-closure.</li>
+</ul>
+<p>  Dua thread MEMBACA capture yang sama = aman. Menulis ke capture</p>
+<p>  (salinan privat) tak terlihat thread lain — sinkronisasi eksplisit</p>
+<p>  (channel/atomic) untuk komunikasi.</p>
+<ul>
+<li>Handle (thread/mutex/chan/atomic) = pointer heap runtime; <code>join</code>/</li>
+</ul>
+<p>  <code>free</code> merebutnya (bukan program-lifetime — dikelola runtime,</p>
+<p>  didokumentasikan di sini, pengecualian sadar dari §4).</p>
+<ul>
+<li>Tanpa data race pada primitif bahasa; race hanya mungkin via pola</li>
+</ul>
+<p>  unsafe yang didokumentasikan (berbagi handle tulis tanpa lock —</p>
+<p>  jangan).</p>
+<h2 id="implementasi">Implementasi <a href="#implementasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>runtime/nusa_rt.c</code> (pthread + condvar + <code>__atomic</code>): dikompilasi</li>
+</ul>
+<p>  dan di-link otomatis driver (<code>clang prog.ll &lt;rt&gt; -o prog -pthread</code>).</p>
+<p>  Penemuan: <code>&lt;exe&gt;/../runtime/nusa_rt.c</code>, <code>./runtime/nusa_rt.c</code>,</p>
+<p>  <code>$NUSA_PATH</code>. Tanpa runtime (instalasi parsial) program</p>
+<p>  non-concurrency tetap jalan; builtin concurrency gagal link</p>
+<p>  dengan pesan clang yang jelas.</p>
+<ul>
+<li>Builtin biasa (reserved, dicek <code>checkBuiltin</code>, diemisikan</li>
+</ul>
+<p>  <code>genBuiltinCall</code> ke <code>nusa_*</code>); Bionic + glibc didukung.</p>
+<ul>
+<li>ABI thread: trampolin <code>(ptr env) -&gt; i64</code> dipanggil sebagai start</li>
+</ul>
+<p>  routine pthread (LP64: arg + return di x0; cast eksplisit).</p>
+<h2 id="batasan-phase-28-dipertahankan-di-2-0">Batasan Phase 28 (dipertahankan di 2.0) <a href="#batasan-phase-28-dipertahankan-di-2-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa <code>select</code>/close semantics (<code>recv</code> blokir selamanya bila</li>
+</ul>
+<p>  kosong — desain agar tak deadlock);</p>
+<ul>
+<li>tanpa thread pool, tanpa scoped threads, tanpa <code>async</code>/<code>await</code>,</li>
+</ul>
+<p>  tanpa TLS, tanpa prioritas/scheduling API;</p>
+<ul>
+<li>tanpa deteksi deadlock/data-race statis (aturan di atas ditegakkan</li>
+</ul>
+<p>  konvensi + review, bukan checker).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

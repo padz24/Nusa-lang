@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stdlib-2.26.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="stdlib-2.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Standard Library 3.0 — Design (Phase 75, target 2.26.0) # Sta">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/stdlib-2.26.html">
+<meta property="og:title" content="stdlib-2.26.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="stdlib-2.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Standard Library 3.0 — Design (Phase 75, target 2.26.0) # Sta">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="stdlib-2.26.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="stdlib-2.26, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "stdlib-2.26.md", "category": "docs", "version": "3.0.0", "content": "stdlib-2.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Standard Library 3.0 — Design (Phase 75, target 2.26.0) # Status: implementasi slice ini. Mandat master: PHASE 75 (matang; konsisten, terdokumentasi, teruji, portabel; platform-specific jelas). Spec bahasa tak", "code_example": "", "keywords": "stdlib-2.26, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/stdlib-2.26.html">stdlib-2.26.md</a></p><article><h1>stdlib-2.26.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="standard-library-3-0-design-phase-75-target-2-26-0">Standard Library 3.0 — Design (Phase 75, target 2.26.0) <a href="#standard-library-3-0-design-phase-75-target-2-26-0" aria-label="taut">#</a></h1>
+<p>Status: implementasi slice ini. Mandat master: PHASE 75</p>
+<p>(matang; konsisten, terdokumentasi, teruji, portabel;</p>
+<p>platform-specific jelas). Spec bahasa tak berubah</p>
+<p>(murni-Nusa; tanpa builtin baru).</p>
+<h2 id="1-peta-master-aktual">1. Peta master → aktual <a href="#1-peta-master-aktual" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Master</th><th>Aktual 3.0</th><th>Catatan</th></tr></thead><tbody>
+<tr><td>std.core</td><td><strong>baru</strong> <code>std/core.ns</code></td><td>util int (di bawah)</td></tr>
+<tr><td>std.io</td><td><code>std/io.ns</code> + <code>read_line</code></td><td>simetri <code>read_int</code></td></tr>
+<tr><td>std.fs</td><td><code>std/fs.ns</code> + <code>write_file</code>, <code>read_file_or</code></td><td>konvensi <code>getenv_or</code></td></tr>
+<tr><td>std.path</td><td>tetap</td><td>sudah matang (197 baris)</td></tr>
+<tr><td>std.string</td><td>+ starts/ends/trim/ascii-case</td><td>tanpa <code>ord</code> (lookup alfabet)</td></tr>
+<tr><td>std.collections</td><td>tetap doc-only</td><td>butuh param array (blokir bahasa)</td></tr>
+<tr><td>std.math</td><td>tetap</td><td>sudah matang</td></tr>
+<tr><td>std.time/random</td><td>tetap</td><td>—</td></tr>
+<tr><td>std.net/http</td><td>tetap</td><td>tercakup e2e localhost</td></tr>
+<tr><td>std.process/thread/sync</td><td>tetap</td><td>—</td></tr>
+<tr><td>std.async</td><td>= <code>std/tasks.ns</code></td><td>Future/await/cancel (tanpa sintaks)</td></tr>
+<tr><td>std.crypto</td><td><strong>DITUNDA</strong></td><td>butuh builtin <code>ord</code>/bitwise (preseden: <code>random.ns</code> &quot;NOT cryptographic&quot;)</td></tr>
+<tr><td>std.encoding</td><td><strong>baru</strong> <code>std/encoding.ns</code></td><td>codec hex↔i64 (tanpa <code>ord</code>, via lookup)</td></tr>
+<tr><td>std.testing</td><td><strong>baru</strong> <code>std/testing.ns</code></td><td>asersi berlabel untuk <code>nusa test</code></td></tr>
+<tr><td>std.logging</td><td><strong>baru</strong> <code>std/logging.ns</code></td><td>prefix level (tanpa filter global — tanpa global)</td></tr>
+<tr><td>std.option/result/error</td><td>tetap</td><td>—</td></tr>
+</tbody></table>
+<h2 id="2-konvensi-konsistensi-dikunci-3-0-tanpa-rename-breaking">2. Konvensi konsistensi (dikunci 3.0, tanpa rename breaking) <a href="#2-konvensi-konsistensi-dikunci-3-0-tanpa-rename-breaking" aria-label="taut">#</a></h2>
+<ul>
+<li>Prefix per modul bila rawan tabrakan (<code>str_</code>, <code>path_</code>,</li>
+</ul>
+<p>  <code>http_</code>, <code>file_</code>, <code>rand_</code>, <code>task_</code>/<code>future_</code>, <code>opt_</code>,</p>
+<p>  <code>res_</code>, <code>log_</code>, <code>hex_</code>, <code>test_</code>); nama pendek hanya inti</p>
+<p>  matematika (<code>abs</code>, <code>min</code>, <code>sign</code>, ...).</p>
+<ul>
+<li>Pasangan validasi cermin <code>parse_int</code>/<code>parse_int_valid</code>:</li>
+</ul>
+<p>  <code>hex_decode_i64</code> (invalid → 0) + <code>hex_valid</code>.</p>
+<ul>
+<li>Fallback cermin <code>getenv_or</code>: <code>read_file_or</code>.</li>
+<li>Setiap fn: doc <code>//</code> di atasnya (dipakai <code>nusa doc</code>);</li>
+</ul>
+<p>  setiap modul: header layer + failure policy.</p>
+<h2 id="3-api-baru-normatif-informal">3. API baru (normatif-informal) <a href="#3-api-baru-normatif-informal" aria-label="taut">#</a></h2>
+<ul>
+<li>core: <code>sign</code>, <code>abs_diff</code>, <code>ceil_div</code> (b&gt;0), <code>mod_euclid</code></li>
+</ul>
+<p>  (b&gt;0), <code>div_euclid</code> (b&gt;0), <code>powmod</code> (exp≥0, mod&gt;0),</p>
+<p>  <code>ilog2</code> (≤0→0), <code>is_pow2</code>, <code>sum_to</code> (n≤0→0).</p>
+<ul>
+<li>testing: <code>test_true/false(cond, label)</code>,</li>
+</ul>
+<p>  <code>test_eq_i64/eq_str/eq_bool(exp, got, label)</code>,</p>
+<p>  <code>test_fail(label)</code> — sukses diam, gagal <code>die</code>-berlabel.</p>
+<ul>
+<li>logging: <code>log_debug/info/warn/error(msg)</code> — prefix</li>
+</ul>
+<p>  <code>[DEBUG]</code>/<code>[INFO]</code>/<code>[WARN]</code>/<code>[ERROR]</code> ke stdout.</p>
+<ul>
+<li>encoding: <code>hex_encode_i64(x)</code> (lowercase, tanpa <code>0x</code>;</li>
+</ul>
+<p>  negatif = komplemen-2 16 digit), <code>hex_decode_i64(s)</code>,</p>
+<p>  <code>hex_valid(s)</code> (1..16 digit, decode-exact), <code>hex_valid_any(s)</code></p>
+<p>  (charset saja, panjang bebas — untuk kunci; v2.27.0),</p>
+<p>  <code>is_hex_digit(c)</code>.</p>
+<ul>
+<li>string: <code>str_starts_with/ends_with</code>, `str_trim/trim_left/</li>
+</ul>
+<p>  trim_right<code> (set </code>&quot; \t\r\n&quot;<code>), </code>str_to_ascii_lower/upper`.</p>
+<ul>
+<li>io: <code>read_line()</code>; fs: <code>write_file</code>, <code>read_file_or</code>.</li>
+</ul>
+<h2 id="4-pengujian">4. Pengujian <a href="#4-pengujian" aria-label="taut">#</a></h2>
+<ul>
+<li><code>tests/core_test.ns</code>, <code>tests/encoding_test.ns</code>,</li>
+</ul>
+<p>  <code>tests/string2_test.ns</code>, <code>tests/testing_test.ns</code>,</p>
+<p>  <code>tests/logging_test.ns</code> (via <code>nusa test</code>).</p>
+<ul>
+<li><code>compiler/tests/e2e_stdlib3.sh</code>: modul baru + golden</li>
+</ul>
+<p>  logging + jalur-gagal testing (rc!=0) + io/fs baru.</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa test tests/</code> hijau; <code>e2e_stdlib3</code> hijau; suite lama</li>
+</ul>
+<p>  hijau (tanpa rename); <code>nusa doc</code> atas modul baru OK;</p>
+<p>  bench identik; <code>.ns.ll</code> bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

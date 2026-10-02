@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.1.0 — Nusa Docs 0.1.0</title>
+<meta name="description" content="0.1.0 v0.1.0 Release notes # — Hello Nusa (2026-09-05) Milestone pertama sesuai MASTER PROMPT. Scope: compiler minimal yang benar-benar berjalan di An">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.1.0.html">
+<meta property="og:title" content="Changelog 0.1.0 — Nusa Docs 0.1.0">
+<meta property="og:description" content="0.1.0 v0.1.0 Release notes # — Hello Nusa (2026-09-05) Milestone pertama sesuai MASTER PROMPT. Scope: compiler minimal yang benar-benar berjalan di An">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.1.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.1.0">
+<meta name="nusa:keywords" content="changelog, 0.1.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.1.0", "category": "changelog", "version": "0.1.0", "content": "0.1.0 v0.1.0 Release notes # — Hello Nusa (2026-09-05) Milestone pertama sesuai MASTER PROMPT. Scope: compiler minimal yang benar-benar berjalan di Android AArch64 / Termux + LLVM 21.1.8. Ditambahkan # Project CMake ( cmake -S . -B build , target nusa ). Lexer: fn , identifier, string literal + esc", "code_example": "", "keywords": "changelog, 0.1.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.1.0.html">0.1.0</a></p><article><h1>0.1.0</h1><span class="badge historic">v0.1.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Hello Nusa (2026-09-05)</p>
+<p>Milestone pertama sesuai MASTER PROMPT. Scope: compiler minimal yang</p>
+<p>benar-benar berjalan di Android AArch64 / Termux + LLVM 21.1.8.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Project CMake (<code>cmake -S . -B build</code>, target <code>nusa</code>).</li>
+<li>Lexer: <code>fn</code>, identifier, string literal + escapes (<code>\&quot; \\ \n \t \r \0</code>),</li>
+</ul>
+<p>  simbol <code>( ) { } ; ,</code>, source location (file/line/column),</p>
+<p>  skip whitespace + komentar <code>//</code>, error rapi untuk</p>
+<p>  unterminated string / unexpected character.</p>
+<ul>
+<li>Parser recursive-descent + AST (<code>Program/FunctionDecl/Block/PrintStmt</code>),</li>
+</ul>
+<p>  semicolon opsional, error dengan hint</p>
+<p>  (mis. &quot;v0.1.0 only supports &#x27;fn main&#x27;&quot;).</p>
+<ul>
+<li>Diagnostics: format <code>file:line:col: error: msg</code> + snippet + caret + <code>help:</code>.</li>
+<li>LLVM backend (LLVM 21.1.8, opaque <code>ptr</code>):</li>
+</ul>
+<p>  <code>declare i32 @puts(ptr)</code>, <code>define i32 @main</code>, <code>verifyModule</code> wajib</p>
+<p>  sebelum emit, output <code>.ll</code> di samping source.</p>
+<ul>
+<li>Driver + CLI: <code>nusa --version</code>, <code>nusa --help</code>,</li>
+</ul>
+<p>  <code>nusa build file.ns [-o out]</code>, <code>nusa run file.ns</code></p>
+<p>  (link via <code>clang</code> → native AArch64/Bionic executable).</p>
+<ul>
+<li>Contoh <code>examples/hello.ns</code> → mencetak <code>Hello, Nusa!</code>.</li>
+<li>Tests: <code>test_lexer</code>, <code>test_parser</code>, <code>test_codegen</code> (ctest) +</li>
+</ul>
+<p>  <code>e2e_hello</code> (build → run → cek output + IR + negative test malformed).</p>
+<ul>
+<li>Docs: <code>README.md</code>, <code>docs/getting-started.md</code>, <code>docs/compiler.md</code>.</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li><code>uname -m</code> = aarch64, <code>llvm-config --version</code> = 21.1.8,</li>
+</ul>
+<p>  <code>clang --version</code> = 21.1.8 (target aarch64-unknown-linux-android24).</p>
+<ul>
+<li><code>ctest</code> lulus, <code>./hello</code> mencetak <code>Hello, Nusa!</code>,</li>
+</ul>
+<p>  LLVM IR memuat <code>define i32 @main()</code> + <code>declare i32 @puts(ptr)</code>.</p>
+<ul>
+<li>Malformed source (<code>print( )</code>) gagal dengan diagnostic, tanpa crash.</li>
+</ul>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>(Telah digantikan v0.2.0 untuk lexer/parser; codegen tetap subset ini.)</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.1.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

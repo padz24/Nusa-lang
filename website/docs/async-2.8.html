@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>async-2.8.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="async-2.8.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Async Runtime — Design (Phase 57, target 2.8.0) # Status: audit">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/async-2.8.html">
+<meta property="og:title" content="async-2.8.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="async-2.8.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Async Runtime — Design (Phase 57, target 2.8.0) # Status: audit">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="async-2.8.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="async-2.8, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "async-2.8.md", "category": "docs", "version": "3.0.0", "content": "async-2.8.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Async Runtime — Design (Phase 57, target 2.8.0) # Status: audit + fondasi → Implementation (milestone 1: std/tasks di atas thread/channel). TANPA sintaks async / await baru: keyword tetap reserved, RFC-0004 tetap", "code_example": "", "keywords": "async-2.8, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/async-2.8.html">async-2.8.md</a></p><article><h1>async-2.8.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="async-runtime-design-phase-57-target-2-8-0">Async Runtime — Design (Phase 57, target 2.8.0) <a href="#async-runtime-design-phase-57-target-2-8-0" aria-label="taut">#</a></h1>
+<p>Status: audit + fondasi → Implementation (milestone 1: <code>std/tasks</code></p>
+<p>di atas thread/channel). TANPA sintaks <code>async</code>/<code>await</code> baru:</p>
+<p>keyword tetap reserved, RFC-0004 tetap Proposed, implementasi</p>
+<p>sintaks DILARANG sebelum Accepted (kontrak Phase 41). Spec 2.0</p>
+<p>tak berubah; murni stdlib + test + docs.</p>
+<h2 id="1-posisi-desain">1. Posisi desain <a href="#1-posisi-desain" aria-label="taut">#</a></h2>
+<p>Contoh master (<code>async fn fetch_data</code>) = tujuan bahasa, BUKAN</p>
+<p>fase ini. Fase ini = runtime foundation yang kelak diekspos</p>
+<p>sintaks: Future, Task, Executor (pola), dengan lifetime,</p>
+<p>cancellation, error propagation, shutdown yang eksplisit —</p>
+<p>divalidasi di atas primitif stabil (threads/channels/atomics).</p>
+<h2 id="2-milestone-1-std-tasks-ns-murni-nusa-teruji-prototipe">2. Milestone 1: <code>std/tasks.ns</code> (murni Nusa, teruji prototipe) <a href="#2-milestone-1-std-tasks-ns-murni-nusa-teruji-prototipe" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">struct Future { chan: i64; thread: i64; }
+fn task_spawn(f: fn() -&gt; i64) -&gt; Future  // thread + channel hasil
+fn future_poll(f: Future) -&gt; bool        // non-blocking (chan_len)
+fn future_await(f: Future) -&gt; i64        // recv + join + free (alih milik)
+fn cancel_new() -&gt; i64                   // token atomic
+fn cancel(tok: i64) -&gt; void
+fn is_cancelled(tok: i64) -&gt; bool
+fn cancel_free(tok: i64) -&gt; void</code></pre>
+<ul>
+<li><strong>Task lifetime</strong>: <code>task_spawn</code> memiliki thread+channel;</li>
+</ul>
+<p>  <code>future_await</code> satu-satunya penutup (join + free keduanya).</p>
+<p>  Await ganda / pakai pasca-await = <code>invalid handle</code> (registry).</p>
+<ul>
+<li><strong>Cancellation</strong>: kooperatif via token atomic (pekerja polling</li>
+</ul>
+<p>  <code>is_cancelled</code>; pola spin-tunggu deterministik untuk shutdown).</p>
+<p>  Preemptive kill TIDAK ADA (by-design: join-or-cancel).</p>
+<ul>
+<li><strong>Error propagation</strong>: konvensi nilai — tugas mengembalikan</li>
+</ul>
+<p>  kode (<code>0</code>/negatif = error, cermin <code>main</code> C); pembungkus</p>
+<p>  <code>Result</code> di sisi await (match, bukan channel).</p>
+<ul>
+<li><strong>Synchronization</strong>: channel hasil (single-shot) + <code>chan_len</code></li>
+</ul>
+<p>  untuk poll; pola fan-out/fan-in warisan <code>par_map2</code>.</p>
+<ul>
+<li><strong>Shutdown</strong>: batalkan token → join semua → free (urutan</li>
+</ul>
+<p>  terdokumentasi di contoh; executor = pola, bukan tipe —</p>
+<p>  array/N-handle generik mustahil tanpa array-param).</p>
+<h2 id="3-ditunda-butuh-rfc-sintaks">3. DITUNDA (butuh RFC/sintaks) <a href="#3-ditunda-butuh-rfc-sintaks" aria-label="taut">#</a></h2>
+<p><code>async</code>/<code>await</code>/<code>Future&lt;T&gt;</code> generik sintaks, executor</p>
+<p>work-stealing, select, timeout/ cancel-otomatis, error</p>
+<p>tertip (<code>?</code> lintas task). Semua menunggu RFC-0004 Accepted.</p>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_async.sh</code> hijau (await, poll, cancel-shutdown</li>
+</ul>
+<p>  deterministik, konvensi error, stress 8 task, misuse).</p>
+<ul>
+<li><code>nusa doc</code>/<code>fmt</code>/<code>test</code> atas <code>std/tasks.ns</code> hijau.</li>
+<li>Nama modul <code>tasks</code> (bukan <code>async</code>): <code>async</code> reserved sejak 2.0</li>
+</ul>
+<p>  sehingga <code>import std.async</code> tak terparse (segmen path butuh</p>
+<p>  identifier) — ditemukan saat implementasi; tanpa perubahan</p>
+<p>  compiler (pemilihan nama, bukan fix parser).</p>
+<ul>
+<li>Seluruh suite hijau; benchmark identik baseline 2.7.0.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

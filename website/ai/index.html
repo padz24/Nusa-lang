@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Documentation — Nusa Docs 3.0.0</title>
+<meta name="description" content="AI Documentation Layer v3.0.0 Setiap halaman mengekspos JSON-LD + &amp;lt;meta name=&quot;nusa:*&quot;&amp;gt; + skema 6 field (title/category/version/content/code_exam">
+<link rel="canonical" href="https://nusa-lang.org/docs/ai/">
+<meta property="og:title" content="AI Documentation — Nusa Docs 3.0.0">
+<meta property="og:description" content="AI Documentation Layer v3.0.0 Setiap halaman mengekspos JSON-LD + &amp;lt;meta name=&quot;nusa:*&quot;&amp;gt; + skema 6 field (title/category/version/content/code_exam">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="AI Documentation">
+<meta name="nusa:category" content="ai">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ai, dataset, retrieval, nusa-helper, llm">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "AI Documentation", "category": "ai", "version": "3.0.0", "content": "AI Documentation Layer v3.0.0 Setiap halaman mengekspos JSON-LD + &lt;meta name=\"nusa:*\"&gt; + skema 6 field (title/category/version/content/code_example/keywords). Dump massal: dataset.json . Evaluasi: eval.json (50 should-answer + 50 should-refuse). Kontrak dataset { &quot;title&quot;: &quot;chan", "code_example": "", "keywords": "ai, dataset, retrieval, nusa-helper, llm"}</script>
+</head>
+<body class="kind-ai">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><article><h1>AI Documentation Layer</h1><span class="badge historic">v3.0.0</span> 
+<p>Setiap halaman mengekspos JSON-LD + <code>&lt;meta name="nusa:*"&gt;</code> + skema 6 field
+(title/category/version/content/code_example/keywords). Dump massal: <a href="dataset.json">dataset.json</a>.
+Evaluasi: <a href="eval.json">eval.json</a> (50 should-answer + 50 should-refuse).</p>
+<h2>Kontrak dataset</h2>
+<pre data-lang="json"><code class="lang-json">{
+  &quot;title&quot;: &quot;chan_len — Channel Observability&quot;,
+  &quot;category&quot;: &quot;language/concurrency&quot;,
+  &quot;version&quot;: &quot;2.7.0&quot;,
+  &quot;content&quot;: &quot;Fungsi chan_len(c: i64) -&gt; i64 ... race-tolerant ...&quot;,
+  &quot;code_example&quot;: &quot;let c = chan_new();\nchan_send(c, 1);&quot;,
+  &quot;keywords&quot;: &quot;chan_len, channel, concurrency&quot;
+}</code></pre><h2>Retrieval</h2><p>Chunk per halaman ≤ 512 token overlap 50; ID stabil <code>&lt;slug&gt;#&lt;anchor&gt;</code>;
+filter <code>version</code>; sitasi wajib (judul + URL + versi). Konten Proposed (RFC-0004/0007/0008) bertag
+<code>stability: proposed</code> — jangan sajikan sebagai fitur stabil.</p>
+<h2>Chat QA template</h2><p>Jawab HANYA dari konteks + sebut versi + akui bila di luar korpus.</p>
+<h2>Nusa Helper</h2><p>Dataset web kompatibel skema <code>dataset/</code>; notebook Colab dapat rebuild index offline.</p>
+</article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

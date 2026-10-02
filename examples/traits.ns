@@ -1,0 +1,22 @@
+trait Printable {
+    fn print(self);
+    fn describe(self) -> string;
+}
+struct Person {
+    name: string;
+}
+impl Printable for Person {
+    fn print(self) {
+        print(self.name);
+    }
+    fn describe(self) -> string {
+        return self.name;
+    }
+}
+fn main() {
+    let p = Person {
+        name: "Nusa"
+    };
+    p.print();
+    print(p.describe());
+}

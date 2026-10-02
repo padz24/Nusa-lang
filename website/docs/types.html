@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>types.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="types.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Tipe Nusa — v2.0.0 # Sistem tipe statis Nusa: anotasi wajib di para">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/types.html">
+<meta property="og:title" content="types.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="types.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Tipe Nusa — v2.0.0 # Sistem tipe statis Nusa: anotasi wajib di para">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="types.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="types, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "types.md", "category": "docs", "version": "3.0.0", "content": "types.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Tipe Nusa — v2.0.0 # Sistem tipe statis Nusa: anotasi wajib di parameter, opsional di let (dengan inferensi), dicek penuh sebelum codegen. Generik via monomorphisasi (§Generik, §Struct generik); bounds via traits ( d", "code_example": "", "keywords": "types, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/types.html">types.md</a></p><article><h1>types.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="tipe-nusa-v2-0-0">Tipe Nusa — v2.0.0 <a href="#tipe-nusa-v2-0-0" aria-label="taut">#</a></h1>
+<p>Sistem tipe statis Nusa: anotasi wajib di parameter, opsional di <code>let</code></p>
+<p>(dengan inferensi), dicek penuh sebelum codegen. Generik via</p>
+<p>monomorphisasi (§Generik, §Struct generik); bounds via traits</p>
+<p>(<code>docs/traits.md</code>).</p>
+<h2 id="tipe-dasar">Tipe dasar <a href="#tipe-dasar" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Tipe</th><th>Nilai</th><th>Representasi LLVM</th></tr></thead><tbody>
+<tr><td><code>i64</code></td><td>integer 64-bit bertanda</td><td><code>i64</code></td></tr>
+<tr><td><code>bool</code></td><td><code>true</code> / <code>false</code></td><td><code>i1</code></td></tr>
+<tr><td><code>string</code></td><td>teks UTF-8, NUL-terminated</td><td><code>ptr</code> (<code>i8*</code>)</td></tr>
+<tr><td><code>void</code></td><td>tidak ada nilai (return/statement)</td><td><code>void</code></td></tr>
+</tbody></table>
+<p><code>i64</code>, <code>bool</code>, <code>string</code>, <code>void</code> adalah keyword reserved.</p>
+<h2 id="array-dan-struct">Array dan struct <a href="#array-dan-struct" aria-label="taut">#</a></h2>
+<ul>
+<li><code>[T]</code>: array fixed-size, elemen homogen <code>T</code> (bukan <code>void</code>/array).</li>
+</ul>
+<p>  Ukuran <strong>bukan</strong> bagian tipe. Lihat <code>arrays.md</code>.</p>
+<ul>
+<li><code>Person</code>: tipe bernama dari <code>struct Person { … }</code>. Lihat <code>structs.md</code>.</li>
+<li><code>Color</code>: tipe jumlah dari <code>enum Color { … }</code> (v1.7.0). Lihat <code>enums.md</code>.</li>
+<li><code>fn(params) -&gt; ret</code>: tipe fungsi (untuk <code>main</code>: <code>fn() -&gt; void</code>).</li>
+</ul>
+<h2 id="alias-tipe-v1-2-0-phase-21a">Alias tipe (v1.2.0, Phase 21a) <a href="#alias-tipe-v1-2-0-phase-21a" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">type Answer = i64;
+type Nums = [i64];
+type B = A;   // forward reference OK
+
+fn id(x: Answer) -&gt; Answer { return x; }
+fn main() { let a: Nums = [1, 2]; print(a[0]); }</code></pre>
+<ul>
+<li>Alias transparan: berlaku persis seperti tipe target di semua posisi</li>
+</ul>
+<p>  (param, return, field struct, anotasi <code>let</code>).</p>
+<ul>
+<li>Menghuni namespace tipe bersama struct: duplikat vs struct/alias</li>
+</ul>
+<p>  → <code>duplicate type</code>; nama reserved (<code>print</code>, <code>len</code>, …) ditolak.</p>
+<ul>
+<li>Target tak dikenal → <code>unknown type</code> (walau tak dipakai); siklus</li>
+</ul>
+<p>  (<code>type A = A;</code>, <code>A ↔ B</code>) → <code>circular type alias</code>; rantai &gt; 100</p>
+<p>  → <code>type alias chain too deep</code>.</p>
+<ul>
+<li>Konstruksi struct via alias ditolak (<code>cannot construct type alias</code>);</li>
+</ul>
+<p>  pakai nama struct aslinya.</p>
+<ul>
+<li>Batasan target tetap berlaku: alias array sebagai param/return</li>
+</ul>
+<p>  ditolak aturan array yang sama (tanpa slices); alias struct</p>
+<p>  by-value didukung seperti struct biasa (sejak v1.2.0, Phase 21d).</p>
+<h2 id="tipe-fungsi-v1-2-0-phase-21b">Tipe fungsi (v1.2.0, Phase 21b) <a href="#tipe-fungsi-v1-2-0-phase-21b" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">fn add(a: i64, b: i64) -&gt; i64 { return a + b; }
+fn apply(f: fn(i64, i64) -&gt; i64, x: i64, y: i64) -&gt; i64 {
+    return f(x, y);   // panggilan tak langsung via variabel
+}
+fn main() {
+    let op = add;     // function reference (hanya fn top-level)
+    print(op(20, 22));
+    print(apply(add, 1, 2));
+}</code></pre>
+<ul>
+<li><code>fn(T, …) -&gt; T</code> hanya di posisi tipe (anotasi param/return/<code>let</code>,</li>
+</ul>
+<p>  target alias); <code>-&gt; T</code> boleh absen (= <code>void</code>).</p>
+<ul>
+<li>Value fungsi: nama fn top-level (bukan <code>main</code>, bukan builtin, bukan</li>
+</ul>
+<p>  <code>print</code>) ATAU lambda/closure (v1.8.0, lihat <code>docs/closures.md</code>).</p>
+<ul>
+<li>Berlaku di <code>let</code>/param/return/call; kesetaraan struktural</li>
+</ul>
+<p>  (<code>fn(i64)-&gt;i64 == fn(i64)-&gt;i64</code>).</p>
+<ul>
+<li>Ditolak dengan pesan jelas: <code>print(f)</code>, <code>f == g</code>, array berisi</li>
+</ul>
+<p>  fungsi, field struct bertipe fungsi, memanggil non-fungsi.</p>
+<ul>
+<li>Batasan: tanpa currying (<code>mk()(1)</code> tak valid — pakai <code>let</code> dulu),</li>
+</ul>
+<p>  tanpa array/field fn (kecuali struct env hidden closure).</p>
+<h2 id="generik-v1-2-0-phase-21c">Generik (v1.2.0, Phase 21c) <a href="#generik-v1-2-0-phase-21c" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">fn identity&lt;T&gt;(value: T) -&gt; T { return value; }
+fn first&lt;T&gt;(a: T, b: T) -&gt; T { return a; }
+fn apply&lt;T, U&gt;(f: fn(T) -&gt; U, x: T) -&gt; U { return f(x); }
+fn main() {
+    print(identity(41) + 1);   // T := i64
+    print(identity(&quot;hi&quot;));     // T := string (instance lain)
+}</code></pre>
+<ul>
+<li>Inferensi di call-site dari tipe argumen (tanpa turbofish eksplisit);</li>
+</ul>
+<p>  konflik (<code>f(1, &quot;s&quot;)</code>) dan tak-terinferensi (<code>zero&lt;T&gt;()</code>) ditolak jelas.</p>
+<ul>
+<li>Monomorphisasi: tiap kombinasi argumen → instance konkret</li>
+</ul>
+<p>  (<code>identity_i64</code>, <code>identity_string</code>); template tak pernah di-emit.</p>
+<ul>
+<li>Body template dicek PER-INSTANCE (model C++): operasi yang valid</li>
+</ul>
+<p>  untuk instance lolos; template tak-dipanggil tak dicek sama sekali.</p>
+<ul>
+<li>Berlaku di semua posisi konkret (let/param/return/call, termasuk</li>
+</ul>
+<p>  higher-order generik); batasan ABI natural berlaku per instance</p>
+<p>  (argumen array ditolak aturan yang sama; struct by-value didukung</p>
+<p>  sejak Phase 21d).</p>
+<ul>
+<li>Batasan: tanpa constraints/bounds di sini (pakai traits, Phase 22 —</li>
+</ul>
+<p>  lihat <code>docs/traits.md</code>); tanpa argumen tipe eksplisit di panggilan</p>
+<p>  fungsi; <code>main</code> tak boleh generik; fungsi generik tak bisa jadi</p>
+<p>  value (panggil dengan argumen konkret).</p>
+<h2 id="struct-generik-v1-2-0-phase-21d">Struct generik (v1.2.0, Phase 21d) <a href="#struct-generik-v1-2-0-phase-21d" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">struct Point&lt;T&gt; { x: T; y: T; }
+fn getx&lt;T&gt;(p: Point&lt;T&gt;) -&gt; T { return p.x; }
+fn main() {
+    let p = Point { x: 1, y: 2 };          // inferensi T := i64
+    let q: Point&lt;i64&gt; = Point&lt;i64&gt; { x: 3, y: 4 };  // eksplisit
+    print(getx(p) + q.x);
+}</code></pre>
+<ul>
+<li>Konstruksi menginferensi dari nilai field, atau argumen eksplisit</li>
+</ul>
+<p>  (<code>Point&lt;i64&gt; { … }</code>); konflik/arity/hilang dilaporkan presisi.</p>
+<ul>
+<li>Monomorphisasi per kombinasi argumen (<code>Point_i64</code>); template</li>
+</ul>
+<p>  tak pernah di-emit; body tak-dipakai tak dicek (model C++).</p>
+<ul>
+<li>Berlaku di semua posisi konkret (let/param/return/field</li>
+</ul>
+<p>  bersarang/alias); struct by-value di param/return didukung</p>
+<p>  (menutup TODO v0.8.0 &quot;records&quot;).</p>
+<ul>
+<li>Ditolak jelas: tanpa argumen, arity salah, non-generik berargumen,</li>
+</ul>
+<p>  rekursi ukuran-infinit, tabrakan nama mangled, dup tparam.</p>
+<ul>
+<li>Batasan: tanpa constraints/bounds (Phase 22, butuh traits); tanpa</li>
+</ul>
+<p>  argumen tipe eksplisit di panggilan fungsi; spasi sebelum <code>=</code></p>
+<p>  setelah <code>&gt;</code> (<code>Point&lt;i64&gt; = …</code>, bukan <code>Point&lt;i64&gt;=…</code>).</p>
+<h2 id="anotasi-dan-inferensi">Anotasi dan inferensi <a href="#anotasi-dan-inferensi" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">let age: i64 = 15;   // anotasi: dicek sama dengan inisialisasi
+let x = 10 + 5;      // tanpa anotasi: disimpulkan i64</code></pre>
+<p>Anotasi yang bertentangan ditolak:</p>
+<pre data-lang="nusa"><code class="lang-nusa">let x: i64 = &quot;hello&quot;;
+// x:5: error: mismatched types in &#x27;let&#x27;: &#x27;x&#x27; is declared as &#x27;i64&#x27;
+//            but initializer has type &#x27;string&#x27;</code></pre>
+<h2 id="kompatibilitas-operator">Kompatibilitas operator <a href="#kompatibilitas-operator" aria-label="taut">#</a></h2>
+<ul>
+<li>Aritmetika <code>+ - * /</code> dan perbandingan <code>&lt; &gt; &lt;= &gt;=</code>: operand <code>i64</code>.</li>
+<li>Equality <code>==</code> <code>!=</code>: kedua sisi bertipe sama (bukan <code>string</code>/<code>void</code>/</li>
+</ul>
+<p>  array/struct).</p>
+<ul>
+<li>Unary <code>-</code>/<code>+</code>: operand <code>i64</code>.</li>
+<li>Pembagi literal <code>0</code> ditolak statis (<code>division by zero</code>); pembagi</li>
+</ul>
+<p>  dinamis nol → runtime error + exit(1).</p>
+<h2 id="batasan-stabil-v2-0-0">Batasan (stabil v2.0.0) <a href="#batasan-stabil-v2-0-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa coercion (int→string implisit tidak ada).</li>
+<li><code>void</code> tak bisa menjadi tipe variabel, parameter, elemen, atau field</li>
+</ul>
+<p>  (hanya return type dan hasil <code>assert</code>).</p>
+<ul>
+<li>Aritmetika wrapping (kecuali div-0); <code>INT64_MIN / -1</code> wrap diam.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

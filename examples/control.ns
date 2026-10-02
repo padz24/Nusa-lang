@@ -1,0 +1,19 @@
+// Contoh v0.6.0: control flow.
+// Diharapkan mencetak:
+// 10
+// 3
+// 2
+// 1
+fn main() {
+    let x: i64 = 10;
+    if x > 5 {
+        print(x);
+    } else {
+        print(0);
+    }
+    let n: i64 = 3;
+    while n > 0 {
+        print(n);
+        n = n - 1;
+    }
+}

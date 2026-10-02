@@ -1,0 +1,25 @@
+// Actor model test (Phase 117): counter fungsional + isolasi antar-aktor.
+// Dijalankan via `nusa test tests/` (exit 0 = PASS).
+import actor;
+fn counter(op: i64, arg: i64, reply: i64, st: i64) -> i64 {
+    if op == 1 {
+        let nst = st + arg;
+        chan_send(reply, nst);
+        return nst;
+    } else {
+        chan_send(reply, st);
+        return st;
+    }
+}
+fn main() {
+    let c1 = actor_spawn(counter, 0);
+    let c2 = actor_spawn(counter, 100);
+    assert(actor_call(c1, 1, 5) == 5);
+    assert(actor_call(c1, 1, 5) == 10);
+    assert(actor_call(c1, 2, 0) == 10);
+    assert(actor_call(c2, 2, 0) == 100);
+    assert(actor_call(c1, 99, 0) == 10);
+    actor_cast(c1, 1, 1);
+    sleep_ms(200);
+    assert(actor_call(c1, 2, 0) == 11);
+}

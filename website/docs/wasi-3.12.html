@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wasi-3.12.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="wasi-3.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASI / Sandboxed Execution — Milestone 1: Model Kapabilitas (Ph">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/wasi-3.12.html">
+<meta property="og:title" content="wasi-3.12.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="wasi-3.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASI / Sandboxed Execution — Milestone 1: Model Kapabilitas (Ph">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="wasi-3.12.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="wasi-3.12, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "wasi-3.12.md", "category": "docs", "version": "3.0.0", "content": "wasi-3.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASI / Sandboxed Execution — Milestone 1: Model Kapabilitas (Phase 111) # Status: slice model + gate (target 3.12.0). Mandat master: WASI, program dalam sandbox, model keamanan eksplisit; pakai: plugin, server-wo", "code_example": "", "keywords": "wasi-3.12, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/wasi-3.12.html">wasi-3.12.md</a></p><article><h1>wasi-3.12.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="wasi-sandboxed-execution-milestone-1-model-kapabilitas-phase-111">WASI / Sandboxed Execution — Milestone 1: Model Kapabilitas (Phase 111) <a href="#wasi-sandboxed-execution-milestone-1-model-kapabilitas-phase-111" aria-label="taut">#</a></h1>
+<p>Status: slice model + gate (target 3.12.0). Mandat master: WASI,</p>
+<p>program dalam sandbox, model keamanan eksplisit; pakai: plugin,</p>
+<p>server-workload, perkakas, kode tak dipercaya.</p>
+<h2 id="1-fakta-lingkungan-ci-ini-terverifikasi">1. Fakta lingkungan (CI ini, terverifikasi) <a href="#1-fakta-lingkungan-ci-ini-terverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>wasm32</code> = alias compile-only → <code>wasm32-unknown-unknown</code></li>
+</ul>
+<p>  (sejak 2.18.0): <code>--emit-ir</code> (triple), <code>-c</code> (objek WebAssembly</p>
+<p>  via <code>file</code>), link/run ditolak. TAK BERUBAH slice ini.</p>
+<ul>
+<li>Toolchain: <code>wasm-ld</code> ADA, <code>node</code> ADA (WebAssembly), wasmtime/</li>
+</ul>
+<p>  wasmer TIDAK ADA, WASI sysroot (libc/crt) TIDAK ADA →</p>
+<p>  link+eksekusi wasm penuh BELUM dimungkinkan di sini</p>
+<p>  (follow-up + kriteria terima di §4).</p>
+<h2 id="2-gate-kapabilitas-yang-dibangun">2. Gate kapabilitas (yang dibangun) <a href="#2-gate-kapabilitas-yang-dibangun" aria-label="taut">#</a></h2>
+<ul>
+<li>Saat LINK <code>--target wasm32*</code>, IR dipindai untuk 10 subsistem</li>
+</ul>
+<p>  (`threads/mutexes/channels/atomics/sleep/time/random/</p>
+<p>  processes/networking/crypto<code> — cermin simbol </code>@nusa_*`</p>
+<p>  <code>needRt</code>): positif → tolak eksplisit dengan NAMA</p>
+<p>  kapabilitas + arahan (<code>docs/wasi-3.12.md</code>), DENGAN atau TANPA</p>
+<p>  <code>--sysroot</code> (sysroot tak menyediakan threads/jaringan).</p>
+<ul>
+<li>Komputasi murni (+ libc host) → jalur lama tak tersentuh</li>
+</ul>
+<p>  (pesan <code>needs --sysroot</code>, kompat <code>e2e_cross</code> byte-stabil).</p>
+<ul>
+<li>Inspeksi (<code>--emit-ir/-asm/-c</code>) TAK PERNAH ditolak.</li>
+<li>Implementasi: tabel <code>kRtCaps</code> + <code>usedRtCaps</code> +</li>
+</ul>
+<p>  gate pasca-emitIR (<code>compiler/driver/Driver.cpp</code>).</p>
+<h2 id="3-model-keamanan-eksplisit-mandat">3. Model keamanan eksplisit (mandat) <a href="#3-model-keamanan-eksplisit-mandat" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Lapisan</th><th>Status</th><th>Menjamin</th></tr></thead><tbody>
+<tr><td>Penolakan kapabilitas (tooling)</td><td>ADA (slice ini)</td><td>program terblokir gagal SEBELUM artefak; pesan menyebut kapabilitas</td></tr>
+<tr><td>WASI libc/capability-fd</td><td>BELUM (tanpa sysroot)</td><td>—</td></tr>
+<tr><td>Runtime wasm terisolasi</td><td>BELUM (tanpa engine)</td><td>—</td></tr>
+<tr><td>Batas sumber daya (CPU/mem)</td><td>WAJIB di host (wasm tak membatasi sendiri)</td><td>didokumentasikan, bukan dienforce</td></tr>
+<tr><td><code>nusa sandbox</code> proses</td><td>ADA (pra-3.0)</td><td>defense-in-depth komplementer hari ini</td></tr>
+</tbody></table>
+<p>Ancaman yang diakui: klaim sandbox selalu bergantung host</p>
+<p>pelaksana; tanpa engine, Nusa tak mengklaim isolasi wasm apa pun.</p>
+<p>File I/O (libc fopen) = kemampuan BELUM dipetakan (follow-up:</p>
+<p>WASI-fs atau tolak-seperti-runtime).</p>
+<h2 id="4-ditunda-jujur-kriteria-terima">4. Ditunda jujur + kriteria terima <a href="#4-ditunda-jujur-kriteria-terima" aria-label="taut">#</a></h2>
+<ul>
+<li>Link + run wasm nyata: BUTUH wasi-sysroot + engine; terima =</li>
+</ul>
+<p>  <code>e2e_wasi</code> kasus link-run hijau (program komputasi murni</p>
+<p>  dieksekusi via engine dengan impor WASI).</p>
+<ul>
+<li>Plugin/server-sandbox: butuh engine + capability-fd + batas</li>
+</ul>
+<p>  sumber daya host (Phase 112 memakai hasil ini).</p>
+<ul>
+<li>File/host-libc mapping: dipetakan atau digate seperti runtime.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

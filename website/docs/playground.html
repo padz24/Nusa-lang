@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>playground.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="playground.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Playground (Phase 42) # Browser ↓ (HTTP loopback 127.0.0.">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/playground.html">
+<meta property="og:title" content="playground.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="playground.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Playground (Phase 42) # Browser ↓ (HTTP loopback 127.0.0.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="playground.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="playground, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "playground.md", "category": "docs", "version": "3.0.0", "content": "playground.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Playground (Phase 42) # Browser ↓ (HTTP loopback 127.0.0.1) Nusa Playground (`nusa playground`) ↓ (sumber → file sementara) Compiler Service (compiler ini sendiri) ↓ (`Sandbox::runSandboxed`) Sandbox (fork", "code_example": "", "keywords": "playground, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/playground.html">playground.md</a></p><article><h1>playground.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-playground-phase-42">Nusa Playground (Phase 42) <a href="#nusa-playground-phase-42" aria-label="taut">#</a></h1>
+<pre data-lang="text"><code class="lang-text">Browser
+   ↓  (HTTP loopback 127.0.0.1)
+Nusa Playground (`nusa playground`)
+   ↓  (sumber → file sementara)
+Compiler Service (compiler ini sendiri)
+   ↓  (`Sandbox::runSandboxed`)
+Sandbox (fork + batas + isolasi)
+   ↓
+Nusa Program</code></pre>
+<p>Contoh yang didukung master berjalan (<code>print(&quot;Hello, Nusa!&quot;)</code> →</p>
+<p><code>Hello, Nusa!</code> di browser maupun <code>curl</code>).</p>
+<h2 id="perintah">Perintah <a href="#perintah" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">nusa sandbox &lt;file.ns&gt; [--timeout S] [--memory-mb M] [--output-kb K]
+nusa playground [--port P] [--timeout S] [--memory-mb M]   # default 8080/5/256</code></pre>
+<ul>
+<li><code>sandbox</code>: verdict `ok | timeout | mem-limit | output-limit |</li>
+</ul>
+<p>  signal | build-fail<code> (+ </code>code`) dicetak setelah output program.</p>
+<ul>
+<li><code>playground</code>: <code>GET /</code> (halaman), <code>POST /api/run</code></li>
+</ul>
+<p>  (<code>{&quot;source&quot;:&quot;…&quot;}</code> → <code>{&quot;ok&quot;,&quot;verdict&quot;,&quot;output&quot;}</code>). <code>--port 0</code> =</p>
+<p>  ephemeral (port aktual dicetak — untuk test/paralel).</p>
+<h2 id="model-keamanan-dan-batas-yang-jujur">Model keamanan (dan batas yang jujur) <a href="#model-keamanan-dan-batas-yang-jujur" aria-label="taut">#</a></h2>
+<p>Isolasi per run: proses terpisah (grup sendiri, <code>killpg</code> saat</p>
+<p>kadaluarsa), cwd = tmpdir segar, stdin <code>/dev/null</code>, environment</p>
+<p>dikosongkan total, stdout+stderr digabung + dibatasi, tanpa core</p>
+<p>dump, CPU dibatasi (<code>RLIMIT_CPU</code>), supervisor membatasi TOTAL waktu</p>
+<p>(run + budget build 120 dtk) sehingga tak ada fase yang gantung.</p>
+<ul>
+<li>**Memori via polling VmRSS (50ms) → <code>mem-limit</code>, BUKAN</li>
+</ul>
+<p>  <code>RLIMIT_AS</code>**: diverifikasi empiris bahwa di Bionic, <code>RLIMIT_AS</code></p>
+<p>  &lt; ~1GB membuat linker gagal memetakan CFI shadow saat startup</p>
+<p>  (bahkan hello-world) — lalu prosesnya *hang* (bukan mati).</p>
+<p>  OOM-killer kernel = backstop untuk spike antar-poll.</p>
+<ul>
+<li><strong>Tanpa namespace/jail</strong>: <code>RLIMIT_NPROC</code> SENGAJA tak dipakai —</li>
+</ul>
+<p>  di Android ia menghitung semua thread UID (satu sesi Termux)</p>
+<p>  sehingga bisa membunuh runner yang sah. Fork-bomb hanya dibatasi</p>
+<p>  wall-timeout (terbukti <code>verdict=timeout</code>, bukan isolasi penuh).</p>
+<ul>
+<li><strong>Jaringan tak diblokir</strong> (butuh net-ns yang tak ada di Termux);</li>
+</ul>
+<p>  server HANYA listen 127.0.0.1, tanpa auth (deployment publik =</p>
+<p>  reverse-proxy + auth + TLS di depan, satu instans per pengguna).</p>
+<ul>
+<li>Request dibatasi (header 16KB, body/sumber 64KB); server</li>
+</ul>
+<p>  sekuensial (satu run pada satu waktu — DoS bersamaan</p>
+<p>  ditangani antrean TCP + timeout, bukan paralelisme).</p>
+<ul>
+<li><code>import</code> lokal tak tersedia di playground (sumber = satu file);</li>
+</ul>
+<p>  <code>import std.*</code> bisa (resolve via path exe, independen cwd).</p>
+<p>  File sementara <code>/tmp/nusa-play-*.ns</code> dihapus usai run; workdir</p>
+<p>  sandbox (<code>/tmp/nusa-sandbox-*</code>) dibersihkan best-effort.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

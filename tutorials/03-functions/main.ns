@@ -1,0 +1,18 @@
+struct Person {
+    name: string;
+    age: i64;
+}
+fn add(a: i64, b: i64) -> i64 {
+    return a + b;
+}
+fn greet(p: Person) -> string {
+    return p.name;
+}
+fn main() {
+    print(add(10, 20));
+    let p = Person {
+        name: "Nusa", age: 2
+    };
+    print(greet(p));
+    print(p.age);
+}

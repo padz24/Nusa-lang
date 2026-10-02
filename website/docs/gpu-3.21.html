@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gpu-3.21.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="gpu-3.21.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. GPU / Accelerator Abstraction — Milestone 1: Eksplorasi + Seam (">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/gpu-3.21.html">
+<meta property="og:title" content="gpu-3.21.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="gpu-3.21.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. GPU / Accelerator Abstraction — Milestone 1: Eksplorasi + Seam (">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="gpu-3.21.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="gpu-3.21, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "gpu-3.21.md", "category": "docs", "version": "3.0.0", "content": "gpu-3.21.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. GPU / Accelerator Abstraction — Milestone 1: Eksplorasi + Seam (Phase 120) # Status: slice eksplorasi + paket referensi (target 3.21.0). Mandat master: mulai eksplorasi; target awal device/query/transfer/kernel; J", "code_example": "", "keywords": "gpu-3.21, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/gpu-3.21.html">gpu-3.21.md</a></p><article><h1>gpu-3.21.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="gpu-accelerator-abstraction-milestone-1-eksplorasi-seam-phase-120">GPU / Accelerator Abstraction — Milestone 1: Eksplorasi + Seam (Phase 120) <a href="#gpu-accelerator-abstraction-milestone-1-eksplorasi-seam-phase-120" aria-label="taut">#</a></h1>
+<p>Status: slice eksplorasi + paket referensi (target 3.21.0). Mandat</p>
+<p>master: mulai eksplorasi; target awal device/query/transfer/kernel;</p>
+<p>JANGAN ikat satu vendor; arsitektur muat CUDA/Vulkan/OpenCL/WebGPU</p>
+<p>tanpa semuanya di bahasa inti.</p>
+<h2 id="1-fakta-perangkat-ci-ini-terverifikasi-via-ffi-nusa">1. Fakta perangkat (CI ini, terverifikasi via FFI Nusa) <a href="#1-fakta-perangkat-ci-ini-terverifikasi-via-ffi-nusa" aria-label="taut">#</a></h2>
+<ul>
+<li><code>/dev/kgsl*</code> TAK ADA; header OpenCL/Vulkan TAK ADA;</li>
+</ul>
+<p>  <code>clinfo</code>/<code>vulkaninfo</code> TAK ADA; <code>/dev/dri/card0</code> ada (tak terpakai).</p>
+<ul>
+<li><code>/system/vendor/lib64/libOpenCL.so</code> ADA — diakses via <code>dlopen</code></li>
+</ul>
+<p>  dari shim C (tanpa link-time dep): **1 platform, 1 device,</p>
+<p>  kelas GPU** dari program Nusa (<code>ocl_platforms/devices/class</code></p>
+<p>  → <code>1/1/4</code>, rc 0). Eksperimen di <code>/tmp</code> sebelum komitmen.</p>
+<ul>
+<li>Batas FFI yang menentukan desain: TANPA pointer umum (sejak</li>
+</ul>
+<p>  v1.13) → shim pola sqlite (handle/tabel slot + angka), NAMA</p>
+<p>  device (string) dan buffer/context/queue = follow-up.</p>
+<h2 id="2-seam-vendor-netral-keputusan-arsitektur">2. Seam vendor-netral (keputusan arsitektur) <a href="#2-seam-vendor-netral-keputusan-arsitektur" aria-label="taut">#</a></h2>
+<ul>
+<li>Lapisan: program Nusa → wrapper <code>.ns</code> → shim C per-backend →</li>
+</ul>
+<p>  <code>dlopen</code> driver. Backend dipilih PRESENSI saat jalan, bukan</p>
+<p>  saat kompilasi. Bahasa inti: NOL sintaks/IR/ABI baru (tetap).</p>
+<ul>
+<li>Paket referensi: <code>packages/opencl/</code> (query angka: platform,</li>
+</ul>
+<p>  device, bitmask <code>CL_DEVICE_TYPE</code> untuk device selection) +</p>
+<p>  manifest <code>[link]</code> + <code>native = true</code> + README. CUDA/Vulkan/</p>
+<p>  WebGPU = paket SEAM-SAMA bila SDK-nya ada (pola didokumentasi,</p>
+<p>  bukan janji).</p>
+<ul>
+<li>Transfer memori / kernel paralel: BUTUH buffer lintas batas</li>
+</ul>
+<p>  (pointer) + antre perintah — prasyarat FFI, BUKAN slice ini</p>
+<p>  (kriteria terima di §4).</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_gpu</code> 2/2: shim build + pkg jalur + run (kontrak struktural</li>
+</ul>
+<p>  i64/bool + konsistensi device⇒platform⇒kelas; SKIP-device bila</p>
+<p>  driver absen — portabel). <code>e2e_ffi</code> + <code>e2e_release</code> hijau.</p>
+<h2 id="4-ditunda-jujur-kriteria-terima">4. Ditunda jujur + kriteria terima <a href="#4-ditunda-jujur-kriteria-terima" aria-label="taut">#</a></h2>
+<ul>
+<li>Nama device, context/queue/buffer/kernel, parallel-loop/SIMD</li>
+</ul>
+<p>  tingkat-bahasa (Phase 121/122), backend kedua (bukti seam),</p>
+<p>  WASM-GPU/WebGPU. Terima transfer-terbukti = program Nusa</p>
+<p>  menjumlah vektor di device dan hasilnya benar (bukan klaim).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+// Result<T, E>: nilai atau error.
+//
+// 2.0 (BREAKING dari encoding struct v1.x — lihat
+// docs/migration-2.0.md): enum natif. Konstruksi via
+// `Result<T, E>.Ok(v)` / `Result<T, E>.Err(e)` (tipe eksplisit wajib).
+// Tanpa dummy. Propagasi idiomatis memakai operator `?` (lihat
+// docs/error-handling.md); pencocokan via `match`.
+enum Result<T, E> {
+    Ok(T), Err(E)
+}
+fn is_ok<T, E>(r: Result<T, E>) -> bool {
+    match r {
+        Ok(_) => {
+            return true;
+        },
+        Err(_) => {
+            return false;
+        },
+    }
+    return false;
+}
+fn is_err<T, E>(r: Result<T, E>) -> bool {
+    return is_ok(r) == false;
+}
+fn res_unwrap_or<T, E>(r: Result<T, E>, fallback: T) -> T {
+    match r {
+        Ok(v) => {
+            return v;
+        },
+        Err(_) => {
+            return fallback;
+        },
+    }
+    return fallback;
+}
+// Tanpa dummy (2.0): `res_map(r, f)`.
+fn res_map<T, U, E>(r: Result<T, E>, f: fn(T) -> U) -> Result<U, E> {
+    match r {
+        Ok(v) => {
+            return Result < U, E > .Ok(f(v));
+        },
+        Err(e) => {
+            return Result < U, E > .Err(e);
+        },
+    }
+    // Tak-terjangkau (match exhaustive — checker menegakkannya);
+    // pengisi aturan all-paths checker.
+    return res_map(r, f);
+}
+// Tanpa dummy (2.0): `res_map_err(r, f)`.
+fn res_map_err<T, E, F>(r: Result<T, E>, f: fn(E) -> F) -> Result<T, F> {
+    match r {
+        Ok(v) => {
+            return Result < T, F > .Ok(v);
+        },
+        Err(e) => {
+            return Result < T, F > .Err(f(e));
+        },
+    }
+    // Tak-terjangkau (match exhaustive); pengisi aturan all-paths.
+    return res_map_err(r, f);
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>supply-3.14.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="supply-3.14.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security-First Package Ecosystem — Milestone 1: SBOM (Phase 1">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/supply-3.14.html">
+<meta property="og:title" content="supply-3.14.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="supply-3.14.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security-First Package Ecosystem — Milestone 1: SBOM (Phase 1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="supply-3.14.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="supply-3.14, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "supply-3.14.md", "category": "docs", "version": "3.0.0", "content": "supply-3.14.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security-First Package Ecosystem — Milestone 1: SBOM (Phase 113) # Status: slice implementasi (target 3.14.0). Mandat master: signatures, checksums, trusted publishers, audit, SBOM, metadata kerentanan; CLI aud", "code_example": "", "keywords": "supply-3.14, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/supply-3.14.html">supply-3.14.md</a></p><article><h1>supply-3.14.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="security-first-package-ecosystem-milestone-1-sbom-phase-113">Security-First Package Ecosystem — Milestone 1: SBOM (Phase 113) <a href="#security-first-package-ecosystem-milestone-1-sbom-phase-113" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (target 3.14.0). Mandat master: signatures,</p>
+<p>checksums, trusted publishers, audit, SBOM, metadata kerentanan;</p>
+<p>CLI audit/verify/sbom; build scripts berbatas izin.</p>
+<h2 id="1-cakupan-disengaja-tanpa-kriptografi-baru">1. Cakupan (disengaja: tanpa kriptografi baru) <a href="#1-cakupan-disengaja-tanpa-kriptografi-baru" aria-label="taut">#</a></h2>
+<ul>
+<li>Dibangun: <code>nusa sbom</code> (+ <code>nusa pkg sbom</code>) — inventaris JSON</li>
+</ul>
+<p>  <code>nusa-sbom/1</code> dari manifest + lock: root, components (path +</p>
+<p>  registry), checksum, capabilities eksplisit, cached, +</p>
+<p>  penanda <code>&quot;signatures&quot;:false</code>. Deterministik (byte-identik).</p>
+<ul>
+<li>Sudah ada ( dipakai ulang, tak diduplikasi): checksum sha256</li>
+</ul>
+<p>  lock (<code>verify</code>), capability manifest + enforcement</p>
+<p>  <code>native=true</code> (<code>audit</code>, Phase 59/60), lock hermetik (Phase 80).</p>
+<h2 id="2-ditunda-beralasan-bukan-ditolak">2. Ditunda beralasan (bukan ditolak) <a href="#2-ditunda-beralasan-bukan-ditolak" aria-label="taut">#</a></h2>
+<ul>
+<li>Signatures: BUTUH primitif asimetris teraudit. Nusa hanya punya</li>
+</ul>
+<p>  sha256 + urandom (keputusan sadar Phase 76: tanpa algoritma</p>
+<p>  baru). Opsi: (a) minisign/ed25519 eksternal terverifikasi,</p>
+<p>  (b) Sigstore-style. Keduanya butuh infra kunci + audit —</p>
+<p>  di luar milestone ini. SBOM menandai <code>&quot;signatures&quot;:false</code></p>
+<p>  agar KETIADAANNYA eksplisit (bukan klaim diam).</p>
+<ul>
+<li>Trusted publishers / vulnerability metadata: BUTUH sumber data</li>
+</ul>
+<p>  (registry advisory). Format advisory + discovery = milestone</p>
+<p>  berikut (Phase 114 supply-chain); tanpa feed, skema = dekorasi.</p>
+<ul>
+<li>Permission boundaries build scripts: tak ada build script/hook</li>
+</ul>
+<p>  di model paket (hanya tar+clang sejak Phase 59) — batas ini</p>
+<p>  dipertahankan; bila hook diperkenalkan, wajib capability-gate</p>
+<p>  ala plugin (Phase 112).</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_sbom</code> 3/3: fixture path+registry, JSON valid, capability,</li>
+</ul>
+<p>  checksum pin, determinisme byte, <code>pkg sbom</code> identik, tanpa</p>
+<p>  manifest ditolak. <code>e2e_eco2</code> + <code>e2e_release</code> hijau (tak tersentuh).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

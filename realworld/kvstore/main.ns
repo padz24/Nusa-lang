@@ -1,0 +1,89 @@
+// kvstore: TCP key-value loopback (Phase 85, proyek nyata #3).
+// Pakai: kvstore <port> <maxreq> — protokol baris: "SET k v" -> "OK",
+// "GET k" -> "v" | "nil", lain -> "ERR". State = log string
+// append-only "k=v\n" (last-write-wins; tanpa array dinamis di
+// bahasa ini — lihat F5). Kunci/nilai dilarang mengandung '='.
+// Berhenti setelah maxreq request (bounded, ramah-uji).
+import net;
+import string;
+// Cari baris terakhir "k=..." dalam log; "" bila tak ada.
+fn log_get(log: string, k: string) -> string {
+    let want = str_concat(k, "=");
+    let found = "";
+    let pos = 0;
+    let n = str_len(log);
+    while pos < n {
+        let nl = str_index_of(log, "\n", pos);
+        if nl < 0 {
+            nl = n;
+        }
+        let line = str_slice(log, pos, nl);
+        if str_starts_with(line, want) {
+            found = str_slice(line, str_len(want), str_len(line));
+        }
+        pos = nl + 1;
+    }
+    return found;
+}
+fn main() {
+    if process_argc() < 3 {
+        print("usage: kvstore <port> <maxreq>");
+        return;
+    }
+    let port = parse_int(process_argv(1));
+    let maxreq = parse_int(process_argv(2));
+    let srv = listen_on(port);
+    if srv == 0 - 1 {
+        print("listen failed");
+        return;
+    }
+    print("serving");
+    let log = "";
+    let done = 0;
+    while done < maxreq {
+        let fd = accept_one(srv);
+        if fd == 0 - 1 {
+            print("accept failed");
+            return;
+        }
+        let line = str_trim(recv_line(fd));
+        let sp = str_index_of(line, " ", 0);
+        let cmd = line;
+        let rest = "";
+        if sp >= 0 {
+            cmd = str_slice(line, 0, sp);
+            rest = str_slice(line, sp + 1, str_len(line));
+        }
+        if str_eq(cmd, "SET") {
+            let sp2 = str_index_of(rest, " ", 0);
+            if sp2 < 0 {
+                send_str(fd, "ERR\n");
+            } else {
+                let k = str_slice(rest, 0, sp2);
+                let v = str_slice(rest, sp2 + 1, str_len(rest));
+                if str_contains(k, "=") {
+                    send_str(fd, "ERR\n");
+                } else {
+                    log = str_concat(log, str_concat(k, "="));
+                    log = str_concat(log, str_concat(v, "\n"));
+                    send_str(fd, "OK\n");
+                }
+            }
+        } else {
+            if str_eq(cmd, "GET") {
+                let v = log_get(log, rest);
+                if str_eq(v, "") {
+                    send_str(fd, "nil\n");
+                } else {
+                    send_str(fd, str_concat(v, "\n"));
+                }
+            } else {
+                send_str(fd, "ERR\n");
+            }
+        }
+        close_conn(fd);
+        done = done + 1;
+    }
+    close_conn(srv);
+    print("done");
+}

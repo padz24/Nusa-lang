@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.4.0 — Nusa Docs 2.4.0</title>
+<meta name="description" content="2.4.0 v2.4.0 Release notes # — 2026-09-10 (Phase 53: OPTIMIZATION FRAMEWORK, milestone 1) Pass internal pertama di atas MIR (LLVM tetap optimizer utam">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.4.0.html">
+<meta property="og:title" content="Changelog 2.4.0 — Nusa Docs 2.4.0">
+<meta property="og:description" content="2.4.0 v2.4.0 Release notes # — 2026-09-10 (Phase 53: OPTIMIZATION FRAMEWORK, milestone 1) Pass internal pertama di atas MIR (LLVM tetap optimizer utam">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.4.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.4.0">
+<meta name="nusa:keywords" content="changelog, 2.4.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.4.0", "category": "changelog", "version": "2.4.0", "content": "2.4.0 v2.4.0 Release notes # — 2026-09-10 (Phase 53: OPTIMIZATION FRAMEWORK, milestone 1) Pass internal pertama di atas MIR (LLVM tetap optimizer utama). Pipeline .ns belum di-rewire (nol perilaku). Semantik tak berubah (spec 2.0 normatif; tanpa RFC). Ditambahkan # compiler/mir/Opt.{h,cpp} ( nusa::", "code_example": "", "keywords": "changelog, 2.4.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.4.0.html">2.4.0</a></p><article><h1>2.4.0</h1><span class="badge stable">v2.4.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-10 (Phase 53: OPTIMIZATION FRAMEWORK, milestone 1)</p>
+<p>Pass internal pertama di atas MIR (LLVM tetap optimizer utama).</p>
+<p>Pipeline <code>.ns</code> belum di-rewire (nol perilaku). Semantik tak berubah</p>
+<p>(spec 2.0 normatif; tanpa RFC).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>compiler/mir/Opt.{h,cpp}</code> (<code>nusa::mir</code>): <code>foldConstants</code></li>
+</ul>
+<p>  (arith/cmp beroperand-konstanta; Div aman: pembagi nol dan</p>
+<p>  <code>INT64_MIN/-1</code> tidak difold), <code>eliminateDeadCode</code> (murni +</p>
+<p>  tak-dipakai; call/alloc/load/store/print/terminator dipertahankan),</p>
+<p>  <code>optimizeFunction</code>/<code>optimizeModule</code> (fixpoint berbatas). Murni C++.</p>
+<ul>
+<li>Unit: 5 grup baru di <code>test_mir.cpp</code> (fold arith/cmp/div-safety/</li>
+</ul>
+<p>  DCE/pipeline) + <code>bench/mir_opt_main.cpp</code> (workload sintetik) +</p>
+<p>  <code>compiler/tests/e2e_opt.sh</code> (isolasi lapisan + bench 3x + regresi).</p>
+<ul>
+<li><code>docs/opt-2.4.md</code>: desain framework + aturan keamanan + hasil.</li>
+</ul>
+<h3 id="diperbaiki-temuan-selama-milestone">Diperbaiki (temuan selama milestone) <a href="#diperbaiki-temuan-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li>DCE <code>erase</code> satu-per-satu = O(n²) (~2s/6002 instruksi) → filter</li>
+</ul>
+<p>  partisi (~20ms, ~100x). Satu ekspektasi unit salah hitung (4→3).</p>
+<h3 id="benchmark-termux-aarch64-3-run">Benchmark (Termux AArch64, 3 run) <a href="#benchmark-termux-aarch64-3-run" aria-label="taut">#</a></h3>
+<ul>
+<li>MIR opt (n=2000): 6002 → 2 instruksi (folded=4000,</li>
+</ul>
+<p>  eliminated=6000), verify pra/pasca ok, 19.9/21.9/23.4ms.</p>
+<ul>
+<li><code>bench/bench.sh</code> <code>.ns</code> identik baseline 2.3.0 (pass belum rewire).</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit 11/11 (ASan+UBSan bersih) + <code>e2e_opt</code> 4/4 + <code>e2e_mir</code> +</li>
+</ul>
+<p>  <code>e2e_arch</code> + <code>e2e_stability</code> + suite terdampak 8/8 hijau.</p>
+<ul>
+<li>Program <code>.ns</code> + IR <code>@main</code> OK.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.4.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

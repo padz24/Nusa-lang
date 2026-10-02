@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dist-3.19.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="dist-3.19.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed Programming Foundation — Milestone 1: Backpressure ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/dist-3.19.html">
+<meta property="og:title" content="dist-3.19.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="dist-3.19.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed Programming Foundation — Milestone 1: Backpressure ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="dist-3.19.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="dist-3.19, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "dist-3.19.md", "category": "docs", "version": "3.0.0", "content": "dist-3.19.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed Programming Foundation — Milestone 1: Backpressure (Phase 118) # Status: slice implementasi (target 3.19.0). Mandat master: serialization, RPC, timeouts, retries, backpressure, komunikasi layanan; may", "code_example": "", "keywords": "dist-3.19, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/dist-3.19.html">dist-3.19.md</a></p><article><h1>dist-3.19.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="distributed-programming-foundation-milestone-1-backpressure-phase-118">Distributed Programming Foundation — Milestone 1: Backpressure (Phase 118) <a href="#distributed-programming-foundation-milestone-1-backpressure-phase-118" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (target 3.19.0). Mandat master:</p>
+<p>serialization, RPC, timeouts, retries, backpressure, komunikasi</p>
+<p>layanan; mayoritas di ekosistem; compiler hanya primitif yang</p>
+<p>benar-benar perlu. Inventarisasi: serialization (json/toml/csv),</p>
+<p>RPC, timeout, retry, discovery SUDAH ADA (Phase 77–79); HILANG =</p>
+<p>backpressure (channel tak-terbatas + tanpa kirim non-blocking).</p>
+<h2 id="1-yang-dibangun-channel-bounded-try-send-i64">1. Yang dibangun: channel bounded + try_send (i64) <a href="#1-yang-dibangun-channel-bounded-try-send-i64" aria-label="taut">#</a></h2>
+<ul>
+<li>Runtime (<code>runtime/rt_chan.c</code>): field <code>cap</code> (0 = tak-terbatas,</li>
+</ul>
+<p>  kompatibel); <code>nusa_chan_new_bounded(cap)</code> (cap ≤ 0 = fail-fast,</p>
+<p>  bukan rendezvous implisit); <code>nusa_chan_try_send(h, v) -&gt; 0/1</code></p>
+<p>  (penuh = 0 tanpa menunggu; cek-ulang di bawah lock melawan</p>
+<p>  balapan dua-pengirim; OOM = 0 cermin drop send).</p>
+<ul>
+<li>Bahasa: <code>chan_new_bounded(cap: i64) -&gt; i64</code>,</li>
+</ul>
+<p>  <code>chan_try_send(c, v: i64) -&gt; bool</code> (builtin + checker + codegen</p>
+<p>  pola tcp_send + LSP completion). Bertag = follow-up eksplisit</p>
+<p>  (tag dipaksa 0 → mismatch bersih).</p>
+<ul>
+<li>Pola layanan: semaphore N = bounded(N) + try_send (coba) /</li>
+</ul>
+<p>  send (tunggu); produsen-konsumen overflow-terkendali.</p>
+<h2 id="2-bug-laten-ditemukan-diperbaiki-di-luar-rencana">2. Bug laten ditemukan &amp; diperbaiki (di luar rencana) <a href="#2-bug-laten-ditemukan-diperbaiki-di-luar-rencana" aria-label="taut">#</a></h2>
+<p>Grup emisi void codegen TANPA guard (<code>mutex_lock</code> … <code>sleep_ms</code></p>
+<p>berurutan tanpa <code>if</code> — benar HANYA via exhaustiveness): builtin</p>
+<p>bernilai baru yang jatuh ke sana dieksekusi sebagai <code>sleep_ms</code></p>
+<p>+ Void (gejala: print macet &quot;cannot print &#x27;void&#x27;&quot;, <code>let</code> =</p>
+<p>SIGSEGV compiler via deref null!). Guard eksplisit ditambahkan.</p>
+<p>Pelajaran: exhaustiveness implisit rapuh terhadap penambahan —</p>
+<p>kini dikunci komentar + regresi.</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit <code>test_builtins</code> (valid + 4 penolakan tipe/arity).</li>
+<li><code>e2e_concurrency</code> +3 (penuh/kosong-isi-ulang, cap-0 fail-fast,</li>
+</ul>
+<p>  unbounded-selalu-true); concurrency/stress/memsafe + release</p>
+<p>  hijau; <code>.ns</code> + IR OK.</p>
+<ul>
+<li><code>nusa test tests/</code> (actor memakai channel tak-terbatas —</li>
+</ul>
+<p>  perilaku identik).</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>try_send bertag (bool/string), blocking-send ber-timeout,</li>
+</ul>
+<p>  <code>select</code>, mailbox aktor bounded, spesialisasi/escape</p>
+<p>  (prasyarat analisis), devirtualisasi (N/A di MIR).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

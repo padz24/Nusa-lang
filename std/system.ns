@@ -1,0 +1,9 @@
+// System helpers.
+//
+// Programs cannot return exit codes yet (`main` is void), so failures
+// abort: `die` prints and exits(1); `assert` aborts on false.
+// Print `msg` and abort the program with exit code 1.
+fn die(msg: string) {
+    print(msg);
+    assert(false);
+}

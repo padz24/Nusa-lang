@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog Ecosystem — Nusa Docs 3.0.0</title>
+<meta name="description" content="Ecosystem v3.0.0 Release notes # — 2026-09-09 (Phase 43 lanjutan: website + tutorials + examples 2.0) Melengkapi tiga komponen §28 master yang terting">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/Ecosystem.html">
+<meta property="og:title" content="Changelog Ecosystem — Nusa Docs 3.0.0">
+<meta property="og:description" content="Ecosystem v3.0.0 Release notes # — 2026-09-09 (Phase 43 lanjutan: website + tutorials + examples 2.0) Melengkapi tiga komponen §28 master yang terting">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog Ecosystem">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="changelog, 3.0.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog Ecosystem", "category": "changelog", "version": "3.0.0", "content": "Ecosystem v3.0.0 Release notes # — 2026-09-09 (Phase 43 lanjutan: website + tutorials + examples 2.0) Melengkapi tiga komponen §28 master yang tertinggal: website statis, tutorial dedikasi, dan contoh runnable era 2.0. Tanpa perubahan compiler (versi tetap 2.0.0). Ditambahkan # website/ : index.htm", "code_example": "", "keywords": "changelog, 3.0.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/Ecosystem.html">Ecosystem</a></p><article><h1>Ecosystem</h1><span class="badge historic">v3.0.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-09 (Phase 43 lanjutan: website + tutorials + examples 2.0)</p>
+<p>Melengkapi tiga komponen §28 master yang tertinggal: website statis,</p>
+<p>tutorial dedikasi, dan contoh runnable era 2.0. Tanpa perubahan</p>
+<p>compiler (versi tetap 2.0.0).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>website/</code>: <code>index.html</code> (beranda + quickstart + highlight 2.0),</li>
+</ul>
+<p>  <code>ecosystem.html</code> (cermin <code>docs/ecosystem.md</code>), <code>tutorials.html</code></p>
+<p>  (index jalur 01–08), <code>examples.html</code> (index contoh runnable),</p>
+<p>  <code>style.css</code> (satu stylesheet, system fonts), <code>README.md</code> (preview</p>
+<p>  <code>python3 -m http.server</code> + opsi publish statis). Offline-first:</p>
+<p>  tanpa JS eksternal/CDN/tracking/build step; tautan relatif</p>
+<p>  <code>../docs|tutorials|examples|rfcs/</code>.</p>
+<ul>
+<li><code>tutorials/</code>: jalur 01–08 (<code>README.md</code> + <code>main.ns</code> runnable per</li>
+</ul>
+<p>  modul): hello, variables, functions/struct, generics+traits,</p>
+<p>  match+enum, error handling (Option/Result enum + <code>?</code>),</p>
+<p>  closures+concurrency, package project (<code>pkg</code>/<code>new</code>/<code>test</code>).</p>
+<ul>
+<li><code>examples/</code>: 7 contoh 2.0 runnable (<code>generics</code>, <code>traits</code>, <code>match</code>,</li>
+</ul>
+<p>  <code>enums</code>, <code>closures</code>, <code>error_option_result</code>, <code>concurrency</code> —</p>
+<p>  thread + channel i64); basis v1.0 utuh.</p>
+<ul>
+<li><code>e2e_ecosystem.sh</code> (8 kasus: website offline+link, tutorials</li>
+</ul>
+<p>  run+fmt, examples run+fmt, template list, registry docs,</p>
+<p>  RFC index, playground docs, ecosystem table) + <code>docs/ecosystem.md</code></p>
+<p>  (§Website/§Tutorials/§Examples 2.0; tabel status kini 12/12 ✅);</p>
+<p>  README struktur + <code>.gitignore</code> (<code>.nusa-cache/</code>).</p>
+<h3 id="batasan">Batasan <a href="#batasan" aria-label="taut">#</a></h3>
+<ul>
+<li>Website = statis murni (tanpa compiler-service online; eksekusi</li>
+</ul>
+<p>  tetap lokal via <code>nusa run</code> / <code>nusa playground</code> loopback).</p>
+<ul>
+<li>Tutorial 08 mempraktikkan <code>pkg</code>/<code>new</code> di <code>/tmp</code> agar repo bersih.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

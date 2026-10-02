@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01-hello Program Pertama — Nusa Docs 3.0.0</title>
+<meta name="description" content="01-hello — Program Pertama v3.0.0 Estimasi 20 menit · Struktur fn main, print, perintah build/run/check. Penjelasan 01 — Hello, Nusa # Prasyarat: comp">
+<link rel="canonical" href="https://nusa-lang.org/docs/learn/01-hello.html">
+<meta property="og:title" content="01-hello Program Pertama — Nusa Docs 3.0.0">
+<meta property="og:description" content="01-hello — Program Pertama v3.0.0 Estimasi 20 menit · Struktur fn main, print, perintah build/run/check. Penjelasan 01 — Hello, Nusa # Prasyarat: comp">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="01-hello Program Pertama">
+<meta name="nusa:category" content="learn/beginner">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="tutorial, 01-hello, program pertama">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "01-hello Program Pertama", "category": "learn/beginner", "version": "3.0.0", "content": "01-hello — Program Pertama v3.0.0 Estimasi 20 menit · Struktur fn main, print, perintah build/run/check. Penjelasan 01 — Hello, Nusa # Prasyarat: compiler sudah di-build ( cmake --build build ). Tujuan: program pertama + tiga perintah dasar. ./build/nusa run tutorials/01-hello/main.ns # Hello, Nusa", "code_example": "fn main() {\n    print(\"Hello, Nusa!\");\n}\n", "keywords": "tutorial, 01-hello, program pertama"}</script>
+</head>
+<body class="kind-learn-beginner">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/" aria-current="page">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../learn/">Kurikulum</a></li><li><a href="../learn/01-hello.html" aria-current="page">01-hello Program Pertama</a></li><li><a href="../learn/02-variables.html">02-variables Variabel &amp; Tipe Dasar</a></li><li><a href="../learn/03-functions.html">03-functions Fungsi &amp; Struct</a></li><li><a href="../learn/04-generics-traits.html">04-generics-traits Generics &amp; Traits</a></li><li><a href="../learn/05-match-enum.html">05-match-enum Match &amp; Enum</a></li><li><a href="../learn/06-error-handling.html">06-error-handling Error Handling</a></li><li><a href="../learn/07-closures-concurrency.html">07-closures-concurrency Closures &amp; Concurrency</a></li><li><a href="../learn/08-package-project.html">08-package-project Package Project</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../learn/">Learn</a> / <a href="../learn/01-hello.html">01-hello</a></p><article><h1>01-hello — Program Pertama</h1><span class="badge historic">v3.0.0</span> <p><small>Estimasi 20 menit · Struktur fn main, print, perintah build/run/check.</small></p><h2>Penjelasan</h2><h1 id="01-hello-nusa">01 — Hello, Nusa <a href="#01-hello-nusa" aria-label="taut">#</a></h1>
+<p>Prasyarat: compiler sudah di-build (<code>cmake --build build</code>).</p>
+<p>Tujuan: program pertama + tiga perintah dasar.</p>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run tutorials/01-hello/main.ns
+# Hello, Nusa!
+
+./build/nusa check tutorials/01-hello/main.ns
+# Checked ...: no errors
+
+./build/nusa build tutorials/01-hello/main.ns -o /tmp/hello01
+/tmp/hello01
+# Hello, Nusa!</code></pre>
+<p>Lihat: <code>docs/getting-started.md</code> (§4), <code>docs/syntax.md</code>.</p>
+<p>Lanjut: <code>tutorials/02-variables/</code>.</p><h2>Source code (.ns)</h2><pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    print(&quot;Hello, Nusa!&quot;);
+}
+</code></pre><h2>Output program</h2><samp class="out">Hello, Nusa!
+</samp><p><a class="btn sec" href="../playground/?code=fn%20main%28%29%20%7B%0A%20%20%20%20print%28%22Hello%2C%20Nusa%21%22%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Exercise</h2><ol><li>Ubah pesan menjadi namamu sendiri, lalu jalankan ulang.<details><summary>Solusi</summary><p>Ganti string di print lalu ./build/nusa run tutorials/01-hello/main.ns</p></details></li><li>Jalankan nusa check pada file dan jelaskan outputnya.<details><summary>Solusi</summary><p>Checked tutorials/01-hello/main.ns: no errors</p></details></li></ol><h2>Next step</h2><ul><li>Lanjut: <a href="02-variables.html">02-variables — Variabel &amp; Tipe Dasar</a></li><li>Referensi: <a href="../language/syntax.html">language/syntax</a></li><li>Referensi: <a href="../language/variables.html">language/variables</a></li></ul></article><div class="prevnext"><span></span><a href="../learn/02-variables.html">02-variables →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

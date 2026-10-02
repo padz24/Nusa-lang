@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.7.0 — Nusa Docs 2.7.0</title>
+<meta name="description" content="2.7.0 v2.7.0 Terdampak: language/concurrency Release notes # — 2026-09-10 (Phase 56: CONCURRENCY 2.0, milestone 1) Observability channel + stress suit">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.7.0.html">
+<meta property="og:title" content="Changelog 2.7.0 — Nusa Docs 2.7.0">
+<meta property="og:description" content="2.7.0 v2.7.0 Terdampak: language/concurrency Release notes # — 2026-09-10 (Phase 56: CONCURRENCY 2.0, milestone 1) Observability channel + stress suit">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.7.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.7.0">
+<meta name="nusa:keywords" content="changelog, 2.7.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.7.0", "category": "changelog", "version": "2.7.0", "content": "2.7.0 v2.7.0 Terdampak: language/concurrency Release notes # — 2026-09-10 (Phase 56: CONCURRENCY 2.0, milestone 1) Observability channel + stress suite. Aditif, non-breaking (satu builtin baru; tanpa sintaks; async tetap reserved). Ditambahkan # chan_len(c: i64) -&gt; i64 (panjang antre, non-blocki", "code_example": "", "keywords": "changelog, 2.7.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.7.0.html">2.7.0</a></p><article><h1>2.7.0</h1><span class="badge stable">v2.7.0</span> <p>Terdampak: <a href="../language/concurrency.html">language/concurrency</a></p><h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-10 (Phase 56: CONCURRENCY 2.0, milestone 1)</p>
+<p>Observability channel + stress suite. Aditif, non-breaking</p>
+<p>(satu builtin baru; tanpa sintaks; <code>async</code> tetap reserved).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>chan_len(c: i64) -&gt; i64</code> (panjang antre, non-blocking):</li>
+</ul>
+<p>  runtime <code>nusa_chan_len</code> + field <code>size</code> O(1) di <code>rt_chan.c</code></p>
+<p>  (simbol 29 → 30); <code>frontend::isBuiltin</code>; checker grup</p>
+<p>  arity-1 i64→i64; codegen grup i64-return. Race-tolerant</p>
+<p>  by-design (cermin <code>mutex_try_lock</code>).</p>
+<ul>
+<li><code>compiler/tests/e2e_stress.sh</code> (7 kasus, stabil 3x): <code>chan_len</code></li>
+</ul>
+<p>  dasar, polling produsen, fan-out 4×25, atomic hammer 8×2000,</p>
+<p>  mutex contention 4×500, misuse <code>chan_len</code>-after-free, audit</p>
+<p>  <code>async</code>-reserved.</p>
+<ul>
+<li><code>docs/concurrency-2.7.md</code>: audit primitif + desain + tunda</li>
+</ul>
+<p>  (select/close, executor, koleksi std) + audit async/await.</p>
+<h3 id="diperbaiki-dokumen-ditemukan-saat-milestone">Diperbaiki (dokumen, ditemukan saat milestone) <a href="#diperbaiki-dokumen-ditemukan-saat-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li><code>docs/concurrency.md</code>: <code>join(0) → 0</code> usang → fail-fast v2.5.0;</li>
+</ul>
+<p>  + <code>chan_len</code>. <code>docs/{compiler,standard-library,getting-started}.md</code>:</p>
+<p>  54 → 55 builtin.</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li><code>e2e_stress</code> 7/7 (×3) + unit + concurrency/memsafe/runtime/</li>
+</ul>
+<p>  stdlib2/tooling/stability hijau; <code>.ns</code> + IR <code>@main</code> OK.</p>
+<ul>
+<li><code>bench.sh</code> identik baseline 2.6.0 (pass belum rewire).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.7.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

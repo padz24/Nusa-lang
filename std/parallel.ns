@@ -1,0 +1,49 @@
+/// Parallel computing v1 (Phase 121, v3.22.0): loop paralel + task
+/// paralel di atas thread/channel/atomik. Partisi BLOCK STATIK
+/// (tanpa work-stealing — follow-up terdokumentasi); deterministik
+/// untuk `f` murni (hasil = jumlah parsial, urutan tak relevan).
+/// SIMD/vektorisasi = Phase 122; vektorisasi LLVM level-rendah
+/// tetap via `-O` (backend, bukan janji pustaka).
+/// Lihat docs/parallel-3.22.md.
+/// Kerja satu blok [lo, hi): jumlahkan f(i), kirim parsial.
+/// Privat-modul (`_`): top-level agar `thread_spawn` langsung pakai.
+fn _par_block(f: fn(i64) -> i64, lo: i64, hi: i64, out: i64) -> i64 {
+    let s = 0;
+    let i = lo;
+    while i < hi {
+        s = s + f(i);
+        i = i + 1;
+    }
+    chan_send(out, s);
+    return 0;
+}
+/// Peta-reduksi paralel: jumlah f(i) untuk i in [0, n) memakai w
+/// worker (dibatasi 1..n). Deterministik bila f murni.
+fn par_map_sum(n: i64, w: i64, f: fn(i64) -> i64) -> i64 {
+    let workers = w;
+    if workers < 1 {
+        workers = 1;
+    }
+    if workers > n {
+        workers = n;
+    }
+    if n <= 0 {
+        return 0;
+    }
+    let c = chan_new();
+    let k = 0;
+    while k < workers {
+        let lo = (n * k) / workers;
+        let hi = (n * (k + 1)) / workers;
+        thread_spawn(|| _par_block(f, lo, hi, c));
+        k = k + 1;
+    }
+    let total = 0;
+    let r = 0;
+    while r < workers {
+        total = total + chan_recv(c);
+        r = r + 1;
+    }
+    chan_free(c);
+    return total;
+}

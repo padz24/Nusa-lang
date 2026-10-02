@@ -1,0 +1,25 @@
+// Layer: platform (builtins: process_exit/env/cwd/argc/argv).
+// OS process access. Args include argv[0] (program path):
+// nusa run prog.ns a b → argc=3, argv = [prog, a, b]
+fn prog_name() -> string {
+    return process_argv(0);
+}
+fn args_count() -> i64 {
+    return process_argc();
+}
+// i-th argument ("" when out of range).
+fn arg(i: i64) -> string {
+    return process_argv(i);
+}
+// Environment variable with fallback ("..." when unset).
+fn getenv_or(name: string, fallback: string) -> string {
+    let v = process_env(name);
+    if str_eq(v, "") {
+        return fallback;
+    }
+    return v;
+}
+// Exit the process (see builtin process_exit).
+fn exit_with(code: i64) -> void {
+    process_exit(code);
+}

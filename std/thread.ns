@@ -1,0 +1,25 @@
+// Layer: platform (builtins: thread_spawn/join; lihat docs/concurrency.md).
+// Thin named wrappers + one real combinator over raw builtins.
+fn spawn(f: fn() -> i64) -> i64 {
+    return thread_spawn(f);
+}
+fn join(h: i64) -> i64 {
+    return thread_join(h);
+}
+// Run f and g concurrently, return f() + g() (channel-collected,
+// deterministic regardless of scheduling).
+fn par_map2(f: fn(i64) -> i64, g: fn(i64) -> i64, a: i64, b: i64) -> i64 {
+    let c = chan_new();
+    let h1 = thread_spawn(|| run_send(c, f, a));
+    let h2 = thread_spawn(|| run_send(c, g, b));
+    let r = chan_recv(c) + chan_recv(c);
+    thread_join(h1);
+    thread_join(h2);
+    chan_free(c);
+    return r;
+}
+// Helper: compute f(x), send, return 0 (top-level: no captures).
+fn run_send(c: i64, f: fn(i64) -> i64, x: i64) -> i64 {
+    chan_send(c, f(x));
+    return 0;
+}

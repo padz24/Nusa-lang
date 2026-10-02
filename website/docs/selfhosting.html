@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>selfhosting.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="selfhosting.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Bootstrap (Phase 38, v1.19.0) # C++ compiler ↓ (">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/selfhosting.html">
+<meta property="og:title" content="selfhosting.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="selfhosting.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Bootstrap (Phase 38, v1.19.0) # C++ compiler ↓ (">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="selfhosting.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="selfhosting, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "selfhosting.md", "category": "docs", "version": "3.0.0", "content": "selfhosting.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Bootstrap (Phase 38, v1.19.0) # C++ compiler ↓ (langkah 1, fase ini) Nusa lexer (selfhost/lex.ns) — dibuktikan ekuivalen via differential test ↓ (fase mendatang) parser → AST → semantic … hingga Nu", "code_example": "", "keywords": "selfhosting, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/selfhosting.html">selfhosting.md</a></p><article><h1>selfhosting.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="self-hosting-bootstrap-phase-38-v1-19-0">Self-Hosting Bootstrap (Phase 38, v1.19.0) <a href="#self-hosting-bootstrap-phase-38-v1-19-0" aria-label="taut">#</a></h1>
+<pre data-lang="text"><code class="lang-text">C++ compiler
+      ↓  (langkah 1, fase ini)
+Nusa lexer (selfhost/lex.ns) — dibuktikan ekuivalen via differential test
+      ↓  (fase mendatang)
+parser → AST → semantic … hingga Nusa mengkompilasi Nusa</code></pre>
+<p>Aturan main: <strong>jangan tulis ulang sekaligus</strong> — satu komponen,</p>
+<p>dibuktikan ekuivalen, baru lanjut. Compiler C++ tetap bootstrap</p>
+<p>(kompilasi komponen Nusa).</p>
+<h2 id="langkah-1-lexer-selesai">Langkah 1: lexer (SELESAI) <a href="#langkah-1-lexer-selesai" aria-label="taut">#</a></h2>
+<ul>
+<li><code>selfhost/lex.ns</code>: lexer Nusa streaming (tanpa buffer token —</li>
+</ul>
+<p>  Nusa v1 tanpa array growable), dijalankan</p>
+<p>  <code>nusa run selfhost/lex.ns &lt;file&gt;</code>.</p>
+<ul>
+<li><code>nusa lex &lt;file&gt;</code>: dump token C++ (alat debug) dengan format</li>
+</ul>
+<p>  yang SAMA: <code>kind|lexeme|line|col</code> (+ baris <code>end of file</code>).</p>
+<ul>
+<li><strong>Differential test</strong> (<code>e2e_selfhost.sh</code>): 33 file korpus</li>
+</ul>
+<p>  (std + examples + bench + lexer itu sendiri) byte-identik.</p>
+<p>  Korpus dinyatakan bebas hazard di bawah (dicek test).</p>
+<h2 id="tabel-escape-dump-kontrak-kedua-implementasi">Tabel escape dump (kontrak kedua implementasi) <a href="#tabel-escape-dump-kontrak-kedua-implementasi" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Byte nilai</th><th>Cetakan</th><th>Catatan</th></tr></thead><tbody>
+<tr><td><code>\</code></td><td><code>\\</code></td><td>duluan (agar tak ganda)</td></tr>
+<tr><td>newline</td><td><code>\n</code></td><td></td></tr>
+<tr><td>tab</td><td><code>\t</code></td><td></td></tr>
+<tr><td>CR</td><td><code>\r</code></td><td></td></tr>
+<tr><td>`\</td><td>`</td><td>`\</td><td>`</td><td>separator baris</td></tr>
+<tr><td>NUL</td><td><code>\0</code></td><td>hanya C++ (di bawah)</td></tr>
+<tr><td>sisanya</td><td>apa adanya</td><td>byte mentah</td></tr>
+</tbody></table>
+<h2 id="batas-yang-jujur-divergensi-terdokumentasi">Batas yang jujur (divergensi terdokumentasi) <a href="#batas-yang-jujur-divergensi-terdokumentasi" aria-label="taut">#</a></h2>
+<ul>
+<li><strong><code>\0</code> dalam string</strong>: string Nusa = C string (NUL = terminator)</li>
+</ul>
+<p>   sehingga byte NUL tak terwakili; C++ mempertahankannya.</p>
+<p>   Korpus dijamin bebas NUL (test <code>hazard</code>).</p>
+<ul>
+<li><strong>Overflow literal</strong>: C++ menolak <code>&gt; max i64</code> (Unknown + error);</li>
+</ul>
+<p>   Nusa mencetak apa adanya. Korpus bebas literal ≥20 digit.</p>
+<ul>
+<li><strong>Input invalid</strong> (<code>!</code> tunggal, <code>123abc</code>, string tak-terminasi):</li>
+</ul>
+<p>   C++ mencetak baris <code>unknown</code> + error ke stderr (rc 1); Nusa</p>
+<p>   mencetak baris <code>unknown</code> best-effort (rc 0). Bentuk baris SAMA,</p>
+<p>   kanal/status beda — korpus diferensial hanya file valid.</p>
+<ul>
+<li><strong>Performa</strong>: char-by-char di atas <code>str_char_at</code> (O(n) per</li>
+</ul>
+<p>   panggil karena <code>strlen</code>) → ~O(n²); 15 KB ≈ 3 dtk. Cukup untuk</p>
+<p>   CI/korpus; API string berkursor akan memperbaikinya.</p>
+<ul>
+<li><strong>Struktur</strong>: satu <code>main</code> raksasa + helper murni (tanpa tuple/</li>
+</ul>
+<p>   global/state komposit di Nusa v1); pola loop <code>end</code>/<code>lim</code></p>
+<p>   (tanpa <code>break</code> — latch tanpa progres = hang, pelajaran tercatat).</p>
+<h2 id="berikutnya-bukan-fase-ini">Berikutnya (bukan fase ini) <a href="#berikutnya-bukan-fase-ini" aria-label="taut">#</a></h2>
+<p>Semantic Nusa (butuh: tabel simbol growable atau encoding setara).</p>
+<p>Masing-masing dengan differential testnya sebelum menggantikan</p>
+<p>apa pun.</p>
+<h2 id="langkah-2-parser-ast-selesai-phase-72-v2-23-0">Langkah 2: parser + AST (SELESAI — Phase 72, v2.23.0) <a href="#langkah-2-parser-ast-selesai-phase-72-v2-23-0" aria-label="taut">#</a></h2>
+<ul>
+<li><code>selfhost/parse.ns</code>: parser Nusa <strong>fused lexer+parser</strong></li>
+</ul>
+<p>  (buffer token tak mungkin di Nusa v2 — array fixed-size tanpa</p>
+<p>  indexed-assign/param/return; tanpa global/tuple). Membaca sumber</p>
+<p>  via <code>file_read</code>, mencetak dump AST s-expr byte-identik dengan</p>
+<p>  <code>nusa ast</code> (C++ <code>program.dump()</code>).</p>
+<ul>
+<li><code>nusa ast &lt;file&gt;</code>: oracle C++ (parse file tunggal tanpa merge</li>
+</ul>
+<p>  modul + cetak dump; rc!=0 bila gagal), cermin <code>nusa lex</code>.</p>
+<ul>
+<li>Threading state: struct by-value (<code>ShTok</code>/<code>ShRes</code>) + rekursi;</li>
+</ul>
+<p>  semua loop maju strikt + guard anti-hang (terminasi terjamin</p>
+<p>  bahkan atas input invalid — output best-effort).</p>
+<ul>
+<li><strong>Differential test</strong> (<code>e2e_parse.sh</code>): 43 file korpus</li>
+</ul>
+<p>  (std + examples + bench + selfhost, termasuk <code>parse.ns</code></p>
+<p>  memparse dirinya sendiri) byte-identik; ambang N≥25.</p>
+<ul>
+<li>Normalisasi yang direplika: lambda 1-expr → <code>(return e)</code>,</li>
+</ul>
+<p>  match single-stmt → Block, <code>else if</code> → Block 1-stmt, int via</p>
+<p>  <code>parse_int</code>, escape dump <code>&quot; \</code> newline tab, urutan kategori</p>
+<p>  program (imports…functions), <code>(empty)</code> untuk file kosong.</p>
+<ul>
+<li>Batas baru (lihat <code>docs/selfhost-2.23.md</code> §4): input invalid</li>
+</ul>
+<p>  best-effort; nesting adversarial tanpa cap C++; <code>\0</code> di-drop;</p>
+<p>  <code>123abc</code>/overflow diasumsikan tak ada (korpus dijamin).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bootstrap-full-2.25.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="bootstrap-full-2.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Full 4-Stage — Design (Phase 74, target 2.2">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/bootstrap-full-2.25.html">
+<meta property="og:title" content="bootstrap-full-2.25.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="bootstrap-full-2.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Full 4-Stage — Design (Phase 74, target 2.2">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="bootstrap-full-2.25.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="bootstrap-full-2.25, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "bootstrap-full-2.25.md", "category": "docs", "version": "3.0.0", "content": "bootstrap-full-2.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Full 4-Stage — Design (Phase 74, target 2.25.0) # Status: rantai penuh + validasi Stage N == Stage N+1 + dokumentasi lengkap. Mandat master: PHASE 74 — SELF-HOSTING COMPILER FULL (Stage 0→1→2→", "code_example": "", "keywords": "bootstrap-full-2.25, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/bootstrap-full-2.25.html">bootstrap-full-2.25.md</a></p><article><h1>bootstrap-full-2.25.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="bootstrap-full-4-stage-design-phase-74-target-2-25-0">Bootstrap Full 4-Stage — Design (Phase 74, target 2.25.0) <a href="#bootstrap-full-4-stage-design-phase-74-target-2-25-0" aria-label="taut">#</a></h1>
+<p>Status: rantai penuh + validasi Stage N == Stage N+1 + dokumentasi</p>
+<p>lengkap. Mandat master: PHASE 74 — SELF-HOSTING COMPILER FULL</p>
+<p>(Stage 0→1→2→3, kesetaraan &quot;sebisa mungkin&quot;, Target 2.25.0).</p>
+<p>Spec bahasa tak berubah.</p>
+<h2 id="1-peta-4-stage-operasional-dikunci-mesin">1. Peta 4 stage (operasional, dikunci mesin) <a href="#1-peta-4-stage-operasional-dikunci-mesin" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Stage</th><th>Apa</th><th>Dibangun oleh</th><th>Output</th></tr></thead><tbody>
+<tr><td>0</td><td>compiler C++ (<code>build/nusa</code>)</td><td>cmake+LLVM</td><td>oracle</td></tr>
+<tr><td>1</td><td>komponen Nusa → native (<code>&lt;base&gt;_stage1</code>, <code>--fresh</code>)</td><td>Stage 0</td><td>biner</td></tr>
+<tr><td>2</td><td>biner Stage 1 atas sumbernya sendiri, 2x</td><td>Stage 1</td><td>dump D2</td></tr>
+<tr><td>3</td><td>REBUILD Stage 1 dari nol (<code>--fresh</code>, dir lain) + 1x run</td><td>Stage 0</td><td>dump D3</td></tr>
+</tbody></table>
+<p>Validasi (di <code>nusa bootstrap</code>, semua byte-identik):</p>
+<ul>
+<li>D2a == D2b (determinisme Stage 1).</li>
+<li>D2 == Stage 0 (kebenaran vs oracle independen).</li>
+<li>D3 == D2 (reproduksibilitas rebuild — &quot;rebuild compiler</li>
+</ul>
+<p>  using itself&quot;: tidak ada timestamp/path absolut yang bocor</p>
+<p>  ke artefak perilaku).</p>
+<h2 id="2-batas-jujur-sebisa-mungkin">2. Batas jujur &quot;sebisa mungkin&quot; <a href="#2-batas-jujur-sebisa-mungkin" aria-label="taut">#</a></h2>
+<p>Frontend Nusa berhenti di dump AST (tanpa semantik/MIR/IR/</p>
+<p>codegen) — maka &quot;compiler builds itself&quot; terpenuhi untuk</p>
+<p>awalan pipeline (lex→parse), bukan ujung LLVM. Tabel jujur</p>
+<p>Nusa-vs-C++ per tahap pipeline ada di §3 dokumen ini</p>
+<p>(dičermin di <code>docs/bootstrap.md</code>).</p>
+<h2 id="3-tabel-nusa-vs-c-per-tahap-pipeline">3. Tabel Nusa-vs-C++ per tahap pipeline <a href="#3-tabel-nusa-vs-c-per-tahap-pipeline" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Tahap</th><th>Nusa</th><th>C++</th><th>Validasi</th></tr></thead><tbody>
+<tr><td>lexing</td><td><code>lex.ns</code></td><td><code>compiler/lexer</code></td><td><code>e2e_selfhost</code> + rantai</td></tr>
+<tr><td>parsing+AST</td><td><code>parse.ns</code></td><td><code>compiler/parser+ast</code></td><td><code>e2e_parse</code> + rantai</td></tr>
+<tr><td>semantic</td><td>—</td><td><code>compiler/semantic</code></td><td>(Phase 74+: penelitian)</td></tr>
+<tr><td>MIR/opt</td><td>—</td><td><code>compiler/mir</code></td><td><code>test_mir</code>/<code>e2e_opt</code></td></tr>
+<tr><td>LLVM IR/codegen</td><td>—</td><td><code>compiler/codegen</code> + LLVM 21.1.8</td><td><code>verifyModule</code>/IR spot</td></tr>
+<tr><td>runtime</td><td>—</td><td><code>runtime/</code> + libc</td><td>e2e runtime</td></tr>
+</tbody></table>
+<h2 id="4-peta-implementasi">4. Peta implementasi <a href="#4-peta-implementasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>runBootstrapKind(path, outDir, kind, rebuildDir=&quot;&quot;)</code>:</li>
+</ul>
+<p>  rebuildDir kosong = perilaku 2.24.0 persis; terisi =</p>
+<p>  Stage 3 (fresh-rebuild + 1 run + banding D2, diagnosis</p>
+<p>  beda-pertama cermin Stage 2).</p>
+<ul>
+<li>CLI: <code>--rebuild DIR</code> + help; nilai <code>--as</code> tetap lex|ast.</li>
+<li><code>e2e_bootstrap.sh</code>: kasus rebuild lex (cepat) + rebuild</li>
+</ul>
+<p>  parse (penuh) + negatif; ambang PASS 7→10 kasus.</p>
+<ul>
+<li>Docs: file ini (proses lengkap + reproduksi manual +</li>
+</ul>
+<p>  diagnosis) + <code>docs/bootstrap.md</code> pointer + <code>compiler.md</code></p>
+<p>  + <code>CHANGELOG.md</code> [2.25.0] + regen website.</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa bootstrap</code> tanpa <code>--rebuild</code> byte-perilaku-sama</li>
+</ul>
+<p>  (7 kasus lama hijau); dengan <code>--rebuild</code> mencetak Stage 3</p>
+<p>  + REBUILD PASS untuk lex dan parse; suite hijau (73+);</p>
+<p>  bench identik; <code>.ns.ll</code> bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+// Contoh front-end: `let` + operator precedence.
+// Sejak v0.3.0 file ini terkompilasi penuh menjadi executable.
+fn main() {
+    let x = 10 + 20 * 3;
+    print("Hello, Nusa!");
+}

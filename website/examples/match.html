@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>match.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="match.ns v3.0.0 fn f(x: i64) -&amp;gt; i64 { match x { 1 =&amp;gt; { return 10; }, 2 =&amp;gt; { return 20; }, _ =&amp;gt; { return 30; }, } return 0; } fn bs(b: bool">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/match.html">
+<meta property="og:title" content="match.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="match.ns v3.0.0 fn f(x: i64) -&amp;gt; i64 { match x { 1 =&amp;gt; { return 10; }, 2 =&amp;gt; { return 20; }, _ =&amp;gt; { return 30; }, } return 0; } fn bs(b: bool">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="match.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, match, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "match.ns", "category": "examples", "version": "3.0.0", "content": "match.ns v3.0.0 fn f(x: i64) -&gt; i64 { match x { 1 =&gt; { return 10; }, 2 =&gt; { return 20; }, _ =&gt; { return 30; }, } return 0; } fn bs(b: bool) -&gt; i64 { match b { true =&gt; { return 1; }, false =&gt; { return 0; }, } return 9; } fn main() { print(f(1)); print(f(2)); print(f(9)); print(b", "code_example": "fn f(x: i64) -> i64 {\n    match x {\n        1 => {\n            return 10;\n        },\n        2 => {\n            return 20;\n        },\n        _ => {\n            return 30;\n        },\n    }\n    return 0;\n}\nfn bs(b: bool) -> i64 {\n    match b {\n        true => {\n            return 1;\n        },\n        false => {\n            return 0;\n        },\n    }\n    return 9;\n}\nfn main() {\n    print(f(1));\n    print(f(2));\n    print(f(9));\n    print(bs(true));\n    print(bs(false));\n}\n", "keywords": "example, match, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/match.html">match.ns</a></p><article><h1>match.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">fn f(x: i64) -&gt; i64 {
+    match x {
+        1 =&gt; {
+            return 10;
+        },
+        2 =&gt; {
+            return 20;
+        },
+        _ =&gt; {
+            return 30;
+        },
+    }
+    return 0;
+}
+fn bs(b: bool) -&gt; i64 {
+    match b {
+        true =&gt; {
+            return 1;
+        },
+        false =&gt; {
+            return 0;
+        },
+    }
+    return 9;
+}
+fn main() {
+    print(f(1));
+    print(f(2));
+    print(f(9));
+    print(bs(true));
+    print(bs(false));
+}
+</code></pre><details><summary>Output</summary><samp class="out">10
+20
+30
+1
+0
+</samp></details><p><a class="btn sec" href="../playground/?code=fn%20f%28x%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20match%20x%20%7B%0A%20%20%20%20%20%20%20%201%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%2010%3B%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%202%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%2020%3B%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20_%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%2030%3B%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%7D%0A%20%20%20%20return%200%3B%0A%7D%0Afn%20bs%28b%3A%20bool%29%20-%3E%20i64%20%7B%0A%20%20%20%20match%20b%20%7B%0A%20%20%20%20%20%20%20%20true%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%201%3B%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20false%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%200%3B%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%7D%0A%20%20%20%20return%209%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28f%281%29%29%3B%0A%20%20%20%20print%28f%282%29%29%3B%0A%20%20%20%20print%28f%289%29%29%3B%0A%20%20%20%20print%28bs%28true%29%29%3B%0A%20%20%20%20print%28bs%28false%29%29%3B%0A%7D%0A">Coba di playground</a></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

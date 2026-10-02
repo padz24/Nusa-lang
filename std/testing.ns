@@ -1,0 +1,54 @@
+// Labeled assertions for `nusa test` files (pure Nusa).
+//
+// Success is silent (keeps test output clean); failure prints
+// `FAIL <label>: ...` and aborts (exit 1).
+// Tests end with their own `print("ALL ... OK")` line.
+// Abort the test with a plain labeled message.
+fn test_fail(label: string) {
+    print(str_concat("FAIL ", str_concat(label, ": forced failure")));
+    assert(false);
+}
+// True assertion with label.
+fn test_true(cond: bool, label: string) {
+    if cond == false {
+        print(str_concat("FAIL ", str_concat(label, ": expected true")));
+        assert(false);
+    }
+}
+// False assertion with label.
+fn test_false(cond: bool, label: string) {
+    if cond == true {
+        print(str_concat("FAIL ", str_concat(label, ": expected false")));
+        assert(false);
+    }
+}
+// Integer equality with both values shown on failure.
+fn test_eq_i64(expected: i64, got: i64, label: string) {
+    if expected != got {
+        let m1: string = str_concat("FAIL ", label);
+        let m2: string = str_concat(m1, ": expected ");
+        let m3: string = str_concat(m2, int_to_str(expected));
+        let m4: string = str_concat(m3, " got ");
+        print(str_concat(m4, int_to_str(got)));
+        assert(false);
+    }
+}
+// String equality with both values shown on failure.
+fn test_eq_str(expected: string, got: string, label: string) {
+    if str_eq(expected, got) == false {
+        let m1: string = str_concat("FAIL ", label);
+        let m2: string = str_concat(m1, ": expected [");
+        let m3: string = str_concat(m2, expected);
+        let m4: string = str_concat(m3, "] got [");
+        let m5: string = str_concat(m4, got);
+        print(str_concat(m5, "]"));
+        assert(false);
+    }
+}
+// Boolean equality with label.
+fn test_eq_bool(expected: bool, got: bool, label: string) {
+    if expected != got {
+        print(str_concat("FAIL ", str_concat(label, ": bool mismatch")));
+        assert(false);
+    }
+}

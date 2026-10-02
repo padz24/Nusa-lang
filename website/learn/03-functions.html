@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03-functions Fungsi &amp; Struct — Nusa Docs 3.0.0</title>
+<meta name="description" content="03-functions — Fungsi &amp;amp; Struct v3.0.0 Estimasi 40 menit · fn, param/return, struct literal, field access. Penjelasan 03 — Functions, structs, modu">
+<link rel="canonical" href="https://nusa-lang.org/docs/learn/03-functions.html">
+<meta property="og:title" content="03-functions Fungsi &amp; Struct — Nusa Docs 3.0.0">
+<meta property="og:description" content="03-functions — Fungsi &amp;amp; Struct v3.0.0 Estimasi 40 menit · fn, param/return, struct literal, field access. Penjelasan 03 — Functions, structs, modu">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="03-functions Fungsi &amp; Struct">
+<meta name="nusa:category" content="learn/beginner">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="tutorial, 03-functions, fungsi &amp; struct">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "03-functions Fungsi & Struct", "category": "learn/beginner", "version": "3.0.0", "content": "03-functions — Fungsi &amp; Struct v3.0.0 Estimasi 40 menit · fn, param/return, struct literal, field access. Penjelasan 03 — Functions, structs, modules # Tujuan: fn + return , struct literal + akses field, gambaran modul. Prasyarat: tutorials/02-variables/ . ./build/nusa run tutorials/03-function", "code_example": "struct Person {\n    name: string;\n    age: i64;\n}\nfn add(a: i64, b: i64) -> i64 {\n    return a + b;\n}\nfn greet(p: Person) -> string {\n    return p.name;\n}\nfn main() {\n    print(add(10, 20));\n    let p = Person {\n        name: \"Nusa\", age: 2\n    };\n    print(greet(p));\n    print(p.age);\n}\n", "keywords": "tutorial, 03-functions, fungsi & struct"}</script>
+</head>
+<body class="kind-learn-beginner">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/" aria-current="page">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../learn/">Kurikulum</a></li><li><a href="../learn/01-hello.html">01-hello Program Pertama</a></li><li><a href="../learn/02-variables.html">02-variables Variabel &amp; Tipe Dasar</a></li><li><a href="../learn/03-functions.html" aria-current="page">03-functions Fungsi &amp; Struct</a></li><li><a href="../learn/04-generics-traits.html">04-generics-traits Generics &amp; Traits</a></li><li><a href="../learn/05-match-enum.html">05-match-enum Match &amp; Enum</a></li><li><a href="../learn/06-error-handling.html">06-error-handling Error Handling</a></li><li><a href="../learn/07-closures-concurrency.html">07-closures-concurrency Closures &amp; Concurrency</a></li><li><a href="../learn/08-package-project.html">08-package-project Package Project</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../learn/">Learn</a> / <a href="../learn/03-functions.html">03-functions</a></p><article><h1>03-functions — Fungsi &amp; Struct</h1><span class="badge historic">v3.0.0</span> <p><small>Estimasi 40 menit · fn, param/return, struct literal, field access.</small></p><h2>Penjelasan</h2><h1 id="03-functions-structs-modules">03 — Functions, structs, modules <a href="#03-functions-structs-modules" aria-label="taut">#</a></h1>
+<p>Tujuan: <code>fn</code> + <code>return</code>, struct literal + akses field, gambaran modul.</p>
+<p>Prasyarat: <code>tutorials/02-variables/</code>.</p>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run tutorials/03-functions/main.ns
+# 30
+# Nusa
+# 2</code></pre>
+<p>Modul (multi-file) tidak dicontohkan di sini agar tiap tutorial tetap</p>
+<p>satu file — lihat contoh kanonis:</p>
+<pre data-lang="bash"><code class="lang-bash">cd examples &amp;&amp; ../build/nusa run main.ns
+# 6
+# Ada</code></pre>
+<p>Aturan: <code>fn main()</code> tepat satu per program; struct di-pass by-value</p>
+<p>(boleh sebagai param/return); field selalu publik.</p>
+<p>Lihat: <code>docs/functions.md</code>, <code>docs/structs.md</code>, <code>docs/modules.md</code>.</p>
+<p>Lanjut: <code>tutorials/04-generics-traits/</code>.</p><h2>Source code (.ns)</h2><pre data-lang="nusa"><code class="lang-nusa">struct Person {
+    name: string;
+    age: i64;
+}
+fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}
+fn greet(p: Person) -&gt; string {
+    return p.name;
+}
+fn main() {
+    print(add(10, 20));
+    let p = Person {
+        name: &quot;Nusa&quot;, age: 2
+    };
+    print(greet(p));
+    print(p.age);
+}
+</code></pre><h2>Output program</h2><samp class="out">30
+Nusa
+2
+</samp><p><a class="btn sec" href="../playground/?code=struct%20Person%20%7B%0A%20%20%20%20name%3A%20string%3B%0A%20%20%20%20age%3A%20i64%3B%0A%7D%0Afn%20add%28a%3A%20i64%2C%20b%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%20a%20%2B%20b%3B%0A%7D%0Afn%20greet%28p%3A%20Person%29%20-%3E%20string%20%7B%0A%20%20%20%20return%20p.name%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28add%2810%2C%2020%29%29%3B%0A%20%20%20%20let%20p%20%3D%20Person%20%7B%0A%20%20%20%20%20%20%20%20name%3A%20%22Nusa%22%2C%20age%3A%202%0A%20%20%20%20%7D%3B%0A%20%20%20%20print%28greet%28p%29%29%3B%0A%20%20%20%20print%28p.age%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Exercise</h2><ol><li>Tulis fn sub(a,b) dan cetak sub(10,4).<details><summary>Solusi</summary><p>fn sub(a: i64, b: i64) -&gt; i64 { return a - b; } // 6</p></details></li><li>Tambahkan field city ke Person dan cetak.<details><summary>Solusi</summary><p>Tambahkan city: string; isi &quot;Banyumas&quot;.</p></details></li></ol><h2>Next step</h2><ul><li>Lanjut: <a href="04-generics-traits.html">04-generics-traits — Generics &amp; Traits</a></li><li>Referensi: <a href="../language/functions.html">language/functions</a></li><li>Referensi: <a href="../language/structs.html">language/structs</a></li></ul></article><div class="prevnext"><a href="../learn/02-variables.html">← 02-variables</a><a href="../learn/04-generics-traits.html">04-generics-traits →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

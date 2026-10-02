@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>verify-3.26.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="verify-3.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Formal Verification — Milestone 1: Properti Metamorf">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/verify-3.26.html">
+<meta property="og:title" content="verify-3.26.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="verify-3.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Formal Verification — Milestone 1: Properti Metamorf">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="verify-3.26.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="verify-3.26, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "verify-3.26.md", "category": "docs", "version": "3.0.0", "content": "verify-3.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Formal Verification — Milestone 1: Properti Metamorfik (Phase 125) # Status: slice verifikasi (target 3.26.0). Mandat master: verifikasi bagian compiler formal; prioritas parser/typechecker/MIR-verifie", "code_example": "", "keywords": "verify-3.26, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/verify-3.26.html">verify-3.26.md</a></p><article><h1>verify-3.26.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="compiler-formal-verification-milestone-1-properti-metamorfik-phase-125">Compiler Formal Verification — Milestone 1: Properti Metamorfik (Phase 125) <a href="#compiler-formal-verification-milestone-1-properti-metamorfik-phase-125" aria-label="taut">#</a></h1>
+<p>Status: slice verifikasi (target 3.26.0). Mandat master: verifikasi</p>
+<p>bagian compiler formal; prioritas parser/typechecker/MIR-verifier/</p>
+<p>ownership/IR-invarian; pakai property-based testing, model checking</p>
+<p>bila cocok, bukti formal bila feasible; JANGAN seluruh compiler</p>
+<p>sekaligus.</p>
+<h2 id="1-cakupan-transparansi-semantik-formatter-metamorfik">1. Cakupan: transparansi-semantik formatter (metamorfik) <a href="#1-cakupan-transparansi-semantik-formatter-metamorfik" aria-label="taut">#</a></h2>
+<p>Properti: <code>dump(parse(f)) == dump(parse(fmt(f)))</code> — byte-identik.</p>
+<p>Mengapa ini &quot;verifikasi&quot;, bukan uji biasa:</p>
+<ul>
+<li>Tanpa oracle eksternal (kelemahan klasik testing): properti</li>
+</ul>
+<p>  menghubungkan DUA subsistem independen (fmt token-based vs</p>
+<p>  parser precedence-climbing). Menangkap: token hilang/tertukar/</p>
+<p>  string rusak/gagal-parse pasca-fmt. TIDAK menangkap: bug</p>
+<p>  spacing murni (spacing tak masuk AST — cakupan <code>fmt --check</code></p>
+<p>  korpus, bukan properti ini; dinyatakan eksplisit).</p>
+<ul>
+<li>Himpunan uji = SELURUH korpus (87 file) + 25 program fuzz</li>
+</ul>
+<p>  berseed (bentuk di luar korpus) + determinisme dump.</p>
+<ul>
+<li>Prasyarat yang dikunci dulu: <code>nusa ast</code> deterministik</li>
+</ul>
+<p>  (kasus <code>fmtprop-det</code> — dump tak-stabil = properti nir makna).</p>
+<h2 id="2-evaluasi-metode-formal-jujur">2. Evaluasi metode formal (jujur) <a href="#2-evaluasi-metode-formal-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Property-based testing: DIPAKAI (infrastruktur fuzz + LCG</li>
+</ul>
+<p>  Phase 71 + properti ini). Alat tepat untuk invarian pipeline.</p>
+<ul>
+<li>Model checking: BELUM COCOK — butuh model eksekutabel</li>
+</ul>
+<p>  (Promela/TLA+) atas checker/semantik yang belum ada; menulisnya</p>
+<p>  = proyek sendiri (follow-up bila invarian kritis terpilih).</p>
+<ul>
+<li>Bukti formal (proof assistant): BELUM FEASIBLE — tanpa</li>
+</ul>
+<p>  Coq/Lean/Isabelle di CI Termux + tanpa spesifikasi mekanis;</p>
+<p>  klaim &quot;terbukti&quot; hari ini = dusta. DITOLAK untuk slice ini.</p>
+<h2 id="3-batas-properti-dinyatakan-bukan-disembunyikan">3. Batas properti (dinyatakan, bukan disembunyikan) <a href="#3-batas-properti-dinyatakan-bukan-disembunyikan" aria-label="taut">#</a></h2>
+<ul>
+<li>Buta terhadap bug yang SAMA di kedua sisi (keduanya salah</li>
+</ul>
+<p>  mengurai konstruksi identik secara konsisten) dan terhadap</p>
+<p>  bug spacing murni (di luar AST).</p>
+<ul>
+<li>Tidak mencakup: preservasi tipe (checker), preservasi</li>
+</ul>
+<p>  perilaku runtime (differential O0≡O2 yang ada), terminasi.</p>
+<h2 id="4-diverifikasi-termasuk-satu-temuan-nyata">4. Diverifikasi — termasuk SATU TEMUAN NYATA <a href="#4-diverifikasi-termasuk-satu-temuan-nyata" aria-label="taut">#</a></h2>
+<ul>
+<li>Properti MENANGKAP bug pada run pertama: <code>tests/string2_test.ns</code></li>
+</ul>
+<p>  (<code>&quot;  hi&quot;</code> → <code>&quot; hi&quot;</code> oleh cleanup spasi-ganda global yang buta</p>
+<p>  string). Akar: pass rapikan <code>Formatter.cpp</code> men-collapse spasi</p>
+<p>  ganda di SELURUH teks termasuk isi literal (dan komentar).</p>
+<ul>
+<li>Perbaikan (slice ini): pass sadar-string + sadar-komentar</li>
+</ul>
+<p>  (<code>//</code> disalin verbatim — collapse juga merusak <code>///</code> tersejajar</p>
+<p>  → keluaran <code>nusa doc</code>); regresi <code>testStringCommentKept</code>.</p>
+<ul>
+<li><code>test_fmt</code> + <code>e2e_fmtprop</code> 3/3 (det + korpus 87 + fuzz);</li>
+</ul>
+<p>  <code>e2e_verify</code> + <code>e2e_release</code> hijau; <code>.ns</code> + IR OK.</p>
+<h2 id="5-ditunda-jujur">5. Ditunda jujur <a href="#5-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Properti preservasi-tipe/run, model checker, proof assistant,</li>
+</ul>
+<p>  invarian ownership/IR-generation (butuh lowering MIR dulu).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

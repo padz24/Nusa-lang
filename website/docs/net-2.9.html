@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>net-2.9.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="net-2.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Networking — Design (Phase 58, target 2.9.0) # Status: audit → Im">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/net-2.9.html">
+<meta property="og:title" content="net-2.9.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="net-2.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Networking — Design (Phase 58, target 2.9.0) # Status: audit → Im">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="net-2.9.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="net-2.9, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "net-2.9.md", "category": "docs", "version": "3.0.0", "content": "net-2.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Networking — Design (Phase 58, target 2.9.0) # Status: audit → Implementation (milestone 1: HTTP primitives murni Nusa di atas TCP loopback). Tanpa framework web di compiler (mandat): semua di std/ . Spec tak berub", "code_example": "", "keywords": "net-2.9, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/net-2.9.html">net-2.9.md</a></p><article><h1>net-2.9.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="networking-design-phase-58-target-2-9-0">Networking — Design (Phase 58, target 2.9.0) <a href="#networking-design-phase-58-target-2-9-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: HTTP primitives murni</p>
+<p>Nusa di atas TCP loopback). Tanpa framework web di compiler</p>
+<p>(mandat): semua di <code>std/</code>. Spec tak berubah (stdlib aditif).</p>
+<h2 id="1-audit-lapisan-net-2-8-0">1. Audit lapisan net (2.8.0) <a href="#1-audit-lapisan-net-2-8-0" aria-label="taut">#</a></h2>
+<p>Ada: TCP client (<code>dial/send/recv/close</code>), server loopback</p>
+<p>(<code>listen_on/accept_one</code>), <code>recv_line</code>; DNS via getaddrinfo di</p>
+<p><code>dial</code> (nama host, bukan hanya IP — teruji e2e_stdlib2? hanya</p>
+<p>localhost; DNS eksternal butuh jaringan, di luar CI).</p>
+<p>Belum: UDP, DNS API eksplisit, HTTP, WebSocket.</p>
+<h2 id="2-milestone-1-satu-satunya-penambahan-fase-ini">2. Milestone 1 (SATU-SATUNYA penambahan fase ini) <a href="#2-milestone-1-satu-satunya-penambahan-fase-ini" aria-label="taut">#</a></h2>
+<p><strong><code>std/http.ns</code></strong> (murni Nusa, nol builtin/compiler baru):</p>
+<ul>
+<li><code>http_status(resp) -&gt; i64</code> (baris status → kode; -1 bila</li>
+</ul>
+<p>  malformed), <code>http_body(resp) -&gt; string</code> (setelah CRLFCRLF/LFLF).</p>
+<ul>
+<li><code>http_get(host, port, path) -&gt; string</code> (GET/1.0, baca hingga</li>
+</ul>
+<p>  close; <code>&quot;&quot;</code> bila dial gagal).</p>
+<ul>
+<li><code>http_serve_once(port, body) -&gt; i64</code> (listen→accept→baca</li>
+</ul>
+<p>  request→kirim <code>200 OK</code> + Content-Length→tutup; 0 ok, -1 gagal).</p>
+<ul>
+<li>Helper privat <code>_dial_retry</code>, <code>_read_all</code>, <code>_read_request</code></li>
+</ul>
+<p>  (prefix <code>_</code> = privat antar-file).</p>
+<p>Pola uji hermetik (tanpa python/jaringan luar): server Nusa di</p>
+<p>thread + client Nusa + <code>dial_retry</code> (200×5ms), loopback</p>
+<p>127.0.0.1, port uji 18080/18081. Deterministik via join.</p>
+<h2 id="3-ditunda-beralasan">3. DITUNDA beralasan <a href="#3-ditunda-beralasan" aria-label="taut">#</a></h2>
+<p>UDP (<code>SOCK_DGRAM</code> + builtin <code>udp_*</code>: butuh plumbing 3 lapis —</p>
+<p>milestone tersendiri), DNS API eksplisit (di atas getaddrinfo),</p>
+<p>HTTP client async/timeout, WebSocket (butuh SHA-1 + framing —</p>
+<p>setelah crypto Phase 76), framework router (ekosistem, bukan std).</p>
+<h2 id="4-temuan-implementasi">4. Temuan implementasi <a href="#4-temuan-implementasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>import std.string</code> TAK TERPARSE (<code>string</code> keyword; segmen path</li>
+</ul>
+<p>  butuh identifier) — gunakan <code>import string;</code> (alias resmi).</p>
+<p>  Sama kelasnya dengan <code>std.async</code> (Phase 57). Kandidatichever:</p>
+<p>  izinkan keyword sebagai segmen path (parser, follow-up kecil).</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>Parse unit (200/404/malformed/<code>&quot;&quot;</code>) + round-trip</li>
+</ul>
+<p>  serve-once→client hermetik hijau (<code>e2e_http.sh</code>).</p>
+<ul>
+<li><code>fmt --check</code> + <code>doc</code> + seluruh suite hijau; bench identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

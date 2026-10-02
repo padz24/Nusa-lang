@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dist-2.30.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="dist-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed System Foundation — Design (Phase 79, target 2.30.0">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/dist-2.30.html">
+<meta property="og:title" content="dist-2.30.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="dist-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed System Foundation — Design (Phase 79, target 2.30.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="dist-2.30.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="dist-2.30, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "dist-2.30.md", "category": "docs", "version": "3.0.0", "content": "dist-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed System Foundation — Design (Phase 79, target 2.30.0) # Status: implementasi slice ini. Mandat master: PHASE 79 (kondisional: concurrency stabil — TERPENUHI, e2e_concurrency 13/13; library-level primit", "code_example": "", "keywords": "dist-2.30, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/dist-2.30.html">dist-2.30.md</a></p><article><h1>dist-2.30.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="distributed-system-foundation-design-phase-79-target-2-30-0">Distributed System Foundation — Design (Phase 79, target 2.30.0) <a href="#distributed-system-foundation-design-phase-79-target-2-30-0" aria-label="taut">#</a></h1>
+<p>Status: implementasi slice ini. Mandat master: PHASE 79</p>
+<p>(kondisional: concurrency stabil — TERPENUHI, e2e_concurrency</p>
+<p>13/13; library-level primitives; mayoritas di ekosistem/paket,</p>
+<p>bukan compiler). Spec bahasa tak berubah.</p>
+<h2 id="1-peta-mandat-aktual">1. Peta mandat → aktual <a href="#1-peta-mandat-aktual" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Mandat</th><th>Aktual 2.30.0</th></tr></thead><tbody>
+<tr><td>serialization</td><td>ADA (csv/json/toml Phase 77; framing di rpc)</td></tr>
+<tr><td>RPC</td><td><strong>baru</strong> <code>std/rpc.ns</code> (JSON-RPC-min atas TCP newline)</td></tr>
+<tr><td>network protocols</td><td>ADA (tcp/http); RPC = pola di atasnya</td></tr>
+<tr><td>service discovery</td><td><strong>baru</strong> <code>std/discovery.ns</code> (daftar statis + pick)</td></tr>
+<tr><td>timeouts</td><td><strong>baru</strong> <code>std/timeout.ns</code> (task + poll deadline)</td></tr>
+<tr><td>retry policies</td><td><strong>baru</strong> <code>std/retry.ns</code> (struct policy + backoff)</td></tr>
+</tbody></table>
+<p>Ekosistem (bukan compiler): semua modul std murni-Nusa;</p>
+<p>implementasi service = aplikasi (contoh di e2e + docs).</p>
+<h2 id="2-kontrak-modul">2. Kontrak modul <a href="#2-kontrak-modul" aria-label="taut">#</a></h2>
+<ul>
+<li><code>rpc.ns</code> (<code>import net</code>, <code>import json</code>, <code>import string</code>):</li>
+</ul>
+<p>  framing = 1 baris JSON per pesan (<code>recv_line</code>).</p>
+<p>  <code>rpc_call(host, port, method, params_json)</code> → body hasil</p>
+<p>  mentah (<code>&quot;&quot;</code> bila dial/gagal — bedakan via <code>rpc_ok</code>?</p>
+<p>  TIDAK: &quot;&quot; = gagal, didokumentasikan).</p>
+<p>  <code>rpc_serve_once(port, handler: fn(string)-&gt;string)</code> →</p>
+<p>  0 ok / -1 (handler terima baris request, kembalikan baris</p>
+<p>  respons; dispatch metode di dalam via json_get_string).</p>
+<p>  Helper amplop: <code>rpc_request(id, method, params)</code>,</p>
+<p>  <code>rpc_response(id, result)</code>, <code>rpc_error(id, msg)</code>,</p>
+<p>  <code>rpc_method(req)</code>, <code>rpc_params(req)</code>, <code>rpc_result(resp)</code>.</p>
+<p>  Blocking (tanpa timeout — tasks hanya i64; didokumentasikan).</p>
+<ul>
+<li><code>discovery.ns</code> (tanpa import — murni atas string):</li>
+</ul>
+<p>  endpoint teks <code>&quot;host:port&quot;</code> (1/baris). <code>svc_count(list)</code>,</p>
+<p>  <code>svc_at(list, i)</code> (wraparound negatif aman → <code>&quot;&quot;</code> bila</p>
+<p>  kosong), <code>svc_host(ep)</code>, <code>svc_port(ep)</code> (-1 bila buruk),</p>
+<p>  <code>svc_round_robin(list, n)</code> (ke-n, modulo — counter di</p>
+<p>  pemanggil). IPv6 literal tak didukung (split <code>:</code> terakhir?</p>
+<p>  PERTAMA — didokumentasikan IPv4/hostname).</p>
+<ul>
+<li><code>timeout.ns</code> (<code>import tasks</code>, <code>import time</code>):</li>
+</ul>
+<p>  <code>with_timeout_ms(ms, op: fn()-&gt;i64, fallback)</code> — task +</p>
+<p>  poll 5ms hingga deadline; timeout = fallback + worker</p>
+<p>  DITINGGALKAN (tanpa preemptive kill — by-design tasks;</p>
+<p>  join/gabung tak mungkin pasca-abandon).</p>
+<ul>
+<li><code>retry.ns</code> (tanpa import — <code>sleep_ms</code> builtin):</li>
+</ul>
+<p>  <code>struct RetryPolicy { attempts, base_ms, factor }</code>,</p>
+<p>  <code>retry_default()</code> (3x, 50ms, x2),</p>
+<p>  <code>retry_with(p, op: fn()-&gt;i64, is_err: fn(i64)-&gt;bool)</code></p>
+<p>  → hasil terakhir (tidur base*factor^(k) antar-coba).</p>
+<h2 id="3-batas-jujur">3. Batas jujur <a href="#3-batas-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>RPC string-only (biner butuh <code>ord</code>); tanpa ID korelasi</li>
+</ul>
+<p>  otomatis (id dari pemanggil); tanpa notify (baca-buang</p>
+<p>  rawan SIGPIPE — didokumentasikan).</p>
+<ul>
+<li>Timeout i64-only (channel generik tak ada); granularitas</li>
+</ul>
+<p>  ~5ms; abandon-leak hingga worker selesai.</p>
+<ul>
+<li>Discovery statis (tanpa DNS-SRV/health-check).</li>
+<li>Backoff tanpa jitter (rand state-threading di pemanggil).</li>
+<li>Pelajaran harness (e2e_dist): <code>wait</code> polos atas server bg =</li>
+</ul>
+<p>  gantung selamanya bila klien gagal-diam (bounded-wait +</p>
+<p>  kill + bukti got); port dinamis via probe-tutup (kebal</p>
+<p>  stray/paralel); retry panggilan langsung (jendela race</p>
+<p>  close→relisten vs dial); JANGAN <code>pkill -f</code> berpola (bunuh</p>
+<p>  ancestor shell sendiri — PID tercatat saja).</p>
+<h2 id="4-pengujian">4. Pengujian <a href="#4-pengujian" aria-label="taut">#</a></h2>
+<ul>
+<li><code>tests/rpc_test.ns</code> (amplop murni, tanpa net),</li>
+</ul>
+<p>  <code>tests/retry_test.ns</code> (kebijakan + op file-counter),</p>
+<p>  <code>tests/timeout_test.ns</code> (cepat-ok + lambat-fallback),</p>
+<p>  <code>tests/discovery_test.ns</code> (murni).</p>
+<ul>
+<li><code>e2e_dist.sh</code>: <code>nusa test</code> + RPC Nusa↔Nusa localhost</li>
+</ul>
+<p>  (server binary bg + client golden + unknown-method) +</p>
+<p>  timeout/retry golden + negatif (port tutup).</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa test</code> +4 hijau; <code>e2e_dist</code> hijau; suite lama hijau;</li>
+</ul>
+<p>  bench identik; bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

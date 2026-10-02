@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>server-2.29.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="server-2.29.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cloud / Server Foundation — Design (Phase 78, target 2.29.0) ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/server-2.29.html">
+<meta property="og:title" content="server-2.29.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="server-2.29.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cloud / Server Foundation — Design (Phase 78, target 2.29.0) ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="server-2.29.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="server-2.29, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "server-2.29.md", "category": "docs", "version": "3.0.0", "content": "server-2.29.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cloud / Server Foundation — Design (Phase 78, target 2.29.0) # Status: implementasi slice ini. Mandat master: PHASE 78 (async I/O, networking, HTTP, TLS, logging, configuration, metrics; framework-agnostic). Sp", "code_example": "", "keywords": "server-2.29, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/server-2.29.html">server-2.29.md</a></p><article><h1>server-2.29.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="cloud-server-foundation-design-phase-78-target-2-29-0">Cloud / Server Foundation — Design (Phase 78, target 2.29.0) <a href="#cloud-server-foundation-design-phase-78-target-2-29-0" aria-label="taut">#</a></h1>
+<p>Status: implementasi slice ini. Mandat master: PHASE 78</p>
+<p>(async I/O, networking, HTTP, TLS, logging, configuration,</p>
+<p>metrics; framework-agnostic). Spec bahasa tak berubah.</p>
+<h2 id="1-peta-mandat-aktual">1. Peta mandat → aktual <a href="#1-peta-mandat-aktual" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Mandat</th><th>Status 2.29.0</th></tr></thead><tbody>
+<tr><td>async I/O</td><td>ADA (<code>tasks.ns</code> Future/await/cancel + thread/sync)</td></tr>
+<tr><td>networking</td><td>ADA (tcp + net.ns + e2e localhost)</td></tr>
+<tr><td>HTTP</td><td>ADA (<code>http.ns</code> client + serve-once + e2e)</td></tr>
+<tr><td>TLS integration</td><td><strong>baru</strong> <code>packages/tls/</code> (shim OpenSSL client, verifikasipenuh, guard e2e)</td></tr>
+<tr><td>logging</td><td>ADA (<code>logging.ns</code> Phase 75)</td></tr>
+<tr><td>configuration</td><td><strong>baru</strong> <code>std/config.ns</code> (env &gt; TOML &gt; fallback)</td></tr>
+<tr><td>metrics</td><td><strong>baru</strong> <code>std/metrics.ns</code> (struct eksplisit + render Prometheus)</td></tr>
+</tbody></table>
+<p>Batas arsitektur (didokumentasikan, bukan dipecahkan): handler</p>
+<p>per-koneksi ber-fd butuh closure-menangkap sebagai nilai thread</p>
+<p>— serve loop = accept+handle sekuensial (pola <code>http_serve_once</code>)</p>
+<p>atau worker-pool channel; server TLS = klien dulu (serve-TLS</p>
+<p>butuh terminasi sertifikat — follow-up).</p>
+<h2 id="2-packages-tls-referensi-pola-sqlite-phase-77">2. <code>packages/tls/</code> (referensi, pola sqlite Phase 77) <a href="#2-packages-tls-referensi-pola-sqlite-phase-77" aria-label="taut">#</a></h2>
+<ul>
+<li><code>shim.c</code>: tabel 16 slot <code>SSL*</code> (socket+SSL dibungkus);</li>
+</ul>
+<p>  <code>ntls_dial(host, port, cafile)</code> — TCP + <code>SSL_connect</code> +</p>
+<p>  <code>SSL_VERIFY_PEER</code> + cek hostname (<code>X509_check_host</code>);</p>
+<p>  cafile <code>&quot;&quot;</code> = path default sistem. <code>ntls_send/recv/close</code>.</p>
+<p>  <code>recv</code> mengembalikan byte via FILE dump (pola sqlite:</p>
+<p>  tanpa buffer lintas batas — <code>extern</code> tolak return string).</p>
+<p>  Hmm — recv@Request-response: `ntls_request(host, port, cafile,</p>
+<p>  request, path)` satu-shot (dial+kirim+terima-sampai-EOF+tutup)</p>
+<p>  untuk pola HTTPS-GET; primitif terpisah untuk sesi.</p>
+<ul>
+<li><code>tls.ns</code>: <code>extern fn</code> + alias <code>tls_dial/send/recv/close</code> +</li>
+</ul>
+<p>  <code>tls_request</code>.</p>
+<ul>
+<li><code>nusa.toml</code> + README + guard e2e (openssl CLI + py-ssl +</li>
+</ul>
+<p>  libssl; CA+server-cert lokal; verifikasi negatif: cert</p>
+<p>  salah → gagal).</p>
+<h2 id="3-std-config-ns-murni-import-toml-import-process">3. <code>std/config.ns</code> (murni; <code>import toml</code> + <code>import process</code> <a href="#3-std-config-ns-murni-import-toml-import-process" aria-label="taut">#</a></h2>
+<p>— preseden <code>encoding.ns</code> mengimpor <code>string</code>).</p>
+<ul>
+<li><code>config_str(doc, section, key, env, fallback)</code>:</li>
+</ul>
+<p>  env non-kosong menang, lalu TOML non-kosong, lalu fallback.</p>
+<ul>
+<li><code>config_int/doc</code> (parse + valid? <code>parse_int_valid</code> dari...</li>
+</ul>
+<p>  builtin global ✓): env valid-menang else TOML int.</p>
+<ul>
+<li><code>config_bool</code>: env <code>&quot;1&quot;/&quot;true&quot;</code> (lowercase? eksak + &quot;1&quot;;</li>
+</ul>
+<p>  didokumentasikan) else TOML.</p>
+<h2 id="4-std-metrics-ns-murni-import-time">4. <code>std/metrics.ns</code> (murni; import time) <a href="#4-std-metrics-ns-murni-import-time" aria-label="taut">#</a></h2>
+<ul>
+<li><code>struct Metrics { requests, errors, bytes, started_ms }</code>.</li>
+<li><code>metrics_new()</code>, <code>m_req/m_err/m_bytes</code> (value-semantics:</li>
+</ul>
+<p>  kembalikan struct baru), <code>m_elapsed_ms(m)</code>,</p>
+<p>  <code>render_prometheus(m, prefix)</code> (4 baris <code># TYPE</code>+nilai).</p>
+<h2 id="5-pengujian">5. Pengujian <a href="#5-pengujian" aria-label="taut">#</a></h2>
+<ul>
+<li><code>tests/config_test.ns</code>, <code>tests/metrics_test.ns</code> (<code>nusa test</code>).</li>
+<li><code>e2e_server.sh</code>: config golden + metrics golden +</li>
+</ul>
+<p>  serve_once smoke + tls-paket guarded (dial+request lokal +</p>
+<p>  verify-negatif) + negatif API.</p>
+<h2 id="6-acceptance-criteria">6. Acceptance criteria <a href="#6-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa test</code> +2 hijau; <code>e2e_server</code> hijau (atau SKIP-tls</li>
+</ul>
+<p>  eksplisit); suite lama hijau; bench identik; bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

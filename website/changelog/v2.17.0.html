@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.17.0 — Nusa Docs 2.17.0</title>
+<meta name="description" content="2.17.0 v2.17.0 Terdampak: compiler/ffi Release notes # — 2026-09-10 (Phase 66: C INTEROP 2.0, milestone 1 — bindgen) Generator binding header C subset">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.17.0.html">
+<meta property="og:title" content="Changelog 2.17.0 — Nusa Docs 2.17.0">
+<meta property="og:description" content="2.17.0 v2.17.0 Terdampak: compiler/ffi Release notes # — 2026-09-10 (Phase 66: C INTEROP 2.0, milestone 1 — bindgen) Generator binding header C subset">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.17.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.17.0">
+<meta name="nusa:keywords" content="changelog, 2.17.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.17.0", "category": "changelog", "version": "2.17.0", "content": "2.17.0 v2.17.0 Terdampak: compiler/ffi Release notes # — 2026-09-10 (Phase 66: C INTEROP 2.0, milestone 1 — bindgen) Generator binding header C subset (tanpa perubahan checker/ codegen; C++ tetap ditolak). Spec tak berubah. Ditambahkan # nusa bindgen &lt;header.h&gt; [-o out.ns] ( compiler/bindgen/", "code_example": "", "keywords": "changelog, 2.17.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.17.0.html">2.17.0</a></p><article><h1>2.17.0</h1><span class="badge stable">v2.17.0</span> <p>Terdampak: <a href="../compiler/ffi.html">compiler/ffi</a></p><h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-10 (Phase 66: C INTEROP 2.0, milestone 1 — bindgen)</p>
+<p>Generator binding header C subset (tanpa perubahan checker/</p>
+<p>codegen; C++ tetap ditolak). Spec tak berubah.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>nusa bindgen &lt;header.h&gt; [-o out.ns]</code> (<code>compiler/bindgen/</code>,</li>
+</ul>
+<p>  <code>Driver::runBindgen</code>): integer/<code>_Bool</code>/<code>char*</code>/<code>void</code>/</p>
+<p>  typedef-umum/<code>extern &quot;C&quot;</code>/<code>(void)</code>; skip beralasan + warning</p>
+<p>  (float/pointer/string-return/variadik/struct/typedef-kustom/</p>
+<p>  inline); rc 1 bila nol; output fmt-clean.</p>
+<ul>
+<li>Unit <code>test_bindgen</code> (4 grup) + <code>e2e_bindgen.sh</code> (7 kasus:</li>
+</ul>
+<p>  golden, warning, fmt, ujung-ke-ujung header→run 42/42,</p>
+<p>  3 penolakan) + <code>docs/ffi-bindgen-2.17.md</code> + § Bindgen di <code>ffi.md</code>.</p>
+<h3 id="diperbaiki-temuan-selama-milestone">Diperbaiki (temuan selama milestone) <a href="#diperbaiki-temuan-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li>Normalisasi <code>const</code>/<code>volatile</code> sebelum klasifikasi tipe</li>
+</ul>
+<p>  (<code>const char*</code> sempat &quot;pointer type&quot;); polos <code>unsigned</code> = int.</p>
+<ul>
+<li>Deklarasi ganda + <code>ec</code> ganda di header/driver (compile error).</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit + <code>e2e_bindgen</code> + ffi/final/tooling + suite lain hijau.</li>
+<li><code>.ns</code> + IR OK; <code>bench.sh</code> identik baseline 2.16.0.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.17.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

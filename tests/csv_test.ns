@@ -1,0 +1,19 @@
+// Sample `nusa test` target: csv stdlib (run with `nusa test tests/`).
+import csv;
+fn main() {
+    let t = "a,b,c\n1,2,3\nx,\"y,y\",\"q\"\"q\"";
+    assert(csv_num_rows(t) == 3);
+    assert(str_eq(csv_row(t, 0), "a,b,c"));
+    assert(str_eq(csv_row(t, 5), ""));
+    assert(csv_num_fields("a,b,c") == 3);
+    assert(str_eq(csv_field("a,b,c", 1), "b"));
+    assert(str_eq(csv_field("x,\"y,y\",\"q\"\"q\"", 1), "y,y"));
+    assert(str_eq(csv_field("x,\"y,y\",\"q\"\"q\"", 2), "q\"q"));
+    assert(str_eq(csv_field("a,b", 7), ""));
+    assert(csv_num_rows("") == 0);
+    assert(csv_num_rows("only") == 1);
+    assert(csv_num_rows("a\n") == 1);
+    assert(csv_num_rows("a\nb\n") == 2);
+    assert(csv_num_rows("a\r\nb\r\n") == 2);
+    assert(str_eq(csv_row("a\r\nb\r\n", 1), "b"));
+}

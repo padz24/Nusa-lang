@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stability-2.30.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="stability-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.30.1 Stability Release — Design (Phase 80) # Status">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/stability-2.30.html">
+<meta property="og:title" content="stability-2.30.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="stability-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.30.1 Stability Release — Design (Phase 80) # Status">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="stability-2.30.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="stability-2.30, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "stability-2.30.md", "category": "docs", "version": "3.0.0", "content": "stability-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.30.1 Stability Release — Design (Phase 80) # Status: implementasi slice ini. Mandat master: PHASE 80 (freeze fitur bahasa mayor; stabilitas, performa, keamanan, kompatibilitas, dokumentasi; tanpa RFC", "code_example": "", "keywords": "stability-2.30, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/stability-2.30.html">stability-2.30.md</a></p><article><h1>stability-2.30.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-2-30-1-stability-release-design-phase-80">Nusa 2.30.1 Stability Release — Design (Phase 80) <a href="#nusa-2-30-1-stability-release-design-phase-80" aria-label="taut">#</a></h1>
+<p>Status: implementasi slice ini. Mandat master: PHASE 80</p>
+<p>(freeze fitur bahasa mayor; stabilitas, performa, keamanan,</p>
+<p>kompatibilitas, dokumentasi; tanpa RFC khusus = tanpa fitur</p>
+<p>besar). Spec bahasa TAK BERUBAH (nol sintaks/semantik baru).</p>
+<h2 id="1-penomoran-keputusan-tercatat">1. Penomoran (keputusan tercatat) <a href="#1-penomoran-keputusan-tercatat" aria-label="taut">#</a></h2>
+<p>Master menarget &quot;2.5.0&quot; di dua fase berbeda (stale — didahului</p>
+<p>eksekusi 2.20→2.30). Rilis ini = <strong>2.30.1</strong> (patch: tanpa fitur;</p>
+<p>monoton; aman untuk perbandingan versi pkg).</p>
+<h2 id="2-stabilitas-harness">2. Stabilitas (harness) <a href="#2-stabilitas-harness" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_eco2.sh</code>: <code>HOME=$TMPDIR/home</code> hermetik (cache</li>
+</ul>
+<p>  <code>$HOME/.cache</code> bersama antar-suite paralel = flake</p>
+<p>  tamper-verify; e2e lain tak menyentuh cache itu).</p>
+<ul>
+<li><code>e2e_dist.sh</code>: sudah keras Phase 79 (bounded-wait, port</li>
+</ul>
+<p>  dinamis, retry).</p>
+<ul>
+<li>Dibiarkan (proteksi hang disengaja): timeout ketat</li>
+</ul>
+<p>  <code>e2e_control</code> (10s), tanpa-jitter retry.</p>
+<ul>
+<li>Fuzz seed-kedua (<code>NUSA_VERIFY_FUZZ_SEED</code>) satu sapuan.</li>
+</ul>
+<p>  TEMUAN NYATA: seed 424242 menunjukkan divergensi O0/O2 palsu —</p>
+<p>  generator meng-clobber countdown loop (non-terminasi; oracle</p>
+<p>  membandingkan output terpotong-timeout). BUKAN miscompile.</p>
+<p>  Perbaikan 2 lapis: counter loop masuk frozen (terminasi</p>
+<p>  terbukti 6 seed x 40 program, 0 hang) + oracle gagal eksplisit</p>
+<p>  pada rc=124. Fondasi Phase 71 bekerja sesuai tujuan.</p>
+<h2 id="3-performa-baseline-bukan-optimasi">3. Performa (baseline, bukan optimasi) <a href="#3-performa-baseline-bukan-optimasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Catat angka <code>bench.sh</code> + ukuran biner + waktu build</li>
+</ul>
+<p>  <code>parse.ns</code> (korpus terbesar) sebagai baseline §6.</p>
+<ul>
+<li>Tanpa perubahan codegen (freeze).</li>
+</ul>
+<h2 id="4-keamanan-audit-bukan-fitur">4. Keamanan (audit, bukan fitur) <a href="#4-keamanan-audit-bukan-fitur" aria-label="taut">#</a></h2>
+<ul>
+<li>Runtime C: tanpa strcpy/strcat/sprintf/gets (terverifikasi;</li>
+</ul>
+<p>  pengecualian shim paket: strcpy ke malloc(strlen+1) —</p>
+<p>  aman-by-construction, tercatat).</p>
+<ul>
+<li>Flag build Release + e2e_hardening/sec hijau (rerun).</li>
+<li><code>extern</code> return-string tetap ditolak (kepemilikan memori).</li>
+</ul>
+<h2 id="5-kompatibilitas">5. Kompatibilitas <a href="#5-kompatibilitas" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_compat.sh</code> (baru): <code>check</code> SEMUA <code>.ns</code> repo</li>
+</ul>
+<p>  (std/examples/tutorials/bench/selfhost/tests/packages;</p>
+<p>  daftar eksplisit + ambang N) + <code>build</code> subset runnable.</p>
+<p>  Negatif/berbeda-perilaku (mis. modul-tanpa-main) masuk</p>
+<p>  daftar-terkendali, bukan PASS/FAIL buta.</p>
+<ul>
+<li>Artefak <code>.ns.ll</code> di pohon sumber dibersihkan (gitignored;</li>
+</ul>
+<p>  pembuatnya = run in-place e2e_ecosystem — didokumentasikan,</p>
+<p>  tak diubah perilakunya).</p>
+<h2 id="6-baseline-2-30-1-diukur-2026-09-12-termux-aarch64">6. Baseline 2.30.1 (diukur 2026-09-12, Termux AArch64) <a href="#6-baseline-2-30-1-diukur-2026-09-12-termux-aarch64" aria-label="taut">#</a></h2>
+<ul>
+<li><code>bench.sh</code> closureapply: build 2.06 s, exe 6776 B, run 0.17 s</li>
+</ul>
+<p>  (deviasi antar-run wajar di perangkat yang sama).</p>
+<ul>
+<li><code>build/nusa</code>: 1522248 B.</li>
+<li>Build <code>selfhost/parse.ns</code> (korpus terbesar, ~65 KB): 3.7 s wall.</li>
+<li>Full <code>ctest -j2</code>: 79/79 hijau (1149 dtk; diisi pasca-verifikasi final).</li>
+</ul>
+<h2 id="7-dokumentasi">7. Dokumentasi <a href="#7-dokumentasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>standard-library.md</code> header → v2.30.1; <code>compiler.md</code></li>
+</ul>
+<p>  catatan freeze; <code>check-links.py</code> hijau; website regen.</p>
+<ul>
+<li>File ini + CHANGELOG [2.30.1].</li>
+</ul>
+<h2 id="8-acceptance-criteria">8. Acceptance criteria <a href="#8-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>Nol perubahan parser/checker/codegen (dibuktikan diff</li>
+</ul>
+<p> listing); suite hijau (78+1); fuzz seed-2 hijau; baseline</p>
+<p>  tercatat; <code>.ns.ll</code> bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

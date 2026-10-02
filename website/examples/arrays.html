@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arrays.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="arrays.ns v3.0.0 // Contoh v0.7.0: string &amp;amp; array (program milestone MASTER PROMPT). // Diharapkan mencetak: // Hello // 1 // 4 // 30 fn main() { ">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/arrays.html">
+<meta property="og:title" content="arrays.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="arrays.ns v3.0.0 // Contoh v0.7.0: string &amp;amp; array (program milestone MASTER PROMPT). // Diharapkan mencetak: // Hello // 1 // 4 // 30 fn main() { ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="arrays.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, arrays, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "arrays.ns", "category": "examples", "version": "3.0.0", "content": "arrays.ns v3.0.0 // Contoh v0.7.0: string &amp; array (program milestone MASTER PROMPT). // Diharapkan mencetak: // Hello // 1 // 4 // 30 fn main() { let message: string = &quot;Hello&quot;; print(message); let numbers: [i64] = [1, 2, 3, 4]; print(numbers[0]); print(len(numbers)); let total: i64 =", "code_example": "// Contoh v0.7.0: string & array (program milestone MASTER PROMPT).\n// Diharapkan mencetak:\n// Hello\n// 1\n// 4\n// 30\nfn main() {\n    let message: string = \"Hello\";\n    print(message);\n    let numbers: [i64] = [1, 2, 3, 4];\n    print(numbers[0]);\n    print(len(numbers));\n    let total: i64 = numbers[0] + numbers[1] + numbers[2] + numbers[3];\n    let doubled: [i64] = [total, total];\n    print(doubled[0] + doubled[1] + total);\n}\n", "keywords": "example, arrays, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/arrays.html">arrays.ns</a></p><article><h1>arrays.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">// Contoh v0.7.0: string &amp; array (program milestone MASTER PROMPT).
+// Diharapkan mencetak:
+// Hello
+// 1
+// 4
+// 30
+fn main() {
+    let message: string = &quot;Hello&quot;;
+    print(message);
+    let numbers: [i64] = [1, 2, 3, 4];
+    print(numbers[0]);
+    print(len(numbers));
+    let total: i64 = numbers[0] + numbers[1] + numbers[2] + numbers[3];
+    let doubled: [i64] = [total, total];
+    print(doubled[0] + doubled[1] + total);
+}
+</code></pre><details><summary>Output</summary><samp class="out">Hello
+1
+4
+30
+</samp></details><p><a class="btn sec" href="../playground/?code=%2F%2F%20Contoh%20v0.7.0%3A%20string%20%26%20array%20%28program%20milestone%20MASTER%20PROMPT%29.%0A%2F%2F%20Diharapkan%20mencetak%3A%0A%2F%2F%20Hello%0A%2F%2F%201%0A%2F%2F%204%0A%2F%2F%2030%0Afn%20main%28%29%20%7B%0A%20%20%20%20let%20message%3A%20string%20%3D%20%22Hello%22%3B%0A%20%20%20%20print%28message%29%3B%0A%20%20%20%20let%20numbers%3A%20%5Bi64%5D%20%3D%20%5B1%2C%202%2C%203%2C%204%5D%3B%0A%20%20%20%20print%28numbers%5B0%5D%29%3B%0A%20%20%20%20print%28len%28numbers%29%29%3B%0A%20%20%20%20let%20total%3A%20i64%20%3D%20numbers%5B0%5D%20%2B%20numbers%5B1%5D%20%2B%20numbers%5B2%5D%20%2B%20numbers%5B3%5D%3B%0A%20%20%20%20let%20doubled%3A%20%5Bi64%5D%20%3D%20%5Btotal%2C%20total%5D%3B%0A%20%20%20%20print%28doubled%5B0%5D%20%2B%20doubled%5B1%5D%20%2B%20total%29%3B%0A%7D%0A">Coba di playground</a></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

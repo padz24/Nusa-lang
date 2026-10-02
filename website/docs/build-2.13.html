@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>build-2.13.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="build-2.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Build System 2.0 — Design (Phase 62, target 2.13.0) # Status: ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/build-2.13.html">
+<meta property="og:title" content="build-2.13.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="build-2.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Build System 2.0 — Design (Phase 62, target 2.13.0) # Status: ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="build-2.13.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="build-2.13, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "build-2.13.md", "category": "docs", "version": "3.0.0", "content": "build-2.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Build System 2.0 — Design (Phase 62, target 2.13.0) # Status: audit → Implementation (milestone 1: clean + --profile ). Spec tak berubah; tooling. 1. Audit CLI vs mandat (2.12.0) # Ada: build/test/run/check/inst", "code_example": "", "keywords": "build-2.13, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/build-2.13.html">build-2.13.md</a></p><article><h1>build-2.13.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="build-system-2-0-design-phase-62-target-2-13-0">Build System 2.0 — Design (Phase 62, target 2.13.0) <a href="#build-system-2-0-design-phase-62-target-2-13-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: <code>clean</code> + <code>--profile</code>).</p>
+<p>Spec tak berubah; tooling.</p>
+<h2 id="1-audit-cli-vs-mandat-2-12-0">1. Audit CLI vs mandat (2.12.0) <a href="#1-audit-cli-vs-mandat-2-12-0" aria-label="taut">#</a></h2>
+<p>Ada: build/test/run/check/install/publish, <code>-O0/1/2/3/s/z</code>,</p>
+<p><code>-g</code>, <code>--fresh</code>, <code>--target/--sysroot</code>, <code>--emit-ir/asm/-c</code>,</p>
+<p>incremental (fingerprint+cache), build caching (precompiled</p>
+<p>runtime). Belum: <code>clean</code>, profiles, parallel <code>test</code></p>
+<p>(sekuensial fork+alarm; output deterministik — dipertahankan</p>
+<p>sengaja, paralelisme di ctest), custom <code>[profile.*]</code> manifest.</p>
+<h2 id="2-milestone-1">2. Milestone 1 <a href="#2-milestone-1" aria-label="taut">#</a></h2>
+<p><strong><code>nusa clean [dir=.]</code></strong> (default cwd): hapus artefak</p>
+<p>tergenerasi — <code>*.ns.ll</code> (rekursif), <code>.nusa-cache/</code> (rekursif),</p>
+<p><code>target/</code>, <code>dist/</code> (top-level paket). TIDAK menyentuh sumber</p>
+<p>(<code>*.ns</code>), manifest, lock, atau biner luar <code>target/</code>. Cetak</p>
+<p>ringkasan jumlah. Idempoten (bersih ganda = 0 dihapus, rc 0).</p>
+<p><strong><code>--profile &lt;dev|debug|release&gt;</code></strong> (untuk <code>build</code> + <code>pkg build</code>):</p>
+<ul>
+<li><code>dev</code> (default implisit): <code>-O0</code>, tanpa <code>-g</code> (perilaku hari ini).</li>
+<li><code>debug</code>: <code>-O0</code> + <code>-g</code> (DWARF).</li>
+<li><code>release</code>: <code>-O2</code>, tanpa <code>-g</code>.</li>
+<li>Flag eksplisit (<code>-O*</code>/<code>-g</code>) menang atas profil (urutan bebas).</li>
+<li>Profil tak dikenal → error + daftar valid.</li>
+<li>Profil custom <code>[profile.NAME]</code> = follow-up (butuh skema</li>
+</ul>
+<p>  manifest + merge + validasi; tercatat).</p>
+<h2 id="3-ditunda-beralasan">3. DITUNDA beralasan <a href="#3-ditunda-beralasan" aria-label="taut">#</a></h2>
+<p><code>test</code> paralel (determinisme output &gt; kecepatan; <code>ctest -j</code></p>
+<p>mencakup), custom profiles, <code>run --profile</code> (runRun tanpa</p>
+<p>penerus flag — butuh refactor pemisah argumen; follow-up),</p>
+<p>remote/distributed cache.</p>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_buildsys.sh</code>: clean menghapus + idempoten + tak sentuh</li>
+</ul>
+<p>  sumber; tiap profil build+run benar (<code>-O2</code> biner jalan,</p>
+<p>  <code>-g</code> ada DWARF); eksplisit menang; profil asing ditolak;</p>
+<p>  <code>pkg build --profile release</code> jalan.</p>
+<ul>
+<li>Seluruh suite hijau; bench identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

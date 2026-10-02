@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Language Server (LSP) — Nusa Docs 2.14.0</title>
+<meta name="description" content="Language Server (LSP) v2.14.0 Overview nusa lsp (stdio): diagnostics, completion, hover, goto-definition, symbols, formatting, rename (1.17.0) + refer">
+<link rel="canonical" href="https://nusa-lang.org/docs/compiler/lsp.html">
+<meta property="og:title" content="Language Server (LSP) — Nusa Docs 2.14.0">
+<meta property="og:description" content="Language Server (LSP) v2.14.0 Overview nusa lsp (stdio): diagnostics, completion, hover, goto-definition, symbols, formatting, rename (1.17.0) + refer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Language Server (LSP)">
+<meta name="nusa:category" content="compiler">
+<meta name="nusa:version" content="2.14.0">
+<meta name="nusa:keywords" content="LSP, hover, completion, goto-definition, rename, references">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Language Server (LSP)", "category": "compiler", "version": "2.14.0", "content": "Language Server (LSP) v2.14.0 Overview nusa lsp (stdio): diagnostics, completion, hover, goto-definition, symbols, formatting, rename (1.17.0) + references di atas mesin scope-walk sama dengan rename (2.14.0). JSON minimal tanpa exceptions; transport Content-Length; use→def (let/param/bind-pola/lam", "code_example": "", "keywords": "LSP, hover, completion, goto-definition, rename, references"}</script>
+</head>
+<body class="kind-compiler">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/" aria-current="page">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../compiler/">Pipeline</a></li><li><a href="../compiler/architecture.html">Architecture</a></li><li><a href="../compiler/frontend.html">Frontend (Lexer/Parser/AST/Semantic/TypeChecker)</a></li><li><a href="../compiler/mir.html">MIR (Nusa IR)</a></li><li><a href="../compiler/optimizations.html">Optimizations</a></li><li><a href="../compiler/runtime.html">Runtime</a></li><li><a href="../compiler/memory-model.html">Memory Model</a></li><li><a href="../compiler/llvm.html">LLVM Integration</a></li><li><a href="../compiler/debugging.html">Debugging (DWARF)</a></li><li><a href="../compiler/lsp.html" aria-current="page">Language Server (LSP)</a></li><li><a href="../compiler/incremental.html">Incremental Compilation</a></li><li><a href="../compiler/bootstrap.html">Bootstrap &amp; Self-Hosting</a></li><li><a href="../compiler/ffi.html">C FFI &amp; Bindgen</a></li><li><a href="../compiler/targets.html">Targets &amp; Cross Compilation</a></li><li><a href="../compiler/profiling.html">Profiling &amp; Build Stats</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../compiler/">Compiler</a> / <a href="../compiler/lsp.html">Language Server (LSP)</a></p><article><h1>Language Server (LSP)</h1><span class="badge stable">v2.14.0</span> <h2>Overview</h2><p>nusa lsp (stdio): diagnostics, completion, hover, goto-definition, symbols, formatting, rename (1.17.0) + references di atas mesin scope-walk sama dengan rename (2.14.0). JSON minimal tanpa exceptions; transport Content-Length; use→def (let/param/bind-pola/lambda/match-arm + global).</p><h2>Source</h2><ul><li><code>compiler/lsp/</code></li><li><code>docs/lsp.md</code></li></ul><div class="warn"><h2>Limitations</h2><ul><li>Satu file (tanpa resolve impor); tanpa typechecker (hover lokal tanpa tipe); tanpa goto-tipe/codeAction; byte-based.</li></ul></div><h2>Tests</h2><p><code>e2e_lsp.py (24 + 4 asersi references)</code></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.14.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

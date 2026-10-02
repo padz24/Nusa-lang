@@ -1,0 +1,16 @@
+// Sample `nusa test` target: rpc envelope (pure, no net).
+import rpc;
+fn main() {
+    let q = rpc_request(7, "add", "{\"a\":1}");
+    assert(str_eq(rpc_method(q), "add"));
+    assert(rpc_id(q) == 7);
+    assert(str_eq(rpc_params(q), "{\"a\":1}"));
+    assert(str_eq(rpc_params("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"m\",\"params\":[1,2]}"), "[1,2]"));
+    assert(str_eq(rpc_params("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"m\",\"params\":\"s\"}"), "\"s\""));
+    assert(str_eq(rpc_params("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"m\"}"), ""));
+    let r = rpc_response(7, "3");
+    assert(str_eq(rpc_result(r), ""));
+    assert(json_get_int(r, "id") == 7);
+    let e = rpc_error(7, "nope");
+    assert(str_eq(json_get_string(e, "error"), "nope"));
+}

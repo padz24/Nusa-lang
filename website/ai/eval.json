@@ -1,0 +1,506 @@
+{
+ "answerable": [
+  {
+   "a": "Nusa, dari sumber ke biner. Nusa adalah bahasa compiled modern oleh Padil (Banyumas) : tulis .ns , dapatkan executable native lewat LLVM 21.1.8 di Termux Android. Unduh Nusa 3.0.0 Mulai dari nol hello",
+   "q": "Apa itu Nusa Docs? (versi 3.0.0)",
+   "source": "index.html"
+  },
+  {
+   "a": "Learn Nusa — kurikulum 01–08 Centang progresmu (tersimpan lokal, tanpa akun): Beginner path 01-hello — Program Pertama (20 menit · prasyarat: Compiler sudah di-build (cmake --build build).) 02-variabl",
+   "q": "Apa itu Learn Nusa? (versi 3.0.0)",
+   "source": "learn/"
+  },
+  {
+   "a": "01-hello — Program Pertama v3.0.0 Estimasi 20 menit · Struktur fn main, print, perintah build/run/check. Penjelasan 01 — Hello, Nusa # Prasyarat: compiler sudah di-build ( cmake --build build ). Tujua",
+   "q": "Apa itu 01-hello Program Pertama? (versi 3.0.0)",
+   "source": "learn/01-hello.html"
+  },
+  {
+   "a": "02-variables — Variabel &amp; Tipe Dasar v3.0.0 Estimasi 30 menit · let, anotasi i64/bool/string/[i64], indexing, len. Penjelasan 02 — Variables &amp; types # Tujuan: let , anotasi i64 / bool / string",
+   "q": "Apa itu 02-variables Variabel & Tipe Dasar? (versi 3.0.0)",
+   "source": "learn/02-variables.html"
+  },
+  {
+   "a": "03-functions — Fungsi &amp; Struct v3.0.0 Estimasi 40 menit · fn, param/return, struct literal, field access. Penjelasan 03 — Functions, structs, modules # Tujuan: fn + return , struct literal + akses",
+   "q": "Apa itu 03-functions Fungsi & Struct? (versi 3.0.0)",
+   "source": "learn/03-functions.html"
+  },
+  {
+   "a": "04-generics-traits — Generics &amp; Traits v3.0.0 Estimasi 60 menit · Tparam &lt;T&gt;, monomorphisasi, trait/impl, bound T: Show. Penjelasan 04 — Generics &amp; traits # Tujuan: fn f&lt;T&gt; , struc",
+   "q": "Apa itu 04-generics-traits Generics & Traits? (versi 3.0.0)",
+   "source": "learn/04-generics-traits.html"
+  },
+  {
+   "a": "05-match-enum — Match &amp; Enum v3.0.0 Estimasi 45 menit · enum, ctor Color.Red, pola literal/bind/_/varian, exhaustiveness. Penjelasan 05 — Match &amp; enum # Tujuan: statement match , pola literal/",
+   "q": "Apa itu 05-match-enum Match & Enum? (versi 3.0.0)",
+   "source": "learn/05-match-enum.html"
+  },
+  {
+   "a": "06-error-handling — Error Handling v3.0.0 Estimasi 50 menit · Option/Result enum natif, ctor qualified, kombinator, operator ?. Penjelasan 06 — Error handling (Option/Result 2.0) # Tujuan: enum natif ",
+   "q": "Apa itu 06-error-handling Error Handling? (versi 3.0.0)",
+   "source": "learn/06-error-handling.html"
+  },
+  {
+   "a": "07-closures-concurrency — Closures &amp; Concurrency v3.0.0 Estimasi 60 menit · Lambda |x| by-value capture, thread_spawn/join, atomic. Penjelasan 07 — Closures &amp; concurrency # Tujuan: lambda |x| ",
+   "q": "Apa itu 07-closures-concurrency Closures & Concurrency? (versi 3.0.0)",
+   "source": "learn/07-closures-concurrency.html"
+  },
+  {
+   "a": "08-package-project — Package Project v3.0.0 Estimasi 45 menit · nusa new, nusa pkg init/build/test, registry lokal. Penjelasan 08 — Package project # Tujuan: dari satu file ke proyek paket ( nusa.toml",
+   "q": "Apa itu 08-package-project Package Project? (versi 3.0.0)",
+   "source": "learn/08-package-project.html"
+  },
+  {
+   "a": "Language Reference 12 topik · spec normatif language-spec-2.0 · Migrasi 1.x → 2.0 BREAKING 2.0 Option/Result struct → enum natif; ctor qualified; field lama ditolak; async reserved. Syntax — Sintaks N",
+   "q": "Apa itu Language Reference? (versi 3.0.0)",
+   "source": "language/"
+  },
+  {
+   "a": "Syntax v3.0.0 Overview Sintaks Nusa: item top-level (import, type, trait, impl, struct, enum, fn, extern fn), komentar // dan ///, dan operator ? =&gt; |. Keyword async/await di-reserved dan dilarang ",
+   "q": "Apa itu Syntax? (versi 3.0.0)",
+   "source": "language/syntax.html"
+  },
+  {
+   "a": "Variables v3.0.0 Overview Deklarasi dengan let, opsional anotasi tipe. Tipe dasar: i64, bool, string, array [T]. Indexing 0-based dengan cek batas runtime. Syntax let a = 10; let b: i64 = 20; let acti",
+   "q": "Apa itu Variables? (versi 3.0.0)",
+   "source": "language/variables.html"
+  },
+  {
+   "a": "Functions v3.0.0 Overview Fungsi top-level fn dengan param bertipe dan return eksplisit. Semua jalur harus return bila return type bukan void. Syntax fn add(a: i64, b: i64) -&gt; i64 { return a + b; }",
+   "q": "Apa itu Functions? (versi 3.0.0)",
+   "source": "language/functions.html"
+  },
+  {
+   "a": "Types v3.0.0 Overview Static typing: i64/bool/string/void, fn, array [T], struct/enum bernama, dan alias type Name = T (transparan, forward-ref OK). Syntax type UserId = i64; let u: UserId = 7; let xs",
+   "q": "Apa itu Types? (versi 3.0.0)",
+   "source": "language/types.html"
+  },
+  {
+   "a": "Struct v3.0.0 Overview Struct by-value dengan field publik. Konstruksi via literal Struct { field: value }. Method via impl trait (dispatch statis). Syntax struct Person { name: string; age: i64; } le",
+   "q": "Apa itu Struct? (versi 3.0.0)",
+   "source": "language/structs.html"
+  },
+  {
+   "a": "Enum v3.0.0 Overview Enum dengan payload posisional dan konstruktor qualified E.V(...). BREAKING 2.0: Option/Result kini enum natif di std (bukan struct); ctor lama none()/ok(v,d)/err(d,e) dan field .",
+   "q": "Apa itu Enum? (versi 3.0.0)",
+   "source": "language/enums.html"
+  },
+  {
+   "a": "Generics v3.0.0 Overview Fungsi/struct generik dengan monomorphisasi per instansiasi konkret. Inferensi via unify + eksplisit + mismatch per posisi. Syntax fn identity&lt;T&gt;(value: T) -&gt; T { ret",
+   "q": "Apa itu Generics? (versi 3.0.0)",
+   "source": "language/generics.html"
+  },
+  {
+   "a": "Traits v3.0.0 Overview trait T { fn m(self, ...) ...; } tanpa body; impl Trait for Type dengan resolve statis menjadi fungsi mangled. Koherensi unik program-wide. Syntax trait Show { fn show(self) -&g",
+   "q": "Apa itu Traits? (versi 3.0.0)",
+   "source": "language/traits.html"
+  },
+  {
+   "a": "Pattern Matching v3.0.0 Overview Statement match dengan pola literal int/bool/string, _, bind, struct, varian, dan guard if. Desugar ke let + rantai if/else (tanpa codegen baru). Syntax match x { 1 =&",
+   "q": "Apa itu Pattern Matching? (versi 3.0.0)",
+   "source": "language/pattern-matching.html"
+  },
+  {
+   "a": "Error Handling v3.0.0 Overview enum Option&lt;T&gt; { Some(T), None } dan enum Result&lt;T,E&gt; { Ok(T), Err(E) } + kombinator bebas generik + operator propagasi expr? (khusus Result; Option/void/E-b",
+   "q": "Apa itu Error Handling? (versi 3.0.0)",
+   "source": "language/error-handling.html"
+  },
+  {
+   "a": "Concurrency v3.0.0 Overview Thread pthread + channel FIFO + mutex + atomik seq-cst + sleep sebagai 16 builtin (+chan_len di 2.7.0). Runtime C di-link otomatis (-pthread). Syntax let h = thread_spawn(w",
+   "q": "Apa itu Concurrency? (versi 3.0.0)",
+   "source": "language/concurrency.html"
+  },
+  {
+   "a": "Modules v3.0.0 Overview import math; memuat &lt;dir&gt;/math.ns (transitif). Modul flat namespace publik; dependensi paket via nusa.toml + lock + NUSA_PATH otomatis. Syntax // project/math.ns fn add(a",
+   "q": "Apa itu Modules? (versi 3.0.0)",
+   "source": "language/modules.html"
+  },
+  {
+   "a": "Reference CLI Formatter Docgen Diagnostics",
+   "q": "Apa itu Reference? (versi 3.0.0)",
+   "source": "reference/"
+  },
+  {
+   "a": "CLI Reference v3.0.0 22+ subperintah nusa v3.0.0. Sumber: nusa --help verbatim. Nusa programming language v3.0.0 — Stable Usage: nusa --version Print version nusa --help Print this help nusa build &lt",
+   "q": "Apa itu CLI Reference? (versi 3.0.0)",
+   "source": "reference/cli.html"
+  },
+  {
+   "a": "Formatter (nusa fmt) v3.0.0 Formatter token-based idempoten: nusa fmt file.ns , cek via --check . Aturan: bar |x| menempel, ? menempel, arm match diformat, komentar doc /// DIPERTAHANKAN (regresi 2.8.",
+   "q": "Apa itu Formatter? (versi 3.0.0)",
+   "source": "reference/fmt.html"
+  },
+  {
+   "a": "Docgen (nusa doc) v3.0.0 Generator API Markdown dari komentar /// : nusa doc std/math.ns [-o out.md] . Mencakup seksi Functions + Extern Functions + Traits + Enums. Website stdlib digenerate dari outp",
+   "q": "Apa itu Docgen? (versi 3.0.0)",
+   "source": "reference/docgen.html"
+  },
+  {
+   "a": "Diagnostics Catalog v3.0.0 Format: file:line:col + snippet + caret span + help: . Cari pesan verbatim via Search (mode error-message). Pesan Arti &amp; aksi Tahap Checked &lt;file&gt;: no errors nusa ",
+   "q": "Apa itu Diagnostics? (versi 3.0.0)",
+   "source": "reference/diagnostics.html"
+  },
+  {
+   "a": "Standard Library — 18 modul v3.0.0 Sumber: std/*.ns via nusa doc + kurasi. Contoh diuji run di CI. std.collections sejak 1.0.0 — Koleksi dasar di atas array. std.error sejak 1.5.0 — Era struct; 2.0: e",
+   "q": "Apa itu Standard Library? (versi 3.0.0)",
+   "source": "stdlib/"
+  },
+  {
+   "a": "std.collections v1.0.0 Koleksi dasar di atas array. Module import collections; (atau import std.collections; — ekuivalen). Modul tanpa fungsi publik terdokumentasi. Source Lihat std/collections.ns di ",
+   "q": "Apa itu std.collections? (versi 1.0.0)",
+   "source": "stdlib/collections.html"
+  },
+  {
+   "a": "std.error v1.5.0 Era struct; 2.0: enum natif + operator ?. Module import error; (atau import std.error; — ekuivalen). error(message: string) -&gt; Error Signature: error(message: string) -&gt; Error *",
+   "q": "Apa itu std.error? (versi 1.5.0)",
+   "source": "stdlib/error.html"
+  },
+  {
+   "a": "std.fs v1.0.0 File tanpa error rinci (&quot;&quot;/false); parse_int_opt/file_read_opt murni-Nusa (1.5.0). Module import fs; (atau import std.fs; — ekuivalen). copy_file(src: string, dst: string) -&gt",
+   "q": "Apa itu std.fs? (versi 1.0.0)",
+   "source": "stdlib/fs.html"
+  },
+  {
+   "a": "std.http v2.9.0 HTTP/1.x murni Nusa: http_status/http_body/http_get/http_serve_once loopback. Module import http; (atau import std.http; — ekuivalen). _read_request(fd: i64) -&gt; string Signature: _r",
+   "q": "Apa itu std.http? (versi 2.9.0)",
+   "source": "stdlib/http.html"
+  },
+  {
+   "a": "std.io v1.0.0 print/len/assert, I/O dasar. Module import io; (atau import std.io; — ekuivalen). read_int() -&gt; i64 Signature: read_int() -&gt; i64 Belum ada doc-comment ///; signature di atas adalah",
+   "q": "Apa itu std.io? (versi 1.0.0)",
+   "source": "stdlib/io.html"
+  },
+  {
+   "a": "std.math v1.0.0 abs/min/max/clamp/pow/fact/gcd. Module import math; (atau import std.math; — ekuivalen). abs(n: i64) -&gt; i64 Signature: abs(n: i64) -&gt; i64 Belum ada doc-comment ///; signature di ",
+   "q": "Apa itu std.math? (versi 1.0.0)",
+   "source": "stdlib/math.html"
+  },
+  {
+   "a": "std.net v1.10.0 TCP saja (getaddrinfo, loop-send, recv 1 MiB); 2.0: tcp_listen/tcp_accept + listen_on/accept_one. Module import net; (atau import std.net; — ekuivalen). dial(host: string, port: i64) -",
+   "q": "Apa itu std.net? (versi 1.10.0)",
+   "source": "stdlib/net.html"
+  },
+  {
+   "a": "std.option v1.5.0 Era struct; 2.0: enum Option&lt;T&gt; { Some(T), None } + kombinator. Module import option; (atau import std.option; — ekuivalen). some&lt;T&gt;(value: T) -&gt; Option&lt;T&gt; Signa",
+   "q": "Apa itu std.option? (versi 1.5.0)",
+   "source": "stdlib/option.html"
+  },
+  {
+   "a": "std.path v1.10.0 Murni Nusa: basename/dirname/ext/join/normalize. Module import path; (atau import std.path; — ekuivalen). path_is_absolute(p: string) -&gt; bool Signature: path_is_absolute(p: string)",
+   "q": "Apa itu std.path? (versi 1.10.0)",
+   "source": "stdlib/path.html"
+  },
+  {
+   "a": "std.process v1.10.0 process_exit/env/cwd/argc/argv; CLI args via process_argv. Module import process; (atau import std.process; — ekuivalen). prog_name() -&gt; string Signature: prog_name() -&gt; stri",
+   "q": "Apa itu std.process? (versi 1.10.0)",
+   "source": "stdlib/process.html"
+  },
+  {
+   "a": "std.random v1.10.0 LCG MMIX + range/bool; builtin random_u64 (/dev/urandom, bukan kriptografis). Module import random; (atau import std.random; — ekuivalen). rand_seed() -&gt; i64 Signature: rand_seed",
+   "q": "Apa itu std.random? (versi 1.10.0)",
+   "source": "stdlib/random.html"
+  },
+  {
+   "a": "std.result v1.5.0 Era struct; 2.0: enum Result&lt;T,E&gt; { Ok(T), Err(E) } + kombinator. Module import result; (atau import std.result; — ekuivalen). is_ok&lt;T, E&gt;(r: Result&lt;T, E&gt;) -&gt; bo",
+   "q": "Apa itu std.result? (versi 1.5.0)",
+   "source": "stdlib/result.html"
+  },
+  {
+   "a": "std.string v1.0.0 String buram; 1.19.0: str_index_of/str_contains; builtin str_char_at/slice clamp. Module import string; (atau import std.string; — ekuivalen). str_repeat(s: string, n: i64) -&gt; str",
+   "q": "Apa itu std.string? (versi 1.0.0)",
+   "source": "stdlib/string.html"
+  },
+  {
+   "a": "std.sync v1.10.0 with_lock, atomic_inc/dec di atas builtin mutex/atomic. Module import sync; (atau import std.sync; — ekuivalen). Terkait: builtin chan_len(c: i64) -&gt; i64 (observability antrean cha",
+   "q": "Apa itu std.sync? (versi 1.10.0)",
+   "source": "stdlib/sync.html"
+  },
+  {
+   "a": "std.system v1.0.0 Utilitas sistem. Module import system; (atau import std.system; — ekuivalen). die(msg: string) -&gt; void Signature: die(msg: string) -&gt; void Belum ada doc-comment ///; signature ",
+   "q": "Apa itu std.system? (versi 1.0.0)",
+   "source": "stdlib/system.html"
+  },
+  {
+   "a": "std.tasks v2.8.0 Future/Task/cancel kooperatif di atas thread/channel/atomic; tanpa sintaks async. Module import tasks; (atau import std.tasks; — ekuivalen). task_send(c: i64, f: fn() -&gt; i64) -&gt;",
+   "q": "Apa itu std.tasks? (versi 2.8.0)",
+   "source": "stdlib/tasks.html"
+  },
+  {
+   "a": "std.thread v1.10.0 par_map2 deterministik di atas builtin thread. Module import thread; (atau import std.thread; — ekuivalen). Terkait: builtin chan_len(c: i64) -&gt; i64 (observability antrean channe",
+   "q": "Apa itu std.thread? (versi 1.10.0)",
+   "source": "stdlib/thread.html"
+  },
+  {
+   "a": "std.time v1.10.0 Modul time + builtin time_now_ms/s. Module import time; (atau import std.time; — ekuivalen). now_ms() -&gt; i64 Signature: now_ms() -&gt; i64 Belum ada doc-comment ///; signature di a",
+   "q": "Apa itu std.time? (versi 1.10.0)",
+   "source": "stdlib/time.html"
+  },
+  {
+   "a": "Compiler Internals v3.0.0 Pipeline Source (.ns) ↓ Lexer → Parser → AST → Semantic → TypeChecker ↓ MIR (2.3+) → Opt (2.4+) → LLVM 21.1.8 Backend → Native Binary Architecture 2.2.0 — Peta lapisan ~26.00",
+   "q": "Apa itu Compiler Internals? (versi 3.0.0)",
+   "source": "compiler/"
+  },
+  {
+   "a": "Architecture v2.2.0 Overview Peta lapisan ~26.000 baris: Frontend (lexer/parser/ast + Builtin) → Semantic (namespace/scope) → TypeChecker → MIR/Opt → Codegen (LLVM) → Driver. Aturan v2.2.0: Backend no",
+   "q": "Apa itu Architecture? (versi 2.2.0)",
+   "source": "compiler/architecture.html"
+  },
+  {
+   "a": "Frontend (Lexer/Parser/AST/Semantic/TypeChecker) v2.0.0 Overview Lexer (token + // ///, keyword extern/enum/match/trait/impl/self/type, reserved async/await) → Parser (lookahead, lambda, match arm, ex",
+   "q": "Apa itu Frontend (Lexer/Parser/AST/Semantic/TypeChecker)? (versi 2.0.0)",
+   "source": "compiler/frontend.html"
+  }
+ ],
+ "refuse": [
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya float?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bagaimana async/await di Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya garbage collector?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bisakah channel di-close/select?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah registry mendukung HTTP?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah struct bisa punya method inheren?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada IDE online Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa berjalan di Windows?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah string mendukung ==?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada debugger interaktif?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya float?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bagaimana async/await di Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya garbage collector?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bisakah channel di-close/select?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah registry mendukung HTTP?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah struct bisa punya method inheren?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada IDE online Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa berjalan di Windows?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah string mendukung ==?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada debugger interaktif?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya float?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bagaimana async/await di Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya garbage collector?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bisakah channel di-close/select?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah registry mendukung HTTP?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah struct bisa punya method inheren?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada IDE online Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa berjalan di Windows?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah string mendukung ==?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada debugger interaktif?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya float?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bagaimana async/await di Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya garbage collector?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bisakah channel di-close/select?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah registry mendukung HTTP?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah struct bisa punya method inheren?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada IDE online Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa berjalan di Windows?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah string mendukung ==?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada debugger interaktif?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya float?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bagaimana async/await di Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa punya garbage collector?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Bisakah channel di-close/select?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah registry mendukung HTTP?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah struct bisa punya method inheren?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada IDE online Nusa?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah Nusa berjalan di Windows?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah string mendukung ==?",
+   "source": null
+  },
+  {
+   "a": "REFUSE: di luar korpus dokumentasi Nusa 3.0.0.",
+   "q": "Apakah ada debugger interaktif?",
+   "source": null
+  }
+ ]
+}

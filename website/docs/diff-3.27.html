@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>diff-3.27.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="diff-3.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Differential Compiler Testing — Milestone 1: Matriks Opt (Phase">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/diff-3.27.html">
+<meta property="og:title" content="diff-3.27.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="diff-3.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Differential Compiler Testing — Milestone 1: Matriks Opt (Phase">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="diff-3.27.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="diff-3.27, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "diff-3.27.md", "category": "docs", "version": "3.0.0", "content": "diff-3.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Differential Compiler Testing — Milestone 1: Matriks Opt (Phase 126) # Status: slice implementasi (target 3.27.0). Mandat master: bandingkan debug/release/optimized build, level LLVM berbeda, target berbeda; hasi", "code_example": "", "keywords": "diff-3.27, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/diff-3.27.html">diff-3.27.md</a></p><article><h1>diff-3.27.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="differential-compiler-testing-milestone-1-matriks-opt-phase-126">Differential Compiler Testing — Milestone 1: Matriks Opt (Phase 126) <a href="#differential-compiler-testing-milestone-1-matriks-opt-phase-126" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (target 3.27.0). Mandat master:</p>
+<p>bandingkan debug/release/optimized build, level LLVM berbeda,</p>
+<p>target berbeda; hasil program memenuhi semantik sama.</p>
+<h2 id="1-cakupan-tanpa-duplikat-e2e-verify">1. Cakupan (tanpa duplikat e2e_verify) <a href="#1-cakupan-tanpa-duplikat-e2e-verify" aria-label="taut">#</a></h2>
+<ul>
+<li>e2e_verify (ada): O0≡O2 + run≡build+exec + fuzz diferensial.</li>
+<li>BARU <code>e2e_diff.sh</code>: 5 program bench × 10 konfigurasi</li>
+</ul>
+<p>  (default, -O0/-O1/-O2/-O3/-Os/-Oz, -g, --profile release/debug)</p>
+<p>  → stdout + exit code IDENTIK per program (50 build + 55 run).</p>
+<ul>
+<li>Interpretasi jujur &quot;debug vs release build&quot;: level PROGRAM</li>
+</ul>
+<p>  (-g vs polos, profil dev/debug/release) — BUKAN rebuild</p>
+<p>  compiler Debug/Release (biaya penuh tanpa sinyal tambahan;</p>
+<p>  ASan/UBSan sudah dipakai di unit terpilih).</p>
+<h2 id="2-batas-jujur">2. Batas jujur <a href="#2-batas-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Target berbeda: run lintas-target TAK MUNGKIN (biner asing</li>
+</ul>
+<p>  tak dieksekusi di host) — diferensial run = host-only;</p>
+<p>  lintas-target dikunci di level IR/triple (<code>e2e_cross</code>,</p>
+<p>  <code>e2e_abi</code>), dinyatakan eksplisit.</p>
+<ul>
+<li>Matriks tak mencakup <code>-O</code> + <code>-g</code> kombinatorial penuh</li>
+</ul>
+<p>  (ledakan kombinatorial; sampel mewakili tiap sumbu).</p>
+<ul>
+<li>Divergensi numerik float: N/A (tanpa float di bahasa).</li>
+</ul>
+<h2 id="3-temuan-false-fresh-lintas-output-ditutup-slice-ini">3. TEMUAN: false-Fresh lintas-output (ditutup slice ini) <a href="#3-temuan-false-fresh-lintas-output-ditutup-slice-ini" aria-label="taut">#</a></h2>
+<p>Matriks MENEMUKAN bug nyata (bukan flake): <code>diff-loopsum</code> gagal</p>
+<p>dengan biner FIB basi. Akar: sidik inkremental per-direktori</p>
+<p>(TANPA identitas output) — <code>base</code> + <code>cfg0</code> (sumber+flag sama)</p>
+<p>berbagi <code>fingerprint</code>; <code>cfg0</code> dinyatakan Fresh dari sidik <code>base</code></p>
+<p>+ file basi warisan iterasi fib → biner salah dieksekusi.</p>
+<p>Skenario pengguna nyata: dua output dari satu sumber+flag se-dir.</p>
+<p>Perbaikan: field <code>Fingerprint::out</code> (+ serialisasi + sameFlags);</p>
+<p>migrasi aman (sidik lama tanpa-<code>out</code> = rebuild sekali).</p>
+<p>Regresi: kasus ini (base+cfg0 flag-identik) + <code>e2e_incr</code> utuh.</p>
+<h2 id="4-diverifikasi">4. Diverifikasi <a href="#4-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_diff</code> 5/5; <code>e2e_verify</code> + <code>e2e_release</code> hijau.</li>
+</ul>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Rebuild-compiler differential, target-run via emulator/QEMU,</li>
+</ul>
+<p>  superoptimizer/translation validation.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

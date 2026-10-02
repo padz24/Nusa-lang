@@ -1,0 +1,2027 @@
+// Self-host parser Nusa (Phase 72, v2.23.0 — bootstrap langkah 2).
+// Fused lexer+parser (buffer token tak mungkin di Nusa v2: array
+// fixed-size tanpa indexed-assign/param/return; tanpa global/tuple):
+// membaca sumber via file_read, mencetak dump AST s-expr yang
+// byte-identik dengan `nusa ast` (C++ `program.dump()`).
+// Pemakaian: nusa run selfhost/parse.ns <file.ns>
+// Batas (lihat docs/selfhost-2.23.md): input invalid best-effort,
+// nesting adversarial tanpa cap, `\0` di-drop, `123abc`/overflow
+// diasumsikan tak ada (korpus dijamin via hazard check).
+import string;
+struct ShTok {
+    kind: string;
+    lex: string;
+    pos: i64;
+}
+struct ShRes {
+    s: string;
+    pos: i64;
+}
+fn pa_is_digit(c: string) -> bool {
+    return str_contains("0123456789", c);
+}
+fn pa_is_alpha(c: string) -> bool {
+    return str_contains("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_", c);
+}
+fn pa_is_alnum(c: string) -> bool {
+    return str_contains("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789", c);
+}
+fn pa_is_space(c: string) -> bool {
+    if str_eq(c, " ") == true {
+        return true;
+    }
+    if str_eq(c, "\t") == true {
+        return true;
+    }
+    if str_eq(c, "\r") == true {
+        return true;
+    }
+    if str_eq(c, "\n") == true {
+        return true;
+    }
+    return false;
+}
+// Tabel keyword (cermin Lexer C++; `type` = keyword alias).
+fn pa_keyword(word: string) -> string {
+    if str_eq(word, "fn") == true {
+        return "fn";
+    }
+    if str_eq(word, "let") == true {
+        return "let";
+    }
+    if str_eq(word, "return") == true {
+        return "return";
+    }
+    if str_eq(word, "if") == true {
+        return "if";
+    }
+    if str_eq(word, "else") == true {
+        return "else";
+    }
+    if str_eq(word, "while") == true {
+        return "while";
+    }
+    if str_eq(word, "true") == true {
+        return "true";
+    }
+    if str_eq(word, "false") == true {
+        return "false";
+    }
+    if str_eq(word, "i64") == true {
+        return "i64";
+    }
+    if str_eq(word, "bool") == true {
+        return "bool";
+    }
+    if str_eq(word, "string") == true {
+        return "string";
+    }
+    if str_eq(word, "void") == true {
+        return "void";
+    }
+    if str_eq(word, "struct") == true {
+        return "struct";
+    }
+    if str_eq(word, "import") == true {
+        return "import";
+    }
+    if str_eq(word, "type") == true {
+        return "type";
+    }
+    if str_eq(word, "trait") == true {
+        return "trait";
+    }
+    if str_eq(word, "impl") == true {
+        return "impl";
+    }
+    if str_eq(word, "for") == true {
+        return "for";
+    }
+    if str_eq(word, "self") == true {
+        return "self";
+    }
+    if str_eq(word, "match") == true {
+        return "match";
+    }
+    if str_eq(word, "enum") == true {
+        return "enum";
+    }
+    if str_eq(word, "extern") == true {
+        return "extern";
+    }
+    if str_eq(word, "async") == true {
+        return "async";
+    }
+    if str_eq(word, "await") == true {
+        return "await";
+    }
+    if str_eq(word, "macro") == true {
+        return "macro";
+    }
+    if str_eq(word, "const") == true {
+        return "const";
+    }
+    return "";
+}
+// Nilai escape string (cermin lexer C++; `\0` di-drop — korpus bebas).
+fn pa_esc_val(e: string) -> string {
+    if str_eq(e, "n") == true {
+        return "\n";
+    }
+    if str_eq(e, "t") == true {
+        return "\t";
+    }
+    if str_eq(e, "r") == true {
+        return "\r";
+    }
+    if str_eq(e, "\"") == true {
+        return "\"";
+    }
+    if str_eq(e, "\\") == true {
+        return "\\";
+    }
+    if str_eq(e, "0") == true {
+        return "";
+    }
+    return e;
+}
+// Satu token mulai pos (maju >=1 char, atau eof di pos=n).
+fn pa_next(src: string, pos: i64) -> ShTok {
+    let n = str_len(src);
+    let p = pos;
+    let go = true;
+    while go == true {
+        if p >= n {
+            go = false;
+        } else {
+            let c = str_char_at(src, p);
+            if pa_is_space(c) == true {
+                p = p + 1;
+            } else {
+                if str_eq(c, "/") == true {
+                    if p + 1 < n {
+                        if str_eq(str_char_at(src, p + 1), "/") == true {
+                            let e2 = p + 2;
+                            let l2 = n;
+                            while e2 < l2 {
+                                if str_eq(str_char_at(src, e2), "\n") == true {
+                                    l2 = e2;
+                                } else {
+                                    e2 = e2 + 1;
+                                }
+                            }
+                            p = e2;
+                        } else {
+                            go = false;
+                        }
+                    } else {
+                        go = false;
+                    }
+                } else {
+                    go = false;
+                }
+            }
+        }
+    }
+    if p >= n {
+        return ShTok { kind: "eof", lex: "", pos: n };
+    }
+    let c = str_char_at(src, p);
+    if pa_is_alpha(c) == true {
+        let end = p;
+        let lim = n;
+        while end < lim {
+            if pa_is_alnum(str_char_at(src, end)) == true {
+                end = end + 1;
+            } else {
+                lim = end;
+            }
+        }
+        let word = str_slice(src, p, end);
+        let kind = pa_keyword(word);
+        if str_eq(kind, "") == true {
+            kind = "ident";
+        }
+        return ShTok { kind: kind, lex: word, pos: end };
+    }
+    if pa_is_digit(c) == true {
+        let end = p;
+        let lim = n;
+        while end < lim {
+            if pa_is_digit(str_char_at(src, end)) == true {
+                end = end + 1;
+            } else {
+                lim = end;
+            }
+        }
+        let tail = "";
+        if end < n {
+            tail = str_char_at(src, end);
+        }
+        if pa_is_alpha(tail) == true {
+            let end2 = end;
+            let lim2 = n;
+            while end2 < lim2 {
+                if pa_is_alnum(str_char_at(src, end2)) == true {
+                    end2 = end2 + 1;
+                } else {
+                    lim2 = end2;
+                }
+            }
+            return ShTok { kind: "unknown", lex: str_slice(src, p, end2), pos: end2 };
+        }
+        return ShTok { kind: "int", lex: str_slice(src, p, end), pos: end };
+    }
+    if str_eq(c, "\"") == true {
+        let end = p + 1;
+        let lim = n;
+        while end < lim {
+            let ch = str_char_at(src, end);
+            if str_eq(ch, "\\") == true {
+                end = end + 2;
+            } else {
+                if str_eq(ch, "\"") == true {
+                    lim = end;
+                } else {
+                    if str_eq(ch, "\n") == true {
+                        lim = end;
+                    } else {
+                        end = end + 1;
+                    }
+                }
+            }
+        }
+        if end > n {
+            end = n;
+        }
+        let closed = false;
+        if end < n {
+            if str_eq(str_char_at(src, end), "\"") == true {
+                closed = true;
+            }
+        }
+        let val = "";
+        let j = p + 1;
+        while j < end {
+            let ch = str_char_at(src, j);
+            if str_eq(ch, "\\") == true {
+                if j + 1 < end {
+                    val = str_concat(val, pa_esc_val(str_char_at(src, j + 1)));
+                    j = j + 2;
+                } else {
+                    val = str_concat(val, ch);
+                    j = j + 1;
+                }
+            } else {
+                val = str_concat(val, ch);
+                j = j + 1;
+            }
+        }
+        if closed == true {
+            return ShTok { kind: "str", lex: val, pos: end + 1 };
+        }
+        return ShTok { kind: "unknown", lex: val, pos: end };
+    }
+    if str_eq(c, "/") == true {
+        return ShTok { kind: "/", lex: "/", pos: p + 1 };
+    }
+    if str_eq(c, "!") == true {
+        if p + 1 < n {
+            if str_eq(str_char_at(src, p + 1), "=") == true {
+                return ShTok { kind: "!=", lex: "!=", pos: p + 2 };
+            }
+        }
+        return ShTok { kind: "unknown", lex: "!", pos: p + 1 };
+    }
+    if str_eq(c, "=") == true {
+        if p + 1 < n {
+            if str_eq(str_char_at(src, p + 1), "=") == true {
+                return ShTok { kind: "==", lex: "==", pos: p + 2 };
+            }
+            if str_eq(str_char_at(src, p + 1), ">") == true {
+                return ShTok { kind: "=>", lex: "=>", pos: p + 2 };
+            }
+        }
+        return ShTok { kind: "=", lex: "=", pos: p + 1 };
+    }
+    if str_eq(c, "<") == true {
+        if p + 1 < n {
+            if str_eq(str_char_at(src, p + 1), "=") == true {
+                return ShTok { kind: "<=", lex: "<=", pos: p + 2 };
+            }
+        }
+        return ShTok { kind: "<", lex: "<", pos: p + 1 };
+    }
+    if str_eq(c, ">") == true {
+        if p + 1 < n {
+            if str_eq(str_char_at(src, p + 1), "=") == true {
+                return ShTok { kind: ">=", lex: ">=", pos: p + 2 };
+            }
+        }
+        return ShTok { kind: ">", lex: ">", pos: p + 1 };
+    }
+    if str_eq(c, "-") == true {
+        if p + 1 < n {
+            if str_eq(str_char_at(src, p + 1), ">") == true {
+                return ShTok { kind: "->", lex: "->", pos: p + 2 };
+            }
+        }
+        return ShTok { kind: "-", lex: "-", pos: p + 1 };
+    }
+    if str_eq(c, "?") == true {
+        return ShTok { kind: "?", lex: "?", pos: p + 1 };
+    }
+    if str_eq(c, "|") == true {
+        return ShTok { kind: "|", lex: "|", pos: p + 1 };
+    }
+    if str_contains("(){}[]:;, .+*", c) == true {
+        return ShTok { kind: c, lex: c, pos: p + 1 };
+    }
+    return ShTok { kind: "unknown", lex: c, pos: p + 1 };
+}
+// Token berikut (unknown di-skip cermin Parser C++).
+fn pa_peek(src: string, pos: i64) -> ShTok {
+    let t = pa_next(src, pos);
+    while str_eq(t.kind, "unknown") == true {
+        t = pa_next(src, t.pos);
+    }
+    return t;
+}
+// Token ke-k di depan (k=0: berikut). Lookahead O(k^2), k kecil.
+fn pa_at(src: string, pos: i64, k: i64) -> ShTok {
+    let t = pa_peek(src, pos);
+    let i = 0;
+    while i < k {
+        t = pa_peek(src, t.pos);
+        i = i + 1;
+    }
+    return t;
+}
+// Makan satu token kind (asumsi valid; bila beda tak-maju → guard tangkap).
+fn pa_eat(src: string, pos: i64, kind: string) -> i64 {
+    let t = pa_peek(src, pos);
+    if str_eq(t.kind, kind) == true {
+        return t.pos;
+    }
+    return pos;
+}
+// Escape dump string (cermin escapeForDump: hanya " \ newline tab).
+fn pa_descape(s: string) -> string {
+    let out = "";
+    let i = 0;
+    let n = str_len(s);
+    while i < n {
+        let c = str_char_at(s, i);
+        if str_eq(c, "\"") == true {
+            out = str_concat(out, "\\\"");
+        } else {
+            if str_eq(c, "\\") == true {
+                out = str_concat(out, "\\\\");
+            } else {
+                if str_eq(c, "\n") == true {
+                    out = str_concat(out, "\\n");
+                } else {
+                    if str_eq(c, "\t") == true {
+                        out = str_concat(out, "\\t");
+                    } else {
+                        out = str_concat(out, c);
+                    }
+                }
+            }
+        }
+        i = i + 1;
+    }
+    return out;
+}
+// `<T: A + B, U>` mulai sesudah `<` → "<T: A + B, U>", pos sesudah `>`.
+fn pa_tparams(src: string, pos: i64) -> ShRes {
+    let out = "<";
+    let first = true;
+    let p = pos;
+    let go = true;
+    while go == true {
+        let before = p;
+        let t = pa_peek(src, p);
+        let nm = t.lex;
+        p = t.pos;
+        let c = pa_peek(src, p);
+        if str_eq(c.kind, ":") == true {
+            p = c.pos;
+            let bs = "";
+            let bf = true;
+            let bg = true;
+            while bg == true {
+                let bb = p;
+                let b = pa_peek(src, p);
+                if bf == true {
+                    bf = false;
+                } else {
+                    bs = str_concat(bs, " + ");
+                }
+                bs = str_concat(bs, b.lex);
+                p = b.pos;
+                let bc = pa_peek(src, p);
+                if str_eq(bc.kind, "+") == true {
+                    p = bc.pos;
+                } else {
+                    bg = false;
+                }
+                if p <= bb {
+                    bg = false;
+                }
+            }
+            nm = str_concat(str_concat(nm, ": "), bs);
+        }
+        if first == true {
+            first = false;
+        } else {
+            out = str_concat(out, ", ");
+        }
+        out = str_concat(out, nm);
+        let d = pa_peek(src, p);
+        if str_eq(d.kind, ",") == true {
+            p = d.pos;
+        } else {
+            go = false;
+        }
+        if p <= before {
+            go = false;
+        }
+    }
+    let g = pa_peek(src, p);
+    if str_eq(g.kind, ">") == true {
+        p = g.pos;
+    }
+    out = str_concat(out, ">");
+    return ShRes { s: out, pos: p };
+}
+// Tipe → render nama (cermin Type::name).
+fn pa_type(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    if str_eq(t.kind, "[") == true {
+        let inner = pa_type(src, t.pos);
+        let q = pa_eat(src, inner.pos, "]");
+        return ShRes { s: str_concat(str_concat("[", inner.s), "]"), pos: q };
+    }
+    if str_eq(t.kind, "fn") == true {
+        let p = pa_eat(src, t.pos, "(");
+        let out = "fn(";
+        let first = true;
+        let u = pa_peek(src, p);
+        if str_eq(u.kind, ")") == false {
+            let go = true;
+            while go == true {
+                let before = p;
+                let pt = pa_type(src, p);
+                if first == true {
+                    first = false;
+                } else {
+                    out = str_concat(out, ", ");
+                }
+                out = str_concat(out, pt.s);
+                p = pt.pos;
+                let c = pa_peek(src, p);
+                if str_eq(c.kind, ",") == true {
+                    p = c.pos;
+                } else {
+                    go = false;
+                }
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+        let r = pa_peek(src, p);
+        if str_eq(r.kind, ")") == true {
+            p = r.pos;
+        }
+        let ret = "void";
+        let a = pa_peek(src, p);
+        if str_eq(a.kind, "->") == true {
+            let rt = pa_type(src, a.pos);
+            ret = rt.s;
+            p = rt.pos;
+        }
+        out = str_concat(str_concat(out, ") -> "), ret);
+        return ShRes { s: out, pos: p };
+    }
+    if str_eq(t.kind, "i64") == true {
+        return ShRes { s: "i64", pos: t.pos };
+    }
+    if str_eq(t.kind, "bool") == true {
+        return ShRes { s: "bool", pos: t.pos };
+    }
+    if str_eq(t.kind, "string") == true {
+        return ShRes { s: "string", pos: t.pos };
+    }
+    if str_eq(t.kind, "void") == true {
+        return ShRes { s: "void", pos: t.pos };
+    }
+    if str_eq(t.kind, "ident") == true {
+        let nm = t.lex;
+        let p = t.pos;
+        let u = pa_peek(src, p);
+        if str_eq(u.kind, "<") == true {
+            p = u.pos;
+            let out = str_concat(nm, "<");
+            let first = true;
+            let go = true;
+            while go == true {
+                let before = p;
+                let ta = pa_type(src, p);
+                if first == true {
+                    first = false;
+                } else {
+                    out = str_concat(out, ", ");
+                }
+                out = str_concat(out, ta.s);
+                p = ta.pos;
+                let c = pa_peek(src, p);
+                if str_eq(c.kind, ",") == true {
+                    p = c.pos;
+                } else {
+                    go = false;
+                }
+                if p <= before {
+                    go = false;
+                }
+            }
+            let g = pa_peek(src, p);
+            if str_eq(g.kind, ">") == true {
+                p = g.pos;
+            }
+            out = str_concat(out, ">");
+            return ShRes { s: out, pos: p };
+        }
+        return ShRes { s: nm, pos: p };
+    }
+    return ShRes { s: "", pos: pos };
+}
+// Konstruktor dump kecil.
+fn pa_bin(op: string, l: string, r: string) -> string {
+    return str_concat(str_concat(str_concat(str_concat(str_concat("(", op), " "), l), " "), str_concat(r, ")"));
+}
+fn pa_un(op: string, e: string) -> string {
+    return str_concat(str_concat(str_concat("(", op), " "), str_concat(e, ")"));
+}
+// Argumen call mulai sesudah `(` → " a b", pos sesudah `)`.
+fn pa_call_args(src: string, pos: i64) -> ShRes {
+    let args = "";
+    let p = pos;
+    let u = pa_peek(src, p);
+    if str_eq(u.kind, ")") == false {
+        let go = true;
+        while go == true {
+            let before = p;
+            let a = pa_expr(src, p);
+            args = str_concat(str_concat(args, " "), a.s);
+            p = a.pos;
+            let c = pa_peek(src, p);
+            if str_eq(c.kind, ",") == true {
+                p = c.pos;
+            } else {
+                go = false;
+            }
+            if p <= before {
+                go = false;
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, ")") == true {
+        p = r.pos;
+    }
+    return ShRes { s: args, pos: p };
+}
+// Daftar tipe `<...>` mulai sesudah `<` → "<T, U>", pos sesudah `>`.
+fn pa_angle_types(src: string, pos: i64) -> ShRes {
+    let out = "<";
+    let first = true;
+    let p = pos;
+    let go = true;
+    while go == true {
+        let before = p;
+        let ta = pa_type(src, p);
+        if first == true {
+            first = false;
+        } else {
+            out = str_concat(out, ", ");
+        }
+        out = str_concat(out, ta.s);
+        p = ta.pos;
+        let c = pa_peek(src, p);
+        if str_eq(c.kind, ",") == true {
+            p = c.pos;
+        } else {
+            go = false;
+        }
+        if p <= before {
+            go = false;
+        }
+    }
+    let g = pa_peek(src, p);
+    if str_eq(g.kind, ">") == true {
+        p = g.pos;
+    }
+    out = str_concat(out, ">");
+    return ShRes { s: out, pos: p };
+}
+// Pindai `<...>` seimbang dari `<` (cermin parsePrimary): "y"+pos
+// sesudah `>` bila seimbang, "n" bila stop (Eof ; { } = ? =>).
+fn pa_scan_targs(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let j = t.pos;
+    let depth = 1;
+    let found = "n";
+    let go = true;
+    while go == true {
+        let u = pa_peek(src, j);
+        if str_eq(u.kind, "<") == true {
+            depth = depth + 1;
+            j = u.pos;
+        } else {
+            if str_eq(u.kind, ">") == true {
+                depth = depth - 1;
+                j = u.pos;
+                if depth <= 0 {
+                    found = "y";
+                    go = false;
+                }
+            } else {
+                if str_eq(u.kind, "eof") == true {
+                    go = false;
+                } else {
+                    if str_eq(u.kind, ";") == true {
+                        go = false;
+                    } else {
+                        if str_eq(u.kind, "{") == true {
+                            go = false;
+                        } else {
+                            if str_eq(u.kind, "}") == true {
+                                go = false;
+                            } else {
+                                if str_eq(u.kind, "=") == true {
+                                    go = false;
+                                } else {
+                                    if str_eq(u.kind, "?") == true {
+                                        go = false;
+                                    } else {
+                                        if str_eq(u.kind, "=>") == true {
+                                            go = false;
+                                        } else {
+                                            j = u.pos;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ShRes { s: found, pos: j };
+}
+// Pindai `Name<...>` generik dari `<`: "y" bila `>` seimbang + `{`.
+fn pa_scan_generic_lit(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let depth = 0;
+    let j = t.pos;
+    let found = "n";
+    let go = true;
+    while go == true {
+        let u = pa_peek(src, j);
+        if str_eq(u.kind, "eof") == true {
+            go = false;
+        } else {
+            if str_eq(u.kind, ";") == true {
+                go = false;
+            } else {
+                if str_eq(u.kind, "}") == true {
+                    go = false;
+                } else {
+                    if str_eq(u.kind, "<") == true {
+                        depth = depth + 1;
+                        j = u.pos;
+                    } else {
+                        if str_eq(u.kind, ">") == true {
+                            depth = depth - 1;
+                            j = u.pos;
+                            if depth <= 0 {
+                                let nx = pa_peek(src, j);
+                                if str_eq(nx.kind, "{") == true {
+                                    found = "y";
+                                }
+                                go = false;
+                            }
+                        } else {
+                            j = u.pos;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ShRes { s: found, pos: j };
+}
+fn pa_expr(src: string, pos: i64) -> ShRes {
+    return pa_equality(src, pos);
+}
+fn pa_equality(src: string, pos: i64) -> ShRes {
+    let lhs = pa_comparison(src, pos);
+    let s = lhs.s;
+    let p = lhs.pos;
+    let go = true;
+    while go == true {
+        let t = pa_peek(src, p);
+        if str_eq(t.kind, "==") == true {
+            let rhs = pa_comparison(src, t.pos);
+            if rhs.pos <= p {
+                go = false;
+            } else {
+                s = pa_bin("==", s, rhs.s);
+                p = rhs.pos;
+            }
+        } else {
+            if str_eq(t.kind, "!=") == true {
+                let rhs = pa_comparison(src, t.pos);
+                if rhs.pos <= p {
+                    go = false;
+                } else {
+                    s = pa_bin("!=", s, rhs.s);
+                    p = rhs.pos;
+                }
+            } else {
+                go = false;
+            }
+        }
+    }
+    return ShRes { s: s, pos: p };
+}
+fn pa_comparison(src: string, pos: i64) -> ShRes {
+    let lhs = pa_term(src, pos);
+    let s = lhs.s;
+    let p = lhs.pos;
+    let go = true;
+    while go == true {
+        let t = pa_peek(src, p);
+        if str_eq(t.kind, "<") == true {
+            let rhs = pa_term(src, t.pos);
+            if rhs.pos <= p {
+                go = false;
+            } else {
+                s = pa_bin("<", s, rhs.s);
+                p = rhs.pos;
+            }
+        } else {
+            if str_eq(t.kind, ">") == true {
+                let rhs = pa_term(src, t.pos);
+                if rhs.pos <= p {
+                    go = false;
+                } else {
+                    s = pa_bin(">", s, rhs.s);
+                    p = rhs.pos;
+                }
+            } else {
+                if str_eq(t.kind, "<=") == true {
+                    let rhs = pa_term(src, t.pos);
+                    if rhs.pos <= p {
+                        go = false;
+                    } else {
+                        s = pa_bin("<=", s, rhs.s);
+                        p = rhs.pos;
+                    }
+                } else {
+                    if str_eq(t.kind, ">=") == true {
+                        let rhs = pa_term(src, t.pos);
+                        if rhs.pos <= p {
+                            go = false;
+                        } else {
+                            s = pa_bin(">=", s, rhs.s);
+                            p = rhs.pos;
+                        }
+                    } else {
+                        go = false;
+                    }
+                }
+            }
+        }
+    }
+    return ShRes { s: s, pos: p };
+}
+fn pa_term(src: string, pos: i64) -> ShRes {
+    let lhs = pa_factor(src, pos);
+    let s = lhs.s;
+    let p = lhs.pos;
+    let go = true;
+    while go == true {
+        let t = pa_peek(src, p);
+        if str_eq(t.kind, "+") == true {
+            let rhs = pa_factor(src, t.pos);
+            if rhs.pos <= p {
+                go = false;
+            } else {
+                s = pa_bin("+", s, rhs.s);
+                p = rhs.pos;
+            }
+        } else {
+            if str_eq(t.kind, "-") == true {
+                let rhs = pa_factor(src, t.pos);
+                if rhs.pos <= p {
+                    go = false;
+                } else {
+                    s = pa_bin("-", s, rhs.s);
+                    p = rhs.pos;
+                }
+            } else {
+                go = false;
+            }
+        }
+    }
+    return ShRes { s: s, pos: p };
+}
+fn pa_factor(src: string, pos: i64) -> ShRes {
+    let lhs = pa_unary(src, pos);
+    let s = lhs.s;
+    let p = lhs.pos;
+    let go = true;
+    while go == true {
+        let t = pa_peek(src, p);
+        if str_eq(t.kind, "*") == true {
+            let rhs = pa_unary(src, t.pos);
+            if rhs.pos <= p {
+                go = false;
+            } else {
+                s = pa_bin("*", s, rhs.s);
+                p = rhs.pos;
+            }
+        } else {
+            if str_eq(t.kind, "/") == true {
+                let rhs = pa_unary(src, t.pos);
+                if rhs.pos <= p {
+                    go = false;
+                } else {
+                    s = pa_bin("/", s, rhs.s);
+                    p = rhs.pos;
+                }
+            } else {
+                go = false;
+            }
+        }
+    }
+    return ShRes { s: s, pos: p };
+}
+fn pa_unary(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    if str_eq(t.kind, "-") == true {
+        let o = pa_unary(src, t.pos);
+        return ShRes { s: pa_un("-", o.s), pos: o.pos };
+    }
+    if str_eq(t.kind, "+") == true {
+        let o = pa_unary(src, t.pos);
+        return ShRes { s: pa_un("+", o.s), pos: o.pos };
+    }
+    return pa_primary(src, pos);
+}
+// Dump ident telanjang? (basis VarRef untuk cabang `E<T>.V`.)
+fn pa_is_bare_var(s: string) -> bool {
+    let n = str_len(s);
+    if n <= 0 {
+        return false;
+    }
+    if pa_is_alpha(str_char_at(s, 0)) == false {
+        return false;
+    }
+    let i = 1;
+    while i < n {
+        if pa_is_alnum(str_char_at(s, i)) == false {
+            return false;
+        }
+        i = i + 1;
+    }
+    if str_eq(s, "true") == true {
+        return false;
+    }
+    if str_eq(s, "false") == true {
+        return false;
+    }
+    return true;
+}
+fn pa_primary(src: string, pos: i64) -> ShRes {
+    let b = pa_atom(src, pos);
+    let s = b.s;
+    let p = b.pos;
+    let go = true;
+    while go == true {
+        let t = pa_peek(src, p);
+        if str_eq(t.kind, "<") == true {
+            let take = false;
+            let scpos = p;
+            if pa_is_bare_var(s) == true {
+                let sc = pa_scan_targs(src, t.pos);
+                if str_eq(sc.s, "y") == true {
+                    let d1 = pa_at(src, sc.pos, 0);
+                    if str_eq(d1.kind, ".") == true {
+                        let d2 = pa_at(src, sc.pos, 1);
+                        if str_eq(d2.kind, "ident") == true {
+                            take = true;
+                            scpos = sc.pos;
+                        }
+                    }
+                }
+            }
+            if take == true {
+                let p2 = pa_eat(src, t.pos, "<");
+                let tg = pa_angle_types(src, p2);
+                let dot = pa_eat(src, tg.pos, ".");
+                let m = pa_peek(src, dot);
+                let meth = m.lex;
+                let p3 = m.pos;
+                let args = "";
+                let q = pa_peek(src, p3);
+                if str_eq(q.kind, "(") == true {
+                    let ca = pa_call_args(src, q.pos);
+                    args = ca.s;
+                    p3 = ca.pos;
+                }
+                s = str_concat(str_concat(str_concat(str_concat(str_concat("(call-method ", s), " "), meth), tg.s), str_concat(args, ")"));
+                p = p3;
+            } else {
+                go = false;
+            }
+        } else {
+            if str_eq(t.kind, "?") == true {
+                s = pa_un("propagate", s);
+                p = t.pos;
+            } else {
+                if str_eq(t.kind, "[") == true {
+                    let ie = pa_expr(src, t.pos);
+                    let q = pa_eat(src, ie.pos, "]");
+                    s = str_concat(str_concat(str_concat("(index ", s), " "), str_concat(ie.s, ")"));
+                    p = q;
+                } else {
+                    if str_eq(t.kind, ".") == true {
+                        let f = pa_peek(src, t.pos);
+                        let p2 = f.pos;
+                        let o = pa_peek(src, p2);
+                        if str_eq(o.kind, "(") == true {
+                            let ca = pa_call_args(src, o.pos);
+                            s = str_concat(str_concat(str_concat(str_concat("(call-method ", s), " "), f.lex), str_concat(ca.s, ")"));
+                            p = ca.pos;
+                        } else {
+                            s = str_concat(str_concat(str_concat("(field ", s), " "), f.lex);
+                            s = str_concat(s, ")");
+                            p = p2;
+                        }
+                    } else {
+                        go = false;
+                    }
+                }
+            }
+        }
+    }
+    return ShRes { s: s, pos: p };
+}
+// Field struct `{ f: e, ... }` mulai sesudah `{` → " (f v)...", pos sesudah `}`.
+fn pa_struct_fields(src: string, pos: i64) -> ShRes {
+    let out = "";
+    let p = pos;
+    let u = pa_peek(src, p);
+    if str_eq(u.kind, "}") == false {
+        let go = true;
+        while go == true {
+            let before = p;
+            let f = pa_peek(src, p);
+            let v = pa_expr(src, pa_eat(src, f.pos, ":"));
+            out = str_concat(str_concat(str_concat(str_concat(out, " ("), f.lex), " "), str_concat(v.s, ")"));
+            p = v.pos;
+            let c = pa_peek(src, p);
+            if str_eq(c.kind, ",") == true {
+                p = c.pos;
+            } else {
+                go = false;
+            }
+            if p <= before {
+                go = false;
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    return ShRes { s: out, pos: p };
+}
+fn pa_atom(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    if str_eq(t.kind, "|") == true {
+        let p = t.pos;
+        let ps = "";
+        let first = true;
+        let u = pa_peek(src, p);
+        if str_eq(u.kind, "|") == false {
+            let go = true;
+            while go == true {
+                let before = p;
+                let pn = pa_peek(src, p);
+                let one = pn.lex;
+                p = pn.pos;
+                let c = pa_peek(src, p);
+                if str_eq(c.kind, ":") == true {
+                    let ty = pa_type(src, c.pos);
+                    one = str_concat(str_concat(one, ": "), ty.s);
+                    p = ty.pos;
+                }
+                if first == true {
+                    first = false;
+                } else {
+                    ps = str_concat(ps, " ");
+                }
+                ps = str_concat(ps, one);
+                let d = pa_peek(src, p);
+                if str_eq(d.kind, ",") == true {
+                    p = d.pos;
+                } else {
+                    go = false;
+                }
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+        let q = pa_eat(src, p, "|");
+        let body = "";
+        let w = pa_peek(src, q);
+        if str_eq(w.kind, "{") == true {
+            let bl = pa_block(src, q);
+            body = bl.s;
+            q = bl.pos;
+        } else {
+            let be = pa_expr(src, q);
+            body = str_concat(str_concat("(return ", be.s), ")");
+            q = be.pos;
+        }
+        return ShRes { s: str_concat(str_concat(str_concat("(lambda (", ps), ") "), str_concat(body, ")")), pos: q };
+    }
+    if str_eq(t.kind, "self") == true {
+        let u = pa_peek(src, t.pos);
+        if str_eq(u.kind, "(") == true {
+            let ca = pa_call_args(src, u.pos);
+            return ShRes { s: str_concat(str_concat("(call self", ca.s), ")"), pos: ca.pos };
+        }
+        return ShRes { s: "self", pos: t.pos };
+    }
+    if str_eq(t.kind, "int") == true {
+        return ShRes { s: int_to_str(parse_int(t.lex)), pos: t.pos };
+    }
+    if str_eq(t.kind, "str") == true {
+        return ShRes { s: str_concat(str_concat("\"", pa_descape(t.lex)), "\""), pos: t.pos };
+    }
+    if str_eq(t.kind, "true") == true {
+        return ShRes { s: "true", pos: t.pos };
+    }
+    if str_eq(t.kind, "false") == true {
+        return ShRes { s: "false", pos: t.pos };
+    }
+    if str_eq(t.kind, "ident") == true {
+        let nm = t.lex;
+        let a1 = pa_at(src, t.pos, 0);
+        if str_eq(a1.kind, "(") == true {
+            let ca = pa_call_args(src, a1.pos);
+            return ShRes { s: str_concat(str_concat("(call ", nm), str_concat(ca.s, ")")), pos: ca.pos };
+        }
+        if str_eq(a1.kind, "{") == true {
+            let a2 = pa_at(src, t.pos, 1);
+            let issl = false;
+            if str_eq(a2.kind, "}") == true {
+                issl = true;
+            } else {
+                if str_eq(a2.kind, "ident") == true {
+                    let a3 = pa_at(src, t.pos, 2);
+                    if str_eq(a3.kind, ":") == true {
+                        issl = true;
+                    }
+                }
+            }
+            if issl == true {
+                let fd = pa_struct_fields(src, a1.pos);
+                return ShRes { s: str_concat(str_concat(str_concat("(", nm), fd.s), ")"), pos: fd.pos };
+            }
+        }
+        if str_eq(a1.kind, "<") == true {
+            let sc = pa_scan_generic_lit(src, a1.pos);
+            if str_eq(sc.s, "y") == true {
+                let p2 = pa_eat(src, a1.pos, "<");
+                let tg = pa_angle_types(src, p2);
+                let fd = pa_struct_fields(src, pa_eat(src, tg.pos, "{"));
+                return ShRes { s: str_concat(str_concat(str_concat(str_concat("(", nm), tg.s), fd.s), ")"), pos: fd.pos };
+            }
+        }
+        return ShRes { s: nm, pos: t.pos };
+    }
+    if str_eq(t.kind, "[") == true {
+        let els = "";
+        let p = t.pos;
+        let u = pa_peek(src, p);
+        if str_eq(u.kind, "]") == false {
+            let go = true;
+            while go == true {
+                let before = p;
+                let e = pa_expr(src, p);
+                els = str_concat(str_concat(els, " "), e.s);
+                p = e.pos;
+                let c = pa_peek(src, p);
+                if str_eq(c.kind, ",") == true {
+                    p = c.pos;
+                } else {
+                    go = false;
+                }
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+        let r = pa_peek(src, p);
+        if str_eq(r.kind, "]") == true {
+            p = r.pos;
+        }
+        return ShRes { s: str_concat(str_concat("(array", els), ")"), pos: p };
+    }
+    if str_eq(t.kind, "(") == true {
+        let e = pa_expr(src, t.pos);
+        let q = pa_eat(src, e.pos, ")");
+        return ShRes { s: e.s, pos: q };
+    }
+    return ShRes { s: "", pos: pos };
+}
+// Pola struct `{ ... }` di pos `{`, head = "Name<T>".
+fn pa_brace_pat(src: string, pos: i64, head: string) -> ShRes {
+    let p = pa_eat(src, pos, "{");
+    let out = str_concat(head, " { ");
+    let first = true;
+    let u = pa_peek(src, p);
+    if str_eq(u.kind, "}") == false {
+        let go = true;
+        while go == true {
+            let before = p;
+            let f = pa_peek(src, p);
+            let sub = "";
+            let c = pa_peek(src, f.pos);
+            if str_eq(c.kind, ":") == true {
+                let sp = pa_pattern(src, c.pos);
+                sub = sp.s;
+                p = sp.pos;
+            } else {
+                if str_eq(f.lex, "_") == true {
+                    sub = "_";
+                } else {
+                    sub = f.lex;
+                }
+                p = f.pos;
+            }
+            if first == true {
+                first = false;
+            } else {
+                out = str_concat(out, ", ");
+            }
+            out = str_concat(str_concat(str_concat(out, f.lex), ": "), sub);
+            let d = pa_peek(src, p);
+            if str_eq(d.kind, ",") == true {
+                p = d.pos;
+            } else {
+                go = false;
+            }
+            if p <= before {
+                go = false;
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    out = str_concat(out, " }");
+    return ShRes { s: out, pos: p };
+}
+fn pa_pattern(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    if str_eq(t.kind, "ident") == true {
+        if str_eq(t.lex, "_") == true {
+            return ShRes { s: "_", pos: t.pos };
+        }
+    }
+    if str_eq(t.kind, "-") == true {
+        let u = pa_peek(src, t.pos);
+        if str_eq(u.kind, "int") == true {
+            return ShRes { s: str_concat("-", int_to_str(parse_int(u.lex))), pos: u.pos };
+        }
+        return ShRes { s: "", pos: pos };
+    }
+    if str_eq(t.kind, "int") == true {
+        return ShRes { s: int_to_str(parse_int(t.lex)), pos: t.pos };
+    }
+    if str_eq(t.kind, "str") == true {
+        return ShRes { s: str_concat(str_concat("\"", t.lex), "\""), pos: t.pos };
+    }
+    if str_eq(t.kind, "true") == true {
+        return ShRes { s: "true", pos: t.pos };
+    }
+    if str_eq(t.kind, "false") == true {
+        return ShRes { s: "false", pos: t.pos };
+    }
+    if str_eq(t.kind, "ident") == true {
+        let nm = t.lex;
+        let u = pa_peek(src, t.pos);
+        let isspecial = false;
+        if str_eq(nm, "None") == true {
+            isspecial = true;
+        } else {
+            if str_eq(nm, "Some") == true {
+                isspecial = true;
+            } else {
+                if str_eq(nm, "Ok") == true {
+                    isspecial = true;
+                } else {
+                    if str_eq(nm, "Err") == true {
+                        isspecial = true;
+                    }
+                }
+            }
+        }
+        if isspecial == true {
+            if str_eq(u.kind, "(") == false {
+                if str_eq(u.kind, "{") == false {
+                    if str_eq(u.kind, "<") == false {
+                        return ShRes { s: nm, pos: t.pos };
+                    }
+                }
+            }
+        }
+        if str_eq(u.kind, "(") == true {
+            let args = "";
+            let first = true;
+            let p = u.pos;
+            let v = pa_peek(src, p);
+            if str_eq(v.kind, ")") == false {
+                let go = true;
+                while go == true {
+                    let before = p;
+                    let a = pa_pattern(src, p);
+                    if first == true {
+                        first = false;
+                    } else {
+                        args = str_concat(args, ", ");
+                    }
+                    args = str_concat(args, a.s);
+                    p = a.pos;
+                    let c = pa_peek(src, p);
+                    if str_eq(c.kind, ",") == true {
+                        p = c.pos;
+                    } else {
+                        go = false;
+                    }
+                    if p <= before {
+                        go = false;
+                    }
+                }
+            }
+            let r = pa_peek(src, p);
+            if str_eq(r.kind, ")") == true {
+                p = r.pos;
+            }
+            return ShRes { s: str_concat(str_concat(str_concat(nm, "("), args), ")"), pos: p };
+        }
+        if str_eq(u.kind, "<") == true {
+            let p2 = u.pos;
+            let tg = pa_angle_types(src, p2);
+            let bp = pa_brace_pat(src, tg.pos, str_concat(nm, tg.s));
+            return ShRes { s: bp.s, pos: bp.pos };
+        }
+        if str_eq(u.kind, "{") == true {
+            let bp = pa_brace_pat(src, u.pos, nm);
+            return ShRes { s: bp.s, pos: bp.pos };
+        }
+        return ShRes { s: nm, pos: t.pos };
+    }
+    return ShRes { s: "", pos: pos };
+}
+// Awal call method `I(.J)*.K(` atau `E<..>.V(` di posisi statement.
+fn pa_method_start(src: string, pos: i64) -> ShRes {
+    let l = pa_peek(src, pos);
+    if str_eq(l.kind, "<") == true {
+        let j = l.pos;
+        let depth = 1;
+        let ok = "n";
+        let go = true;
+        while go == true {
+            let u = pa_peek(src, j);
+            if str_eq(u.kind, "<") == true {
+                depth = depth + 1;
+                j = u.pos;
+            } else {
+                if str_eq(u.kind, ">") == true {
+                    depth = depth - 1;
+                    if depth <= 0 {
+                        let d1 = pa_at(src, u.pos, 0);
+                        if str_eq(d1.kind, ".") == true {
+                            let d2 = pa_at(src, u.pos, 1);
+                            if str_eq(d2.kind, "ident") == true {
+                                let d3 = pa_at(src, u.pos, 2);
+                                if str_eq(d3.kind, "(") == true {
+                                    ok = "y";
+                                }
+                            }
+                        }
+                        go = false;
+                    } else {
+                        j = u.pos;
+                    }
+                } else {
+                    if str_eq(u.kind, "eof") == true {
+                        go = false;
+                    } else {
+                        if str_eq(u.kind, ";") == true {
+                            go = false;
+                        } else {
+                            if str_eq(u.kind, "{") == true {
+                                go = false;
+                            } else {
+                                if str_eq(u.kind, "}") == true {
+                                    go = false;
+                                } else {
+                                    if str_eq(u.kind, "=") == true {
+                                        go = false;
+                                    } else {
+                                        if str_eq(u.kind, "?") == true {
+                                            go = false;
+                                        } else {
+                                            if str_eq(u.kind, "=>") == true {
+                                                go = false;
+                                            } else {
+                                                j = u.pos;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ShRes { s: ok, pos: pos };
+    }
+    let k = 0;
+    let hit = "n";
+    let go2 = true;
+    while go2 == true {
+        let d = pa_at(src, pos, k + 1);
+        if str_eq(d.kind, ".") == true {
+            let e = pa_at(src, pos, k + 2);
+            if str_eq(e.kind, "ident") == true {
+                let f = pa_at(src, pos, k + 3);
+                if str_eq(f.kind, "(") == true {
+                    hit = "y";
+                    go2 = false;
+                } else {
+                    k = k + 2;
+                }
+            } else {
+                go2 = false;
+            }
+        } else {
+            go2 = false;
+        }
+    }
+    return ShRes { s: hit, pos: pos };
+}
+fn pa_block(src: string, pos: i64) -> ShRes {
+    let p = pa_eat(src, pos, "{");
+    let out = "";
+    let go = true;
+    while go == true {
+        let t = pa_peek(src, p);
+        if str_eq(t.kind, "}") == true {
+            go = false;
+        } else {
+            if str_eq(t.kind, "eof") == true {
+                go = false;
+            } else {
+                let before = p;
+                let st = pa_stmt(src, p);
+                if str_eq(out, "") == false {
+                    out = str_concat(out, " ");
+                }
+                out = str_concat(out, st.s);
+                p = st.pos;
+                if p <= before {
+                    let sk = pa_peek(src, p);
+                    p = sk.pos;
+                    if p <= before {
+                        go = false;
+                    }
+                }
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    return ShRes { s: out, pos: p };
+}
+fn pa_let(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let nm = pa_peek(src, t.pos);
+    let p = nm.pos;
+    let s = str_concat("(let ", nm.lex);
+    let c = pa_peek(src, p);
+    if str_eq(c.kind, ":") == true {
+        let ty = pa_type(src, c.pos);
+        s = str_concat(str_concat(s, ": "), ty.s);
+        p = ty.pos;
+    }
+    let v = pa_expr(src, pa_eat(src, p, "="));
+    s = str_concat(str_concat(str_concat(s, " "), v.s), ")");
+    p = v.pos;
+    let q = pa_peek(src, p);
+    if str_eq(q.kind, ";") == true {
+        p = q.pos;
+    }
+    return ShRes { s: s, pos: p };
+}
+fn pa_if(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let c = pa_expr(src, t.pos);
+    let th = pa_block(src, c.pos);
+    let s = str_concat(str_concat(str_concat("(if ", c.s), " ("), th.s);
+    s = str_concat(s, ")");
+    let p = th.pos;
+    let e = pa_peek(src, p);
+    if str_eq(e.kind, "else") == true {
+        let e2 = pa_peek(src, e.pos);
+        if str_eq(e2.kind, "if") == true {
+            let ch = pa_if(src, e.pos);
+            s = str_concat(str_concat(s, " ("), ch.s);
+            s = str_concat(s, ")");
+            p = ch.pos;
+        } else {
+            let eb = pa_block(src, e.pos);
+            s = str_concat(str_concat(s, " ("), eb.s);
+            s = str_concat(s, ")");
+            p = eb.pos;
+        }
+    }
+    s = str_concat(s, ")");
+    return ShRes { s: s, pos: p };
+}
+fn pa_match(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let subj = pa_expr(src, t.pos);
+    let p = pa_eat(src, subj.pos, "{");
+    let s = str_concat("(match ", subj.s);
+    let go = true;
+    while go == true {
+        let u = pa_peek(src, p);
+        if str_eq(u.kind, "}") == true {
+            go = false;
+        } else {
+            if str_eq(u.kind, "eof") == true {
+                go = false;
+            } else {
+                let before = p;
+                let pt = pa_pattern(src, p);
+                p = pt.pos;
+                let g = "";
+                let gd = pa_peek(src, p);
+                if str_eq(gd.kind, "if") == true {
+                    let ge = pa_expr(src, gd.pos);
+                    g = str_concat(str_concat(" (if ", ge.s), ")");
+                    p = ge.pos;
+                }
+                let ar = pa_eat(src, p, "=>");
+                let body = "";
+                let bb = pa_peek(src, ar);
+                if str_eq(bb.kind, "{") == true {
+                    let bl = pa_block(src, ar);
+                    body = bl.s;
+                    p = bl.pos;
+                } else {
+                    let sg = pa_stmt(src, ar);
+                    body = sg.s;
+                    p = sg.pos;
+                }
+                let cm = pa_peek(src, p);
+                if str_eq(cm.kind, ",") == true {
+                    p = cm.pos;
+                }
+                s = str_concat(str_concat(str_concat(str_concat(str_concat(s, " ("), pt.s), g), str_concat(" ", body)), ")");
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    s = str_concat(s, ")");
+    return ShRes { s: s, pos: p };
+}
+fn pa_stmt(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    if str_eq(t.kind, "let") == true {
+        return pa_let(src, pos);
+    }
+    if str_eq(t.kind, "ident") == true {
+        if str_eq(t.lex, "print") == true {
+            let lp = pa_eat(src, t.pos, "(");
+            let a = pa_expr(src, lp);
+            let q = pa_eat(src, a.pos, ")");
+            let w = pa_peek(src, q);
+            if str_eq(w.kind, ";") == true {
+                q = w.pos;
+            }
+            return ShRes { s: str_concat(str_concat("(print ", a.s), ")"), pos: q };
+        }
+    }
+    if str_eq(t.kind, "return") == true {
+        let u = pa_peek(src, t.pos);
+        if str_eq(u.kind, ";") == true {
+            return ShRes { s: "(return)", pos: u.pos };
+        }
+        if str_eq(u.kind, "}") == true {
+            return ShRes { s: "(return)", pos: t.pos };
+        }
+        if str_eq(u.kind, "eof") == true {
+            return ShRes { s: "(return)", pos: t.pos };
+        }
+        let v = pa_expr(src, t.pos);
+        let q = v.pos;
+        let w = pa_peek(src, q);
+        if str_eq(w.kind, ";") == true {
+            q = w.pos;
+        }
+        return ShRes { s: str_concat(str_concat("(return ", v.s), ")"), pos: q };
+    }
+    if str_eq(t.kind, "if") == true {
+        return pa_if(src, pos);
+    }
+    if str_eq(t.kind, "while") == true {
+        let c = pa_expr(src, t.pos);
+        let b = pa_block(src, c.pos);
+        return ShRes { s: str_concat(str_concat(str_concat("(while ", c.s), str_concat(" (", b.s)), "))"), pos: b.pos };
+    }
+    if str_eq(t.kind, "match") == true {
+        return pa_match(src, pos);
+    }
+    if str_eq(t.kind, "ident") == true {
+        if str_eq(t.lex, "print") == false {
+            let a1 = pa_at(src, t.pos, 0);
+            if str_eq(a1.kind, "=") == true {
+                let v = pa_expr(src, a1.pos);
+                let q = v.pos;
+                let w = pa_peek(src, q);
+                if str_eq(w.kind, ";") == true {
+                    q = w.pos;
+                }
+                return ShRes { s: str_concat(str_concat(str_concat("(set ", t.lex), " "), str_concat(v.s, ")")), pos: q };
+            }
+            if str_eq(a1.kind, "(") == true {
+                let e = pa_expr(src, pos);
+                let q = e.pos;
+                let w = pa_peek(src, q);
+                if str_eq(w.kind, ";") == true {
+                    q = w.pos;
+                }
+                return ShRes { s: str_concat(str_concat("(do ", e.s), ")"), pos: q };
+            }
+            let ms = pa_method_start(src, pos);
+            if str_eq(ms.s, "y") == true {
+                let e = pa_expr(src, pos);
+                let q = e.pos;
+                let w = pa_peek(src, q);
+                if str_eq(w.kind, ";") == true {
+                    q = w.pos;
+                }
+                return ShRes { s: str_concat(str_concat("(do ", e.s), ")"), pos: q };
+            }
+        }
+    }
+    return ShRes { s: "", pos: pos };
+}
+fn pa_import(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let m = pa_peek(src, t.pos);
+    let mod = m.lex;
+    let p = m.pos;
+    let go = true;
+    while go == true {
+        let d = pa_peek(src, p);
+        if str_eq(d.kind, ".") == true {
+            let e = pa_at(src, p, 1);
+            if str_eq(e.kind, "ident") == true {
+                mod = str_concat(str_concat(mod, "."), e.lex);
+                p = e.pos;
+            } else {
+                go = false;
+            }
+        } else {
+            go = false;
+        }
+    }
+    let q = pa_peek(src, p);
+    if str_eq(q.kind, ";") == true {
+        p = q.pos;
+    }
+    return ShRes { s: str_concat(str_concat("(import ", mod), ")"), pos: p };
+}
+fn pa_alias(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let nm = pa_peek(src, t.pos);
+    let ty = pa_type(src, pa_eat(src, nm.pos, "="));
+    let p = ty.pos;
+    let q = pa_peek(src, p);
+    if str_eq(q.kind, ";") == true {
+        p = q.pos;
+    }
+    return ShRes { s: str_concat(str_concat(str_concat("(type ", nm.lex), " "), str_concat(ty.s, ")")), pos: p };
+}
+fn pa_const(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let nm = pa_peek(src, t.pos);
+    let p = nm.pos;
+    let s = str_concat("(const ", nm.lex);
+    let c = pa_peek(src, p);
+    if str_eq(c.kind, ":") == true {
+        let ty = pa_type(src, c.pos);
+        s = str_concat(str_concat(s, ": "), ty.s);
+        p = ty.pos;
+    }
+    let v = pa_expr(src, pa_eat(src, p, "="));
+    s = str_concat(str_concat(str_concat(s, " "), v.s), ")");
+    p = v.pos;
+    let q = pa_peek(src, p);
+    if str_eq(q.kind, ";") == true {
+        p = q.pos;
+    }
+    return ShRes { s: s, pos: p };
+}
+fn pa_struct_decl(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let nm = pa_peek(src, t.pos);
+    let name = nm.lex;
+    let p = nm.pos;
+    let s = str_concat("(struct ", name);
+    let u = pa_peek(src, p);
+    if str_eq(u.kind, "<") == true {
+        let tp = pa_tparams(src, u.pos);
+        s = str_concat(s, tp.s);
+        p = tp.pos;
+    }
+    let lb = pa_eat(src, p, "{");
+    p = lb;
+    let go = true;
+    while go == true {
+        let w = pa_peek(src, p);
+        if str_eq(w.kind, "}") == true {
+            go = false;
+        } else {
+            if str_eq(w.kind, "eof") == true {
+                go = false;
+            } else {
+                let before = p;
+                let f = pa_peek(src, p);
+                let ty = pa_type(src, pa_eat(src, f.pos, ":"));
+                s = str_concat(str_concat(str_concat(str_concat(s, " ("), f.lex), ": "), str_concat(ty.s, ")"));
+                p = ty.pos;
+                let sm = pa_peek(src, p);
+                if str_eq(sm.kind, ";") == true {
+                    p = sm.pos;
+                }
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    s = str_concat(s, ")");
+    return ShRes { s: s, pos: p };
+}
+fn pa_enum_decl(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let nm = pa_peek(src, t.pos);
+    let name = nm.lex;
+    let p = nm.pos;
+    let s = str_concat("(enum ", name);
+    let u = pa_peek(src, p);
+    if str_eq(u.kind, "<") == true {
+        let tp = pa_tparams(src, u.pos);
+        s = str_concat(s, tp.s);
+        p = tp.pos;
+    }
+    let lb = pa_eat(src, p, "{");
+    p = lb;
+    let go = true;
+    while go == true {
+        let w = pa_peek(src, p);
+        if str_eq(w.kind, "}") == true {
+            go = false;
+        } else {
+            if str_eq(w.kind, "eof") == true {
+                go = false;
+            } else {
+                let before = p;
+                let v = pa_peek(src, p);
+                let pay = "";
+                p = v.pos;
+                let o = pa_peek(src, p);
+                if str_eq(o.kind, "(") == true {
+                    let els = "";
+                    let first = true;
+                    let q = o.pos;
+                    let z = pa_peek(src, q);
+                    if str_eq(z.kind, ")") == false {
+                        let gi = true;
+                        while gi == true {
+                            let gb = q;
+                            let ty = pa_type(src, q);
+                            if first == true {
+                                first = false;
+                            } else {
+                                els = str_concat(els, ", ");
+                            }
+                            els = str_concat(els, ty.s);
+                            q = ty.pos;
+                            let gc = pa_peek(src, q);
+                            if str_eq(gc.kind, ",") == true {
+                                q = gc.pos;
+                            } else {
+                                gi = false;
+                            }
+                            if q <= gb {
+                                gi = false;
+                            }
+                        }
+                    }
+                    let rp = pa_peek(src, q);
+                    if str_eq(rp.kind, ")") == true {
+                        q = rp.pos;
+                    }
+                    pay = str_concat(str_concat("(", els), ")");
+                    p = q;
+                }
+                s = str_concat(str_concat(str_concat(s, " ("), v.lex), str_concat(pay, ")"));
+                let cm = pa_peek(src, p);
+                if str_eq(cm.kind, ",") == true {
+                    p = cm.pos;
+                }
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    s = str_concat(s, ")");
+    return ShRes { s: s, pos: p };
+}
+// Deklarasi fn; nobody=1 tanpa body (extern/trait).
+fn pa_fn_decl(src: string, pos: i64, nobody: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let nm = pa_peek(src, t.pos);
+    let name = nm.lex;
+    let p = nm.pos;
+    let s = str_concat("(fn ", name);
+    let u = pa_peek(src, p);
+    if str_eq(u.kind, "<") == true {
+        let tp = pa_tparams(src, u.pos);
+        s = str_concat(s, tp.s);
+        p = tp.pos;
+    }
+    let lp = pa_eat(src, p, "(");
+    p = lp;
+    let ps = "";
+    let first = true;
+    let v = pa_peek(src, p);
+    if str_eq(v.kind, ")") == false {
+        let go = true;
+        while go == true {
+            let before = p;
+            let pn = pa_peek(src, p);
+            let one = "";
+            if str_eq(pn.kind, "self") == true {
+                one = "self";
+                p = pn.pos;
+            } else {
+                let ty = pa_type(src, pa_eat(src, pn.pos, ":"));
+                one = str_concat(str_concat(pn.lex, ": "), ty.s);
+                p = ty.pos;
+            }
+            if first == true {
+                first = false;
+            } else {
+                ps = str_concat(ps, ", ");
+            }
+            ps = str_concat(ps, one);
+            let c = pa_peek(src, p);
+            if str_eq(c.kind, ",") == true {
+                p = c.pos;
+            } else {
+                go = false;
+            }
+            if p <= before {
+                go = false;
+            }
+        }
+    }
+    let rp = pa_peek(src, p);
+    if str_eq(rp.kind, ")") == true {
+        p = rp.pos;
+    }
+    let ret = "void";
+    let a = pa_peek(src, p);
+    if str_eq(a.kind, "->") == true {
+        let rt = pa_type(src, a.pos);
+        ret = rt.s;
+        p = rt.pos;
+    }
+    let body = "";
+    if nobody == 1 {
+        let sm = pa_peek(src, p);
+        if str_eq(sm.kind, ";") == true {
+            p = sm.pos;
+        }
+    } else {
+        let bl = pa_block(src, p);
+        body = bl.s;
+        p = bl.pos;
+    }
+    s = str_concat(str_concat(str_concat(str_concat(str_concat(s, "("), ps), ") -> "), ret), str_concat(" ", body));
+    s = str_concat(s, ")");
+    return ShRes { s: s, pos: p };
+}
+fn pa_trait(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let nm = pa_peek(src, t.pos);
+    let s = str_concat("(trait ", nm.lex);
+    let p = pa_eat(src, nm.pos, "{");
+    let go = true;
+    while go == true {
+        let w = pa_peek(src, p);
+        if str_eq(w.kind, "}") == true {
+            go = false;
+        } else {
+            if str_eq(w.kind, "eof") == true {
+                go = false;
+            } else {
+                let before = p;
+                let m = pa_fn_decl(src, p, 1);
+                s = str_concat(str_concat(s, " "), m.s);
+                p = m.pos;
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    s = str_concat(s, ")");
+    return ShRes { s: s, pos: p };
+}
+fn pa_impl(src: string, pos: i64) -> ShRes {
+    let t = pa_peek(src, pos);
+    let tr = pa_peek(src, t.pos);
+    let p = pa_eat(src, tr.pos, "for");
+    let tg = pa_type(src, p);
+    let s = str_concat(str_concat(str_concat("(impl ", tr.lex), " for "), tg.s);
+    p = pa_eat(src, tg.pos, "{");
+    let go = true;
+    while go == true {
+        let w = pa_peek(src, p);
+        if str_eq(w.kind, "}") == true {
+            go = false;
+        } else {
+            if str_eq(w.kind, "eof") == true {
+                go = false;
+            } else {
+                let before = p;
+                let m = pa_fn_decl(src, p, 0);
+                s = str_concat(str_concat(s, " "), m.s);
+                p = m.pos;
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+    }
+    let r = pa_peek(src, p);
+    if str_eq(r.kind, "}") == true {
+        p = r.pos;
+    }
+    s = str_concat(s, ")");
+    return ShRes { s: s, pos: p };
+}
+fn main() {
+    let src = file_read(process_argv(1));
+    let n = str_len(src);
+    let imports = "";
+    let aliases = "";
+    let traits = "";
+    let impls = "";
+    let structs = "";
+    let enums = "";
+    let consts = "";
+    let fns = "";
+    let p = 0;
+    let go = true;
+    while go == true {
+        let t = pa_peek(src, p);
+        if str_eq(t.kind, "eof") == true {
+            go = false;
+        } else {
+            let before = p;
+            if str_eq(t.kind, "import") == true {
+                let r = pa_import(src, p);
+                imports = str_concat(str_concat(imports, " "), r.s);
+                p = r.pos;
+            } else {
+                if str_eq(t.kind, "type") == true {
+                    let r = pa_alias(src, p);
+                    aliases = str_concat(str_concat(aliases, " "), r.s);
+                    p = r.pos;
+                } else {
+                    if str_eq(t.kind, "const") == true {
+                        let r = pa_const(src, p);
+                        consts = str_concat(str_concat(consts, " "), r.s);
+                        p = r.pos;
+                    } else {
+                        if str_eq(t.kind, "trait") == true {
+                            let r = pa_trait(src, p);
+                            traits = str_concat(str_concat(traits, " "), r.s);
+                            p = r.pos;
+                        } else {
+                            if str_eq(t.kind, "impl") == true {
+                                let r = pa_impl(src, p);
+                                impls = str_concat(str_concat(impls, " "), r.s);
+                                p = r.pos;
+                            } else {
+                                if str_eq(t.kind, "struct") == true {
+                                    let r = pa_struct_decl(src, p);
+                                    structs = str_concat(str_concat(structs, " "), r.s);
+                                    p = r.pos;
+                                } else {
+                                    if str_eq(t.kind, "enum") == true {
+                                        let r = pa_enum_decl(src, p);
+                                        enums = str_concat(str_concat(enums, " "), r.s);
+                                        p = r.pos;
+                                    } else {
+                                        if str_eq(t.kind, "extern") == true {
+                                            let f = pa_peek(src, t.pos);
+                                            let r = pa_fn_decl(src, f.pos, 1);
+                                            fns = str_concat(str_concat(fns, " "), r.s);
+                                            p = r.pos;
+                                        } else {
+                                            if str_eq(t.kind, "fn") == true {
+                                                let r = pa_fn_decl(src, p, 0);
+                                                fns = str_concat(str_concat(fns, " "), r.s);
+                                                p = r.pos;
+                                            } else {
+                                                p = t.pos;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if p <= before {
+                let sk = pa_peek(src, p);
+                p = sk.pos;
+                if p <= before {
+                    go = false;
+                }
+            }
+        }
+    }
+    let body = str_concat(str_concat(str_concat(str_concat(str_concat(str_concat(imports, aliases), traits), impls), structs), enums), consts);
+    body = str_concat(body, fns);
+    if str_eq(body, "") == true {
+        print("(empty)");
+    } else {
+        print(str_concat(str_concat("(program", body), ")"));
+    }
+}

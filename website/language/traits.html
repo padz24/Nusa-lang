@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traits — Nusa Docs 3.0.0</title>
+<meta name="description" content="Traits v3.0.0 Overview trait T { fn m(self, ...) ...; } tanpa body; impl Trait for Type dengan resolve statis menjadi fungsi mangled. Koherensi unik p">
+<link rel="canonical" href="https://nusa-lang.org/docs/language/traits.html">
+<meta property="og:title" content="Traits — Nusa Docs 3.0.0">
+<meta property="og:description" content="Traits v3.0.0 Overview trait T { fn m(self, ...) ...; } tanpa body; impl Trait for Type dengan resolve statis menjadi fungsi mangled. Koherensi unik p">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Traits">
+<meta name="nusa:category" content="language">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="trait, impl, for, self, bounds, dispatch">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Traits", "category": "language", "version": "3.0.0", "content": "Traits v3.0.0 Overview trait T { fn m(self, ...) ...; } tanpa body; impl Trait for Type dengan resolve statis menjadi fungsi mangled. Koherensi unik program-wide. Syntax trait Show { fn show(self) -&gt; string; } impl Show for A { fn show(self) -&gt; string { return &quot;A&quot;; } } fn f&lt;T: Sh", "code_example": "trait Show {\n    fn show(self) -> string;\n}\nstruct A {\n    x: i64;\n}\nimpl Show for A {\n    fn show(self) -> string {\n        return \"A\";\n    }\n}\nfn f<T: Show>(v: T) -> string {\n    return v.show();\n}\nfn main() {\n    print(f(A {\n        x: 1\n    }));\n}\n", "keywords": "trait, impl, for, self, bounds, dispatch"}</script>
+</head>
+<body class="kind-language">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/" aria-current="page">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../language/">Indeks</a></li><li><a href="../language/syntax.html">Syntax</a></li><li><a href="../language/variables.html">Variables</a></li><li><a href="../language/functions.html">Functions</a></li><li><a href="../language/types.html">Types</a></li><li><a href="../language/structs.html">Struct</a></li><li><a href="../language/enums.html">Enum</a></li><li><a href="../language/generics.html">Generics</a></li><li><a href="../language/traits.html" aria-current="page">Traits</a></li><li><a href="../language/pattern-matching.html">Pattern Matching</a></li><li><a href="../language/error-handling.html">Error Handling</a></li><li><a href="../language/concurrency.html">Concurrency</a></li><li><a href="../language/modules.html">Modules</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../language/">Language</a> / <a href="../language/traits.html">Traits</a></p><article><h1>Traits</h1><span class="badge historic">v3.0.0</span> <h2>Overview</h2><p>trait T { fn m(self, ...) ...; } tanpa body; impl Trait for Type dengan resolve statis menjadi fungsi mangled. Koherensi unik program-wide.</p><h2>Syntax</h2><pre data-lang="nusa"><code class="lang-nusa">trait Show {
+    fn show(self) -&gt; string;
+}
+impl Show for A {
+    fn show(self) -&gt; string {
+        return &quot;A&quot;;
+    }
+}
+fn f&lt;T: Show&gt;(v: T) -&gt; string {
+    return v.show();
+}</code></pre><h2>Example</h2><pre data-lang="nusa"><code class="lang-nusa">trait Show {
+    fn show(self) -&gt; string;
+}
+struct A {
+    x: i64;
+}
+impl Show for A {
+    fn show(self) -&gt; string {
+        return &quot;A&quot;;
+    }
+}
+fn f&lt;T: Show&gt;(v: T) -&gt; string {
+    return v.show();
+}
+fn main() {
+    print(f(A {
+        x: 1
+    }));
+}
+</code></pre><details><summary>Output</summary><samp class="out">A</samp></details><p><a class="btn sec" href="../playground/?code=trait%20Show%20%7B%0A%20%20%20%20fn%20show%28self%29%20-%3E%20string%3B%0A%7D%0Astruct%20A%20%7B%0A%20%20%20%20x%3A%20i64%3B%0A%7D%0Aimpl%20Show%20for%20A%20%7B%0A%20%20%20%20fn%20show%28self%29%20-%3E%20string%20%7B%0A%20%20%20%20%20%20%20%20return%20%22A%22%3B%0A%20%20%20%20%7D%0A%7D%0Afn%20f%3CT%3A%20Show%3E%28v%3A%20T%29%20-%3E%20string%20%7B%0A%20%20%20%20return%20v.show%28%29%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28f%28A%20%7B%0A%20%20%20%20%20%20%20%20x%3A%201%0A%20%20%20%20%7D%29%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Rules</h2><ul><li>self telanjang pertama wajib.</li><li>Target: struct/generik-konkret/primitif; array/fn/void ditolak.</li><li>Bound ganda dengan +.</li><li>Privacy _: nama garis-bawah = privat modul.</li></ul><h2>Compiler behavior</h2><p>recv.method(args) → rewrite Trait_method_Type; codegen nol baris. Diagnostik unknown/ambiguous + daftar kandidat.</p><div class="warn"><h2>Limitations</h2><ul><li>Tanpa supertrait/body default/tipe Self/associated fn/dynamic dispatch.</li><li>Duplikat impl ditolak.</li></ul></div><h2>Related topics</h2><ul><li><a href="../language/generics.html">language/generics</a></li><li><a href="../language/structs.html">language/structs</a></li></ul><h2>Spec &amp; Tests</h2><p>Spec: <code>docs/language-spec-2.0.md §9 + RFC-0002 (Implemented)</code> · Uji pengunci: <code>e2e_traits.sh (18 kasus) + examples/traits.ns</code></p></article><div class="prevnext"><a href="../language/generics.html">← Generics</a><a href="../language/pattern-matching.html">Pattern Matching →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

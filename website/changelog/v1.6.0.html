@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 1.6.0 — Nusa Docs 1.6.0</title>
+<meta name="description" content="1.6.0 v1.6.0 Release notes # — 2026-09-07 (Phase 25: pattern matching) Statement match dengan desugar ke let + rantai if / else biasa (tanpa codegen b">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v1.6.0.html">
+<meta property="og:title" content="Changelog 1.6.0 — Nusa Docs 1.6.0">
+<meta property="og:description" content="1.6.0 v1.6.0 Release notes # — 2026-09-07 (Phase 25: pattern matching) Statement match dengan desugar ke let + rantai if / else biasa (tanpa codegen b">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 1.6.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="1.6.0">
+<meta name="nusa:keywords" content="changelog, 1.6.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 1.6.0", "category": "changelog", "version": "1.6.0", "content": "1.6.0 v1.6.0 Release notes # — 2026-09-07 (Phase 25: pattern matching) Statement match dengan desugar ke let + rantai if / else biasa (tanpa codegen baru): literal int/bool/string, _ , bind, struct, guard if , dan varian std Some(v) / None / Ok(v) / Err(e) untuk Option/Result. Exhaustiveness wajib", "code_example": "", "keywords": "changelog, 1.6.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v1.6.0.html">1.6.0</a></p><article><h1>1.6.0</h1><span class="badge historic">v1.6.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-07 (Phase 25: pattern matching)</p>
+<p>Statement <code>match</code> dengan desugar ke <code>let</code> + rantai <code>if</code>/<code>else</code> biasa</p>
+<p>(tanpa codegen baru): literal int/bool/string, <code>_</code>, bind, struct,</p>
+<p>guard <code>if</code>, dan varian std <code>Some(v)</code>/<code>None</code>/<code>Ok(v)</code>/<code>Err(e)</code> untuk</p>
+<p>Option/Result. Exhaustiveness wajib (bool + pasangan varian tertutup</p>
+<p>tanpa wildcard; literal ganda + unreachable ditolak). <code>nusa fmt</code></p>
+<p>memformat arm match (idempoten).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Lexer <code>match</code> + <code>=&gt;</code>; AST <code>Pat</code>/<code>MatchArm</code>/<code>MatchStmt</code> (+ guard,</li>
+</ul>
+<p>  dump, clone).</p>
+<ul>
+<li>Parser pola: literal (negatif didukung), <code>_</code>, bind, struct</li>
+</ul>
+<p>  (+ targs), varian <code>Name(...)</code>, <code>None</code> telanjang, guard</p>
+<p>  <code>&lt;pola&gt; if &lt;kondisi&gt;</code>.</p>
+<ul>
+<li>Checker: validasi type-directed, exhaustiveness, desugar flag</li>
+</ul>
+<p>  (<code>$matchK</code>/<code>$mK</code>), inline guard (binding → klon aksesor murni),</p>
+<p>  transparansi <code>if true</code> untuk all-paths, arm codegen defensif.</p>
+<ul>
+<li>Semantic: scope per-arm + guard boleh memakai binding.</li>
+<li><code>docs/pattern-matching.md</code>; sentuh <code>syntax</code>/<code>control-flow</code>/</li>
+</ul>
+<p>  <code>error-handling</code>/<code>spec</code>.</p>
+<ul>
+<li>Unit typecheck 14, <code>e2e_match.sh</code> (13 kasus: 5 runtime, 7 penolakan,</li>
+</ul>
+<p>  fmt).</p>
+<h3 id="batasan-phase-25">Batasan Phase 25 <a href="#batasan-phase-25" aria-label="taut">#</a></h3>
+<ul>
+<li>Statement-only; tanpa pola or/range; tanpa exhaustiveness int/string</li>
+</ul>
+<p>  umum (butuh <code>_</code>); varian enum pengguna = Phase 26.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.6.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

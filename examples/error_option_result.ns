@@ -1,0 +1,28 @@
+import option;
+import result;
+fn parse_age(s: string) -> Result<i64, string> {
+    let o = parse_int_opt(s);
+    if is_none(o) {
+        return Result < i64, string > .Err(str_concat("bad age: ", s));
+    }
+    match o {
+        Some(v) => {
+            return Result < i64, string > .Ok(v);
+        },
+        None => {
+            return Result < i64, string > .Err("unreachable");
+        },
+    }
+    return Result < i64, string > .Err("unreachable");
+}
+fn get_age(s: string) -> Result<i64, string> {
+    let n = parse_age(s)?;
+    return Result < i64, string > .Ok(n + 1);
+}
+fn main() {
+    print(res_unwrap_or(get_age("41"), 0));
+    print(res_unwrap_or(get_age("abc"), 0));
+    print(opt_unwrap_or(parse_int_opt("21"), 0));
+    print(is_some(parse_int_opt("5")));
+    print(is_none(parse_int_opt("zz")));
+}

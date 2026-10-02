@@ -1,0 +1,16 @@
+// Contoh modul v0.8.0 (program utama; lihat math.ns).
+// Diharapkan mencetak:
+// 6
+// Ada
+import math;
+struct Person {
+    name: string;
+    age: i64;
+}
+fn main() {
+    print(add(2, 3));
+    let ada = Person {
+        name: "Ada", age: 36
+    };
+    print(ada.name);
+}

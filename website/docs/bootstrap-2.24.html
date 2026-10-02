@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bootstrap-2.24.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="bootstrap-2.24.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Bootstrap 2.0 — Design (Phase 73, target 2.24.0) ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/bootstrap-2.24.html">
+<meta property="og:title" content="bootstrap-2.24.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="bootstrap-2.24.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Bootstrap 2.0 — Design (Phase 73, target 2.24.0) ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="bootstrap-2.24.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="bootstrap-2.24, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "bootstrap-2.24.md", "category": "docs", "version": "3.0.0", "content": "bootstrap-2.24.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Bootstrap 2.0 — Design (Phase 73, target 2.24.0) # Status: rantai multi-komponen (lexer + parser). Payung master: PHASE 73 — COMPILER BOOTSTRAP 2.0 (&quot;frontend utama semakin banyak menggunakan N", "code_example": "", "keywords": "bootstrap-2.24, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/bootstrap-2.24.html">bootstrap-2.24.md</a></p><article><h1>bootstrap-2.24.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="compiler-bootstrap-2-0-design-phase-73-target-2-24-0">Compiler Bootstrap 2.0 — Design (Phase 73, target 2.24.0) <a href="#compiler-bootstrap-2-0-design-phase-73-target-2-24-0" aria-label="taut">#</a></h1>
+<p>Status: rantai multi-komponen (lexer + parser). Payung master:</p>
+<p>PHASE 73 — COMPILER BOOTSTRAP 2.0 (&quot;frontend utama semakin</p>
+<p>banyak menggunakan Nusa&quot;; C++ tetap untuk runtime/LLVM/</p>
+<p>tooling/bootstrap layer). Spec bahasa tak berubah.</p>
+<h2 id="1-generalisasi-rantai-satu-pola-n-komponen">1. Generalisasi rantai (satu pola, N komponen) <a href="#1-generalisasi-rantai-satu-pola-n-komponen" aria-label="taut">#</a></h2>
+<p>Kontrak komponen (docs/bootstrap.md, sejak Phase 39) sudah</p>
+<p>dipenuhi <code>parse.ns</code> (check hijau, argv(1), stdout stabil,</p>
+<p>deterministik) — kecuali referensi Stage 0-nya <code>nusa ast</code>,</p>
+<p>bukan <code>nusa lex</code>. Maka <code>runBootstrap</code> diparameterisasi kind:</p>
+<pre data-lang="text"><code class="lang-text">nusa bootstrap [file.ns] [--as lex|ast] [-o DIR]</code></pre>
+<ul>
+<li><code>--as</code> default <code>lex</code> (kompatibel: semua invokasi lama sama).</li>
+<li>Artefak Stage 1: <code>&lt;DIR&gt;/&lt;base&gt;_stage1</code> (<code>lex.ns</code>→<code>lex_stage1</code></li>
+</ul>
+<p>  sama seperti dulu; <code>parse.ns</code>→<code>parse_stage1</code>).</p>
+<ul>
+<li>Referensi Stage 0 per kind (helper bersama, tanpa duplikasi</li>
+</ul>
+<p>  logika runLex/runAst): lex = dump token; ast = lex+parse+</p>
+<p>  <code>program.dump()</code>.</p>
+<ul>
+<li>Stage 2 = self-application (komponen memproses dirinya</li>
+</ul>
+<p>  sendiri — kasus terkuat) 2x (determinisme) + banding Stage 0.</p>
+<h2 id="2-yang-tidak-berubah">2. Yang TIDAK berubah <a href="#2-yang-tidak-berubah" aria-label="taut">#</a></h2>
+<ul>
+<li>C++ tetap bootstrap layer + referensi Stage 0 (differential</li>
+</ul>
+<p>  butuh oracle independen — mengganti referensi dengan Nusa</p>
+<p>  meruntuhkan pembuktian).</p>
+<ul>
+<li>Korpus valid saja (batas selfhosting.md berlaku).</li>
+<li><code>e2e_selfhost.sh</code>/<code>e2e_parse.sh</code> tetap oracle diferensial</li>
+</ul>
+<p>  per-komponen; bootstrap mengunci RANTAI (build+repro).</p>
+<h2 id="3-peta-implementasi">3. Peta implementasi <a href="#3-peta-implementasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>Driver::runBootstrap(path, outDir, kind)</code> + helper</li>
+</ul>
+<p>  <code>stage0Ref</code>; <code>main.cpp</code>: flag <code>--as</code> (nilai selain lex|ast</p>
+<p>  = error) + help text.</p>
+<ul>
+<li><code>e2e_bootstrap.sh</code>: seksi parse-chain (bootstrap penuh +</li>
+</ul>
+<p>  standalone vs <code>nusa ast</code> + determinisme) + negatif <code>--as</code>.</p>
+<ul>
+<li>Docs: <code>docs/bootstrap.md</code> (rantai ganda), <code>compiler.md</code></li>
+</ul>
+<p>  +1 baris, <code>CHANGELOG.md</code> [2.24.0], regen website.</p>
+<h2 id="4-ditunda-phase-74-full">4. DITUNDA (Phase 74 FULL) <a href="#4-ditunda-phase-74-full" aria-label="taut">#</a></h2>
+<p>Semantic/checker selfhost (butuh tabel simbol growable —</p>
+<p>penelitian terpisah), rantai 3+ komponen otomatis,</p>
+<p>Stage N == Stage N+1 antar-biner Nusa (belum ada 2 biner</p>
+<p>turunan untuk dibandingkan).</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa bootstrap</code> lama byte-perilaku-sama (4 kasus lama hijau);</li>
+</ul>
+<p>  <code>nusa bootstrap parse.ns --as ast</code> PASS + artefak mandiri;</p>
+<p>  suite hijau; bench identik; <code>.ns.ll</code> bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

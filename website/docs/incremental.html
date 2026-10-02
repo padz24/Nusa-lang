@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>incremental.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="incremental.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Incremental Compilation (Phase 35, v1.16.0) # nusa build app.">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/incremental.html">
+<meta property="og:title" content="incremental.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="incremental.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Incremental Compilation (Phase 35, v1.16.0) # nusa build app.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="incremental.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="incremental, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "incremental.md", "category": "docs", "version": "3.0.0", "content": "incremental.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Incremental Compilation (Phase 35, v1.16.0) # nusa build app.ns -o app # Built ... (dingin: frontend + clang) nusa build app.ns -o app # Fresh app (cached) — 7x lebih cepat Model: frontend selalu, clang kondisi", "code_example": "", "keywords": "incremental, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/incremental.html">incremental.md</a></p><article><h1>incremental.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="incremental-compilation-phase-35-v1-16-0">Incremental Compilation (Phase 35, v1.16.0) <a href="#incremental-compilation-phase-35-v1-16-0" aria-label="taut">#</a></h1>
+<pre data-lang="sh"><code class="lang-sh">nusa build app.ns -o app   # Built ... (dingin: frontend + clang)
+nusa build app.ns -o app   # Fresh app (cached) — 7x lebih cepat</code></pre>
+<h2 id="model-frontend-selalu-clang-kondisional">Model: frontend selalu, clang kondisional <a href="#model-frontend-selalu-clang-kondisional" aria-label="taut">#</a></h2>
+<p>Pipeline dibagi dua berdasarkan biaya terukur (lihat <code>docs/perf.md</code>):</p>
+<ul>
+<li><strong>Frontend</strong> (load → lex → parse → check → IR, ~0.2–0.4 dtk)</li>
+</ul>
+<p>  SELALU jalan. Murah, dan satu-satunya cara sound mengetahui</p>
+<p>  modul/dependensi tanpa cache AST rapuh.</p>
+<ul>
+<li><strong>Backend</strong> (clang link, ~1–1.4 dtk) DILEWATI bila artefak masih</li>
+</ul>
+<p>  valid. Inilah penghematan nyatanya.</p>
+<h2 id="fingerprint-outdir-nusa-cache-fingerprint">Fingerprint (<code>&lt;outdir&gt;/.nusa-cache/fingerprint</code>) <a href="#fingerprint-outdir-nusa-cache-fingerprint" aria-label="taut">#</a></h2>
+<p>Satu build diidentifikasi oleh:</p>
+<ul>
+<li><code>compiler</code> = sha256 binary nusa (ganti compiler → rebuild),</li>
+<li><code>target</code>/<code>opt</code>/<code>emit</code>/<code>sysroot</code> + input link (<code>-l</code> nama; file</li>
+</ul>
+<p>  beserta hash isinya),</p>
+<ul>
+<li>semua modul transitif <code>(path, sha256-isi)</code> — termasuk modul std</li>
+</ul>
+<p>  bila diimpor (di-hash dari disk, bukan nama),</p>
+<ul>
+<li><code>ir</code> = sha256 IR yang terakhir diemisikan.</li>
+</ul>
+<p>Hit bila: flag sama + IR sama + output ada → <code>Fresh &lt;out&gt; (cached)</code>.</p>
+<p>IR dibandingkan (BUKAN hanya input) sehingga perubahan komentar/</p>
+<p>format ikut hemat; aman pula andaikata compiler nondeterministik</p>
+<p>(IR beda → rebuild; tak pernah artefak basi).</p>
+<p>Miss melaporkan penyebab: <code>rebuilding: ~a.ns, +b.ns, -c.ns</code></p>
+<p>(<code>~</code> isi berubah, <code>+</code> baru, <code>-</code> hilang) atau</p>
+<p><code>rebuilding: flags changed</code>. <code>--fresh</code> memaksa build penuh</p>
+<p>(juga via <code>pkg build --fresh</code>).</p>
+<h2 id="dependency-graph">Dependency graph <a href="#dependency-graph" aria-label="taut">#</a></h2>
+<p><code>compiler/incr</code>: simpul per modul (path absolut, sha, daftar nama</p>
+<p>import) dari <code>ModuleLoader</code>. Edge best-effort via basename (cukup</p>
+<p>untuk pelaporan; kebenaran tak bergantung padanya — fingerprint</p>
+<p>memakai SET terurut).</p>
+<h2 id="yang-tidak-di-cache-sadar-beralasan">Yang TIDAK di-cache (sadar + beralasan) <a href="#yang-tidak-di-cache-sadar-beralasan" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>AST/semantik per-modul</strong>: analisis Nusa global (monomorphisasi,</li>
+</ul>
+<p>  dispatch statis, lifting closure lintas-modul) — mempartisinya</p>
+<p>  butuh query system (proyek tersendiri); frontend murah sehingga</p>
+<p>  penghematannya tak berarti.</p>
+<ul>
+<li><strong>Split objek per-modul</strong>: alasan sama + penempatan instance</li>
+</ul>
+<p>  generik takdeterministik per modul akan merusak cache.</p>
+<ul>
+<li><strong>Skip frontend</strong>: butuh determinisme terbukti + load-cache;</li>
+</ul>
+<p>  penghematan (0.3 dtk) tak sebanding risiko artefak basi.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

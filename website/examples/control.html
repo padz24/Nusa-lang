@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>control.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="control.ns v3.0.0 // Contoh v0.6.0: control flow. // Diharapkan mencetak: // 10 // 3 // 2 // 1 fn main() { let x: i64 = 10; if x &amp;gt; 5 { print(x); } ">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/control.html">
+<meta property="og:title" content="control.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="control.ns v3.0.0 // Contoh v0.6.0: control flow. // Diharapkan mencetak: // 10 // 3 // 2 // 1 fn main() { let x: i64 = 10; if x &amp;gt; 5 { print(x); } ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="control.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, control, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "control.ns", "category": "examples", "version": "3.0.0", "content": "control.ns v3.0.0 // Contoh v0.6.0: control flow. // Diharapkan mencetak: // 10 // 3 // 2 // 1 fn main() { let x: i64 = 10; if x &gt; 5 { print(x); } else { print(0); } let n: i64 = 3; while n &gt; 0 { print(n); n = n - 1; } } Output 10 3 2 1 Coba di playground", "code_example": "// Contoh v0.6.0: control flow.\n// Diharapkan mencetak:\n// 10\n// 3\n// 2\n// 1\nfn main() {\n    let x: i64 = 10;\n    if x > 5 {\n        print(x);\n    } else {\n        print(0);\n    }\n    let n: i64 = 3;\n    while n > 0 {\n        print(n);\n        n = n - 1;\n    }\n}\n", "keywords": "example, control, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/control.html">control.ns</a></p><article><h1>control.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">// Contoh v0.6.0: control flow.
+// Diharapkan mencetak:
+// 10
+// 3
+// 2
+// 1
+fn main() {
+    let x: i64 = 10;
+    if x &gt; 5 {
+        print(x);
+    } else {
+        print(0);
+    }
+    let n: i64 = 3;
+    while n &gt; 0 {
+        print(n);
+        n = n - 1;
+    }
+}
+</code></pre><details><summary>Output</summary><samp class="out">10
+3
+2
+1
+</samp></details><p><a class="btn sec" href="../playground/?code=%2F%2F%20Contoh%20v0.6.0%3A%20control%20flow.%0A%2F%2F%20Diharapkan%20mencetak%3A%0A%2F%2F%2010%0A%2F%2F%203%0A%2F%2F%202%0A%2F%2F%201%0Afn%20main%28%29%20%7B%0A%20%20%20%20let%20x%3A%20i64%20%3D%2010%3B%0A%20%20%20%20if%20x%20%3E%205%20%7B%0A%20%20%20%20%20%20%20%20print%28x%29%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20print%280%29%3B%0A%20%20%20%20%7D%0A%20%20%20%20let%20n%3A%20i64%20%3D%203%3B%0A%20%20%20%20while%20n%20%3E%200%20%7B%0A%20%20%20%20%20%20%20%20print%28n%29%3B%0A%20%20%20%20%20%20%20%20n%20%3D%20n%20-%201%3B%0A%20%20%20%20%7D%0A%7D%0A">Coba di playground</a></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

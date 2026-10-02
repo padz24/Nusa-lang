@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>realworld-3.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="realworld-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-World Validation — Phase 85 (beta 3.0.0) # Tujuan mand">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/realworld-3.0.html">
+<meta property="og:title" content="realworld-3.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="realworld-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-World Validation — Phase 85 (beta 3.0.0) # Tujuan mand">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="realworld-3.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="realworld-3.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "realworld-3.0.md", "category": "docs", "version": "3.0.0", "content": "realworld-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-World Validation — Phase 85 (beta 3.0.0) # Tujuan mandat: memakai Nusa untuk proyek nyata (bukan toy example) dan mencatat masalah desain bahasa yang muncul. Constraint: freeze beta — NOL perubahan bahas", "code_example": "", "keywords": "realworld-3.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/realworld-3.0.html">realworld-3.0.md</a></p><article><h1>realworld-3.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="real-world-validation-phase-85-beta-3-0-0">Real-World Validation — Phase 85 (beta 3.0.0) <a href="#real-world-validation-phase-85-beta-3-0-0" aria-label="taut">#</a></h1>
+<p>Tujuan mandat: memakai Nusa untuk proyek nyata (bukan toy</p>
+<p>example) dan mencatat masalah desain bahasa yang muncul.</p>
+<p>Constraint: freeze beta — NOL perubahan bahasa; temuan</p>
+<p>dicatat untuk pasca-3.0, BUKAN diimplementasikan.</p>
+<h2 id="1-enam-proyek-realworld">1. Enam proyek (<code>realworld/</code>) <a href="#1-enam-proyek-realworld" aria-label="taut">#</a></h2>
+<table><thead><tr><th>#</th><th>Direktori</th><th>Jenis mandat</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td>1</td><td><code>realworld/wordcount/</code></td><td>CLI application</td><td><code>wc</code>-mini: lines/words/bytes per file via argv</td></tr>
+<tr><td>2</td><td><code>realworld/todohttp/</code></td><td>HTTP server</td><td>HTTP loopback: <code>GET /health</code>, <code>GET /todos</code> (JSON), 404; N koneksi sekuensial</td></tr>
+<tr><td>3</td><td><code>realworld/kvstore/</code></td><td>network application</td><td>TCP KV: <code>SET k v</code> / <code>GET k</code> per baris, state in-memory, M request</td></tr>
+<tr><td>4</td><td><code>realworld/nsvet/</code></td><td>developer tool</td><td>pemeriksa higienitas <code>.ns</code>: trailing-space, tab, baris&gt;120, tanpa-newline-akhir, hitung <code>TODO</code></td></tr>
+<tr><td>5</td><td><code>realworld/nstok/</code></td><td>compiler tool</td><td>tokeniser Nusa (subset): hitung keyword/ident/int/string/komentar</td></tr>
+<tr><td>6</td><td><code>realworld/csvsum/</code></td><td>data processing</td><td>agregasi kolom CSV per nama header: count/sum/min/max (+avg skala-1000, lihat F2)</td></tr>
+</tbody></table>
+<p>Semua murni-Nusa + stdlib; NOL dependensi native; port uji</p>
+<p>dinamis 19011–19020 (hindari suite paralel); server</p>
+<p>berhenti-sendiri setelah kuota (bounded, tanpa kill-buta).</p>
+<h2 id="2-conformance">2. Conformance <a href="#2-conformance" aria-label="taut">#</a></h2>
+<p><code>compiler/tests/e2e_realworld.sh</code>: 7 kasus (6 proyek +</p>
+<p>fmt+build). Golden deterministik; network via loopback dengan</p>
+<p>port dinamis (pola e2e_dist); server kuota-bounded.</p>
+<h2 id="3-temuan-desain-hasil-implementasi-jujur">3. Temuan desain (hasil implementasi — jujur) <a href="#3-temuan-desain-hasil-implementasi-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>F1 (konfirmasi): tanpa builtin <code>split</code>/daftar-direktori —</li>
+</ul>
+<p>  parsing di-roll-manual (<code>index_of</code>+<code>slice</code>); <code>nsvet</code> butuh</p>
+<p>  daftar file eksplisit. Calon RFC pasca-3.0, bukan blocker.</p>
+<ul>
+<li>F2 (konfirmasi): tanpa float — <code>csvsum</code> memakai <code>avg_x1000</code></li>
+</ul>
+<p>  skala-bulat. Calon RFC pasca-3.0.</p>
+<ul>
+<li>F3 (konfirmasi, by-design): server = loop sekuensial +</li>
+</ul>
+<p>  serve-kuota (tanpa async/executor — RFC-0004 Proposed).</p>
+<ul>
+<li>F4 (BUG NYATA, DIPERBAIKI di slice ini): <code>file_exists</code></li>
+</ul>
+<p>  mengembalikan nilai BASI bila dipanggil berulang dari satu</p>
+<p>  situs (slot <code>fe.res</code> tak-diinit; satu-satunya dari 5 pola</p>
+<p>  resSlot yang lupa init — <code>fw/fr/in/cry</code> benar). Gejala:</p>
+<p>  <code>wc</code> melaporkan file-hilang sebagai ada pada argumen</p>
+<p>  ke-2+. Perbaikan: satu store <code>false</code> sebelum branch</p>
+<p>  (<code>compiler/codegen/Codegen.cpp</code>); regresi: <code>filesloop</code> di</p>
+<p>  <code>e2e_stdlib.sh</code>. Bugfix diizinkan freeze; NOL perubahan</p>
+<p>  bahasa.</p>
+<ul>
+<li>F5 (konfirmasi): tanpa array dinamis (literal fixed-size +</li>
+</ul>
+<p>  baca-indeks saja; tanpa push/assign) — <code>kvstore</code> memakai</p>
+<p>  state log-string append-only. Calon RFC pasca-3.0.</p>
+<ul>
+<li>F6 (kecil, by-design): tanpa <code>break</code>/<code>continue</code> — loop</li>
+</ul>
+<p>  memakai flag-<code>done</code> (pola <code>std/net.ns:recv_line</code>); <code>nstok</code></p>
+<p>  memverifikasi gaya ini skala ke tokenizer penuh.</p>
+<h2 id="4-hasil-ukur-diisi-pasca-verifikasi">4. Hasil ukur (diisi pasca-verifikasi) <a href="#4-hasil-ukur-diisi-pasca-verifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_realworld</code>: 7/7 hijau.</li>
+<li>Full <code>ctest -j2</code>: 84/84 hijau (83 in-run + 1 flake-timeout</li>
+</ul>
+<p>  <code>e2e_control[sum]</code> exit-124 terkunci-hijau isolasi + rerun;</p>
+<p>  pola flake-beban tercatat sejak Phase 79).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

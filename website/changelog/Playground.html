@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog Playground — Nusa Docs 3.0.0</title>
+<meta name="description" content="Playground v3.0.0 Release notes # — 2026-09-08 (Phase 42: nusa playground) Menjalankan program tak-terpercaya secara aman: nusa sandbox (verdict mesin">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/Playground.html">
+<meta property="og:title" content="Changelog Playground — Nusa Docs 3.0.0">
+<meta property="og:description" content="Playground v3.0.0 Release notes # — 2026-09-08 (Phase 42: nusa playground) Menjalankan program tak-terpercaya secara aman: nusa sandbox (verdict mesin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog Playground">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="changelog, 3.0.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog Playground", "category": "changelog", "version": "3.0.0", "content": "Playground v3.0.0 Release notes # — 2026-09-08 (Phase 42: nusa playground) Menjalankan program tak-terpercaya secara aman: nusa sandbox (verdict mesin) + nusa playground (HTTP loopback → sandbox) sesuai arsitektur master (Browser → Playground → Compiler Service → Sandbox → Program). Ditambahkan # c", "code_example": "", "keywords": "changelog, 3.0.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/Playground.html">Playground</a></p><article><h1>Playground</h1><span class="badge historic">v3.0.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-08 (Phase 42: nusa playground)</p>
+<p>Menjalankan program tak-terpercaya secara aman: <code>nusa sandbox</code></p>
+<p>(verdict mesin) + <code>nusa playground</code> (HTTP loopback → sandbox)</p>
+<p>sesuai arsitektur master (Browser → Playground → Compiler Service</p>
+<p>→ Sandbox → Program).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>compiler/driver/Sandbox.{h,cpp}</code>: supervisor/worker/runner</li>
+</ul>
+<p>  (fork, grup proses, tmpdir, env scrub, /dev/null stdin, output</p>
+<p>  cap, <code>RLIMIT_CPU</code>, timeout total run+build, verdict</p>
+<p>  ok/timeout/mem-limit/output-limit/signal/build-fail).</p>
+<ul>
+<li><code>compiler/driver/Playground.cpp</code> (<code>Driver::runSandbox/runPlayground</code>):</li>
+</ul>
+<p>  server 127.0.0.1-only (<code>GET /</code>, <code>POST /api/run</code> JSON, <code>--port 0</code></p>
+<p>  ephemeral, cap header/body, halaman embedded).</p>
+<ul>
+<li><code>e2e_playground.sh</code> (9 kasus: 5 verdict + page/run/timeout/</li>
+</ul>
+<p>  bad-request+404); <code>docs/playground.md</code>.</p>
+<h3 id="batasan-phase-42-keamanan-jujur">Batasan Phase 42 (keamanan jujur) <a href="#batasan-phase-42-keamanan-jujur" aria-label="taut">#</a></h3>
+<ul>
+<li>Memori via polling VmRSS (RLIMIT_AS merusak startup Bionic —</li>
+</ul>
+<p>  diverifikasi); tanpa namespace (NPROC sengaja tak dipakai);</p>
+<p>  jaringan tak diblokir; server sekuensial loopback-only tanpa auth;</p>
+<p>  <code>import</code> lokal tak tersedia di playground. Tanpa perubahan versi</p>
+<p>  (tetap 1.20.0).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

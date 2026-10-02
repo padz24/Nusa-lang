@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.16.0 — Nusa Docs 2.16.0</title>
+<meta name="description" content="2.16.0 v2.16.0 Release notes # — 2026-09-10 (Phase 65: PROFILER &amp;amp; OBSERVABILITY, milestone 1) bench + build --stats (angka resmi tetap bench/ + do">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.16.0.html">
+<meta property="og:title" content="Changelog 2.16.0 — Nusa Docs 2.16.0">
+<meta property="og:description" content="2.16.0 v2.16.0 Release notes # — 2026-09-10 (Phase 65: PROFILER &amp;amp; OBSERVABILITY, milestone 1) bench + build --stats (angka resmi tetap bench/ + do">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.16.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.16.0">
+<meta name="nusa:keywords" content="changelog, 2.16.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.16.0", "category": "changelog", "version": "2.16.0", "content": "2.16.0 v2.16.0 Release notes # — 2026-09-10 (Phase 65: PROFILER &amp; OBSERVABILITY, milestone 1) bench + build --stats (angka resmi tetap bench/ + docs/perf.md ). Spec tak berubah. Ditambahkan # nusa bench &lt;file.ns&gt; [-n N] [-- args] : build --fresh sekali + N run via fork+wait4 (waktu dindin", "code_example": "", "keywords": "changelog, 2.16.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.16.0.html">2.16.0</a></p><article><h1>2.16.0</h1><span class="badge stable">v2.16.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-10 (Phase 65: PROFILER &amp; OBSERVABILITY, milestone 1)</p>
+<p><code>bench</code> + build <code>--stats</code> (angka resmi tetap <code>bench/</code> +</p>
+<p><code>docs/perf.md</code>). Spec tak berubah.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>nusa bench &lt;file.ns&gt; [-n N] [-- args]</code>: build <code>--fresh</code> sekali</li>
+</ul>
+<p>  + N run via fork+wait4 (waktu dinding + maxRSS anak; output</p>
+<p>  diteruskan; min/median/max + maxrss ke stderr; rc = rc program).</p>
+<ul>
+<li><code>nusa build --stats</code> (+ <code>pkg build --stats</code>): rincian ms</li>
+</ul>
+<p>  frontend/codegen/clang/total + byte IR/exe (melewati cache agar</p>
+<p>  bermakna; hanya build penuh).</p>
+<ul>
+<li><code>compiler/tests/e2e_prof.sh</code> (7 kasus) + <code>docs/perf-2.16.md</code>.</li>
+</ul>
+<h3 id="diperbaiki-selama-milestone">Diperbaiki (selama milestone) <a href="#diperbaiki-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li>Duplikat baris help <code>--link</code> (warisan Phase 62).</li>
+<li>Include <code>&lt;unistd.h&gt;</code> (fork/exec).</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li><code>e2e_prof</code> 7/7 + unit + final/tooling/buildsys/incr/pkg/</li>
+</ul>
+<p>  hello/concurrency/ecosystem/stability + suite lain hijau.</p>
+<ul>
+<li><code>.ns</code> + IR OK; <code>bench.sh</code> identik baseline 2.15.0.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.16.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

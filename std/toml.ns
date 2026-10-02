@@ -1,0 +1,235 @@
+// TOML skalar baris (`key = value`), murni Nusa.
+//
+// Getter per (section, key); section `""` = top-level. Baris penuh
+// `#` dan ` #` inline di luar string diabaikan. Nilai: `"str"`
+// (unescape cermin JSON), integer, `true`/`false`. Kunci dotted
+// dicocokkan literal. `[[array]]` tak didukung (diperlakukan
+// sebagai section biasa — didokumentasikan).
+import string;
+// Potong komentar `#` di luar string ("" bila baris komentar).
+fn toml_code(line: string) -> string {
+    let n: i64 = str_len(line);
+    let p: i64 = 0;
+    while p < n {
+        let c: string = str_char_at(line, p);
+        if str_eq(c, "\"") {
+            let q: i64 = p + 1;
+            let done: bool = false;
+            while done == false {
+                if q >= n {
+                    done = true;
+                } else {
+                    let d: string = str_char_at(line, q);
+                    if str_eq(d, "\\") {
+                        q = q + 2;
+                    } else {
+                        if str_eq(d, "\"") {
+                            q = q + 1;
+                            done = true;
+                        } else {
+                            q = q + 1;
+                        }
+                    }
+                }
+            }
+            p = q;
+        } else {
+            if str_eq(c, "#") {
+                return str_trim(str_slice(line, 0, p));
+            }
+            p = p + 1;
+        }
+    }
+    return str_trim(line);
+}
+// Unescape string TOML dasar (cermin json_unescape).
+fn toml_unescape(raw: string) -> string {
+    let out: string = "";
+    let n: i64 = str_len(raw);
+    let i: i64 = 0;
+    while i < n {
+        let c: string = str_char_at(raw, i);
+        if str_eq(c, "\\") {
+            if i + 1 < n {
+                let e: string = str_char_at(raw, i + 1);
+                if str_eq(e, "n") {
+                    out = str_concat(out, "\n");
+                } else {
+                    if str_eq(e, "t") {
+                        out = str_concat(out, "\t");
+                    } else {
+                        if str_eq(e, "r") {
+                            out = str_concat(out, "\r");
+                        } else {
+                            out = str_concat(out, e);
+                        }
+                    }
+                }
+                i = i + 2;
+            } else {
+                out = str_concat(out, c);
+                i = i + 1;
+            }
+        } else {
+            out = str_concat(out, c);
+            i = i + 1;
+        }
+    }
+    return out;
+}
+// Nilai mentah untuk (section, key) ("" bila absen).
+fn toml_find(doc: string, section: string, key: string) -> string {
+    let n: i64 = str_len(doc);
+    let cur: string = "";
+    let p: i64 = 0;
+    let hit: string = "";
+    let found: bool = false;
+    while p <= n {
+        let e: i64 = p;
+        let lend: bool = false;
+        while lend == false {
+            if e >= n {
+                lend = true;
+            } else {
+                if str_eq(str_char_at(doc, e), "\n") {
+                    lend = true;
+                } else {
+                    e = e + 1;
+                }
+            }
+        }
+        let line: string = toml_code(str_slice(doc, p, e));
+        if str_eq(line, "") == false {
+            if str_starts_with(line, "[") {
+                if str_ends_with(line, "]") {
+                    cur = str_trim(str_slice(line, 1, str_len(line) - 1));
+                }
+            } else {
+                let k: i64 = toml_eq(line);
+                if k > 0 {
+                    let kk: string = str_trim(str_slice(line, 0, k));
+                    if str_eq(cur, section) {
+                        if str_eq(kk, key) {
+                            hit = str_trim(str_slice(line, k + 1, str_len(line)));
+                            found = true;
+                        }
+                    }
+                }
+            }
+        }
+        if e >= n {
+            p = n + 1;
+        } else {
+            p = e + 1;
+        }
+    }
+    if found {
+        return hit;
+    }
+    return "";
+}
+// True bila pasangan (section, key) ada (nilai apa pun).
+fn toml_has_key(doc: string, section: string, key: string) -> bool {
+    let n: i64 = str_len(doc);
+    let cur: string = "";
+    let p: i64 = 0;
+    while p <= n {
+        let e: i64 = p;
+        let lend: bool = false;
+        while lend == false {
+            if e >= n {
+                lend = true;
+            } else {
+                if str_eq(str_char_at(doc, e), "\n") {
+                    lend = true;
+                } else {
+                    e = e + 1;
+                }
+            }
+        }
+        let line: string = toml_code(str_slice(doc, p, e));
+        if str_eq(line, "") == false {
+            if str_starts_with(line, "[") {
+                if str_ends_with(line, "]") {
+                    cur = str_trim(str_slice(line, 1, str_len(line) - 1));
+                }
+            } else {
+                let k: i64 = toml_eq(line);
+                if k > 0 {
+                    if str_eq(cur, section) {
+                        if str_eq(str_trim(str_slice(line, 0, k)), key) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        if e >= n {
+            p = n + 1;
+        } else {
+            p = e + 1;
+        }
+    }
+    return false;
+}
+// Posisi `=` di luar string (-1 bila absen).
+fn toml_eq(line: string) -> i64 {
+    let n: i64 = str_len(line);
+    let p: i64 = 0;
+    while p < n {
+        let c: string = str_char_at(line, p);
+        if str_eq(c, "\"") {
+            let q: i64 = p + 1;
+            let done: bool = false;
+            while done == false {
+                if q >= n {
+                    done = true;
+                } else {
+                    let d: string = str_char_at(line, q);
+                    if str_eq(d, "\\") {
+                        q = q + 2;
+                    } else {
+                        if str_eq(d, "\"") {
+                            q = q + 1;
+                            done = true;
+                        } else {
+                            q = q + 1;
+                        }
+                    }
+                }
+            }
+            p = q;
+        } else {
+            if str_eq(c, "=") {
+                return p;
+            }
+            p = p + 1;
+        }
+    }
+    return 0 - 1;
+}
+// Nilai string (decode) atau "".
+fn toml_get_string(doc: string, section: string, key: string) -> string {
+    let v: string = toml_find(doc, section, key);
+    if str_eq(v, "") {
+        return "";
+    }
+    if str_len(v) < 2 {
+        return "";
+    }
+    if str_eq(str_char_at(v, 0), "\"") == false {
+        return "";
+    }
+    if str_eq(str_char_at(v, str_len(v) - 1), "\"") == false {
+        return "";
+    }
+    return toml_unescape(str_slice(v, 1, str_len(v) - 1));
+}
+// Integer (parse_int; else 0).
+fn toml_get_int(doc: string, section: string, key: string) -> i64 {
+    return parse_int(toml_find(doc, section, key));
+}
+// True hanya untuk literal `true`.
+fn toml_get_bool(doc: string, section: string, key: string) -> bool {
+    return str_eq(toml_find(doc, section, key), "true");
+}

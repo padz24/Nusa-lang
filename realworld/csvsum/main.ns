@@ -1,0 +1,84 @@
+// csvsum: agregasi kolom CSV (Phase 85, proyek nyata #6).
+// Pakai: csvsum <file> <kolom> -> "rows=<r> sum=<s> min=<lo>
+// max=<hi> avg_x1000=<a>". Rata-rata skala-1000 karena tanpa
+// float di bahasa ini (F2). Nilai non-int membuat baris
+// dilewati dan dihitung di "skipped".
+import csv;
+import string;
+import fs;
+fn main() {
+    if process_argc() < 3 {
+        print("usage: csvsum <file> <column>");
+        return;
+    }
+    let path = process_argv(1);
+    let col = process_argv(2);
+    if file_exists(path) == false {
+        print("no such file");
+        return;
+    }
+    let text = file_read(path);
+    let rows = csv_num_rows(text);
+    if rows < 1 {
+        print("empty");
+        return;
+    }
+    let head = csv_row(text, 0);
+    let nf = csv_num_fields(head);
+    let ci = 0 - 1;
+    let f = 0;
+    while f < nf {
+        if str_eq(csv_field(head, f), col) {
+            ci = f;
+        }
+        f = f + 1;
+    }
+    if ci < 0 {
+        print("no such column");
+        return;
+    }
+    let n = 0;
+    let sum = 0;
+    let lo = 0;
+    let hi = 0;
+    let skipped = 0;
+    let r = 1;
+    while r < rows {
+        let v = csv_field(csv_row(text, r), ci);
+        if parse_int_valid(v) {
+            let x = parse_int(v);
+            if n == 0 {
+                lo = x;
+                hi = x;
+            } else {
+                if x < lo {
+                    lo = x;
+                }
+                if x > hi {
+                    hi = x;
+                }
+            }
+            sum = sum + x;
+            n = n + 1;
+        } else {
+            skipped = skipped + 1;
+        }
+        r = r + 1;
+    }
+    let out = str_concat("rows=", int_to_str(n));
+    out = str_concat(out, " sum=");
+    out = str_concat(out, int_to_str(sum));
+    out = str_concat(out, " min=");
+    out = str_concat(out, int_to_str(lo));
+    out = str_concat(out, " max=");
+    out = str_concat(out, int_to_str(hi));
+    out = str_concat(out, " avg_x1000=");
+    if n == 0 {
+        out = str_concat(out, "0");
+    } else {
+        out = str_concat(out, int_to_str(sum * 1000 / n));
+    }
+    out = str_concat(out, " skipped=");
+    out = str_concat(out, int_to_str(skipped));
+    print(out);
+}

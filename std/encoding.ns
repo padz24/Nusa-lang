@@ -1,0 +1,102 @@
+// Hex codec over i64 (pure Nusa, no `ord` needed).
+//
+// Nusa strings expose no byte values, so this module codecs
+// integers (not arbitrary strings): nibbles come from division,
+// digits from alphabet lookup. Convention mirrors
+// `parse_int`/`parse_int_valid`: decode maps invalid input to 0,
+// `hex_valid` tells them apart.
+import string;
+// True for one hex digit (0-9, a-f, A-F).
+fn is_hex_digit(c: string) -> bool {
+    if str_index_of("0123456789abcdef", c, 0) != 0 - 1 {
+        return true;
+    }
+    return str_index_of("ABCDEF", c, 0) != 0 - 1;
+}
+// Nibble value of one hex digit (-1 when invalid).
+fn hex_val(c: string) -> i64 {
+    let lo: i64 = str_index_of("0123456789abcdef", c, 0);
+    if lo != 0 - 1 {
+        return lo;
+    }
+    let up: i64 = str_index_of("ABCDEF", c, 0);
+    if up != 0 - 1 {
+        return 10 + up;
+    }
+    return 0 - 1;
+}
+// True for 1..16 hex digits (empty and overlong are invalid,
+// so every valid input decodes exactly).
+fn hex_valid(s: string) -> bool {
+    let n: i64 = str_len(s);
+    if n <= 0 {
+        return false;
+    }
+    if n > 16 {
+        return false;
+    }
+    return hex_valid_any(s);
+}
+// True when `s` is non-empty and every char is a hex digit
+// (any length; charset only — decode may wrap past 16 digits).
+fn hex_valid_any(s: string) -> bool {
+    let n: i64 = str_len(s);
+    if n <= 0 {
+        return false;
+    }
+    let i: i64 = 0;
+    while i < n {
+        if is_hex_digit(str_char_at(s, i)) == false {
+            return false;
+        }
+        i = i + 1;
+    }
+    return true;
+}
+// Lowercase hex without `0x` ("0" for 0; negatives as 16-digit
+// two's complement, e.g. -1 is "ffffffffffffffff").
+fn hex_encode_i64(x: i64) -> string {
+    if x == 0 {
+        return "0";
+    }
+    let out: string = "";
+    if x > 0 {
+        let v: i64 = x;
+        while v > 0 {
+            let q: i64 = v / 16;
+            let d: i64 = v - q * 16;
+            out = str_concat(str_char_at("0123456789abcdef", d), out);
+            v = q;
+        }
+        return out;
+    }
+    let v: i64 = x;
+    let k: i64 = 0;
+    while k < 16 {
+        let q: i64 = v / 16;
+        let r: i64 = v - q * 16;
+        if r < 0 {
+            r = r + 16;
+        }
+        out = str_concat(str_char_at("0123456789abcdef", r), out);
+        v = (v - r) / 16;
+        k = k + 1;
+    }
+    return out;
+}
+// Decode hex (either case, no `0x`); invalid input gives 0
+// (use `hex_valid` to tell it apart from real zero).
+fn hex_decode_i64(s: string) -> i64 {
+    let v: i64 = 0;
+    let n: i64 = str_len(s);
+    let i: i64 = 0;
+    while i < n {
+        let d: i64 = hex_val(str_char_at(s, i));
+        if d < 0 {
+            return 0;
+        }
+        v = v * 16 + d;
+        i = i + 1;
+    }
+    return v;
+}

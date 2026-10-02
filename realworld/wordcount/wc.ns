@@ -1,0 +1,73 @@
+// wordcount: CLI `wc`-mini (Phase 85, proyek nyata #1).
+// Pakai: wc <file>... -> "<lines> <words> <bytes> <file>" per baris.
+// File hilang: "0 0 0 <file>: no such file" (ramah-pipe, rc tetap 0).
+import string;
+import fs;
+fn is_space(c: string) -> bool {
+    if str_eq(c, " ") {
+        return true;
+    }
+    if str_eq(c, "\t") {
+        return true;
+    }
+    if str_eq(c, "\n") {
+        return true;
+    }
+    if str_eq(c, "\r") {
+        return true;
+    }
+    return false;
+}
+fn count_words(text: string) -> i64 {
+    let words = 0;
+    let i = 0;
+    let n = str_len(text);
+    let in_word = false;
+    while i < n {
+        if is_space(str_char_at(text, i)) {
+            in_word = false;
+        } else {
+            if in_word == false {
+                words = words + 1;
+                in_word = true;
+            }
+        }
+        i = i + 1;
+    }
+    return words;
+}
+fn count_lines(text: string) -> i64 {
+    let lines = 0;
+    let i = 0;
+    let n = str_len(text);
+    while i < n {
+        if str_eq(str_char_at(text, i), "\n") {
+            lines = lines + 1;
+        }
+        i = i + 1;
+    }
+    return lines;
+}
+fn main() {
+    if process_argc() < 2 {
+        print("usage: wc <file>...");
+        return;
+    }
+    let a = 1;
+    while a < process_argc() {
+        let path = process_argv(a);
+        if file_exists(path) {
+            let text = file_read(path);
+            let line = str_concat(int_to_str(count_lines(text)), " ");
+            line = str_concat(line, int_to_str(count_words(text)));
+            line = str_concat(line, " ");
+            line = str_concat(line, int_to_str(str_len(text)));
+            line = str_concat(line, " ");
+            line = str_concat(line, path);
+            print(line);
+        } else {
+            print(str_concat("0 0 0 ", str_concat(path, ": no such file")));
+        }
+        a = a + 1;
+    }
+}

@@ -1,0 +1,15 @@
+// Contoh v0.3.0: variables & expressions.
+// Diharapkan mencetak:
+// 30
+// 70
+// true
+fn main() {
+    let a = 10;
+    let b = 20;
+    let result = a + b;
+    print(result);
+    let x = 10 + 20 * 3;
+    print(x);
+    let bigger = result > 20;
+    print(bigger);
+}

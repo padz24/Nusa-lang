@@ -1,0 +1,36 @@
+// TLS client via FFI — paket referensi ekosistem (bukan stdlib).
+//
+// Pola packages/sqlite: shim C handle-based (shim.c) + wrapper +
+// manifest [link]. Verifikasi peer + hostname SELALU aktif (tanpa
+// mode insecure): dial gagal (-1) bila sertifikat tak valid.
+// Bangun: cc -c shim.c (butuh libssl-dev), lalu `pkg build`
+// atau `nusa build --link ./shim.o --link ssl --link crypto`.
+//
+// Failure policy (referensi): id buruk → -1; recv/request untuk
+// pola request/response (server tutup = akhir body).
+extern fn ntls_dial(host: string, port: i64, cafile: string) -> i64;
+extern fn ntls_send(id: i64, data: string) -> i64;
+extern fn ntls_recv_dump(id: i64, path: string) -> i64;
+extern fn ntls_close(id: i64) -> i64;
+extern fn ntls_request(host: string, port: i64, cafile: string, request: string, path: string) -> i64;
+// Dial TLS terverifikasi (cafile "" = path default sistem);
+// id atau -1.
+fn tls_dial(host: string, port: i64, cafile: string) -> i64 {
+    return ntls_dial(host, port, cafile);
+}
+// Kirim semua byte; jumlah terkirim atau -1.
+fn tls_send(id: i64, data: string) -> i64 {
+    return ntls_send(id, data);
+}
+// Terima sampai EOF ke `path`; jumlah byte atau -1.
+fn tls_recv(id: i64, path: string) -> i64 {
+    return ntls_recv_dump(id, path);
+}
+// Tutup koneksi (0 ok).
+fn tls_close(id: i64) -> i64 {
+    return ntls_close(id);
+}
+// Satu-shot request/response (dial+kirim+terima+tutup); byte atau -1.
+fn tls_request(host: string, port: i64, cafile: string, request: string, path: string) -> i64 {
+    return ntls_request(host, port, cafile, request, path);
+}

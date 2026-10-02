@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>memory-model.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="memory-model.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Model Memori Nusa — v1.4.0 (Phase 23, Design Document) # Dok">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/memory-model.html">
+<meta property="og:title" content="memory-model.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="memory-model.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Model Memori Nusa — v1.4.0 (Phase 23, Design Document) # Dok">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="memory-model.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="memory-model, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "memory-model.md", "category": "docs", "version": "3.0.0", "content": "memory-model.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Model Memori Nusa — v1.4.0 (Phase 23, Design Document) # Dokumen ini MEMILIH model memori resmi Nusa (mandat Phase 23: jangan implementasi sebelum dokumen ini ada) dan mencatat konsekuensinya untuk compiler, r", "code_example": "", "keywords": "memory-model, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/memory-model.html">memory-model.md</a></p><article><h1>memory-model.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="model-memori-nusa-v1-4-0-phase-23-design-document">Model Memori Nusa — v1.4.0 (Phase 23, Design Document) <a href="#model-memori-nusa-v1-4-0-phase-23-design-document" aria-label="taut">#</a></h1>
+<p>Dokumen ini MEMILIH model memori resmi Nusa (mandat Phase 23:</p>
+<p>jangan implementasi sebelum dokumen ini ada) dan mencatat</p>
+<p>konsekuensinya untuk compiler, runtime, dan programmer.</p>
+<h2 id="1-evaluasi-opsi">1. Evaluasi opsi <a href="#1-evaluasi-opsi" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Opsi</th><th>Cocok?</th><th>Alasan</th></tr></thead><tbody>
+<tr><td>Ownership/borrowing (Rust)</td><td>TIDAK (1.x)</td><td>Butuh tipe referensi (<code>&amp;T</code>), lifetime, borrow checker — Nusa tak punya referensi sama sekali. Ditinjau bila referensi ditambahkan.</td></tr>
+<tr><td>Garbage collector (tracing)</td><td>TIDAK</td><td>Butuh runtime GC (tak ada yang cocok di Android-Termux), barrier, root map LLVM — overkill untuk bahasa tanpa pointer user.</td></tr>
+<tr><td>Reference counting</td><td>TIDAK</td><td>Butuh pointer berbagi di kode user — tak ada. RC hanya-untuk-string internal tak membayar kompleksitasnya.</td></tr>
+<tr><td>Arena per-scope/iterasi</td><td>DITOLAK</td><td>Butuh analisis escape (nilai lolos ke scope luar) yang tak dimiliki compiler; salah-bebas = use-after-free.</td></tr>
+<tr><td><strong>Owned values + heap program-lifetime</strong></td><td><strong>DIPILIH</strong></td><td>Lihat §2.</td></tr>
+</tbody></table>
+<h2 id="2-model-terpilih-owned-values-program-lifetime-heap">2. Model terpilih: owned values + program-lifetime heap <a href="#2-model-terpilih-owned-values-program-lifetime-heap" aria-label="taut">#</a></h2>
+<p><strong>Satu kalimat:</strong> setiap nilai dimiliki binding/scope-nya di stack;</p>
+<p>heap adalah buffer runtime yang hidup selama program (OS merebut</p>
+<p>kembali saat exit) — string (§3), pair/env closure (v1.8.0),</p>
+<p>handle concurrency yang belum di-<code>join</code>/<code>free</code> (v1.9.0).</p>
+<p><strong>Rasional:</strong> Nusa (s.d. v1.4.0) tak memiliki pointer, referensi,</p>
+<p>atau alokasi user — semua nilai agregat inline dan fixed-size.</p>
+<p>Satu-satunya alokasi dinamis adalah buffer string internal</p>
+<p>(<code>str_concat</code>, <code>input</code>, <code>file_read</code>) yang immutable dan tak pernah</p>
+<p>dibagikan secara mutabel. Model ini aman (tanpa use-after-free —</p>
+<p>tak ada free manual), predictable (biaya = malloc per string baru),</p>
+<p>cocok LLVM (alloca + malloc biasa), cocok Android/Bionic, dapat</p>
+<p>dijelaskan dalam satu paragraf, dan performanya masuk akal untuk</p>
+<p>domain Nusa (skrip/CLI/alat berumur pendek).</p>
+<h2 id="3-allocation">3. Allocation <a href="#3-allocation" aria-label="taut">#</a></h2>
+<ul>
+<li>Nilai user (skalar, array, struct, function pointer): <strong>stack</strong>,</li>
+</ul>
+<p>  slot LLVM <code>alloca</code> per binding, ukuran statis (array/struct inline).</p>
+<ul>
+<li>String literal: segmen read-only biner (pointer global).</li>
+<li>String runtime (<code>str_concat</code>, <code>input</code>, <code>file_read</code>): <strong>heap</strong></li>
+</ul>
+<p>  (<code>malloc</code> + cek OOM → <code>runtime error: out of memory (sumber)</code>).</p>
+<ul>
+<li>Closure (v1.8.0): pair <code>{trampoline, env}</code> + struct env per EKSEKUSI</li>
+</ul>
+<p>  kreasi (<code>malloc</code> + OOM-check; capture by-value, tak dibebaskan).</p>
+<ul>
+<li>Concurrency (v1.9.0): handle heap runtime; <code>join</code>/<code>free</code> merebutnya</li>
+</ul>
+<p>  (lihat <code>docs/concurrency.md</code>).</p>
+<ul>
+<li>Tak ada <code>malloc</code> di kode user; tak ada API alokasi publik.</li>
+</ul>
+<h2 id="4-deallocation">4. Deallocation <a href="#4-deallocation" aria-label="taut">#</a></h2>
+<ul>
+<li>Stack: otomatis saat scope/fungsi selesai (semantik LLVM).</li>
+<li>Heap runtime: <strong>tidak dibebaskan manual</strong> — program-lifetime;</li>
+</ul>
+<p>  OS (Linux/Bionic) merebut kembali saat proses exit.</p>
+<ul>
+<li>File (<code>fopen</code> di <code>file_*</code>): ditutup segera (<code>fclose</code>) di builtin</li>
+</ul>
+<p>  yang sama — bukan heap, tapi resource; tak pernah bocor.</p>
+<ul>
+<li>Konsekuensi jujur: loop yang memanggil <code>input</code>/<code>str_concat</code>/</li>
+</ul>
+<p>  <code>file_read</code> tumbuh sebesar buffer per iterasi. Program terbatas →</p>
+<p>  memori terbatas. Programanken pola streaming (proses per baris</p>
+<p>  tanpa menimbun) untuk input besar.</p>
+<h2 id="5-ownership">5. Ownership <a href="#5-ownership" aria-label="taut">#</a></h2>
+<ul>
+<li>Setiap nilai dimiliki tepat satu binding (<code>let</code>, parameter, field).</li>
+<li>Assignment/passing/return = <strong>copy</strong>: skalar by-value; agregat</li>
+</ul>
+<p>  (array/struct) <code>memcpy</code> semantik; string/pointer = copy pointer</p>
+<p>  (aman: string immutable, buffer tak pernah ditulis ulang setelah</p>
+<p>  dibuat — kecuali strip <code>\n</code> internal <code>input</code> sekali saat lahir).</p>
+<ul>
+<li>Tak ada move/borrow/pinjaman — copy selalu legal dan murah</li>
+</ul>
+<p>  (ukuran kecil; string besar hanya copy pointer).</p>
+<h2 id="6-references">6. References <a href="#6-references" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Tidak ada</strong> tipe referensi (<code>&amp;T</code>), pointer user, atau <code>null</code></li>
+</ul>
+<p>  di level bahasa. Akses field/index bekerja pada value.</p>
+<ul>
+<li>Pointer LLVM hanya ada di dalam codegen (slot, buffer) dan tak</li>
+</ul>
+<p>  pernah terekspos ke program.</p>
+<h2 id="7-mutability">7. Mutability <a href="#7-mutability" aria-label="taut">#</a></h2>
+<ul>
+<li>Binding <code>let</code> dapat di-assign ulang (<code>=</code> menyalin nilai baru).</li>
+<li>Tak ada <code>const</code>/<code>mut</code>: semua binding mutabel, semua string</li>
+</ul>
+<p>  immutable secara konvensi runtime (tak ada primitif tulis-string).</p>
+<ul>
+<li>Tak ada interior mutability; data race hanya via pola concurrency</li>
+</ul>
+<p>  yang didokumentasikan (sejak v1.9.0, lihat <code>docs/concurrency.md</code>;</p>
+<p>  single-thread s.d. v1.8.0).</p>
+<h2 id="8-lifetime">8. Lifetime <a href="#8-lifetime" aria-label="taut">#</a></h2>
+<ul>
+<li>Leksikal: nilai hidup selama scope binding-nya; parameter selama</li>
+</ul>
+<p>  panggilan; return value disalin ke pemanggil.</p>
+<ul>
+<li>Buffer string hidup selama program (lihat §4).</li>
+<li>Tak ada lifetime annotation (tak ada referensi yang butuh).</li>
+</ul>
+<h2 id="9-stack">9. Stack <a href="#9-stack" aria-label="taut">#</a></h2>
+<ul>
+<li>Semua slot user di stack frame fungsi (entry <code>alloca</code>).</li>
+<li>Rekursi dalam memakai stack C (tanpa TCO): kedalaman ~ribuan</li>
+</ul>
+<p>  aman; rekursi infinit → stack overflow (SIGSEGV) seperti C —</p>
+<p>  batasan terdokumentasi, bukan error rapi.</p>
+<ul>
+<li>Tak ada watering: ukuran frame statis per fungsi.</li>
+</ul>
+<h2 id="10-heap">10. Heap <a href="#10-heap" aria-label="taut">#</a></h2>
+<ul>
+<li>Buffer string runtime + pair/env closure (v1.8.0, §3). Tak ada heap</li>
+</ul>
+<p>  untuk array/struct inline/trait object (dispatch statis).</p>
+<ul>
+<li>Runtime concurrency (v1.9.0): heap handle thread/mutex/channel/</li>
+</ul>
+<p>  atomic (<code>join</code>/<code>free</code> merebutnya — pengecualian sadar dari §4,</p>
+<p>  lihat <code>docs/concurrency.md</code>).</p>
+<ul>
+<li>OOM (<code>malloc</code> null, kecuali <code>getline</code> yang gagal → diperlakukan</li>
+</ul>
+<p>  EOF → <code>&quot;&quot;</code>): <code>runtime error: out of memory (sumber)</code> + exit 1.</p>
+<ul>
+<li>Pola yang dilarang model ini (masa depan): referensi heap user,</li>
+</ul>
+<p>  struktur rekursif heap (<code>Cons</code>), string builder inkremental —</p>
+<p>  menunggu alokator eksplisit / fase lanjutan bila dibutuhkan.</p>
+<h2 id="11-yang-tidak-berubah-di-v1-4-0">11. Yang TIDAK berubah di v1.4.0 <a href="#11-yang-tidak-berubah-di-v1-4-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Tak ada sintaks/tata-bahasa baru; tak ada perubahan IR untuk</li>
+</ul>
+<p>  nilai user; komentar &quot;bocor sengaja&quot; diganti referensi ke dokumen</p>
+<p>  ini (perilaku sama, status resmi: by-design program-lifetime).</p>
+<ul>
+<li>Revisi dijadwalkan bila Nusa mendapat referensi/heap user</li>
+</ul>
+<p>  (lihat opsi ditolak di §1).</p>
+<h2 id="12-adendum-v2-5-0-phase-54-handle-lifecycle-fail-fast">12. Adendum v2.5.0 (Phase 54 — handle lifecycle fail-fast) <a href="#12-adendum-v2-5-0-phase-54-handle-lifecycle-fail-fast" aria-label="taut">#</a></h2>
+<ul>
+<li>Handle concurrency (thread/mutex/channel/atomic) kini dilacak</li>
+</ul>
+<p>  registry hidup di <code>nusa_rt.c</code>: <code>join</code>/<code>free</code>/pakai ganda atau</p>
+<p>  basi (sekuensial) → <code>runtime error: invalid handle in &lt;op&gt;</code> +</p>
+<p>  exit 1 (dulu: UAF/double-free, terbukti ASan). Aturan: tiap handle</p>
+<p>  dipakai selagi hidup dan di-<code>join</code>/<code>free</code> tepat sekali; salinan</p>
+<p>  tidak memperpanjang lifetime; jangan free selagi dipinjam thread</p>
+<p>  lain. Residual jujur (ABA reuse, free-while-borrowed konkuren):</p>
+<p>  lihat <code>docs/mem-2.5.md</code>. Tanpa sintaks baru; tanpa <code>unsafe{}</code>.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

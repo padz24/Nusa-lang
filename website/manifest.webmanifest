@@ -1,0 +1,7 @@
+{
+ "name": "Nusa Docs",
+ "short_name": "Nusa",
+ "display": "standalone",
+ "start_url": "./index.html",
+ "description": "Dokumentasi resmi bahasa Nusa (offline-first)"
+}

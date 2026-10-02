@@ -1,0 +1,188 @@
+// CSV praktis (inti RFC-4180), murni Nusa.
+//
+// Gaya index/getter: baris logis per indeks (field quote yang
+// memuat newline dihitung satu baris), lalu field per indeks.
+// OOB → "" (bukan error). `\r\n` ditoleransi (`\r` akhir baris
+// di luar quote dibuang; `\r` di dalam quote dipertahankan).
+// Field quote: `""` di dalam quote = satu `"`.
+
+// Jumlah baris logis ("" → 0; satu newline akhir di luar quote
+// bukan baris tambahan).
+fn csv_num_rows(text: string) -> i64 {
+    let n: i64 = str_len(text);
+    if n <= 0 {
+        return 0;
+    }
+    let rows: i64 = 1;
+    let last_nl: i64 = 0 - 1;
+    let q: bool = false;
+    let i: i64 = 0;
+    while i < n {
+        let c: string = str_char_at(text, i);
+        if str_eq(c, "\"") {
+            if q {
+                q = false;
+            } else {
+                q = true;
+            }
+        } else {
+            if str_eq(c, "\n") {
+                if q == false {
+                    rows = rows + 1;
+                    last_nl = i;
+                }
+            }
+        }
+        i = i + 1;
+    }
+    if last_nl == n - 1 {
+        rows = rows - 1;
+    }
+    return rows;
+}
+// Baris logis ke-`i` (mentah, tanpa newline akhir; "" bila OOB).
+fn csv_row(text: string, i: i64) -> string {
+    let n: i64 = str_len(text);
+    let r: i64 = 0;
+    let s: i64 = 0;
+    let q: bool = false;
+    let p: i64 = 0;
+    let done: bool = false;
+    while done == false {
+        if p >= n {
+            done = true;
+        } else {
+            let c: string = str_char_at(text, p);
+            if str_eq(c, "\"") {
+                if q {
+                    q = false;
+                } else {
+                    q = true;
+                }
+            } else {
+                if str_eq(c, "\n") {
+                    if q == false {
+                        if r == i {
+                            return csv_strip_cr(text, s, p);
+                        }
+                        r = r + 1;
+                        s = p + 1;
+                    }
+                }
+            }
+            p = p + 1;
+        }
+    }
+    if r == i {
+        return csv_strip_cr(text, s, n);
+    }
+    return "";
+}
+// slice [s,e) tanpa `\r` akhir (di luar quote — pemanggil menjamin).
+fn csv_strip_cr(text: string, s: i64, e: i64) -> string {
+    if e > s {
+        if str_eq(str_char_at(text, e - 1), "\r") {
+            return str_slice(text, s, e - 1);
+        }
+    }
+    return str_slice(text, s, e);
+}
+// Jumlah field dalam satu baris mentah ("" → 1 field kosong).
+fn csv_num_fields(row: string) -> i64 {
+    let n: i64 = str_len(row);
+    let f: i64 = 1;
+    let q: bool = false;
+    let i: i64 = 0;
+    while i < n {
+        let c: string = str_char_at(row, i);
+        if str_eq(c, "\"") {
+            if q {
+                q = false;
+            } else {
+                q = true;
+            }
+        } else {
+            if str_eq(c, ",") {
+                if q == false {
+                    f = f + 1;
+                }
+            }
+        }
+        i = i + 1;
+    }
+    return f;
+}
+// Field ke-`i` ter-decode (quote dibuka, `""` → `"`; "" bila OOB).
+fn csv_field(row: string, i: i64) -> string {
+    let n: i64 = str_len(row);
+    let f: i64 = 0;
+    let s: i64 = 0;
+    let q: bool = false;
+    let p: i64 = 0;
+    let done: bool = false;
+    while done == false {
+        if p >= n {
+            done = true;
+        } else {
+            let c: string = str_char_at(row, p);
+            if str_eq(c, "\"") {
+                if q {
+                    q = false;
+                } else {
+                    q = true;
+                }
+            } else {
+                if str_eq(c, ",") {
+                    if q == false {
+                        if f == i {
+                            return csv_decode(str_slice(row, s, p));
+                        }
+                        f = f + 1;
+                        s = p + 1;
+                    }
+                }
+            }
+            p = p + 1;
+        }
+    }
+    if f == i {
+        return csv_decode(str_slice(row, s, n));
+    }
+    return "";
+}
+// Buka quote + ciutkan `""` (mentah tak-quote dikembalikan utuh).
+fn csv_decode(raw: string) -> string {
+    let n: i64 = str_len(raw);
+    if n < 2 {
+        return raw;
+    }
+    if str_eq(str_char_at(raw, 0), "\"") == false {
+        return raw;
+    }
+    if str_eq(str_char_at(raw, n - 1), "\"") == false {
+        return raw;
+    }
+    let out: string = "";
+    let i: i64 = 1;
+    while i < n - 1 {
+        let c: string = str_char_at(raw, i);
+        if str_eq(c, "\"") {
+            if i + 1 < n - 1 {
+                if str_eq(str_char_at(raw, i + 1), "\"") {
+                    out = str_concat(out, "\"");
+                    i = i + 2;
+                } else {
+                    out = str_concat(out, c);
+                    i = i + 1;
+                }
+            } else {
+                out = str_concat(out, c);
+                i = i + 1;
+            }
+        } else {
+            out = str_concat(out, c);
+            i = i + 1;
+        }
+    }
+    return out;
+}

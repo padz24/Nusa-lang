@@ -1,0 +1,18 @@
+fn identity<T>(value: T) -> T {
+    return value;
+}
+fn first<T>(a: T, b: T) -> T {
+    return a;
+}
+fn apply<T, U>(f: fn(T) -> U, x: T) -> U {
+    return f(x);
+}
+fn add1(x: i64) -> i64 {
+    return x + 1;
+}
+fn main() {
+    print(identity(41) + 1);
+    print(identity("hi"));
+    print(first(1, 2));
+    print(apply(add1, 10));
+}

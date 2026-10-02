@@ -1,0 +1,75 @@
+// nsvet: pemeriksa higienitas sumber .ns (Phase 85, proyek nyata #4).
+// Pakai: nsvet <file>... — lapor per file: baris trailing-space,
+// indent-tab, baris>120, tanpa-newline-akhir, hitung TODO.
+// Daftar file eksplisit (tanpa list-direktori di bahasa ini — F1).
+// Baris ringkas: "<file>: <issues> issue(s), <todos> todo(s)".
+import string;
+import fs;
+fn main() {
+    if process_argc() < 2 {
+        print("usage: nsvet <file>...");
+        return;
+    }
+    let total_issues = 0;
+    let total_todos = 0;
+    let a = 1;
+    while a < process_argc() {
+        let path = process_argv(a);
+        if file_exists(path) {
+            let text = file_read(path);
+            let issues = 0;
+            let todos = 0;
+            let pos = 0;
+            let n = str_len(text);
+            while pos < n {
+                let nl = str_index_of(text, "\n", pos);
+                if nl < 0 {
+                    nl = n;
+                }
+                let line = str_slice(text, pos, nl);
+                let ln = str_len(line);
+                if ln > 0 {
+                    let last = str_char_at(line, ln - 1);
+                    if str_eq(last, " ") {
+                        issues = issues + 1;
+                    } else {
+                        if str_eq(last, "\t") {
+                            issues = issues + 1;
+                        }
+                    }
+                    if str_eq(str_char_at(line, 0), "\t") {
+                        issues = issues + 1;
+                    }
+                }
+                if ln > 120 {
+                    issues = issues + 1;
+                }
+                if str_contains(line, "TODO") {
+                    todos = todos + 1;
+                }
+                pos = nl + 1;
+            }
+            if n > 0 {
+                if str_eq(str_char_at(text, n - 1), "\n") == false {
+                    issues = issues + 1;
+                }
+            }
+            let out = str_concat(path, ": ");
+            out = str_concat(out, int_to_str(issues));
+            out = str_concat(out, " issue(s), ");
+            out = str_concat(out, int_to_str(todos));
+            out = str_concat(out, " todo(s)");
+            print(out);
+            total_issues = total_issues + issues;
+            total_todos = total_todos + todos;
+        } else {
+            print(str_concat(path, ": no such file"));
+        }
+        a = a + 1;
+    }
+    let sum = str_concat("total: ", int_to_str(total_issues));
+    sum = str_concat(sum, " issue(s), ");
+    sum = str_concat(sum, int_to_str(total_todos));
+    sum = str_concat(sum, " todo(s)");
+    print(sum);
+}

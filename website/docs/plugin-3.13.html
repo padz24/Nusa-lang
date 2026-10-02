@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>plugin-3.13.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="plugin-3.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Plugin System — Milestone 1: Kontrak v1 Tersandbox-Proses (Ph">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/plugin-3.13.html">
+<meta property="og:title" content="plugin-3.13.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="plugin-3.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Plugin System — Milestone 1: Kontrak v1 Tersandbox-Proses (Ph">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="plugin-3.13.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="plugin-3.13, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "plugin-3.13.md", "category": "docs", "version": "3.0.0", "content": "plugin-3.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Plugin System — Milestone 1: Kontrak v1 Tersandbox-Proses (Phase 112) # Status: slice implementasi (target 3.13.0). Mandat master: arsitektur plugin (compiler/tooling/aplikasi), UTAMAKAN sandboxed WASM/WASI dar", "code_example": "", "keywords": "plugin-3.13, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/plugin-3.13.html">plugin-3.13.md</a></p><article><h1>plugin-3.13.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="plugin-system-milestone-1-kontrak-v1-tersandbox-proses-phase-112">Plugin System — Milestone 1: Kontrak v1 Tersandbox-Proses (Phase 112) <a href="#plugin-system-milestone-1-kontrak-v1-tersandbox-proses-phase-112" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (target 3.13.0). Mandat master: arsitektur</p>
+<p>plugin (compiler/tooling/aplikasi), UTAMAKAN sandboxed WASM/WASI</p>
+<p>daripada eksekusi natif arbitrer.</p>
+<h2 id="1-keputusan-jujur-sandbox-proses-dulu-wasm-kemudian">1. Keputusan jujur: sandbox-proses dulu, WASM kemudian <a href="#1-keputusan-jujur-sandbox-proses-dulu-wasm-kemudian" aria-label="taut">#</a></h2>
+<p>Backend WASM (engine + wasi-sysroot) BELUM ADA di CI (fakta Phase</p>
+<p>111) → plugin WASM tak bisa diuji → DITUNDA dengan kriteria terima.</p>
+<p>Sebagai gantinya milestone ini mengirim plugin yang BENAR-BENAR</p>
+<p>tersandbox hari ini: proses terisolasi + batas timeout/mem/output</p>
+<p>(menunggangi <code>sandbox::runSandboxedInput</code>, sekeluarga `nusa</p>
+<p>sandbox<code>/</code>playground` yang diaudit Phase 87). WASM adalah jalur</p>
+<p>migrasi (kontrak v1 dirancang portabel: request-response JSON</p>
+<p>murni, tanpa syscall asumsi), BUKAN klaim hari ini.</p>
+<h2 id="2-kontrak-nusa-plugin-1">2. Kontrak <code>nusa-plugin/1</code> <a href="#2-kontrak-nusa-plugin-1" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit: program <code>.ns</code> + (opsional) manifest JSON</li>
+</ul>
+<p>  <code>{&quot;name&quot;,&quot;version&quot;,&quot;ops&quot;:[...]}</code>.</p>
+<ul>
+<li>CLI: `echo &#x27;{&quot;op&quot;:&quot;add&quot;,&quot;a&quot;:1}&#x27; | nusa plugin run p.ns</li>
+</ul>
+<p>  [--manifest m.json] [--timeout S] [--memory-mb M] [--output-kb K]`</p>
+<p>  (default = default sandbox; <code>&lt;=0</code> ditolak cermin S1).</p>
+<ul>
+<li>Protokol: stdin = SATU objek JSON (<code>&quot;op&quot;</code> string wajib);</li>
+</ul>
+<p>  stdout = SATU objek JSON (<code>&quot;ok&quot;:bool, ...</code>). Contoh rujukan:</p>
+<p>  plugin <code>calc</code> di <code>e2e_plugin.sh</code> (murni Nusa: <code>input</code> +</p>
+<p>  <code>std/json</code> + <code>str_concat</code>).</p>
+<ul>
+<li>Gate: op ∉ manifest.ops → <code>verdict=refused</code> TANPA eksekusi</li>
+</ul>
+<p>  (pra-eksekusi, tanpa proses anak). Tanpa manifest = gate</p>
+<p>  nonaktif (terdokumentasi; discovery masa depan).</p>
+<ul>
+<li>Hasil: respons ke stdout; <code>[plugin: verdict=... code=...]</code> ke</li>
+</ul>
+<p>  stderr; rc = exit program bila ok, 1 bila verdict lain/</p>
+<p>  penolakan/manifest rusak/request kosong.</p>
+<h2 id="3-model-keamanan-eksplisit-cermin-playground">3. Model keamanan (eksplisit, cermin playground) <a href="#3-model-keamanan-eksplisit-cermin-playground" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Jaminan</th><th>Status</th></tr></thead><tbody>
+<tr><td>Timeout/mem/output-cap + kill</td><td>ADA (verdict teruji)</td></tr>
+<tr><td>chdir terisolasi + env scrub + stdin terkendali</td><td>ADA</td></tr>
+<tr><td>Tanpa namespace/user-isolation (batas Termux)</td><td>DIAKUI (sama dgn playground)</td></tr>
+<tr><td>Blokir jaringan/filesystem</td><td>TIDAK (plugin bisa memakai net/fs host — CAPABILITY masa depan via manifest + WASI)</td></tr>
+<tr><td>Eksekusi natif arbitrer di luar sandbox</td><td>DITOLAK (satu-satunya jalan = via batas ini)</td></tr>
+</tbody></table>
+<p>Plugin compiler/tooling (makro, linter) = follow-up di atas</p>
+<p>kontrak yang sama; aplikasi plugin = kasus utama hari ini.</p>
+<h2 id="4-diverifikasi">4. Diverifikasi <a href="#4-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit <code>test_plugin</code> 4/4 (manifest, penolakan, op, refusal</li>
+</ul>
+<p>  pra-eksekusi); <code>e2e_plugin</code> 5/5 (roundtrip 42, refusal,</p>
+<p>  tanpa-manifest, timeout, build-fail/kosong/manifest-hilang).</p>
+<ul>
+<li><code>e2e_playground</code> + <code>e2e_sec</code> hijau (jalur sandbox lama utuh);</li>
+</ul>
+<p>  <code>e2e_release</code> hijau; <code>.ns</code> + IR OK.</p>
+<h2 id="5-ditunda-jujur">5. Ditunda jujur <a href="#5-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Backend WASM/WASI (terima = <code>e2e_plugin</code> varian engine hijau).</li>
+<li>Capability manifest enforceable (fs/net/process) + <code>inspect</code>/</li>
+</ul>
+<p>  discovery + streaming multi-turn + signing plugin.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

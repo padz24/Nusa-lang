@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.9.5 — Nusa Docs 0.9.5</title>
+<meta name="description" content="0.9.5 v0.9.5 Release notes # — Hardening (2026-09-05) Bukan versi fitur: stabilitas compiler, error handling, regression testing, verifikasi LLVM, mem">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.9.5.html">
+<meta property="og:title" content="Changelog 0.9.5 — Nusa Docs 0.9.5">
+<meta property="og:description" content="0.9.5 v0.9.5 Release notes # — Hardening (2026-09-05) Bukan versi fitur: stabilitas compiler, error handling, regression testing, verifikasi LLVM, mem">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.9.5">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.9.5">
+<meta name="nusa:keywords" content="changelog, 0.9.5, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.9.5", "category": "changelog", "version": "0.9.5", "content": "0.9.5 v0.9.5 Release notes # — Hardening (2026-09-05) Bukan versi fitur: stabilitas compiler, error handling, regression testing, verifikasi LLVM, memory safety, diagnostics. Semua behavior penting kini terkunci test; compiler tak boleh crash pada malformed input. Ditambahkan # Guard rekursi anti-s", "code_example": "", "keywords": "changelog, 0.9.5, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.9.5.html">0.9.5</a></p><article><h1>0.9.5</h1><span class="badge historic">v0.9.5</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Hardening (2026-09-05)</p>
+<p>Bukan versi fitur: stabilitas compiler, error handling, regression</p>
+<p>testing, verifikasi LLVM, memory safety, diagnostics. Semua behavior</p>
+<p>penting kini terkunci test; compiler tak boleh crash pada malformed input.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Guard rekursi anti-stack-overflow (batas 500): RAII <code>DepthGuard</code> di</li>
+</ul>
+<p>  <code>parseExpr</code>/<code>parseUnary</code>/<code>parseBlock</code>/<code>parseType</code> + guard di 3 walker</p>
+<p>  (<code>Semantic</code>/<code>TypeChecker</code>/<code>Codegen::checkExpr</code>/<code>genExpr</code>). Rantai</p>
+<p>  biner/unary/index 20k yang lolos parser iteratif tertangkap walker.</p>
+<p>  Nesting wajar (100) tetap jalan.</p>
+<ul>
+<li>Division-by-zero: literal → compile error; dinamis → block <code>div.zero</code></li>
+</ul>
+<p>  (pesan + exit 1). Sebelumnya: garbage diam-diam (LLVM fold ke undef).</p>
+<ul>
+<li><code>emitOomCheck</code> (malloc null → pesan + exit 1) di <code>str_concat</code> dan</li>
+</ul>
+<p>  <code>file_read</code>; <code>ftell</code> negatif → jalur kosong + <code>fclose</code> (tanpa fd leak).</p>
+<ul>
+<li>Cap rantai import 100 (<code>import chain too deep</code>, tanpa stack overflow).</li>
+<li><code>e2e_hardening</code> baru (30+ kasus): matriks 9 negative wajib MASTER</li>
+</ul>
+<p>  PROMPT (syntax, undefined/duplikat variable, mismatch, arity, return,</p>
+<p>  field, index, module) + robustness (nesting 20k expr/block, rantai</p>
+<p>  biner/unary/index, korpus 12 malformed incl. NUL/0xFF/terpotong/kosong,</p>
+<p>  self-import, rantai 150 vs 5, div-0 statis/dinamis, CLI edges) +</p>
+<p>  regression (<code>if c {</code>, ident 5000 char) + sanity performa (4000 stmt).</p>
+<ul>
+<li>Unit: depth guard parser (3), div-0 statis + dinamis-OK (2),</li>
+</ul>
+<p>  IR <code>div.zero</code> (1).</p>
+<ul>
+<li><code>verifyModule</code> wajib sebelum emit — ditegaskan sebagai backstop</li>
+</ul>
+<p>  (audit: terpanggil di semua jalur generate).</p>
+<h3 id="diperbaiki-temuan-selama-milestone">Diperbaiki (temuan selama milestone) <a href="#diperbaiki-temuan-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li><strong>SIGSEGV nyata</strong>: nesting paren 50k → crash (rc=139). Akar: guard</li>
+</ul>
+<p>  hanya di call-depth parser; rantai iteratif + walker rekursif lolos.</p>
+<p>  Diperbaiki 4 guard walker + <code>parseUnary</code>; teruji ke 20k multi-bentuk.</p>
+<ul>
+<li><strong>Div-by-zero diam</strong>: <code>print(1/0)</code> mencetak garbage (<code>549262527400</code>)</li>
+</ul>
+<p>  exit 0. Kini error statis + runtime.</p>
+<ul>
+<li>Kasus <code>let x = voidFn()</code> terverifikasi ditolak bersih saat audit</li>
+</ul>
+<p>  (<code>cannot declare variable … with &#x27;void&#x27; value</code>).</p>
+<ul>
+<li>Replace global ceroboh <code>0.9.0→0.9.5</code> di docs (riwayat versi dirusak)</li>
+</ul>
+<p>  — diperbaiki manual per bagian; pelajaran: bump versi surgical.</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>19/19 passed</strong>.</li>
+<li>Korpus malformed: semua exit != 0, rc ≤ 128 (tanpa sinyal), berpola pesan.</li>
+<li><code>let x = voidFn()</code> → error; direktori sebagai <code>file_read</code> → <code>&quot;&quot;</code>/0.</li>
+<li>Performa: 4000-statement build+run benar (± tercatat di e2e).</li>
+</ul>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>Batas nesting 500 &amp; rantai import 100 (error bersih, bukan crash).</li>
+<li>Aritmetika wrapping (kecuali div-0); <code>INT64_MIN / -1</code> wrap diam.</li>
+<li><code>while true {}</code> tanpa break tetap hang (oleh desain; <code>nusa test</code></li>
+</ul>
+<p>  memagari dengan timeout 10 dtk).</p>
+<ul>
+<li>Tanpa package manager, generics (roadmap 1.x/2.x).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.9.5</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

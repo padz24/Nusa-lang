@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>perf-2.16.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="perf-2.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profiler &amp;amp; Observability — Design (Phase 65, target 2.16.0)">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/perf-2.16.html">
+<meta property="og:title" content="perf-2.16.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="perf-2.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profiler &amp;amp; Observability — Design (Phase 65, target 2.16.0)">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="perf-2.16.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="perf-2.16, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "perf-2.16.md", "category": "docs", "version": "3.0.0", "content": "perf-2.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profiler &amp; Observability — Design (Phase 65, target 2.16.0) # Status: audit → Implementation (milestone 1: bench + build --stats ). Spec tak berubah; tooling. Prinsip repo: angka resmi tetap via bench/ + EPOC", "code_example": "", "keywords": "perf-2.16, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/perf-2.16.html">perf-2.16.md</a></p><article><h1>perf-2.16.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="profiler-observability-design-phase-65-target-2-16-0">Profiler &amp; Observability — Design (Phase 65, target 2.16.0) <a href="#profiler-observability-design-phase-65-target-2-16-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: <code>bench</code> + build</p>
+<p><code>--stats</code>). Spec tak berubah; tooling. Prinsip repo: angka resmi</p>
+<p>tetap via <code>bench/</code> + EPOCHREALTIME (<code>docs/perf.md</code>); perintah baru</p>
+<p>untuk iterasi harian.</p>
+<h2 id="1-milestone-1">1. Milestone 1 <a href="#1-milestone-1" aria-label="taut">#</a></h2>
+<p><strong><code>nusa build --stats</code></strong>: rincian waktu compile (ms) —</p>
+<p><code>frontend</code> (checkStages), <code>codegen</code> (generate+emit IR),</p>
+<p><code>clang</code>, <code>total</code> — + ukuran (<code>ir</code> + <code>exe</code> bytes). Ke stderr</p>
+<p>(saluran log build). Hanya bila build sukses penuh; emit-only</p>
+<p>(<code>--emit-ir</code>/<code>-c</code>/cross-gagal) tak mencetak (bukan build penuh).</p>
+<p><strong><code>nusa bench &lt;file.ns&gt; [-n N] [-- args...]</code></strong> (default N=5):</p>
+<ul>
+<li>Build <code>--fresh</code> sekali ke temporer (gagal → rc + pesan build).</li>
+<li>N run via fork+wait4: waktu dinding per run (ms, 1 desimal) +</li>
+</ul>
+<p>  maxRSS anak (<code>ru_maxrss</code>, KiB, <code>RUSAGE_CHILDREN</code>).</p>
+<ul>
+<li>Output program diteruskan (stdio diwarisi, cermin <code>time</code>);</li>
+</ul>
+<p>  statistik ke stderr: <code>runs</code>, <code>min/median/max ms</code>,</p>
+<p>  <code>maxrss KiB</code> (maks antar-run).</p>
+<ul>
+<li>N invalid (&lt;1 atau bukan angka) → error jelas. rc = rc program</li>
+</ul>
+<p>  (non-nol bila program gagal — bench program rusak = gagal).</p>
+<p><strong><code>pkg build --stats</code></strong>: teruskan ke runBuild (satu baris).</p>
+<h2 id="2-ditunda-beralasan">2. DITUNDA beralasan <a href="#2-ditunda-beralasan" aria-label="taut">#</a></h2>
+<p>Sampling CPU profiler, alokasi/tracing runtime (butuh counter di</p>
+<p><code>nusa_rt.c</code> + ABI), <code>trace</code> eksekusi, flamegraph, LSP/daemon</p>
+<p>stats — masing-masing milestone (butuh desain format + overhead</p>
+<p>terukur). <code>nusa test --stats</code> follow-up kecil.</p>
+<h2 id="3-acceptance-criteria">3. Acceptance criteria <a href="#3-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_prof.sh</code>: stats ada + konsisten (total ≥ tiap bagian;</li>
+</ul>
+<p>  ukuran = byte berkas); bench 3 run median benar + maxrss&gt;0 +</p>
+<p>  output program utuh + N-bad ditolak + program gagal → rc≠0.</p>
+<ul>
+<li>Seluruh suite hijau; bench identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

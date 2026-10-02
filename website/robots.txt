@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nusa-lang.org/docs/sitemap.xml

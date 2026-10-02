@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>standard-library.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="standard-library.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Standard Library — v3.0.0 # Phase 40: dokumen ini =">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/standard-library.html">
+<meta property="og:title" content="standard-library.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="standard-library.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Standard Library — v3.0.0 # Phase 40: dokumen ini =">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="standard-library.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="standard-library, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "standard-library.md", "category": "docs", "version": "3.0.0", "content": "standard-library.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Standard Library — v3.0.0 # Phase 40: dokumen ini = Standard Library Specification (kontrak API). Definisi bahasa normatif: docs/language-spec-2.0.md (§13 untuk daftar normatif; docs/language-spec-1.0", "code_example": "", "keywords": "standard-library, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/standard-library.html">standard-library.md</a></p><article><h1>standard-library.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-standard-library-v3-0-0">Nusa Standard Library — v3.0.0 <a href="#nusa-standard-library-v3-0-0" aria-label="taut">#</a></h1>
+<blockquote><p>Phase 40: dokumen ini = <strong>Standard Library Specification</strong></p></blockquote>
+<blockquote><p>(kontrak API). Definisi bahasa normatif:</p></blockquote>
+<blockquote><p><code>docs/language-spec-2.0.md</code> (§13 untuk daftar normatif;</p></blockquote>
+<blockquote><p><code>docs/language-spec-1.0.md</code> diabadikan sebagai riwayat 1.20.0).</p></blockquote>
+<p>Standard library awal: kecil tetapi nyata dan teruji (stabil sejak v0.9.0). Terdiri dari</p>
+<p><strong>builtin global</strong> (diemisikan langsung ke libc/LLVM — tanpa <code>import</code>)</p>
+<p>dan <strong>modul <code>std/</code></strong> (di-<code>import</code>, di-resolve via direktori lokal →</p>
+<p><code>$NUSA_PATH</code> → <code>&lt;exe&gt;/../std</code>).</p>
+<blockquote><p>Kebocoran memori: string hasil <code>input</code>/<code>str_concat</code>/<code>file_read</code></p></blockquote>
+<blockquote><p>dialokasikan dan tak pernah dibebaskan. Ini disengaja</p></blockquote>
+<blockquote><p>(program-lifetime heap, lihat <code>docs/memory-model.md</code>) — garbage</p></blockquote>
+<blockquote><p>collector = RFC-0007 (Proposed, bukan janji).</p></blockquote>
+<h2 id="builtin-global-tanpa-import">Builtin global (tanpa import) <a href="#builtin-global-tanpa-import" aria-label="taut">#</a></h2>
+<h3 id="len-a-t-i64"><code>len(a: [T]) -&gt; i64</code> <a href="#len-a-t-i64" aria-label="taut">#</a></h3>
+<p>Panjang array statis (konstanta kompilasi). Lihat v0.7.0.</p>
+<h3 id="input-string"><code>input() -&gt; string</code> <a href="#input-string" aria-label="taut">#</a></h3>
+<p>Baca satu baris dari stdin (newline akhir dibuang). EOF langsung</p>
+<p>memberi <code>&quot;&quot;</code>. Contoh:</p>
+<pre data-lang="nusa"><code class="lang-nusa">let name = input();
+print(name);</code></pre>
+<h3 id="assert-cond-bool"><code>assert(cond: bool)</code> <a href="#assert-cond-bool" aria-label="taut">#</a></h3>
+<p>Lanjut bila <code>true</code>; bila <code>false</code>, cetak <code>assertion failed at F:L</code></p>
+<p>dan exit(1). Tulang punggung <code>nusa test</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">assert(1 + 1 == 2);</code></pre>
+<h3 id="str-len-s-string-i64"><code>str_len(s: string) -&gt; i64</code> <a href="#str-len-s-string-i64" aria-label="taut">#</a></h3>
+<p>Panjang string dalam byte (<code>strlen</code>).</p>
+<h3 id="str-concat-a-string-b-string-string"><code>str_concat(a: string, b: string) -&gt; string</code> <a href="#str-concat-a-string-b-string-string" aria-label="taut">#</a></h3>
+<p>Gabung dua string (hasil alokasi baru).</p>
+<h3 id="parse-int-s-string-i64"><code>parse_int(s: string) -&gt; i64</code> <a href="#parse-int-s-string-i64" aria-label="taut">#</a></h3>
+<p>Parse desimal (<code>strtoll</code>, basis 10). Berhenti di karakter non-digit;</p>
+<p>non-numerik memberi 0. Contoh: <code>parse_int(input())</code>.</p>
+<h3 id="parse-int-valid-s-string-bool"><code>parse_int_valid(s: string) -&gt; bool</code> <a href="#parse-int-valid-s-string-bool" aria-label="taut">#</a></h3>
+<p><code>true</code> bila seluruh input numerik penuh (konsisten <code>strtoll</code>:</p>
+<p>spasi/sign OK, perlu ≥1 digit, sisa non-spasi ditolak). Fondasi</p>
+<p><code>parse_int_opt</code> (lihat <code>error-handling.md</code>).</p>
+<h3 id="file-read-path-string-string"><code>file_read(path: string) -&gt; string</code> <a href="#file-read-path-string-string" aria-label="taut">#</a></h3>
+<p>Seluruh isi file. File hilang/tak terbaca memberi <code>&quot;&quot;</code> — cek</p>
+<p><code>file_exists</code> dulu bila penting.</p>
+<h3 id="file-write-path-string-content-string-bool"><code>file_write(path: string, content: string) -&gt; bool</code> <a href="#file-write-path-string-content-string-bool" aria-label="taut">#</a></h3>
+<p>Tulis (overwrite) file. <code>true</code> bila sukses.</p>
+<h3 id="file-exists-path-string-bool"><code>file_exists(path: string) -&gt; bool</code> <a href="#file-exists-path-string-bool" aria-label="taut">#</a></h3>
+<p><code>true</code> bila file bisa dibuka untuk dibaca.</p>
+<h3 id="array-sum-a-i64-i64-array-min-array-max"><code>array_sum(a: [i64]) -&gt; i64</code>, <code>array_min</code>, <code>array_max</code> <a href="#array-sum-a-i64-i64-array-min-array-max" aria-label="taut">#</a></h3>
+<p>Agregasi inline atas array statis. Contoh:</p>
+<pre data-lang="nusa"><code class="lang-nusa">let total = array_sum(numbers);</code></pre>
+<h3 id="sha256-hex-s-string-string-v2-27-0"><code>sha256_hex(s: string) -&gt; string</code> (v2.27.0) <a href="#sha256-hex-s-string-string-v2-27-0" aria-label="taut">#</a></h3>
+<p>Hex lowercase digest SHA-256 (FIPS 180-4; RFC-0011). Deterministik</p>
+<p>total. Contoh: <code>sha256_hex(&quot;abc&quot;)</code> =</p>
+<p><code>ba7816bf...f20015ad</code> (64 char).</p>
+<h3 id="crypto-rand-hex-n-i64-string-v2-27-0"><code>crypto_rand_hex(n: i64) -&gt; string</code> (v2.27.0) <a href="#crypto-rand-hex-n-i64-string-v2-27-0" aria-label="taut">#</a></h3>
+<p><code>2*n</code> hex dari <code>/dev/urandom</code>; <code>&quot;&quot;</code> bila <code>n &lt;= 0</code> atau sumber tak</p>
+<p>terbaca (gagal eksplisit — SELALU cek panjang; lihat</p>
+<p><code>crypto_key_hex</code>). Tanpa fallback diam-diam.</p>
+<h3 id="kanonis-std-x-v1-10-0">Kanonis <code>std.x</code> (v1.10.0) <a href="#kanonis-std-x-v1-10-0" aria-label="taut">#</a></h3>
+<p><code>import std.time;</code> ≡ <code>import time;</code> (prefix <code>std.</code> dipetakan ke modul</p>
+<p>datar; bentuk bertitik adalah kanonis, bentuk datar kompatibel).</p>
+<p>Lapisan: <strong>pure</strong> (murni Nusa) vs <strong>platform</strong> (butuh builtin/runtime</p>
+<p>C). Fungsionalitas Android-spesifik tidak ada — semua primitif</p>
+<p>platform adalah libc/POSIX portabel (Bionic + glibc).</p>
+<h3 id="std-time-ns-import-std-time-platform"><code>std/time.ns</code> — <code>import std.time;</code> (platform) <a href="#std-time-ns-import-std-time-platform" aria-label="taut">#</a></h3>
+<p><code>now_ms() -&gt; i64</code>, <code>now_s() -&gt; i64</code>, <code>elapsed_ms(t0)</code>,</p>
+<p><code>elapsed_s(t0)</code> di atas <code>time_now_ms/s</code> (CLOCK_REALTIME).</p>
+<h3 id="std-random-ns-import-std-random-platform-pure"><code>std/random.ns</code> — <code>import std.random;</code> (platform + pure) <a href="#std-random-ns-import-std-random-platform-pure" aria-label="taut">#</a></h3>
+<p><code>rand_seed()</code> (entropi OS), <code>rand_next(state)</code>, <code>rand_abs</code>,</p>
+<p><code>rand_below(state, n)</code>, <code>rand_range(state, lo, hi)</code>, <code>rand_bool</code></p>
+<p>(LCG MMIX; bukan kriptografis; state eksplisit di-threading manual).</p>
+<h3 id="std-process-ns-import-std-process-platform"><code>std/process.ns</code> — <code>import std.process;</code> (platform) <a href="#std-process-ns-import-std-process-platform" aria-label="taut">#</a></h3>
+<p><code>prog_name()</code>, <code>args_count()</code>, <code>arg(i)</code>, <code>getenv_or(name, fallback)</code>,</p>
+<p><code>exit_with(code)</code> di atas <code>process_argv/argc/env/cwd/exit</code>.</p>
+<p>Argumen CLI: <code>nusa run prog.ns a b</code> (diteruskan ke program).</p>
+<h3 id="std-path-ns-import-std-path-pure"><code>std/path.ns</code> — <code>import std.path;</code> (pure) <a href="#std-path-ns-import-std-path-pure" aria-label="taut">#</a></h3>
+<p><code>path_is_absolute/basename/dirname/ext/strip_ext/join/normalize</code></p>
+<p>(+ helper <code>path_step/push/pop</code>). Leksikal, separator <code>/</code>.</p>
+<h3 id="std-thread-ns-import-std-thread-platform"><code>std/thread.ns</code> — <code>import std.thread;</code> (platform) <a href="#std-thread-ns-import-std-thread-platform" aria-label="taut">#</a></h3>
+<p><code>spawn(f)</code>, <code>join(h)</code>, <code>par_map2(f, g, a, b)</code> (dua thread +</p>
+<p>channel; deterministik), <code>run_send</code> (helper).</p>
+<h3 id="std-sync-ns-import-std-sync-platform"><code>std/sync.ns</code> — <code>import std.sync;</code> (platform) <a href="#std-sync-ns-import-std-sync-platform" aria-label="taut">#</a></h3>
+<p><code>lock_new/free</code>, <code>with_lock(m, f)</code>, <code>atomic_inc/dec</code> di atas</p>
+<p>builtin mutex/atomic.</p>
+<h3 id="std-net-ns-import-std-net-platform"><code>std/net.ns</code> — <code>import std.net;</code> (platform) <a href="#std-net-ns-import-std-net-platform" aria-label="taut">#</a></h3>
+<p><code>dial(host, port) -&gt; i64</code> (-1 = gagal), <code>send_str</code>, <code>recv_some</code>,</p>
+<p><code>recv_line</code> (murni Nusa), <code>close_conn</code>. TCP via getaddrinfo</p>
+<p>(IPv4/IPv6/DNS). Server loopback 2.0: <code>listen_on(port)</code>,</p>
+<p><code>accept_one(srv)</code> (<code>tcp_listen</code>/<code>tcp_accept</code>; 127.0.0.1 by-design).</p>
+<h3 id="std-tasks-ns-import-std-tasks-v2-8-0-murni-nusa"><code>std/tasks.ns</code> — <code>import std.tasks;</code> (v2.8.0, murni Nusa) <a href="#std-tasks-ns-import-std-tasks-v2-8-0-murni-nusa" aria-label="taut">#</a></h3>
+<p><code>struct Future</code>, <code>task_spawn(f)</code>, <code>future_poll/await</code>,</p>
+<p><code>Cancel</code> + <code>cancel_new/cancel/is_cancelled/cancel_free</code>.</p>
+<p>Lihat <code>docs/async-2.8.md</code>.</p>
+<h3 id="std-http-ns-import-std-http-v2-9-0-murni-nusa"><code>std/http.ns</code> — <code>import std.http;</code> (v2.9.0, murni Nusa) <a href="#std-http-ns-import-std-http-v2-9-0-murni-nusa" aria-label="taut">#</a></h3>
+<p><code>http_status/http_body</code> (parse), <code>http_get(host, port, path)</code>,</p>
+<p><code>http_serve_once(port, body)</code> (loopback). Butuh <code>import string;</code></p>
+<p>untuk helper string. Lihat <code>docs/net-2.9.md</code>.</p>
+<h3 id="std-actor-ns-import-std-actor-v3-18-0-murni-nusa"><code>std/actor.ns</code> — <code>import std.actor;</code> (v3.18.0, murni Nusa) <a href="#std-actor-ns-import-std-actor-v3-18-0-murni-nusa" aria-label="taut">#</a></h3>
+<p><code>struct ActorRef</code>, <code>actor_spawn(h, init)</code>, <code>actor_call(a, op, arg)</code>,</p>
+<p><code>actor_cast(a, op, arg)</code>. Handler `fn(op, arg, reply, state) -&gt;</p>
+<p>state` menjawab sendiri; triple-kirim atomik via mutex mailbox.</p>
+<p>Aktor hidup selama proses; self-call sinkron = deadlock.</p>
+<p>Lihat <code>docs/actors-3.18.md</code>.</p>
+<h3 id="std-trace-ns-import-std-trace-v3-20-0-murni-nusa"><code>std/trace.ns</code> — <code>import std.trace;</code> (v3.20.0, murni Nusa) <a href="#std-trace-ns-import-std-trace-v3-20-0-murni-nusa" aria-label="taut">#</a></h3>
+<p><code>struct Trace</code>, <code>new_request_id()</code>, <code>current_request_id()</code></p>
+<p>(env <code>TRACE_ID</code> atau bangkitan), <code>trace_begin(op)</code>,</p>
+<p><code>trace_end(t) -&gt; ms</code>, <code>trace_event(op, status, note)</code> (satu baris</p>
+<p>JSON per baris). Konsumen: <code>nusa trace run/check</code>.</p>
+<p>Lihat <code>docs/dist-tooling-3.20.md</code>.</p>
+<h3 id="std-parallel-ns-import-std-parallel-v3-22-0-murni-nusa"><code>std/parallel.ns</code> — <code>import std.parallel;</code> (v3.22.0, murni Nusa) <a href="#std-parallel-ns-import-std-parallel-v3-22-0-murni-nusa" aria-label="taut">#</a></h3>
+<p><code>par_map_sum(n, w, f)</code> (jumlah <code>f(i)</code>, partisi block statik;</p>
+<p>deterministik untuk <code>f</code> murni), <code>_par_block</code> (privat).</p>
+<p>Tanpa work-stealing/SIMD (lihat <code>docs/parallel-3.22.md</code>).</p>
+<h3 id="concurrency-v1-9-0-bertag-2-0-tanpa-import">Concurrency (v1.9.0; bertag 2.0 — tanpa import) <a href="#concurrency-v1-9-0-bertag-2-0-tanpa-import" aria-label="taut">#</a></h3>
+<p><code>thread_spawn(f: fn() -&gt; i64) -&gt; i64</code>, <code>thread_join(h) -&gt; i64</code>,</p>
+<p><code>mutex_new/lock/unlock/try_lock/free</code>, <code>chan_new/send/recv/free</code></p>
+<p>(<code>i64</code>), <code>chan_len(c) -&gt; i64</code> (v2.7.0: panjang antre, non-blocking),</p>
+<p><code>chan_new_bounded(cap) -&gt; i64</code> + <code>chan_try_send(c, v) -&gt; bool</code></p>
+<p>(v3.19.0: backpressure),</p>
+<p><code>chan_new_bool/send_bool/recv_bool</code> (<code>bool</code>),</p>
+<p><code>chan_new_str/send_str/recv_str</code> (<code>string</code>; tag diverifikasi</p>
+<p>runtime), <code>atomic_new/get/set/add/free</code> (<code>add</code> mengembalikan nilai</p>
+<p>baru), <code>sleep_ms(ms)</code>. Lihat <code>docs/concurrency.md</code>.</p>
+<h2 id="modul-std">Modul <code>std/</code> <a href="#modul-std" aria-label="taut">#</a></h2>
+<h3 id="std-io-ns-import-io"><code>std/io.ns</code> — <code>import io;</code> <a href="#std-io-ns-import-io" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>read_int() -&gt; i64</code></td><td><code>parse_int(input())</code>: baca angka dari stdin.</td></tr>
+<tr><td><code>read_line() -&gt; string</code></td><td><code>input()</code>: baca satu baris (EOF → <code>&quot;&quot;</code>).</td></tr>
+</tbody></table>
+<h3 id="std-option-ns-import-option-v2-0-enum-natif"><code>std/option.ns</code> — <code>import option;</code> (v2.0: enum natif) <a href="#std-option-ns-import-option-v2-0-enum-natif" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>some(v)</code></td><td>Konstruktor <code>Some</code>.</td></tr>
+<tr><td><code>is_some(o) / is_none(o)</code></td><td>Predikat.</td></tr>
+<tr><td><code>opt_unwrap_or(o, d)</code></td><td>Nilai atau fallback.</td></tr>
+<tr><td><code>opt_map(o, f)</code></td><td>Petakan isi bila ada (tanpa dummy).</td></tr>
+<tr><td><code>parse_int_opt(s)</code></td><td><code>Option&lt;i64&gt;</code> penuh (<code>None</code> untuk invalid).</td></tr>
+<tr><td><code>file_read_opt(p)</code></td><td><code>Option&lt;string&gt;</code> (<code>None</code> bila hilang).</td></tr>
+</tbody></table>
+<h3 id="std-error-ns-import-error-v1-5-0"><code>std/error.ns</code> — <code>import error;</code> (v1.5.0) <a href="#std-error-ns-import-error-v1-5-0" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Item</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>struct Error</code></td><td><code>{ message: string }</code> — E standar.</td></tr>
+<tr><td><code>error(m)</code></td><td>Konstruktor pesan.</td></tr>
+</tbody></table>
+<h3 id="std-result-ns-import-result-v2-0-enum-natif"><code>std/result.ns</code> — <code>import result;</code> (v2.0: enum natif) <a href="#std-result-ns-import-result-v2-0-enum-natif" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>is_ok(r) / is_err(r)</code></td><td>Predikat.</td></tr>
+<tr><td><code>res_unwrap_or(r, d)</code></td><td>Nilai atau fallback.</td></tr>
+<tr><td><code>res_map(r, f)</code></td><td>Petakan nilai bila Ok (tanpa dummy).</td></tr>
+<tr><td><code>res_map_err(r, f)</code></td><td>Petakan error bila Err (tanpa dummy).</td></tr>
+</tbody></table>
+<p>Detail + operator <code>?</code>: <code>docs/error-handling.md</code>.</p>
+<h3 id="std-math-ns-import-math-murni-nusa"><code>std/math.ns</code> — <code>import math;</code> (murni Nusa) <a href="#std-math-ns-import-math-murni-nusa" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>abs(n)</code></td><td>Nilai mutlak.</td></tr>
+<tr><td><code>min(a, b)</code> / <code>max(a, b)</code></td><td>Minimum/maksimum.</td></tr>
+<tr><td><code>clamp(n, lo, hi)</code></td><td>Jepit ke rentang inklusif.</td></tr>
+<tr><td><code>pow(base, exp)</code></td><td>Pangkat (<code>exp &gt;= 0</code>).</td></tr>
+<tr><td><code>fact(n)</code></td><td>Faktorial (<code>fact(0) == 1</code>).</td></tr>
+<tr><td><code>gcd(a, b)</code></td><td>FPB Euclid (input non-negatif).</td></tr>
+<tr><td><code>is_even(n)</code></td><td>Ganjil/genap (negatif OK).</td></tr>
+<tr><td><code>isqrt(n)</code></td><td>Akar kuadrat floor via Newton (<code>n &lt;= 0</code> → 0).</td></tr>
+</tbody></table>
+<h3 id="std-string-ns-import-string"><code>std/string.ns</code> — <code>import string;</code> <a href="#std-string-ns-import-string" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>str_repeat(s, n)</code></td><td>Ulangi <code>s</code> sebanyak <code>n</code> kali.</td></tr>
+<tr><td><code>str_pad_left(s, width, pad)</code></td><td>Pad kiri hingga panjang <code>width</code>.</td></tr>
+<tr><td><code>str_pad_right(s, width, pad)</code></td><td>Pad kanan hingga panjang <code>width</code>.</td></tr>
+<tr><td><code>str_index_of(hay, needle, from)</code></td><td>Indeks pertama <code>needle</code> dari <code>from</code> (-1 bila absen).</td></tr>
+<tr><td><code>str_contains(hay, sub)</code></td><td>Predikat substring.</td></tr>
+<tr><td><code>str_starts_with(s, p)</code> / <code>str_ends_with(s, x)</code></td><td>Predikat prefix/suffix.</td></tr>
+<tr><td><code>str_trim/trim_left/trim_right(s)</code></td><td>Pangkas blank <code>&quot; \t\r\n&quot;</code>.</td></tr>
+<tr><td><code>str_is_blank(c)</code></td><td>Predikat blank satu char.</td></tr>
+<tr><td><code>str_to_ascii_lower/upper(s)</code></td><td>Peta kasus ASCII (byte lain lolos).</td></tr>
+</tbody></table>
+<p>Untuk lebar eksak, <code>pad</code> satu karakter (tanpa truncasi, pad</p>
+<p>multi-karakter bisa overshoot).</p>
+<h3 id="std-collections-ns"><code>std/collections.ns</code> <a href="#std-collections-ns" aria-label="taut">#</a></h3>
+<p>Panduan array: array <code>[T]</code> fixed-size tak bisa melewati batas fungsi</p>
+<p>di v0.9.0 (tanpa parameter/return array), sehingga utilitas generik</p>
+<p>tak bisa ditulis dalam Nusa sendiri — gunakan builtin <code>len</code>,</p>
+<p><code>array_sum</code>, <code>array_min</code>, <code>array_max</code> (contoh di badan modul).</p>
+<h3 id="std-fs-ns-import-fs"><code>std/fs.ns</code> — <code>import fs;</code> <a href="#std-fs-ns-import-fs" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>copy_file(src, dst) -&gt; bool</code></td><td>Salin file; <code>false</code> bila <code>src</code> hilang.</td></tr>
+<tr><td><code>file_size(path) -&gt; i64</code></td><td>Ukuran byte; hilang/tak terbaca → 0.</td></tr>
+<tr><td><code>write_file(path, content) -&gt; bool</code></td><td>Tulis (overwrite; lihat builtin).</td></tr>
+<tr><td><code>read_file_or(path, fb)</code></td><td>Isi file atau fallback (cermin <code>getenv_or</code>).</td></tr>
+</tbody></table>
+<h3 id="std-core-ns-import-core-v2-26-0-murni-nusa"><code>std/core.ns</code> — <code>import core;</code> (v2.26.0, murni Nusa) <a href="#std-core-ns-import-core-v2-26-0-murni-nusa" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>sign(n)</code></td><td>-1, 0, atau 1.</td></tr>
+<tr><td><code>abs_diff(a, b)</code></td><td>Selisih mutlak.</td></tr>
+<tr><td><code>ceil_div(a, b)</code></td><td>Bagi bulat ke atas (<code>b &gt; 0</code>; else 0).</td></tr>
+<tr><td><code>mod_euclid(a, b)</code></td><td>Sisa Euclid <code>[0, b)</code> (<code>b &gt; 0</code>; else 0).</td></tr>
+<tr><td><code>div_euclid(a, b)</code></td><td>Hasil-bagi Euclid (pasangan sisa di atas).</td></tr>
+<tr><td><code>powmod(base, exp, m)</code></td><td>Pangkat modular (<code>exp &gt;= 0</code>, <code>m &gt; 0</code>).</td></tr>
+<tr><td><code>ilog2(n)</code></td><td>Floor log2 (<code>n &lt;= 0</code> → 0).</td></tr>
+<tr><td><code>is_pow2(n)</code></td><td>Predikat pangkat-dua.</td></tr>
+<tr><td><code>sum_to(n)</code></td><td>1+..+n (<code>n &lt;= 0</code> → 0).</td></tr>
+</tbody></table>
+<h3 id="std-testing-ns-import-testing-v2-26-0-murni-nusa"><code>std/testing.ns</code> — <code>import testing;</code> (v2.26.0, murni Nusa) <a href="#std-testing-ns-import-testing-v2-26-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Asersi berlabel untuk file <code>nusa test</code>: sukses diam, gagal cetak</p>
+<p><code>FAIL &lt;label&gt;: ...</code> + abort exit(1).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>test_true/false(cond, label)</code></td><td>Asersi boolean.</td></tr>
+<tr><td><code>test_eq_i64(exp, got, label)</code></td><td>Samadengan + kedua nilai.</td></tr>
+<tr><td><code>test_eq_str(exp, got, label)</code></td><td>Samadengan string + kedua nilai.</td></tr>
+<tr><td><code>test_eq_bool(exp, got, label)</code></td><td>Samadengan boolean.</td></tr>
+<tr><td><code>test_fail(label)</code></td><td>Gagal paksa berlabel.</td></tr>
+</tbody></table>
+<h3 id="std-logging-ns-import-logging-v2-26-0-murni-nusa"><code>std/logging.ns</code> — <code>import logging;</code> (v2.26.0, murni Nusa) <a href="#std-logging-ns-import-logging-v2-26-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Prefix level ke stdout; tanpa filter global (Nusa tanpa global</p>
+<p>mutabel) — panggil dalam <code>if verbose</code> bila perlu.</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>log_debug/info/warn/error(msg)</code></td><td>Prefix <code>[DEBUG]</code>/<code>[INFO]</code>/<code>[WARN]</code>/<code>[ERROR]</code>.</td></tr>
+</tbody></table>
+<h3 id="std-encoding-ns-import-encoding-v2-26-0-murni-nusa"><code>std/encoding.ns</code> — <code>import encoding;</code> (v2.26.0, murni Nusa) <a href="#std-encoding-ns-import-encoding-v2-26-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Codec hex↔i64 (string arbitrer butuh builtin <code>ord</code> — di luar 3.0;</p>
+<p>lihat <code>docs/stdlib-2.26.md</code>). Konvensi cermin</p>
+<p><code>parse_int</code>/<code>parse_int_valid</code>.</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>hex_encode_i64(x)</code></td><td>Hex lowercase tanpa <code>0x</code> (negatif = 16 digit two&#x27;s complement).</td></tr>
+<tr><td><code>hex_decode_i64(s)</code></td><td>Decode (invalid → 0).</td></tr>
+<tr><td><code>hex_valid(s)</code></td><td>1..16 digit hex.</td></tr>
+<tr><td><code>hex_valid_any(s)</code></td><td>(v2.27.0) Charset hex, panjang bebas (untuk kunci).</td></tr>
+<tr><td><code>is_hex_digit(c)</code> / <code>hex_val(c)</code></td><td>Predikat/nilai nibble (-1 bila invalid).</td></tr>
+</tbody></table>
+<h3 id="std-crypto-ns-import-crypto-v2-27-0-murni-nusa"><code>std/crypto.ns</code> — <code>import crypto;</code> (v2.27.0, murni Nusa) <a href="#std-crypto-ns-import-crypto-v2-27-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>RFC-0011. Fail-closed di wrapper (primitif gagal-eksplisit).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>crypto_key_hex(n)</code></td><td>Kunci hex <code>n</code> byte acak OS; panjang salah → die.</td></tr>
+<tr><td><code>crypto_compare(a, b)</code></td><td>Tanpa early-exit (beda panjang → false).</td></tr>
+<tr><td><code>sha256_file(path)</code></td><td><code>sha256_hex(file_read(path))</code>.</td></tr>
+</tbody></table>
+<h3 id="std-csv-ns-import-csv-v2-28-0-murni-nusa"><code>std/csv.ns</code> — <code>import csv;</code> (v2.28.0, murni Nusa) <a href="#std-csv-ns-import-csv-v2-28-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>CSV praktis gaya index/getter (OOB → <code>&quot;&quot;</code>; newline akhir bukan</p>
+<p>baris tambahan; <code>\r\n</code> ditoleransi).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>csv_num_rows(text)</code> / <code>csv_row(text, i)</code></td><td>Baris logis (quote multi-baris = satu).</td></tr>
+<tr><td><code>csv_num_fields(row)</code> / <code>csv_field(row, i)</code></td><td>Field ter-decode (<code>&quot;&quot;</code> → <code>&quot;</code>).</td></tr>
+</tbody></table>
+<h3 id="std-json-ns-import-json-v2-28-0-murni-nusa"><code>std/json.ns</code> — <code>import json;</code> (v2.28.0, murni Nusa) <a href="#std-json-ns-import-json-v2-28-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Objek datar top-level (nested/array diabaikan); hilang vs</p>
+<p>tipe-salah tak dibedakan (lihat <code>json_has_key</code>).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>json_has_key(obj, key)</code></td><td>Predikat keberadaan kunci.</td></tr>
+<tr><td><code>json_get_string(obj, key)</code></td><td>Decode string atau <code>&quot;&quot;</code>.</td></tr>
+<tr><td><code>json_get_int(obj, key)</code></td><td>Prefix integer atau 0.</td></tr>
+<tr><td><code>json_get_bool(obj, key)</code></td><td><code>true</code> hanya untuk literal.</td></tr>
+<tr><td><code>json_valid(s)</code></td><td>Kurung seimbang di luar string (cek dangkal).</td></tr>
+</tbody></table>
+<h3 id="std-toml-ns-import-toml-v2-28-0-murni-nusa"><code>std/toml.ns</code> — <code>import toml;</code> (v2.28.0, murni Nusa) <a href="#std-toml-ns-import-toml-v2-28-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Skalar baris <code>key = value</code> (<code>[[array]]</code> tak didukung).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>toml_get_string/int/bool(doc, section, key)</code></td><td>Section <code>&quot;&quot;</code> = top-level; komentar <code>#</code> diabaikan.</td></tr>
+<tr><td><code>toml_has_key(doc, section, key)</code></td><td>(v2.29.0) Predikat keberadaan pasangan.</td></tr>
+</tbody></table>
+<h3 id="std-config-ns-import-config-v2-29-0-murni-nusa"><code>std/config.ns</code> — <code>import config;</code> (v2.29.0, murni Nusa) <a href="#std-config-ns-import-config-v2-29-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Env &gt; TOML &gt; fallback per kunci (<code>import toml</code> + <code>process</code>).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>config_str(doc, sec, key, env, fb)</code></td><td><code>$ENV</code> non-kosong, else TOML, else fallback.</td></tr>
+<tr><td><code>config_int(doc, sec, key, env, fb)</code></td><td><code>$ENV</code> valid, else TOML (0 eksplisit menang), else fallback.</td></tr>
+<tr><td><code>config_bool(doc, sec, key, env, fb)</code></td><td><code>$ENV</code> 1/true/0/false eksak, else TOML (false eksplisit menang), else fallback.</td></tr>
+</tbody></table>
+<h3 id="std-metrics-ns-import-metrics-v2-29-0-murni-nusa"><code>std/metrics.ns</code> — <code>import metrics;</code> (v2.29.0, murni Nusa) <a href="#std-metrics-ns-import-metrics-v2-29-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Counter eksplisit (tanpa global): tiap inc kembalikan struct baru.</p>
+<table><thead><tr><th>Item</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>struct Metrics</code></td><td><code>{ requests, errors, bytes, started_ms }</code>.</td></tr>
+<tr><td><code>metrics_new()</code></td><td>Nol + cap waktu awal.</td></tr>
+<tr><td><code>m_req/m_err/m_bytes(m[, n])</code></td><td>Counter bertambah (err bukan request).</td></tr>
+<tr><td><code>m_elapsed_ms(m)</code></td><td>Milidetik sejak new.</td></tr>
+<tr><td><code>render_prometheus(m, prefix)</code></td><td>Teks Prometheus (4 metrik + uptime).</td></tr>
+</tbody></table>
+<h3 id="std-rpc-ns-import-rpc-v2-30-0-murni-nusa"><code>std/rpc.ns</code> — <code>import rpc;</code> (v2.30.0, murni Nusa) <a href="#std-rpc-ns-import-rpc-v2-30-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>JSON-RPC minimal atas TCP newline (string-only; blocking).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>rpc_request(id, method, params)</code></td><td>Amplop request mentah.</td></tr>
+<tr><td><code>rpc_response(id, result)</code> / <code>rpc_error(id, msg)</code></td><td>Amplop respons.</td></tr>
+<tr><td><code>rpc_method/params/id/result(x)</code></td><td>Ekstrak amplop (params mentah utuh).</td></tr>
+<tr><td><code>rpc_call(host, port, method, params)</code></td><td>Dial+kirim+baca+tutup (<code>&quot;&quot;</code> = gagal).</td></tr>
+<tr><td><code>rpc_serve_once(port, handler)</code></td><td>Accept+layan+tutup sekali (0 ok).</td></tr>
+</tbody></table>
+<h3 id="std-discovery-ns-import-discovery-v2-30-0-murni-nusa"><code>std/discovery.ns</code> — <code>import discovery;</code> (v2.30.0, murni Nusa) <a href="#std-discovery-ns-import-discovery-v2-30-0-murni-nusa" aria-label="taut">#</a></h3>
+<p>Daftar endpoint statis <code>&quot;host:port&quot;</code> (1/baris; IPv4/hostname).</p>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>svc_count/svc_at(list[, i])</code></td><td>Jumlah/pick modulo (<code>&quot;&quot;</code> bila kosong).</td></tr>
+<tr><td><code>svc_host(ep)</code> / <code>svc_port(ep)</code></td><td>Split endpoint (-1 bila port buruk).</td></tr>
+<tr><td><code>svc_round_robin(list, n)</code></td><td>Pick ke-n (counter di pemanggil).</td></tr>
+</tbody></table>
+<h3 id="std-timeout-ns-import-timeout-v2-30-0-murni-nusa"><code>std/timeout.ns</code> — <code>import timeout;</code> (v2.30.0, murni Nusa) <a href="#std-timeout-ns-import-timeout-v2-30-0-murni-nusa" aria-label="taut">#</a></h3>
+<p><code>with_timeout_ms(ms, op, fallback)</code>: task + poll 5ms; lewat =</p>
+<p>fallback + worker ditinggalkan (tanpa preemptive kill).</p>
+<p>i64-only (channel generik tak ada).</p>
+<h3 id="std-retry-ns-import-retry-v2-30-0-murni-nusa"><code>std/retry.ns</code> — <code>import retry;</code> (v2.30.0, murni Nusa) <a href="#std-retry-ns-import-retry-v2-30-0-murni-nusa" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Item</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>struct RetryPolicy</code></td><td><code>{ attempts, base_ms, factor }</code>.</td></tr>
+<tr><td><code>retry_default()</code></td><td>3x, 50ms, x2.</td></tr>
+<tr><td><code>retry_with(p, op, is_err)</code></td><td>Backoff hingga sukses; hasil terakhir.</td></tr>
+</tbody></table>
+<h3 id="std-system-ns-import-system"><code>std/system.ns</code> — <code>import system;</code> <a href="#std-system-ns-import-system" aria-label="taut">#</a></h3>
+<table><thead><tr><th>Fungsi</th><th>Deskripsi</th></tr></thead><tbody>
+<tr><td><code>die(msg: string)</code></td><td>Cetak pesan lalu abort exit(1).</td></tr>
+</tbody></table>
+<h2 id="resolusi-modul">Resolusi modul <a href="#resolusi-modul" aria-label="taut">#</a></h2>
+<p><code>import NAME;</code> dicari berurutan: direktori file pengimpor →</p>
+<p>entri <code>$NUSA_PATH</code> (dipisah <code>:</code>) → <code>&lt;direktori-exe&gt;/../std</code>.</p>
+<p>Lokal menang atas std (bisa override). <code>import string;</code> valid</p>
+<p>(nama modul boleh sama dengan keyword tipe).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

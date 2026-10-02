@@ -1,0 +1,152 @@
+// String helpers built on `str_len` / `str_concat`.
+//
+// Nusa strings are opaque values: compare them only via length.
+// For exact widths, pass a single-character `pad` (multi-character
+// pads may overshoot — there is no truncation yet).
+// Repeat `s` exactly `n` times (`n <= 0` gives `""`).
+fn str_repeat(s: string, n: i64) -> string {
+    let out: string = "";
+    let i: i64 = 0;
+    while i < n {
+        out = str_concat(out, s);
+        i = i + 1;
+    }
+    return out;
+}
+// Pad `s` on the left with `pad` until it is `width` long.
+fn str_pad_left(s: string, width: i64, pad: string) -> string {
+    let out: string = s;
+    while str_len(out) < width {
+        out = str_concat(pad, out);
+    }
+    return out;
+}
+// Pad `s` on the right with `pad` until it is `width` long.
+fn str_pad_right(s: string, width: i64, pad: string) -> string {
+    let out: string = s;
+    while str_len(out) < width {
+        out = str_concat(out, pad);
+    }
+    return out;
+}
+// Index of first `needle` in `hay` at/after `from` (-1 if absent).
+fn str_index_of(hay: string, needle: string, from: i64) -> i64 {
+    let hn = str_len(hay);
+    let nn = str_len(needle);
+    let i = from;
+    while i + nn <= hn {
+        if str_eq(str_slice(hay, i, i + nn), needle) {
+            return i;
+        }
+        i = i + 1;
+    }
+    return 0 - 1;
+}
+// True if `hay` contains `sub`.
+fn str_contains(hay: string, sub: string) -> bool {
+    return str_index_of(hay, sub, 0) != 0 - 1;
+}
+// True if `s` starts with `prefix` (empty prefix is always true).
+fn str_starts_with(s: string, prefix: string) -> bool {
+    let n: i64 = str_len(prefix);
+    if n > str_len(s) {
+        return false;
+    }
+    return str_eq(str_slice(s, 0, n), prefix);
+}
+// True if `s` ends with `suffix` (empty suffix is always true).
+fn str_ends_with(s: string, suffix: string) -> bool {
+    let n: i64 = str_len(suffix);
+    let m: i64 = str_len(s);
+    if n > m {
+        return false;
+    }
+    return str_eq(str_slice(s, m - n, m), suffix);
+}
+// True for blank characters trimmed below (space, tab, CR, LF).
+fn str_is_blank(c: string) -> bool {
+    if str_eq(c, " ") {
+        return true;
+    }
+    if str_eq(c, "\t") {
+        return true;
+    }
+    if str_eq(c, "\r") {
+        return true;
+    }
+    return str_eq(c, "\n");
+}
+// Strip leading blanks (see `str_is_blank`).
+fn str_trim_left(s: string) -> string {
+    let n: i64 = str_len(s);
+    let i: i64 = 0;
+    let done: bool = false;
+    while done == false {
+        if i >= n {
+            done = true;
+        } else {
+            if str_is_blank(str_char_at(s, i)) == false {
+                done = true;
+            } else {
+                i = i + 1;
+            }
+        }
+    }
+    return str_slice(s, i, n);
+}
+// Strip trailing blanks (see `str_is_blank`).
+fn str_trim_right(s: string) -> string {
+    let n: i64 = str_len(s);
+    let e: i64 = n;
+    let done: bool = false;
+    while done == false {
+        if e <= 0 {
+            done = true;
+        } else {
+            if str_is_blank(str_char_at(s, e - 1)) == false {
+                done = true;
+            } else {
+                e = e - 1;
+            }
+        }
+    }
+    return str_slice(s, 0, e);
+}
+// Strip leading and trailing blanks.
+fn str_trim(s: string) -> string {
+    return str_trim_right(str_trim_left(s));
+}
+// Map ASCII A-Z to a-z (other bytes pass through unchanged).
+fn str_to_ascii_lower(s: string) -> string {
+    let out: string = "";
+    let n: i64 = str_len(s);
+    let i: i64 = 0;
+    while i < n {
+        let c: string = str_char_at(s, i);
+        let k: i64 = str_index_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ", c, 0);
+        if k != 0 - 1 {
+            out = str_concat(out, str_char_at("abcdefghijklmnopqrstuvwxyz", k));
+        } else {
+            out = str_concat(out, c);
+        }
+        i = i + 1;
+    }
+    return out;
+}
+// Map ASCII a-z to A-Z (other bytes pass through unchanged).
+fn str_to_ascii_upper(s: string) -> string {
+    let out: string = "";
+    let n: i64 = str_len(s);
+    let i: i64 = 0;
+    while i < n {
+        let c: string = str_char_at(s, i);
+        let k: i64 = str_index_of("abcdefghijklmnopqrstuvwxyz", c, 0);
+        if k != 0 - 1 {
+            out = str_concat(out, str_char_at("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k));
+        } else {
+            out = str_concat(out, c);
+        }
+        i = i + 1;
+    }
+    return out;
+}

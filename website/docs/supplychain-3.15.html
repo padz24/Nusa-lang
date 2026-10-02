@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>supplychain-3.15.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="supplychain-3.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Supply-Chain Security — Milestone 1: Preseden + Beku (Ph">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/supplychain-3.15.html">
+<meta property="og:title" content="supplychain-3.15.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="supplychain-3.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Supply-Chain Security — Milestone 1: Preseden + Beku (Ph">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="supplychain-3.15.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="supplychain-3.15, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "supplychain-3.15.md", "category": "docs", "version": "3.0.0", "content": "supplychain-3.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Supply-Chain Security — Milestone 1: Preseden + Beku (Phase 114) # Status: slice implementasi (target 3.15.0). Mandat master: confusion/substitusi/update-jahat/kompromi/registry-attack; pakai lock/signatur", "code_example": "", "keywords": "supplychain-3.15, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/supplychain-3.15.html">supplychain-3.15.md</a></p><article><h1>supplychain-3.15.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="supply-chain-security-milestone-1-preseden-beku-phase-114">Supply-Chain Security — Milestone 1: Preseden + Beku (Phase 114) <a href="#supply-chain-security-milestone-1-preseden-beku-phase-114" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (target 3.15.0). Mandat master:</p>
+<p>confusion/substitusi/update-jahat/kompromi/registry-attack;</p>
+<p>pakai lock/signatures/checksums/registry tepercaya/provenance.</p>
+<p>Tanpa kriptografi baru (keputusan Phase 113).</p>
+<h2 id="1-temuan-audit-resolver-fakta-bukan-asumsi">1. Temuan audit resolver (fakta, bukan asumsi) <a href="#1-temuan-audit-resolver-fakta-bukan-asumsi" aria-label="taut">#</a></h2>
+<ul>
+<li>Preseden: registry PERTAMA yang cocok menang (<code>resolveInto</code>,</li>
+</ul>
+<p>  <code>break</code> eksplisit). Multi-registry = kasus normal (mirror),</p>
+<p>  sehingga shadowing NAMA adalah perilaku by-design — BAHAYAnya</p>
+<p>  adalah ketidakterlihatan, bukan presedennya.</p>
+<ul>
+<li>Jaring yang sudah ada: pin lock mencatat <code>registry</code> + checksum;</li>
+</ul>
+<p>  jalur pin TAK mencari-ulang (sumber terkunci pasca-<code>update</code>);</p>
+<p>  <code>ensureCached</code> verifikasi ganda (transport + konten);</p>
+<p>  traversal guard + name-mismatch (Phase 59/87).</p>
+<ul>
+<li>Jendela serangan tersisa: resolusi SEBAR (install/update) dari</li>
+</ul>
+<p>  daftar registry beracun-pertama + build tanpa-lock yang</p>
+<p>  fetch-diam-diam (<code>note: no nusa.lock; running update first</code>).</p>
+<h2 id="2-yang-dibangun-dua-lapis-tanpa-breaking">2. Yang dibangun (dua lapis, tanpa breaking) <a href="#2-yang-dibangun-dua-lapis-tanpa-breaking" aria-label="taut">#</a></h2>
+<ul>
+<li>Lapis visibilitas: resolusi segar yang menemukan nama SAMA di</li>
+</ul>
+<p>  registry lain → `warning: &#x27;foo&#x27; also in registry &#x27;B&#x27; (using</p>
+<p>  first match from &#x27;A&#x27;)` (termasuk transitif; mirror tak rusak).</p>
+<ul>
+<li>Lapis beku: <code>pkg build --frozen</code> — gagal bila lock absen</li>
+</ul>
+<p>  (&quot;refusing to fetch…; run update explicitly&quot;) atau basi;</p>
+<p>  TAK PERNAH fetch saat build. Untuk CI/rilis.</p>
+<ul>
+<li><code>publish</code> dikecualikan sadar (op jaringan eksplisit).</li>
+</ul>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_supply</code> 4/4: frozen-segar, frozen-tanpa-lock (tak ada lock</li>
+</ul>
+<p>  tercipta = tak ada fetch), frozen-basi, shadow-dua-registry</p>
+<p>  (warning + checksum lock == index registry pertama).</p>
+<ul>
+<li><code>e2e_pkg</code>/<code>e2e_registry</code>/<code>e2e_eco2</code> hijau (fixture satu-registry</li>
+</ul>
+<p>  → tanpa warning baru); <code>e2e_release</code> hijau.</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Signatures + publishers tepercaya + advisory DB (butuh primitif</li>
+</ul>
+<p>  asimetris teraudit + feed — Phase 113); provenance di luar</p>
+<p>  lock (registry-id + checksum) menunggu format advisory.</p>
+<ul>
+<li>Pin sumber per-dep (<code>[[package]] source-allowlist</code>) = kandidat</li>
+</ul>
+<p>  milestone berikut (butuh desain manifest, tanpa RFC? format</p>
+<p>  lock = RFC bila mengubah kontrak — dievaluasi saat itu).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

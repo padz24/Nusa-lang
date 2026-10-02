@@ -1,0 +1,34 @@
+// SQLite via FFI — paket referensi ekosistem (bukan stdlib).
+//
+// Engine tetap di luar bahasa (mandat Phase 77): paket ini
+// membuktikan POLA — shim C handle-based (shim.c) + wrapper Nusa +
+// manifest [link] — agar ekosistem menyediakan SQLite/PostgreSQL.
+// `extern fn` menolak return string (kepemilikan memori), maka
+// hasil query ditulis shim sebagai CSV ke file lalu dibaca via
+// file_read + csv.ns (tanpa buffer lintas batas).
+// Bangun: cc -c shim.c (butuh libsqlite3-dev), lalu `pkg build`
+// atau `nusa build --link ./shim.o --link sqlite3`.
+//
+// Failure policy (referensi, bukan produksi): id buruk/SQL buruk
+// → -1; query_* untuk SELECT; NULL → field kosong.
+extern fn ndb_open(path: string) -> i64;
+extern fn ndb_exec(id: i64, sql: string) -> i64;
+extern fn ndb_query_dump(id: i64, sql: string, path: string) -> i64;
+extern fn ndb_close(id: i64) -> i64;
+// Buka DB (path file atau ":memory:"); id atau -1.
+fn db_open(path: string) -> i64 {
+    return ndb_open(path);
+}
+// Eksekusi non-query (DDL/INSERT/UPDATE/DELETE); changes atau -1.
+fn db_exec(id: i64, sql: string) -> i64 {
+    return ndb_exec(id, sql);
+}
+// Query SELECT → CSV di `path` (baris header = nama kolom);
+// kembalikan jumlah baris data atau -1.
+fn db_query(id: i64, sql: string, path: string) -> i64 {
+    return ndb_query_dump(id, sql, path);
+}
+// Tutup koneksi (0 ok).
+fn db_close(id: i64) -> i64 {
+    return ndb_close(id);
+}

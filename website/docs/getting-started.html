@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>getting-started.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="getting-started.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Getting Started — Nusa v2.0.0 # 1. Verifikasi environment">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/getting-started.html">
+<meta property="og:title" content="getting-started.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="getting-started.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Getting Started — Nusa v2.0.0 # 1. Verifikasi environment">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="getting-started.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="getting-started, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "getting-started.md", "category": "docs", "version": "3.0.0", "content": "getting-started.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Getting Started — Nusa v2.0.0 # 1. Verifikasi environment (Termux, AArch64) # uname -m # aarch64 llvm-config --version # 21.1.8 clang --version # clang version 21.1.8 ... Target: aarch64-unknown-linux-andro", "code_example": "", "keywords": "getting-started, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/getting-started.html">getting-started.md</a></p><article><h1>getting-started.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="getting-started-nusa-v2-0-0">Getting Started — Nusa v2.0.0 <a href="#getting-started-nusa-v2-0-0" aria-label="taut">#</a></h1>
+<h2 id="1-verifikasi-environment-termux-aarch64">1. Verifikasi environment (Termux, AArch64) <a href="#1-verifikasi-environment-termux-aarch64" aria-label="taut">#</a></h2>
+<pre data-lang="bash"><code class="lang-bash">uname -m
+# aarch64
+llvm-config --version
+# 21.1.8
+clang --version
+# clang version 21.1.8 ... Target: aarch64-unknown-linux-android24
+cmake --version</code></pre>
+<h2 id="2-build-compiler">2. Build compiler <a href="#2-build-compiler" aria-label="taut">#</a></h2>
+<pre data-lang="bash"><code class="lang-bash">cd ~/nusa
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j&quot;$(nproc)&quot;</code></pre>
+<h2 id="3-smoke-test">3. Smoke test <a href="#3-smoke-test" aria-label="taut">#</a></h2>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa --version
+# nusa version 2.0.0 (LLVM 21.1.8, AArch64 Android/Termux)
+/build/nusa --help
+ctest --test-dir build --output-on-failure
+# 100% tests passed, 50 tests passed out of 50</code></pre>
+<h2 id="4-program-pertama-tetap-jalan">4. Program pertama (tetap jalan) <a href="#4-program-pertama-tetap-jalan" aria-label="taut">#</a></h2>
+<p><code>examples/hello.ns</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    print(&quot;Hello, Nusa!&quot;);
+}</code></pre>
+<p>Build + jalankan:</p>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa build examples/hello.ns -o /tmp/hello
+/tmp/hello
+# Hello, Nusa!
+
+# atau sekaligus:
+./build/nusa run examples/hello.ns
+
+# profil build (v2.13.0): dev (O0, default), debug (O0+g), release (O2)
+./build/nusa build examples/hello.ns --profile release -o /tmp/hello
+# flag eksplisit (-O* / -g) menang atas profil
+./build/nusa clean   # hapus artefak (*.ns.ll, .nusa-cache/, target/, dist/)</code></pre>
+<h2 id="5-variables-expressions-v0-3-0">5. Variables &amp; expressions (v0.3.0) <a href="#5-variables-expressions-v0-3-0" aria-label="taut">#</a></h2>
+<p><code>examples/arithmetic.ns</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let a = 10;
+    let b = 20;
+    let result = a + b;
+    print(result);
+    ...
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run examples/arithmetic.ns
+# 30
+# 70
+# true</code></pre>
+<p>Variabel, aritmetika <code>+ - * /</code>, perbandingan, boolean, dan <code>print</code></p>
+<p>semua tipe kini dieksekusi. Lihat <code>docs/syntax.md</code> untuk tabel precedence.</p>
+<h2 id="6-static-types-v0-4-0">6. Static types (v0.4.0) <a href="#6-static-types-v0-4-0" aria-label="taut">#</a></h2>
+<p><code>examples/types.ns</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let age: i64 = 15;
+    let active: bool = true;
+    let name: string = &quot;Nusa&quot;;
+    print(age);
+    ...
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run examples/types.ns
+# 15
+# true
+# Nusa
+# 30</code></pre>
+<p>Tanpa anotasi, tipe disimpulkan (<code>let x = 10</code> → <code>i64</code>). Salah tipe ditolak:</p>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa build bad.ns   # berisi: let x: i64 = &quot;hello&quot;;
+# bad.ns:2:5: error: mismatched types in &#x27;let&#x27;: &#x27;x&#x27; is declared as &#x27;i64&#x27; but initializer has type &#x27;string&#x27;</code></pre>
+<h2 id="7-functions-v0-5-0">7. Functions (v0.5.0) <a href="#7-functions-v0-5-0" aria-label="taut">#</a></h2>
+<p><code>examples/functions.ns</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}
+
+fn main() {
+    let result = add(10, 20);
+    print(result);
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run examples/functions.ns
+# 30</code></pre>
+<p>Fungsi berparameter, return type <code>-&gt; T</code>, <code>return</code>, nested calls, dan</p>
+<p>fungsi void (<code>greet(&quot;Nusa&quot;);</code> sebagai statement) semuanya didukung.</p>
+<p>Argumen salah jumlah/tipe ditolak dengan pesan jelas.</p>
+<h2 id="8-control-flow-v0-6-0">8. Control flow (v0.6.0) <a href="#8-control-flow-v0-6-0" aria-label="taut">#</a></h2>
+<p><code>examples/control.ns</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let x: i64 = 10;
+
+    if x &gt; 5 {
+        print(x);
+    } else {
+        print(0);
+    }
+
+    let n: i64 = 3;
+    while n &gt; 0 {
+        print(n);
+        n = n - 1;
+    }
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run examples/control.ns
+# 10
+# 3
+# 2
+# 1</code></pre>
+<p>Kondisi harus <code>bool</code>; tiap Block scope baru (shadowing OK);</p>
+<p><code>n = n - 1</code> memutasi variabel yang sudah ada (tipe harus sama).</p>
+<h2 id="9-string-array-v0-7-0">9. String &amp; array (v0.7.0) <a href="#9-string-array-v0-7-0" aria-label="taut">#</a></h2>
+<p><code>examples/arrays.ns</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let message: string = &quot;Hello&quot;;
+    print(message);
+
+    let numbers: [i64] = [1, 2, 3, 4];
+    print(numbers[0]);
+    print(len(numbers));
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run examples/arrays.ns
+# Hello
+# 1
+# 4
+# 30</code></pre>
+<p>Index di luar batas → <code>runtime error: index out of bounds</code>, exit 1</p>
+<p>(bounds check selalu aktif, tanpa flag).</p>
+<h2 id="10-struct-module-v0-8-0">10. Struct &amp; module (v0.8.0) <a href="#10-struct-module-v0-8-0" aria-label="taut">#</a></h2>
+<p><code>examples/person.ns</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">struct Person {
+    name: string;
+    age: i64;
+}
+
+fn main() {
+    let person = Person {
+        name: &quot;Nusa&quot;,
+        age: 1
+    };
+    print(person.name);
+    print(person.age);
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run examples/person.ns
+# Nusa
+# 1</code></pre>
+<p>Modul (<code>examples/main.ns</code> + <code>examples/math.ns</code>):</p>
+<pre data-lang="bash"><code class="lang-bash">cd examples
+../build/nusa run main.ns
+# 6
+# Ada</code></pre>
+<p><code>import math;</code> memuat <code>math.ns</code> tetangga; <code>_</code>-awalan module-private;</p>
+<p>siklus ditolak dengan rantai yang jelas.</p>
+<h2 id="11-standard-library-tooling-v0-9-0">11. Standard library &amp; tooling (v0.9.0) <a href="#11-standard-library-tooling-v0-9-0" aria-label="taut">#</a></h2>
+<pre data-lang="bash"><code class="lang-bash"># Validasi cepat tanpa codegen:
+./build/nusa check examples/hello.ns
+# Checked examples/hello.ns: no errors
+
+# Test ala proyek (tests/*_test.ns via assert):
+./build/nusa test tests/
+# PASS tests/math_test.ns
+# 3 passed, 0 failed
+
+# Format (idempoten; --check untuk CI):
+./build/nusa fmt --check examples/hello.ns
+./build/nusa fmt examples/hello.ns
+
+# Dokumentasi API:
+./build/nusa doc std/math.ns | head -n 12</code></pre>
+<p>Stdlib (<code>docs/standard-library.md</code>): 55 builtin + 18 modul <code>std/</code></p>
+<p>(`io math string collections fs system error option result time</p>
+<p>random process path thread sync net tasks http<code>) + </code>input<code>/</code>assert<code>/</code>str_*`/</p>
+<p><code>parse_int</code>/<code>file_*</code>/<code>array_*</code>. Contoh ujung-ke-ujung:</p>
+<pre data-lang="nusa"><code class="lang-nusa">import io;
+import math;
+
+fn main() {
+    print(fact(read_int()));
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">echo 5 | ./build/nusa run fact.ns
+# 120</code></pre>
+<h2 id="12-lihat-llvm-ir">12. Lihat LLVM IR <a href="#12-lihat-llvm-ir" aria-label="taut">#</a></h2>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa build examples/hello.ns -o /tmp/hello
+cat examples/hello.ns.ll
+# harus memuat:
+#   declare i32 @puts(ptr)
+#   define i32 @main() { ... ret i32 0 }
+
+# Untuk fungsi:
+./build/nusa build examples/functions.ns -o /tmp/fns
+cat examples/functions.ns.ll
+# harus memuat:
+#   define i64 @add(i64 %a, i64 %b)
+#   call i64 @add(i64 10, i64 20)
+
+# Untuk array:
+./build/nusa build examples/arrays.ns -o /tmp/arr
+cat examples/arrays.ns.ll
+# harus memuat:
+#   alloca [4 x i64]
+#   declare void @exit(i32)
+
+# Untuk struct:
+./build/nusa build examples/person.ns -o /tmp/person
+cat examples/person.ns.ll
+# harus memuat:
+#   %Person = type { ptr, i64 }</code></pre>
+<h2 id="13-kalau-error">13. Kalau error <a href="#13-kalau-error" aria-label="taut">#</a></h2>
+<p>Contoh salah:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let x = 10 + ;
+}</code></pre>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa build bad.ns
+# bad.ns:2:18: error: expected expression
+#         let x = 10 + ;
+#                          ^
+# help: expression: number, string, true/false, function call, [1, 2], variable name, or &#x27;(...)&#x27;</code></pre>
+<p>Compiler tidak crash — ia melaporkan <code>file:line:col</code> + snippet + saran.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

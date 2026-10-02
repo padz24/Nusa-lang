@@ -1,0 +1,77 @@
+// todohttp: HTTP server loopback (Phase 85, proyek nyata #2).
+// Pakai: todohttp <port> <nreq> — layani nreq koneksi sekuensial
+// lalu keluar (bounded, ramah-uji). Rute: GET /health, GET /todos,
+// sisanya 404.
+import net;
+import string;
+fn todos_json() -> string {
+    return "[{\"id\":1,\"task\":\"write spec\"},{\"id\":2,\"task\":\"ship beta\"}]";
+}
+fn reason(code: i64) -> string {
+    if code == 200 {
+        return "OK";
+    }
+    return "Not Found";
+}
+fn respond(fd: i64, code: i64, ctype: string, body: string) -> void {
+    let head = "HTTP/1.0 ";
+    head = str_concat(head, int_to_str(code));
+    head = str_concat(head, " ");
+    head = str_concat(head, reason(code));
+    head = str_concat(head, "\r\nContent-Type: ");
+    head = str_concat(head, ctype);
+    head = str_concat(head, "\r\nContent-Length: ");
+    head = str_concat(head, int_to_str(str_len(body)));
+    head = str_concat(head, "\r\n\r\n");
+    send_str(fd, head);
+    send_str(fd, body);
+}
+// Ambil path dari baris request "METHOD SP PATH SP ...".
+fn req_path(req: string) -> string {
+    let sp1 = str_index_of(req, " ", 0);
+    if sp1 < 0 {
+        return "";
+    }
+    let sp2 = str_index_of(req, " ", sp1 + 1);
+    if sp2 < 0 {
+        return "";
+    }
+    return str_slice(req, sp1 + 1, sp2);
+}
+fn main() {
+    if process_argc() < 3 {
+        print("usage: todohttp <port> <nreq>");
+        return;
+    }
+    let port = parse_int(process_argv(1));
+    let nreq = parse_int(process_argv(2));
+    let srv = listen_on(port);
+    if srv == 0 - 1 {
+        print("listen failed");
+        return;
+    }
+    print("serving");
+    let done = 0;
+    while done < nreq {
+        let fd = accept_one(srv);
+        if fd == 0 - 1 {
+            print("accept failed");
+            return;
+        }
+        let req = recv_line(fd);
+        let path = req_path(req);
+        if str_eq(path, "/health") {
+            respond(fd, 200, "text/plain", "ok");
+        } else {
+            if str_eq(path, "/todos") {
+                respond(fd, 200, "application/json", todos_json());
+            } else {
+                respond(fd, 404, "text/plain", "not found");
+            }
+        }
+        close_conn(fd);
+        done = done + 1;
+    }
+    close_conn(srv);
+    print("done");
+}

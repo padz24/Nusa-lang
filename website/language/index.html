@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Language Reference — Nusa Docs 3.0.0</title>
+<meta name="description" content="Language Reference 12 topik · spec normatif language-spec-2.0 · Migrasi 1.x → 2.0 BREAKING 2.0 Option/Result struct → enum natif; ctor qualified; fiel">
+<link rel="canonical" href="https://nusa-lang.org/docs/language/">
+<meta property="og:title" content="Language Reference — Nusa Docs 3.0.0">
+<meta property="og:description" content="Language Reference 12 topik · spec normatif language-spec-2.0 · Migrasi 1.x → 2.0 BREAKING 2.0 Option/Result struct → enum natif; ctor qualified; fiel">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Language Reference">
+<meta name="nusa:category" content="language">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="language, reference, spec, 2.0">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Language Reference", "category": "language", "version": "3.0.0", "content": "Language Reference 12 topik · spec normatif language-spec-2.0 · Migrasi 1.x → 2.0 BREAKING 2.0 Option/Result struct → enum natif; ctor qualified; field lama ditolak; async reserved. Syntax — Sintaks Nusa: item top-level (import, type, trait, impl, struct, enum, fn, extern fn), kom Variables — Dekla", "code_example": "", "keywords": "language, reference, spec, 2.0"}</script>
+</head>
+<body class="kind-language">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/" aria-current="page">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../language/" aria-current="page">Indeks</a></li><li><a href="../language/syntax.html">Syntax</a></li><li><a href="../language/variables.html">Variables</a></li><li><a href="../language/functions.html">Functions</a></li><li><a href="../language/types.html">Types</a></li><li><a href="../language/structs.html">Struct</a></li><li><a href="../language/enums.html">Enum</a></li><li><a href="../language/generics.html">Generics</a></li><li><a href="../language/traits.html">Traits</a></li><li><a href="../language/pattern-matching.html">Pattern Matching</a></li><li><a href="../language/error-handling.html">Error Handling</a></li><li><a href="../language/concurrency.html">Concurrency</a></li><li><a href="../language/modules.html">Modules</a></li></ul></aside>
+<main id="main"><article><h1>Language Reference</h1><p>12 topik · spec normatif <a href="../docs/language-spec-2.0.html">language-spec-2.0</a> · <a href="../docs/migration-2.0.html">Migrasi 1.x → 2.0</a></p><p><span class="badge breaking">BREAKING 2.0</span> Option/Result struct → enum natif; ctor qualified; field lama ditolak; <code>async</code> reserved.</p><ul><li><a href="syntax.html"><b>Syntax</b></a> — Sintaks Nusa: item top-level (import, type, trait, impl, struct, enum, fn, extern fn), kom</li><li><a href="variables.html"><b>Variables</b></a> — Deklarasi dengan let, opsional anotasi tipe. Tipe dasar: i64, bool, string, array [T]. Ind</li><li><a href="functions.html"><b>Functions</b></a> — Fungsi top-level fn dengan param bertipe dan return eksplisit. Semua jalur harus return bi</li><li><a href="types.html"><b>Types</b></a> — Static typing: i64/bool/string/void, fn, array [T], struct/enum bernama, dan alias type Na</li><li><a href="structs.html"><b>Struct</b></a> — Struct by-value dengan field publik. Konstruksi via literal Struct { field: value }. Metho</li><li><a href="enums.html"><b>Enum</b></a> — Enum dengan payload posisional dan konstruktor qualified E.V(...). BREAKING 2.0: Option/Re</li><li><a href="generics.html"><b>Generics</b></a> — Fungsi/struct generik dengan monomorphisasi per instansiasi konkret. Inferensi via unify +</li><li><a href="traits.html"><b>Traits</b></a> — trait T { fn m(self, ...) ...; } tanpa body; impl Trait for Type dengan resolve statis men</li><li><a href="pattern-matching.html"><b>Pattern Matching</b></a> — Statement match dengan pola literal int/bool/string, _, bind, struct, varian, dan guard if</li><li><a href="error-handling.html"><b>Error Handling</b></a> — enum Option&lt;T&gt; { Some(T), None } dan enum Result&lt;T,E&gt; { Ok(T), Err(E) } + kombinator bebas</li><li><a href="concurrency.html"><b>Concurrency</b></a> — Thread pthread + channel FIFO + mutex + atomik seq-cst + sleep sebagai 16 builtin (+chan_l</li><li><a href="modules.html"><b>Modules</b></a> — import math; memuat &lt;dir&gt;/math.ns (transitif). Modul flat namespace publik; dependensi pak</li></ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+// Parallel test (Phase 121): map-sum deterministik multi-worker.
+// Dijalankan via `nusa test tests/` (exit 0 = PASS).
+import parallel;
+fn ident(x: i64) -> i64 {
+    return x;
+}
+fn sq(x: i64) -> i64 {
+    return x * x;
+}
+fn main() {
+    assert(par_map_sum(100, 4, ident) == 4950);
+    assert(par_map_sum(100, 1, ident) == 4950);
+    assert(par_map_sum(100, 200, ident) == 4950);
+    assert(par_map_sum(10, 3, sq) == 285);
+    assert(par_map_sum(0, 4, ident) == 0);
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arrays.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="arrays.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Array Nusa — v1.0.0 # fn main() { let numbers: [i64] = [1, 2, 3, 4">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/arrays.html">
+<meta property="og:title" content="arrays.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="arrays.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Array Nusa — v1.0.0 # fn main() { let numbers: [i64] = [1, 2, 3, 4">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="arrays.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="arrays, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "arrays.md", "category": "docs", "version": "3.0.0", "content": "arrays.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Array Nusa — v1.0.0 # fn main() { let numbers: [i64] = [1, 2, 3, 4]; print(numbers[0]); // 1 print(len(numbers)); // 4 } Literal dan tipe # [1, 2, 3] : elemen homogen, non- void , non-array (nested ditolak). [] dito", "code_example": "", "keywords": "arrays, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/arrays.html">arrays.md</a></p><article><h1>arrays.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="array-nusa-v1-0-0">Array Nusa — v1.0.0 <a href="#array-nusa-v1-0-0" aria-label="taut">#</a></h1>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let numbers: [i64] = [1, 2, 3, 4];
+    print(numbers[0]); // 1
+    print(len(numbers)); // 4
+}</code></pre>
+<h2 id="literal-dan-tipe">Literal dan tipe <a href="#literal-dan-tipe" aria-label="taut">#</a></h2>
+<ul>
+<li><code>[1, 2, 3]</code>: elemen homogen, non-<code>void</code>, non-array (nested ditolak).</li>
+</ul>
+<p>  <code>[]</code> ditolak (<code>cannot infer element type</code>).</p>
+<ul>
+<li>Tipe <code>[T]</code> — ukuran <strong>bukan</strong> bagian tipe (<code>[i64]</code> cocok semua panjang;</li>
+</ul>
+<p>  panjang dilacak codegen dari situs alokasi).</p>
+<ul>
+<li>Representasi: alloca statis <code>[N x T]</code> di entry block.</li>
+</ul>
+<h2 id="indexing-dan-len">Indexing dan <code>len</code> <a href="#indexing-dan-len" aria-label="taut">#</a></h2>
+<ul>
+<li><code>a[i]</code>: <code>i</code> harus <code>i64</code>; base harus array (string/struct/skalar</li>
+</ul>
+<p>  ditolak jelas). Berantai didukung (<code>m[0]</code> dari hasil apapun yang</p>
+<p>  bertipe array).</p>
+<ul>
+<li><strong>Bounds check selalu aktif</strong>: <code>i &lt; 0 || i &gt;= len</code> → cetak</li>
+</ul>
+<p>  <code>runtime error: index out of bounds</code> + exit(1). Tanpa flag.</p>
+<ul>
+<li><code>len(a)</code> → <code>i64</code> (konstanta kompilasi, tanpa runtime call).</li>
+</ul>
+<h2 id="copy-dan-assignment">Copy dan assignment <a href="#copy-dan-assignment" aria-label="taut">#</a></h2>
+<ul>
+<li><code>let b = a;</code> dan <code>b = a;</code> menyalin seluruh agregat (load+store LLVM).</li>
+<li>Tanpa indexed assignment (<code>a[0] = x</code>): array fixed-size yang isinya</li>
+</ul>
+<p>  tetap setelah konstruksi.</p>
+<h2 id="utilitas">Utilitas <a href="#utilitas" aria-label="taut">#</a></h2>
+<p>Karena array tak bisa melewati batas fungsi (tanpa param/return array),</p>
+<p>utilitas generik hidup sebagai builtin: <code>array_sum</code>, <code>array_min</code>,</p>
+<p><code>array_max</code> (argumen <code>[i64]</code>, loop inline). Lihat</p>
+<p><code>docs/standard-library.md</code>.</p>
+<h2 id="batasan-stabil-v1-0-0">Batasan (stabil v1.0.0) <a href="#batasan-stabil-v1-0-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Fixed-size dari literal; tanpa <code>push</code>/resize, nested, param/return.</li>
+<li>Tanpa <code>==</code>/print array (print elemen satu per satu).</li>
+<li>Tanpa generic collections (roadmap 1.x/2.x).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

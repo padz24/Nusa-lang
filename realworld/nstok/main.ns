@@ -1,0 +1,244 @@
+// nstok: pencacah token sumber .ns (Phase 85, proyek nyata #5).
+// Tokeniser subset mandiri: keyword/ident/int/string/komentar/simbol.
+// Pakai: nstok <file>... -> "<file>: <kw> kw, <id> id, <int> int,
+// <str> str, <cmt> cmt, <sym> sym".
+import string;
+import fs;
+fn is_alpha(c: string) -> bool {
+    if str_contains("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_", c) {
+        return true;
+    }
+    return false;
+}
+fn is_digit(c: string) -> bool {
+    return str_contains("0123456789", c);
+}
+fn is_keyword(w: string) -> bool {
+    if str_eq(w, "fn") {
+        return true;
+    }
+    if str_eq(w, "let") {
+        return true;
+    }
+    if str_eq(w, "return") {
+        return true;
+    }
+    if str_eq(w, "if") {
+        return true;
+    }
+    if str_eq(w, "else") {
+        return true;
+    }
+    if str_eq(w, "while") {
+        return true;
+    }
+    if str_eq(w, "true") {
+        return true;
+    }
+    if str_eq(w, "false") {
+        return true;
+    }
+    if str_eq(w, "i64") {
+        return true;
+    }
+    if str_eq(w, "bool") {
+        return true;
+    }
+    if str_eq(w, "string") {
+        return true;
+    }
+    if str_eq(w, "void") {
+        return true;
+    }
+    if str_eq(w, "struct") {
+        return true;
+    }
+    if str_eq(w, "import") {
+        return true;
+    }
+    if str_eq(w, "type") {
+        return true;
+    }
+    if str_eq(w, "trait") {
+        return true;
+    }
+    if str_eq(w, "impl") {
+        return true;
+    }
+    if str_eq(w, "for") {
+        return true;
+    }
+    if str_eq(w, "self") {
+        return true;
+    }
+    if str_eq(w, "match") {
+        return true;
+    }
+    if str_eq(w, "enum") {
+        return true;
+    }
+    if str_eq(w, "extern") {
+        return true;
+    }
+    if str_eq(w, "const") {
+        return true;
+    }
+    if str_eq(w, "async") {
+        return true;
+    }
+    if str_eq(w, "await") {
+        return true;
+    }
+    if str_eq(w, "macro") {
+        return true;
+    }
+    return false;
+}
+fn main() {
+    if process_argc() < 2 {
+        print("usage: nstok <file>...");
+        return;
+    }
+    let a = 1;
+    while a < process_argc() {
+        let path = process_argv(a);
+        if file_exists(path) {
+            let text = file_read(path);
+            let n = str_len(text);
+            let i = 0;
+            let kw = 0;
+            let id = 0;
+            let ints = 0;
+            let strs = 0;
+            let cmt = 0;
+            let sym = 0;
+            while i < n {
+                let c = str_char_at(text, i);
+                if str_eq(c, " ") {
+                    i = i + 1;
+                } else {
+                    if str_eq(c, "\t") {
+                        i = i + 1;
+                    } else {
+                        if str_eq(c, "\n") {
+                            i = i + 1;
+                        } else {
+                            if str_eq(c, "\r") {
+                                i = i + 1;
+                            } else {
+                                if str_eq(c, "/") {
+                                    if str_eq(str_slice(text, i, i + 2), "//") {
+                                        cmt = cmt + 1;
+                                        i = i + 2;
+                                        let eol = false;
+                                        while eol == false {
+                                            if i >= n {
+                                                eol = true;
+                                            } else {
+                                                if str_eq(str_char_at(text, i), "\n") {
+                                                    eol = true;
+                                                } else {
+                                                    i = i + 1;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        sym = sym + 1;
+                                        i = i + 1;
+                                    }
+                                } else {
+                                    if str_eq(c, "\"") {
+                                        strs = strs + 1;
+                                        i = i + 1;
+                                        let closed = false;
+                                        while closed == false {
+                                            if i >= n {
+                                                closed = true;
+                                            } else {
+                                                let d = str_char_at(text, i);
+                                                if str_eq(d, "\\") {
+                                                    i = i + 2;
+                                                } else {
+                                                    if str_eq(d, "\"") {
+                                                        i = i + 1;
+                                                        closed = true;
+                                                    } else {
+                                                        i = i + 1;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if is_digit(c) {
+                                            ints = ints + 1;
+                                            i = i + 1;
+                                            let more = true;
+                                            while more {
+                                                if i >= n {
+                                                    more = false;
+                                                } else {
+                                                    if is_digit(str_char_at(text, i)) {
+                                                        i = i + 1;
+                                                    } else {
+                                                        more = false;
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            if is_alpha(c) {
+                                                let s = i;
+                                                i = i + 1;
+                                                let more = true;
+                                                while more {
+                                                    if i >= n {
+                                                        more = false;
+                                                    } else {
+                                                        let d = str_char_at(text, i);
+                                                        if is_alpha(d) {
+                                                            i = i + 1;
+                                                        } else {
+                                                            if is_digit(d) {
+                                                                i = i + 1;
+                                                            } else {
+                                                                more = false;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if is_keyword(str_slice(text, s, i)) {
+                                                    kw = kw + 1;
+                                                } else {
+                                                    id = id + 1;
+                                                }
+                                            } else {
+                                                sym = sym + 1;
+                                                i = i + 1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            let out = str_concat(path, ": ");
+            out = str_concat(out, int_to_str(kw));
+            out = str_concat(out, " kw, ");
+            out = str_concat(out, int_to_str(id));
+            out = str_concat(out, " id, ");
+            out = str_concat(out, int_to_str(ints));
+            out = str_concat(out, " int, ");
+            out = str_concat(out, int_to_str(strs));
+            out = str_concat(out, " str, ");
+            out = str_concat(out, int_to_str(cmt));
+            out = str_concat(out, " cmt, ");
+            out = str_concat(out, int_to_str(sym));
+            out = str_concat(out, " sym");
+            print(out);
+        } else {
+            print(str_concat(path, ": no such file"));
+        }
+        a = a + 1;
+    }
+}

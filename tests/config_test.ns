@@ -1,0 +1,11 @@
+// Sample `nusa test` target: config stdlib.
+import config;
+fn main() {
+    let d = "[server]\nhost = \"h\"\nport = 8080\non = false\n";
+    assert(str_eq(config_str(d, "server", "host", "NUSA_NOPE_HOST", "fb"), "h"));
+    assert(str_eq(config_str(d, "server", "missing", "NUSA_NOPE_X", "fb"), "fb"));
+    assert(config_int(d, "server", "port", "NUSA_NOPE_PORT", 1) == 8080);
+    assert(config_int(d, "server", "missing", "NUSA_NOPE_Y", 9) == 9);
+    assert(config_bool(d, "server", "on", "NUSA_NOPE_B", true) == false);
+    assert(config_bool(d, "server", "missing", "NUSA_NOPE_Z", true) == true);
+}

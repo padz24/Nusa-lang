@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC-0012-macros — Nusa Docs 3.0.0</title>
+<meta name="description" content="RFC-0012-macros Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0012: Declarative macro system # Status: Proposed Penulis:">
+<link rel="canonical" href="https://nusa-lang.org/docs/rfcs/RFC-0012-macros.html">
+<meta property="og:title" content="RFC-0012-macros — Nusa Docs 3.0.0">
+<meta property="og:description" content="RFC-0012-macros Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0012: Declarative macro system # Status: Proposed Penulis:">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="RFC-0012-macros">
+<meta name="nusa:category" content="rfcs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="rfc, rfc-0012-macros, proposed">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "RFC-0012-macros", "category": "rfcs", "version": "3.0.0", "content": "RFC-0012-macros Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0012: Declarative macro system # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-20 Menggantikan: — Digantikan oleh: — Summary # Menambahkan makro deklaratif (pattern → template) ke Nusa secara bertahap", "code_example": "", "keywords": "rfc, rfc-0012-macros, proposed"}</script>
+</head>
+<body class="kind-rfcs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/" aria-current="page">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../rfcs/">Indeks</a></li><li><a href="../rfcs/RFC-0001-generics.html">RFC-0001-generics</a></li><li><a href="../rfcs/RFC-0002-traits.html">RFC-0002-traits</a></li><li><a href="../rfcs/RFC-0003-ownership.html">RFC-0003-ownership</a></li><li><a href="../rfcs/RFC-0004-async.html">RFC-0004-async</a></li><li><a href="../rfcs/RFC-0005-nusa-2.0.html">RFC-0005-nusa-2.0</a></li><li><a href="../rfcs/RFC-0006-channels.html">RFC-0006-channels</a></li><li><a href="../rfcs/RFC-0007-gc.html">RFC-0007-gc</a></li><li><a href="../rfcs/RFC-0008-ffi.html">RFC-0008-ffi</a></li><li><a href="../rfcs/RFC-0009-comptime.html">RFC-0009-comptime</a></li><li><a href="../rfcs/RFC-0010-verification.html">RFC-0010-verification</a></li><li><a href="../rfcs/RFC-0011-crypto.html">RFC-0011-crypto</a></li><li><a href="../rfcs/RFC-0012-macros.html" aria-current="page">RFC-0012-macros</a></li><li><a href="../rfcs/RFC-0013-vectors.html">RFC-0013-vectors</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../rfcs/">RFCs</a> / <a href="../rfcs/RFC-0012-macros.html">RFC-0012-macros</a></p><article><h1>RFC-0012-macros</h1><p><span class="badge proposed">Proposed</span></p><div class="warn"><p>Badge Proposed: implementasi DILARANG sebelum status Accepted.</p></div><h1 id="rfc-0012-declarative-macro-system">RFC-0012: Declarative macro system <a href="#rfc-0012-declarative-macro-system" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: Proposed</li>
+<li>Penulis: Nusa team</li>
+<li>Tanggal: 2026-09-20</li>
+<li>Menggantikan: —</li>
+<li>Digantikan oleh: —</li>
+</ul>
+<h2 id="summary">Summary <a href="#summary" aria-label="taut">#</a></h2>
+<p>Menambahkan makro deklaratif (pattern → template) ke Nusa secara</p>
+<p>bertahap, dengan desain yang mengutamakan: type safety (ekspansi</p>
+<p>dicek penuh seperti kode tulis-tangan), hygiene sederhana,</p>
+<p>determinisme, batas keamanan eksplisit, dan keterlacakan</p>
+<p>diagnostik. RFC ini Proposed; TANPA implementasi di slice ini</p>
+<p>(aturan: fitur bahasa besar via RFC dulu). Ambang Phase 69 tetap</p>
+<p>berlaku: implementasi dimulai hanya bila pola boilerplate nyata</p>
+<p>tak terpecahkan fungsi/generik/trait/<code>const</code>. Makro prosedural</p>
+<p>DITUNDA eksplisit (butuh API compiler + sandboxing, Phase 137/138).</p>
+<h2 id="motivation">Motivation <a href="#motivation" aria-label="taut">#</a></h2>
+<p>Pola berulang yang hari ini disalin-tempel: konstruktor +</p>
+<p>kombinator <code>Option</code>/<code>Result</code> per tipe baru, pasangan</p>
+<p><code>is_empty</code>/<code>len</code> per koleksi, pembungkus FFI repetitif</p>
+<p>(<code>extern fn</code> + wrapper + capability), dan kode uji tabular.</p>
+<p>Fungsi/generik/trait menutup sebagian (sudah dievaluasi Phase 69:</p>
+<p>belum cukup alasan untuk makro SAAT ITU) — RFC ini menyiapkan</p>
+<p>desain agar kebutuhan masa depan tak dijawab dengan ekspansi</p>
+<p>string ad-hoc (tak higienis, diagnostik rusak, tooling buta).</p>
+<h2 id="design">Design <a href="#design" aria-label="taut">#</a></h2>
+<p>Sketsa normatif-informal (satu-satunya bentuk yang diusulkan):</p>
+<pre data-lang="nusa"><code class="lang-nusa">macro repeat3($body) {
+    $body
+    $body
+    $body
+}
+
+fn main() {
+    repeat3!(print(&quot;hi&quot;));
+}</code></pre>
+<p>Aturan (mengikat bila Accepted):</p>
+<ul>
+<li>Definisi <code>macro NAME($p1, ...) { template }</code> adalah item</li>
+</ul>
+<p>   top-level (keyword <code>macro</code> reserved sejak 2.20.0; nol</p>
+<p>   pemakaian korpus sebagai konstruksi — hanya tabel keyword</p>
+<p>   lexer/selfhost/nstok).</p>
+<ul>
+<li>Argumen = fragmen sintaks (ekspresi/statement/tipe/item),</li>
+</ul>
+<p>   BUKAN teks: parsing argumen memakai parser Nusa yang sama</p>
+<p>   (menolak fragmen invalid di situs call, sebelum ekspansi).</p>
+<ul>
+<li>Substitusi level-AST: template di-parse sekali saat definisi;</li>
+</ul>
+<p>   <code>$hole</code> diganti klon AST argumen. Tanpa token-pasting mentah</p>
+<p>   (tanpa <code>concat_idents</code> di slice ini).</p>
+<ul>
+<li>Hygiene murah-eksplisit: identifier di template resolve di</li>
+</ul>
+<p>   DEFINISI kecuali berasal dari <code>$hole</code> (resolve di call-site).</p>
+<p>   Tanpa capture implisit dari scope call-site (kasus klasik</p>
+<p>   <code>let tmp</code> bertabrakan = error duplikat biasa, bukan bug</p>
+<p>   senyap). Aturan satu kalimat ini diajarkan, bukan alpha-rename</p>
+<p>   penuh (kompleksitas ditolak untuk slice 1).</p>
+<ul>
+<li>Rekursi: makro boleh memanggil dirinya; budget ekspansi =</li>
+</ul>
+<p>   kedalaman 64 + total node 65536 (cermin cap 64 generik +</p>
+<p>   guard 500 parser — angka final saat Accepted). Lewat =</p>
+<p>   error compile bersih, bukan hang.</p>
+<ul>
+<li>Determinisme: ekspansi murni (tanpa IO/clock/env/acak);</li>
+</ul>
+<p>   urutan ekspansi = urutan tekstual; output byte-identik untuk</p>
+<p>   input identik (syarat reproducible-builds §61).</p>
+<ul>
+<li>Diagnostik: tiap error di kode ekspansi membawa STACK ekspansi</li>
+</ul>
+<p>   (<code>expanded from macro &#x27;repeat3!&#x27; invoked at file:line:col</code>);</p>
+<p>   <code>nusa fmt</code> memformat ulang hasil ekspansi secara idempoten;</p>
+<p>   <code>nusa doc</code> menampilkan definisi makro + situs pemakaian.</p>
+<p>Di luar slice 1 (butuh RFC lanjutan): pattern-matching</p>
+<p>multi-arm (<code>($a, $b) =&gt; ...</code>), repetisi (<code>$(...)*</code>), makro</p>
+<p>atribut/item, makro prosedural (fungsi compiler ter-sandbox —</p>
+<p>prasyarat API compiler Phase 137 + eksekusi terkurung).</p>
+<h2 id="alternatives">Alternatives <a href="#alternatives" aria-label="taut">#</a></h2>
+<ul>
+<li>Ekspansi teks/C-preprocessor: ditolak (tak higienis,</li>
+</ul>
+<p>  diagnostik menunjuk kode tak terlihat, fmt/LSP buta).</p>
+<ul>
+<li>Makro prosedural dulu: ditolak untuk slice 1 (permukaan</li>
+</ul>
+<p>  keamanan: kode arbitrer saat kompilasi; butuh sandbox +</p>
+<p>  API stabil yang belum ada).</p>
+<ul>
+<li>Tak ada makro selamanya: dipertahankan sebagai opsi —</li>
+</ul>
+<p>  RFC ini sah di-Reject bila pola nyata tetap terpecahkan</p>
+<p>  tanpa makro (ambang Phase 69 tidak kedaluwarsa).</p>
+<ul>
+<li><code>comptime</code> eksekusi fungsi (RFC-0009): ortogonal (ekspansi</li>
+</ul>
+<p>  sintaks vs evaluasi nilai); koeksis bila keduanya Accepted.</p>
+<h2 id="compatibility">Compatibility <a href="#compatibility" aria-label="taut">#</a></h2>
+<p>Aditif: keyword <code>macro</code> sudah reserved (parser menolak alami</p>
+<p>hari ini — pesan dipertahankan hingga Accepted). Tanpa makro</p>
+<p>yang dipakai = tanpa perubahan perilaku/IR/ABI. Migrasi: tidak</p>
+<p>perlu. Ekosistem: registry menandai paket bermakro (capability</p>
+<p>baru di manifest, mengikuti preseden <code>native</code>) — detail saat</p>
+<p>Accepted.</p>
+<h2 id="tests">Tests <a href="#tests" aria-label="taut">#</a></h2>
+<p>Unit: lexer (sudah: reserved), parser (definisi/call valid +</p>
+<p>tolak: pola invalid, <code>$</code> liar, rekursi-lewat-budget),</p>
+<p>semantic (hygiene: capture-tak-diundang ditolak; resolve</p>
+<p>definisi vs call-site), typecheck (ekspansi dicek penuh;</p>
+<p>mismatch di kode ekspansi menunjuk stack), fmt (idempoten),</p>
+<p>doc (render definisi). E2E <code>e2e_macro.sh</code>: runtime 3 nilai,</p>
+<p>5 penolakan, fuzz 20 program bermakro (oracle tanpa-crash),</p>
+<p>benchmark ekspansi-vs-tulis-tangan (overhead kompilasi</p>
+<p>terkuantifikasi, bukan klaim).</p>
+<h2 id="specification">Specification <a href="#specification" aria-label="taut">#</a></h2>
+<p>Bila Accepted: <code>docs/language-spec-3.0.md</code> + EBNF item</p>
+<p><code>MacroDecl</code>/call <code>!</code>, § semantik ekspansi (aturan 1–7),</p>
+<p>§ hygiene, Appendix batas budget; <code>docs/macro-2.20.md</code></p>
+<p>evaluasi → desain.</p>
+<h2 id="discussion">Discussion <a href="#discussion" aria-label="taut">#</a></h2>
+<ul>
+<li>2026-09-20: Proposed tanpa implementasi (Phase 107,</li>
+</ul>
+<p>  milestone 1). Keputusan Accepted menunggu: (a) ≥2 pola</p>
+<p>  boilerplate nyata dari <code>realworld/</code>/ekosistem yang gagal</p>
+<p>  dipecahkan fungsi/generik/trait/<code>const</code> (bukti, bukan</p>
+<p>  selera); (b) review desain hygiene-budget-diagnostik;</p>
+<p>  (c) rencana tooling fmt/lsp/doc. Prosedural tetap di luar</p>
+<p>  cakupan hingga API compiler stabil.</p>
+<h2 id="security">Security <a href="#security" aria-label="taut">#</a></h2>
+<p>Batas konstruksi (bukan konvensi): TANPA IO/network/env/clock/</p>
+<p>acak saat ekspansi (tak ada sintaks untuk itu — fragmen murni);</p>
+<p>budget kedalaman×node dienforce (anti-bom-ekspansi ala</p>
+<p>billion-laughs); makro dari paket registry = kode sumber yang</p>
+<p>dibaca saat build (model kepercayaan = dependensi sumber,</p>
+<p>cermin Phase 59; kapabilitas manifest menjadikannya eksplisit);</p>
+<p>pesan error tak boleh membocorkan path absolut di luar proyek</p>
+<p>(relatif seperti diagnostik hari ini). Perluasan APAPUN</p>
+<p>(prosedural, akses file, network) = RFC baru + sandbox.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>release-3.0-beta.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="release-3.0-beta.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0-beta — Release Record (Phase 84) # Status: be">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/release-3.0-beta.html">
+<meta property="og:title" content="release-3.0-beta.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="release-3.0-beta.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0-beta — Release Record (Phase 84) # Status: be">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="release-3.0-beta.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="release-3.0-beta, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "release-3.0-beta.md", "category": "docs", "version": "3.0.0", "content": "release-3.0-beta.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0-beta — Release Record (Phase 84) # Status: beta. Freeze (mengikat sampai final): semantik bahasa ( docs/language-spec-3.0.md normatif), arsitektur compiler ( docs/compiler.md ), API standard lib", "code_example": "", "keywords": "release-3.0-beta, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/release-3.0-beta.html">release-3.0-beta.md</a></p><article><h1>release-3.0-beta.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-3-0-0-beta-release-record-phase-84">Nusa 3.0.0-beta — Release Record (Phase 84) <a href="#nusa-3-0-0-beta-release-record-phase-84" aria-label="taut">#</a></h1>
+<p>Status: beta. Freeze (mengikat sampai final): semantik bahasa</p>
+<p>(<code>docs/language-spec-3.0.md</code> normatif), arsitektur compiler</p>
+<p>(<code>docs/compiler.md</code>), API standard library</p>
+<p>(<code>docs/standard-library.md</code> v3.0.0-beta), format paket/manifest</p>
+<p>(<code>docs/pkg.md</code>, <code>compiler =</code> berversi penuh termasuk suffix</p>
+<p>pra-rilis, semver sadar-pra-rilis).</p>
+<h2 id="1-penomoran-keputusan-tercatat">1. Penomoran (keputusan tercatat) <a href="#1-penomoran-keputusan-tercatat" aria-label="taut">#</a></h2>
+<ul>
+<li><code>project(... VERSION 3.0.0)</code> tetap numerik (kebutuhan</li>
+</ul>
+<p>  <code>packaging/deb.sh</code>: paket <code>3.0.0-1</code>).</p>
+<ul>
+<li>Label manusia <code>NUSA_VERSION_STR = &quot;3.0.0-beta&quot;</code> (sumber</li>
+</ul>
+<p>  tunggal di CMakeLists; mengalir ke <code>--version</code>, help,</p>
+<p>  <code>compiler =</code> scaffold, LSP). Final menghapus suffix.</p>
+<ul>
+<li>Template <code>nusa new</code> mencatat versi penuh; lock 2.x diminta</li>
+</ul>
+<p>  <code>pkg update</code>. Uji <code>e2e_new</code> diperketat (regex sadar-suffix);</p>
+<p>  <code>e2e_deb</code> sengaja tetap inti-numerik.</p>
+<h2 id="2-baterai-beta-mandat-unit-integration-regression-fuzz-benchmark-real-world">2. Baterai beta (mandat: unit/integration/regression/fuzz/benchmark/real-world) <a href="#2-baterai-beta-mandat-unit-integration-regression-fuzz-benchmark-real-world" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Jenis</th><th>Pelaksana</th><th>Hasil</th></tr></thead><tbody>
+<tr><td>unit</td><td><code>ctest</code> (test_*)</td><td>hijau (bagian full suite)</td></tr>
+<tr><td>integration</td><td>full <code>ctest -j2</code> (83 uji)</td><td>83/83 hijau (1056 dtk)</td></tr>
+<tr><td>regression</td><td><code>e2e_compat</code> + <code>e2e_migrate</code> + suite</td><td>hijau</td></tr>
+<tr><td>fuzz</td><td><code>e2e_verify</code> seed bawaan + <code>NUSA_VERIFY_FUZZ_SEED=424242</code> (52/52 keduanya) + seed beta <code>30084</code> (40 prog: 0 mismatch/0 crash/0 hang)</td><td>hijau</td></tr>
+<tr><td>benchmark</td><td><code>bench.sh</code> closureapply 1.91 s / exe 6776 B / run 0.15 s; biner 1623920 B; <code>parse.ns</code> 3.4 s wall</td><td>≈ baseline 2.30.1 (varian wajar)</td></tr>
+<tr><td>real-world</td><td><code>e2e_beta</code> build-all 46 program + spot-run</td><td>4/4 hijau</td></tr>
+</tbody></table>
+<h2 id="3-diketahui-bukan-blocker-beta">3. Diketahui (bukan blocker beta) <a href="#3-diketahui-bukan-blocker-beta" aria-label="taut">#</a></h2>
+<ul>
+<li>Flake beban paralel sesekali (<code>e2e_playground</code> Phase 83:</li>
+</ul>
+<p>  gagal in-suite, hijau isolasi+rerun) — pola tercatat sejak</p>
+<p>  Phase 79; rerun = hijau.</p>
+<ul>
+<li>3 pemakai channel-tanpa-tag (2 di stdlib) + 2 paket native</li>
+</ul>
+<p>  (tls/sqlite) — lihat <code>docs/migration-3.0.md</code>; tanpa aksi</p>
+<p>  bahasa.</p>
+<ul>
+<li><code>nusa migrate</code> heuristik marker didokumentasikan (§5 guide).</li>
+</ul>
+<h2 id="4-conformance">4. Conformance <a href="#4-conformance" aria-label="taut">#</a></h2>
+<p><code>e2e_beta.sh</code> (baner + build-all + spot-run + bersih-artefak)</p>
+<p>+ seluruh suite hijau + website no-drift.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

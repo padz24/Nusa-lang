@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ffi-headers-3.11.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="ffi-headers-3.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Native Interoperability 3.0 — Milestone 1: nusa headers ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/ffi-headers-3.11.html">
+<meta property="og:title" content="ffi-headers-3.11.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="ffi-headers-3.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Native Interoperability 3.0 — Milestone 1: nusa headers ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="ffi-headers-3.11.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ffi-headers-3.11, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "ffi-headers-3.11.md", "category": "docs", "version": "3.0.0", "content": "ffi-headers-3.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Native Interoperability 3.0 — Milestone 1: nusa headers (Phase 110) # Status: slice implementasi (target 3.11.0). Mandat master: C, pustaka C-kompatibel, system libs, shared libs natif; tooling bindgen/hea", "code_example": "", "keywords": "ffi-headers-3.11, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/ffi-headers-3.11.html">ffi-headers-3.11.md</a></p><article><h1>ffi-headers-3.11.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="native-interoperability-3-0-milestone-1-nusa-headers-phase-110">Native Interoperability 3.0 — Milestone 1: <code>nusa headers</code> (Phase 110) <a href="#native-interoperability-3-0-milestone-1-nusa-headers-phase-110" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (target 3.11.0). Mandat master: C,</p>
+<p>pustaka C-kompatibel, system libs, shared libs natif; tooling</p>
+<p>bindgen/headers/abi-check; C++ hanya subsystem terpisah (TIDAK</p>
+<p>dikerjakan — tidak ada dependensi ABI C++ di compiler).</p>
+<h2 id="1-cakupan-nusa-c-nusa-headers-file-ns-o-out-h">1. Cakupan: Nusa → C (<code>nusa headers &lt;file.ns&gt; [-o out.h]</code>) <a href="#1-cakupan-nusa-c-nusa-headers-file-ns-o-out-h" aria-label="taut">#</a></h2>
+<p>Kebalikan <code>nusa bindgen</code>: subset API yang representasi C-nya</p>
+<p>JUJUR (abi-3.10) diekspor; sisanya skip + warning (cermin</p>
+<p>filosofi bindgen). Pemetaan: <code>i64→int64_t</code>, `string→const</p>
+<p>char *<code> (pinjaman program-lifetime, JANGAN free), </code>void→void`,</p>
+<p>struct datar (urutan deklarasi, non-packed), enum (struct</p>
+<p><code>{tag, v{t}_{pos}}</code> + komentar tag). PENOLAKAN eksplisit:</p>
+<p><code>bool</code> (i1 vs <code>_Bool</code> = mismatch biner), closure (pair vs</p>
+<p>function-pointer), generik/metode (nama mangled), array/fn</p>
+<p>field, extern/main (bukan API).</p>
+<h2 id="2-resep-embedding-terbukti-didokumentasikan-di-header">2. Resep embedding (terbukti, didokumentasikan di header) <a href="#2-resep-embedding-terbukti-didokumentasikan-di-header" aria-label="taut">#</a></h2>
+<p>Objek Nusa membawa <code>main</code> sendiri (fn main wajib): link program</p>
+<p>C dengan <code>-Wl,--allow-multiple-definition</code> agar main C menang</p>
+<p>(terverifikasi ld.lld Termux). Objek <code>main</code>-opsional = follow-up</p>
+<p>(butuh flag semantik). <code>nusa abi-check</code> = follow-up (ujungnya</p>
+<p>adalah <code>e2e_abi</code> yang sudah ada).</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit <code>test_headers</code> 4/4 (golden, penolakan, kosong-gagal, rusak).</li>
+<li><code>e2e_headers</code> 4/4: golden + <code>-o</code>, LINK C↔Nusa nyata</li>
+</ul>
+<p>  (<code>add/mkpoint/get</code> → <code>42/7 p/7 0</code>), penolakan, negatif.</p>
+<ul>
+<li><code>e2e_bindgen</code> + <code>e2e_abi</code> + <code>e2e_release</code> hijau (tak tersentuh);</li>
+</ul>
+<p>  <code>.ns</code> + IR OK.</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>C++ interop (subsystem terpisah; tanpa komitmen ABI).</li>
+<li>Objek tanpa-main, ekspor instans generik konkret, metode</li>
+</ul>
+<p>  lewat simbol mangled, <code>nusa abi-check</code> CLI.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

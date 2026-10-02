@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>perf-3.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="perf-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance Validation — Suite Resmi (Phase 86, beta 3.0.0) # Ma">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/perf-3.0.html">
+<meta property="og:title" content="perf-3.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="perf-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance Validation — Suite Resmi (Phase 86, beta 3.0.0) # Ma">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="perf-3.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="perf-3.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "perf-3.0.md", "category": "docs", "version": "3.0.0", "content": "perf-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance Validation — Suite Resmi (Phase 86, beta 3.0.0) # Mandat: ukur 8 dimensi vs baseline relevan; NOL klaim tanpa angka. Suite: bash bench/suite.sh &lt;nusa-binary&gt; (semua di TMPDIR; deterministik; tanp", "code_example": "", "keywords": "perf-3.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/perf-3.0.html">perf-3.0.md</a></p><article><h1>perf-3.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="performance-validation-suite-resmi-phase-86-beta-3-0-0">Performance Validation — Suite Resmi (Phase 86, beta 3.0.0) <a href="#performance-validation-suite-resmi-phase-86-beta-3-0-0" aria-label="taut">#</a></h1>
+<p>Mandat: ukur 8 dimensi vs baseline relevan; NOL klaim tanpa</p>
+<p>angka. Suite: <code>bash bench/suite.sh &lt;nusa-binary&gt;</code> (semua di</p>
+<p>TMPDIR; deterministik; tanpa network). Baseline relevan =</p>
+<p>2.30.1 (<code>docs/stability-2.30.md</code> §6) + beta Phase 84.</p>
+<h2 id="1-kedelapan-dimensi-metode-satuan">1. Kedelapan dimensi (metode + satuan) <a href="#1-kedelapan-dimensi-metode-satuan" aria-label="taut">#</a></h2>
+<table><thead><tr><th>#</th><th>Dimensi</th><th>Metode</th><th>Satuan</th></tr></thead><tbody>
+<tr><td>1</td><td>compile time</td><td><code>nusa build</code> hello/nusa10/perf2000(gen)/parse.ns</td><td>s (wall)</td></tr>
+<tr><td>2</td><td>incremental compile</td><td>build hello dingin vs hangat-best-of-3 (cache)</td><td>s + speedup</td></tr>
+<tr><td>3</td><td>binary size</td><td><code>wc -c</code> exe + biner compiler</td><td>bytes</td></tr>
+<tr><td>4</td><td>startup time</td><td>exe hello 5× langsung, ambil min</td><td>ms</td></tr>
+<tr><td>5</td><td>runtime performance</td><td><code>nusa bench -n 3</code> 5 program bench/</td><td>ms (min/med/max)</td></tr>
+<tr><td>6</td><td>memory usage</td><td>maxRSS anak dari <code>nusa bench</code> (§5)</td><td>KiB</td></tr>
+<tr><td>7</td><td>package resolution</td><td>fixture app→lib: <code>pkg update</code>+<code>verify</code>+<code>tree</code>+<code>build</code></td><td>s (wall)</td></tr>
+<tr><td>8</td><td>LSP latency</td><td>initialize→respons Content-Length pertama (cold, +spawn)</td><td>ms</td></tr>
+</tbody></table>
+<h2 id="2-aturan-baca-angka">2. Aturan baca angka <a href="#2-aturan-baca-angka" aria-label="taut">#</a></h2>
+<ul>
+<li>Deviasi antar-run wajar di perangkat yang sama (beban</li>
+</ul>
+<p>  paralel menaikkan wall-time; Suite BUKAN gate</p>
+<p>  perbandingan-ketat — gate = selesai + invarian</p>
+<p>  (<code>warm &lt;= cold</code>, ukuran &gt; 0, 8/8 dimensi hadir).</p>
+<ul>
+<li>Klaim &quot;lebih cepat&quot; DILARANG tanpa dua angka berdampingan</li>
+</ul>
+<p>  di tabel §4 + kondisi ukur identik.</p>
+<h2 id="3-conformance">3. Conformance <a href="#3-conformance" aria-label="taut">#</a></h2>
+<p><code>compiler/tests/e2e_perf.sh</code>: suite rc 0 + 8/8 dimensi +</p>
+<p>invarian incremental + ukuran positif.</p>
+<h2 id="4-hasil-ukur-beta-3-0-0-termux-aarch64-rentang-2-run">4. Hasil ukur (beta 3.0.0; Termux AArch64; rentang 2 run) <a href="#4-hasil-ukur-beta-3-0-0-termux-aarch64-rentang-2-run" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Dimensi</th><th>Beta 3.0.0</th><th>2.30.1 (baseline)</th></tr></thead><tbody>
+<tr><td>compile hello / nusa10 / perf2000 / parse.ns</td><td>1.58 / 1.46 / 24.76 / 2.28 s</td><td>(closureapply 1.91–2.06 s; parse 3.4–3.7 s)</td></tr>
+<tr><td>incremental hello dingin → hangat</td><td>1.54 → 0.28 s (≈5.5×)</td><td>— (baru diukur)</td></tr>
+<tr><td>exe hello / parse; compiler</td><td>5816 / 96576 B; 1624040 B</td><td>6776 (closureapply); 1522248–1623920 B*</td></tr>
+<tr><td>startup hello (min 5×)</td><td>42.8 ms</td><td>— (baru diukur)</td></tr>
+<tr><td>runtime median fib/loopsum/strcat/match/closure</td><td>50.8 / 80.8 / 57.5 / 71.1 / 128.8 ms</td><td>(closureapply run 0.15–0.17 s ≈)</td></tr>
+<tr><td>maxRSS fib/loopsum/strcat/match/closure</td><td>5976 / 5952 / 6208 / 6068 / 6712 KiB</td><td>(bench hello 5904 KiB ≈)</td></tr>
+<tr><td>pkg tree / build (scaffold cli-app)</td><td>0.24–4.35 / 1.41–5.86 s†</td><td>— (baru diukur)</td></tr>
+<tr><td>LSP initialize cold (+spawn)</td><td>171–209 ms</td><td>— (baru diukur)</td></tr>
+</tbody></table>
+<p><code>*</code> Biner tumbuh 1522248→1624040 B antar-fase = kode baru</p>
+<p>(<code>migrate</code> Phase 83, store F4 Phase 85); BUKAN regresi.</p>
+<p><code>†</code> pkg sensitif cache/registry-TMPDIR; rentang jujur 2 run.</p>
+<p>Tanpa klaim &quot;lebih cepat&quot;: semua ≈ baseline dalam varian</p>
+<p>perangkat.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+// Input helpers (standard input).
+//
+// Composition over the `input` builtin. Test programs run with
+// stdin connected to `/dev/null`, so `input()` yields `""` there.
+// Read a line from standard input and parse it as an integer.
+// Non-numeric input parses as 0 (see `parse_int`).
+fn read_int() -> i64 {
+    return parse_int(input());
+}
+// Read a line from standard input (no trailing newline;
+// EOF yields `""`, like `input`).
+fn read_line() -> string {
+    return input();
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C FFI &amp; Bindgen — Nusa Docs 2.17.0</title>
+<meta name="description" content="C FFI &amp;amp; Bindgen v2.17.0 Overview extern fn primitif (i64/string/bool; return i64/bool/void) ABI C (bool=int, zext arg + icmp return). Linker: --li">
+<link rel="canonical" href="https://nusa-lang.org/docs/compiler/ffi.html">
+<meta property="og:title" content="C FFI &amp; Bindgen — Nusa Docs 2.17.0">
+<meta property="og:description" content="C FFI &amp;amp; Bindgen v2.17.0 Overview extern fn primitif (i64/string/bool; return i64/bool/void) ABI C (bool=int, zext arg + icmp return). Linker: --li">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="C FFI &amp; Bindgen">
+<meta name="nusa:category" content="compiler">
+<meta name="nusa:version" content="2.17.0">
+<meta name="nusa:keywords" content="FFI, extern, bindgen, C, link, ABI">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "C FFI & Bindgen", "category": "compiler", "version": "2.17.0", "content": "C FFI &amp; Bindgen v2.17.0 Overview extern fn primitif (i64/string/bool; return i64/bool/void) ABI C (bool=int, zext arg + icmp return). Linker: --link/--link-dir repeatable + manifest [link]. bindgen 2.17.0: nusa bindgen header.h → extern fn (integer/_Bool/char*/void/typedef-umum/extern C/(void))", "code_example": "", "keywords": "FFI, extern, bindgen, C, link, ABI"}</script>
+</head>
+<body class="kind-compiler">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/" aria-current="page">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../compiler/">Pipeline</a></li><li><a href="../compiler/architecture.html">Architecture</a></li><li><a href="../compiler/frontend.html">Frontend (Lexer/Parser/AST/Semantic/TypeChecker)</a></li><li><a href="../compiler/mir.html">MIR (Nusa IR)</a></li><li><a href="../compiler/optimizations.html">Optimizations</a></li><li><a href="../compiler/runtime.html">Runtime</a></li><li><a href="../compiler/memory-model.html">Memory Model</a></li><li><a href="../compiler/llvm.html">LLVM Integration</a></li><li><a href="../compiler/debugging.html">Debugging (DWARF)</a></li><li><a href="../compiler/lsp.html">Language Server (LSP)</a></li><li><a href="../compiler/incremental.html">Incremental Compilation</a></li><li><a href="../compiler/bootstrap.html">Bootstrap &amp; Self-Hosting</a></li><li><a href="../compiler/ffi.html" aria-current="page">C FFI &amp; Bindgen</a></li><li><a href="../compiler/targets.html">Targets &amp; Cross Compilation</a></li><li><a href="../compiler/profiling.html">Profiling &amp; Build Stats</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../compiler/">Compiler</a> / <a href="../compiler/ffi.html">C FFI &amp; Bindgen</a></p><article><h1>C FFI &amp; Bindgen</h1><span class="badge stable">v2.17.0</span> <h2>Overview</h2><p>extern fn primitif (i64/string/bool; return i64/bool/void) ABI C (bool=int, zext arg + icmp return). Linker: --link/--link-dir repeatable + manifest [link]. bindgen 2.17.0: nusa bindgen header.h → extern fn (integer/_Bool/char*/void/typedef-umum/extern C/(void)); skip beralasan + warning; rc 1 bila nol; output fmt-clean.</p><h2>Source</h2><ul><li><code>compiler/bindgen/</code></li><li><code>docs/ffi.md</code></li><li><code>docs/ffi-bindgen-2.17.md</code></li></ul><div class="warn"><h2>Limitations</h2><ul><li>Tanpa pointer umum/struct-by-value/callback/variadik/string-return/dlsym/float/struct kustom/inline. Pustaka dipercaya penuh (pin sumbernya). C++ ditolak.</li></ul></div><h2>Tests</h2><p><code>test_bindgen (4 grup) + e2e_bindgen.sh (7) + e2e_ffi.sh (10)</code></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.17.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mem-2.5.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="mem-2.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Safety — Audit &amp;amp; Design (Phase 54, target 2.5.0) # Sta">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/mem-2.5.html">
+<meta property="og:title" content="mem-2.5.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="mem-2.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Safety — Audit &amp;amp; Design (Phase 54, target 2.5.0) # Sta">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="mem-2.5.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="mem-2.5, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "mem-2.5.md", "category": "docs", "version": "3.0.0", "content": "mem-2.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Safety — Audit &amp; Design (Phase 54, target 2.5.0) # Status: audit selesai → Implementation (milestone 1: registry handle fail-fast). Spec 2.0 tidak berubah kecuali edge misuse (UB → error keras, didokumen", "code_example": "", "keywords": "mem-2.5, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/mem-2.5.html">mem-2.5.md</a></p><article><h1>mem-2.5.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="memory-safety-audit-design-phase-54-target-2-5-0">Memory Safety — Audit &amp; Design (Phase 54, target 2.5.0) <a href="#memory-safety-audit-design-phase-54-target-2-5-0" aria-label="taut">#</a></h1>
+<p>Status: audit selesai → Implementation (milestone 1: registry</p>
+<p>handle fail-fast). Spec 2.0 tidak berubah kecuali edge misuse</p>
+<p>(UB → error keras, didokumentasikan di sini + CHANGELOG).</p>
+<h2 id="1-hasil-audit-evidence-bukan-asumsi">1. Hasil audit (evidence, bukan asumsi) <a href="#1-hasil-audit-evidence-bukan-asumsi" aria-label="taut">#</a></h2>
+<p>Model bahasa (<code>docs/memory-model.md</code>): owned values + heap</p>
+<p>program-lifetime; tanpa referensi/pointer/free di level bahasa.</p>
+<p>Diverifikasi: kode Nusa murni TIDAK DAPAT mengekspresikan</p>
+<p>use-after-free / double-free / ownership transition invalid —</p>
+<p>tidak ada konstruksi bahasa untuk itu (tanpa <code>unsafe{}</code> dialect;</p>
+<p>sengaja tidak diperkenalkan di fase ini — itu language-level dan</p>
+<p>wajib RFC tersendiri bila kelak dibutuhkan).</p>
+<p>Kompiler: disiplin <code>unique_ptr</code> AST + <code>malloc</code> ber-<code>emitOomCheck</code></p>
+<p>di <code>str_concat</code>/<code>file_read</code>; ASan+UBSan bersih untuk MIR/opt</p>
+<p>(Phase 52/53). Full-suite ASan build ditunda (keterbatasan RAM</p>
+<p>perangkat; lihat §4).</p>
+<p>TERBUKTI BERBAHAYA (ASan, program <code>.ns</code> valid-secara-tipe):</p>
+<ul>
+<li><code>thread_join(h); thread_join(h);</code> → heap-use-after-free di</li>
+</ul>
+<p>   <code>nusa_thread_join</code> (nusa_rt.c:57; non-ASan: Bionic abort</p>
+<p>   <code>invalid pthread_t</code>, tetap crash tanpa diagnostic Nusa).</p>
+<ul>
+<li><code>chan_free(c); chan_send(c, 1);</code> → heap-use-after-free di</li>
+</ul>
+<p>   <code>nusa_chan_check</code> (nusa_rt.c:142).</p>
+<ul>
+<li>Pola sama untuk mutex (<code>free</code>→<code>lock</code>) dan atomic (<code>free</code>→<code>get</code>).</li>
+</ul>
+<p>Akar: handle = pointer mentah sebagai <code>i64</code> yang bebas dicopy;</p>
+<p><code>join</code>/<code>free</code> merebut kembali tanpa invalidasi salinan.</p>
+<h2 id="2-batas-unsafe-definisi-eksplisit-tanpa-sintaks-baru">2. Batas unsafe (definisi eksplisit, tanpa sintaks baru) <a href="#2-batas-unsafe-definisi-eksplisit-tanpa-sintaks-baru" aria-label="taut">#</a></h2>
+<p>Nusa tidak memiliki blok <code>unsafe { ... }</code>. Permukaan yang MAMPU</p>
+<p>melanggar safety dibagi tiga, dengan aturan masing-masing:</p>
+<ul>
+<li><strong>Builtin runtime</strong> (<code>isBuiltin</code>): implementasi C/LLVM di</li>
+</ul>
+<p>  codegen + <code>nusa_rt.c</code>. Aturan: semua handle lifecycle fail-fast</p>
+<p>  (milestone 1); OOM → pesan + exit(1); mismatch → pesan + exit(1).</p>
+<ul>
+<li><strong><code>extern fn</code> FFI</strong>: pustaka dipercaya penuh (kontrak Phase 32 —</li>
+</ul>
+<p>  pin sumbernya). Tetap di luar analisis safety.</p>
+<ul>
+<li><strong>Nusan murni</strong>: aman by-construction (§1); misuse handle</li>
+</ul>
+<p>  (salinan <code>i64</code>) DITRAP runtime, bukan UB (milestone 1).</p>
+<h2 id="3-milestone-1-satu-satunya-perubahan-runtime-fase-ini">3. Milestone 1 (SATU-SATUNYA perubahan runtime fase ini) <a href="#3-milestone-1-satu-satunya-perubahan-runtime-fase-ini" aria-label="taut">#</a></h2>
+<p>Registry handle hidup di <code>nusa_rt.c</code> (mutex-global + list):</p>
+<ul>
+<li><code>new/spawn</code> → daftarkan; <code>join/free</code> → keluarkan + bebaskan;</li>
+</ul>
+<p>  pakai/<code>free</code> atas handle tak-terdaftar (ganda, basi, atau nol)</p>
+<p>  → <code>runtime error: invalid handle in &lt;op&gt;</code> + exit(1) — konsisten</p>
+<p>  dengan OOB/div-0/channel-mismatch (bukan abort diam).</p>
+<ul>
+<li>Perilaku berubah (sengaja, fail-fast): <code>thread_join(0)</code>,</li>
+</ul>
+<p>  <code>mutex_*(0)</code>, <code>atomic_*(0)</code> yang dulu diam kini error keras;</p>
+<p>  <code>chan_*(0)</code> sudah error sebelumnya. Tak ada test yang bergantung</p>
+<p>  pada perilaku diam (telah digrep).</p>
+<ul>
+<li>Biaya: satu mutex lock/unlock per op (correctness &gt; perf;</li>
+</ul>
+<p>  dikuantifikasi di Phase 86).</p>
+<p>DITUNDA beralasan (residual jujur, bukan klaim sembuh total):</p>
+<ul>
+<li><strong>ABA reuse</strong>: free + alokasi-ulang di alamat sama + pakai basi</li>
+</ul>
+<p>  masih lolos (butuh handle generasional = milestone berikut).</p>
+<ul>
+<li><strong>Free-while-borrowed konkuren</strong> (free saat thread lain blocked</li>
+</ul>
+<p>  di <code>recv</code>/<code>join</code>) tetap UB kelas data-race (butuh refcount/</p>
+<p>  epoch — milestone berikut; aturan sementara: jangan free selagi</p>
+<p>  dipinjam thread lain).</p>
+<ul>
+<li>Lifetime/borrow-checker statis: butuh tipe referensi (<code>&amp;T</code>)</li>
+</ul>
+<p>  yang tidak ada di Nusa — ditinjau bila referensi ditambahkan</p>
+<p>  (konsisten dengan penolakan ownership-model di <code>memory-model.md</code>).</p>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>Program bukti (double-join, send-after-free, double-mutex-free,</li>
+</ul>
+<p>  atomic-use-after-free) → exit 1 + pesan <code>invalid handle</code></p>
+<p>  (bukan abort/sinyal); ASan bersih untuk pola sekuensial.</p>
+<ul>
+<li><code>e2e_memsafe.sh</code> hijau + seluruh suite hijau + benchmark identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

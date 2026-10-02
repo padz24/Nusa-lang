@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pattern-matching.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="pattern-matching.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Pattern Matching (Phase 25, v1.6.0) # Statement match me">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/pattern-matching.html">
+<meta property="og:title" content="pattern-matching.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="pattern-matching.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Pattern Matching (Phase 25, v1.6.0) # Statement match me">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="pattern-matching.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="pattern-matching, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "pattern-matching.md", "category": "docs", "version": "3.0.0", "content": "pattern-matching.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Pattern Matching (Phase 25, v1.6.0) # Statement match memilih satu dari banyak arm berdasarkan BENTUK nilai, bukan rantai if / else manual: fn f(x: i64) -&gt; i64 { match x { 1 =&gt; { return 10; }, 2 =&gt", "code_example": "", "keywords": "pattern-matching, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/pattern-matching.html">pattern-matching.md</a></p><article><h1>pattern-matching.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="pattern-matching-phase-25-v1-6-0">Pattern Matching (Phase 25, v1.6.0) <a href="#pattern-matching-phase-25-v1-6-0" aria-label="taut">#</a></h1>
+<p>Statement <code>match</code> memilih satu dari banyak arm berdasarkan BENTUK nilai,</p>
+<p>bukan rantai <code>if</code>/<code>else</code> manual:</p>
+<pre data-lang="nusa"><code class="lang-nusa">fn f(x: i64) -&gt; i64 {
+    match x {
+        1 =&gt; { return 10; },
+        2 =&gt; { return 20; },
+        _ =&gt; { return 30; },
+    }
+    return 0;
+}</code></pre>
+<p>Aturan umum:</p>
+<ul>
+<li><code>match</code> adalah STATEMENT (bukan ekspresi): tiap arm berakhir <code>{ ... }</code></li>
+</ul>
+<p>  atau single-statement, dipisah koma (trailing comma boleh).</p>
+<ul>
+<li>Subject dievaluasi SEKALI (<code>let $matchK = subject</code> internal).</li>
+<li>Arm pertama yang cocok menang; sisanya tak dieksekusi.</li>
+</ul>
+<h2 id="pola">Pola <a href="#pola" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Pola</th><th>Contoh</th><th>Arti</th></tr></thead><tbody>
+<tr><td>Literal int/bool/string</td><td><code>1</code>, <code>true</code>, <code>&quot;a&quot;</code></td><td>kesetaraan (<code>==</code>; string via perbandingan isi)</td></tr>
+<tr><td>Wildcard</td><td><code>_</code></td><td>selalu cocok, tanpa binding</td></tr>
+<tr><td>Bind</td><td><code>n</code></td><td>selalu cocok + <code>let n = &lt;nilai&gt;</code> untuk body</td></tr>
+<tr><td>Struct</td><td><code>Point { x: 0, y }</code></td><td>tiap field dicocokkan rekursif; <code>y</code> = bind, <code>x: 0</code> = literal</td></tr>
+<tr><td>Varian std</td><td><code>Some(v)</code>, <code>None</code>, <code>Ok(v)</code>, <code>Err(e)</code></td><td>Option/Result (lihat bawah)</td></tr>
+<tr><td>Guard</td><td><code>n if n &gt; 10</code></td><td>pola cocok DAN guard <code>bool</code> true</td></tr>
+</tbody></table>
+<p>String dibanding isi (bukan pointer); literal negatif didukung (<code>-1</code>).</p>
+<h2 id="guard-if">Guard (<code>if</code>) <a href="#guard-if" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">match x {
+    n if n &gt; 10 =&gt; { return 1; },
+    _ =&gt; { return 0; },
+}</code></pre>
+<ul>
+<li>Guard harus bertipe <code>bool</code> (siap pakai binding pola: <code>n</code> di atas).</li>
+<li>Arm ber-guard SELALU dianggap refutable: gagal guard → lanjut ke arm</li>
+</ul>
+<p>  berikut, dan tak menyumbang exhaustiveness (lihat bawah).</p>
+<h2 id="varian-std-option-result-v2-0-enum-natif">Varian std: Option/Result (v2.0: enum natif) <a href="#varian-std-option-result-v2-0-enum-natif" aria-label="taut">#</a></h2>
+<p><code>Option&lt;T&gt;</code>/<code>Result&lt;T, E&gt;</code> adalah enum natif (lihat</p>
+<p><code>docs/error-handling.md</code>), sehingga variannya memakai jalur enum</p>
+<p>umum: uji <code>tag</code> + destruktur slot payload:</p>
+<pre data-lang="nusa"><code class="lang-nusa">import option;
+fn descr(o: Option&lt;i64&gt;) -&gt; i64 {
+    match o {
+        Some(v) =&gt; { return v; },   // tag Some, v = payload
+        None =&gt; { return 0 - 1; },  // tag None (tanpa kurung!)
+    }
+    return 0;
+}</code></pre>
+<ul>
+<li><code>None</code> ditulis TANPA kurung (ditulis <code>None</code>, bukan <code>None()</code>).</li>
+<li><code>Some</code>/<code>Ok</code>/<code>Err</code> telanjang (tanpa argumen) ditolak dengan pesan arity.</li>
+<li>Di luar enum, <code>Name(...)</code> ditolak sebagai</li>
+</ul>
+<p>  <code>cannot match variant</code> — kecuali subject bertipe enum, yang memakai</p>
+<p>  pola variannya sendiri (lihat <code>docs/enums.md</code>).</p>
+<ul>
+<li>Nama <code>Some</code>/<code>None</code>/<code>Ok</code>/<code>Err</code> di posisi pola SELALU dibaca sebagai</li>
+</ul>
+<p>  varian, tak pernah sebagai binding.</p>
+<h2 id="exhaustiveness-wajib-lengkap">Exhaustiveness (wajib lengkap) <a href="#exhaustiveness-wajib-lengkap" aria-label="taut">#</a></h2>
+<p>Compiler MENOLAK <code>match</code> yang tak menutup semua kasus</p>
+<p>(<code>non-exhaustive match</code>):</p>
+<ul>
+<li><code>_</code> atau bind polos menutup segalanya (arm sesudahnya <code>unreachable</code>).</li>
+<li><code>true</code> + <code>false</code> menutup <code>bool</code> (pesan menyebut sisi hilang:</li>
+</ul>
+<p>  <code>missing pattern for &#x27;false&#x27;</code>).</p>
+<ul>
+<li><code>Some</code> + <code>None</code> menutup <code>Option</code>; <code>Ok</code> + <code>Err</code> menutup <code>Result</code>.</li>
+<li>Literal ganda dilaporkan (<code>this literal is already covered above</code>).</li>
+<li>Arm ber-guard tak menutup apa pun (walau <code>_ if ...</code>).</li>
+</ul>
+<h2 id="implementasi-desugar-bukan-codegen-baru">Implementasi: desugar (bukan codegen baru) <a href="#implementasi-desugar-bukan-codegen-baru" aria-label="taut">#</a></h2>
+<p><code>match</code> di-desugar typechecker menjadi <code>let</code> + rantai <code>if</code>/<code>else</code> biasa</p>
+<p>SEBELUM codegen — backend LLVM tak tersentuh:</p>
+<ul>
+<li>Uji pola digabung via flag internal (<code>$mK</code>); tiap uji murni dan aman</li>
+</ul>
+<p>  di-evaluasi lolos-singkat-semantik (efek bersih: baca <code>tmp</code> saja).</p>
+<ul>
+<li>Binding pola = <code>let</code> di awal body arm (scope arm terisolasi).</li>
+<li>Guard di-inline (binding → klon aksesor murni) lalu digabung ke flag,</li>
+</ul>
+<p>  sehingga dievaluasi SEBELUM <code>let</code> body dieksekusi — benar di checker</p>
+<p>  maupun codegen.</p>
+<ul>
+<li>Satu arm (<code>match x { n =&gt; ... }</code>) menjadi <code>if true { ... }</code> yang</li>
+</ul>
+<p>  transparan untuk analisis all-paths return.</p>
+<p>Konsekuensi: pesan error di dalam body menunjuk baris asli (lokasi</p>
+<p>dipertahankan), dan <code>nusa fmt</code> memformat <code>match</code> (koma arm mengakhiri</p>
+<p>baris; idempoten).</p>
+<h2 id="batasan-phase-25">Batasan Phase 25 <a href="#batasan-phase-25" aria-label="taut">#</a></h2>
+<ul>
+<li>Statement-only (tak ada <code>let y = match ...</code>; bungkus fungsi).</li>
+<li>Tanpa pola or (<code>1 | 2</code>), tanpa range, tanpa nesting varian-dalam-varian</li>
+</ul>
+<p>  di luar struct (struct boleh bersarang).</p>
+<ul>
+<li>Tanpa exhaustiveness untuk int/string umum (butuh <code>_</code>; bool, pasangan</li>
+</ul>
+<p>  varian std, dan seluruh varian enum pengguna tertutup tanpa wildcard).</p>
+<ul>
+<li>Varian enum pengguna = Phase 26, v1.7.0 (<code>docs/enums.md</code>).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

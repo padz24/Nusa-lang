@@ -1,0 +1,29 @@
+// Basic file operations, composed from builtins.
+//
+// Failure policy (v0.9.0, minimal): missing/unreadable files read as
+// `""`; check `file_exists` first when it matters. No exceptions or
+// result types yet (post-1.0 roadmap).
+// Copy file `src` to `dst`. Returns false (writing nothing) when `src`
+// is missing.
+fn copy_file(src: string, dst: string) -> bool {
+    if file_exists(src) {
+        return file_write(dst, file_read(src));
+    }
+    return false;
+}
+// Size of file in bytes. Missing/unreadable files give 0.
+fn file_size(path: string) -> i64 {
+    return str_len(file_read(path));
+}
+// Overwrite `path` with `content` (see builtin `file_write`).
+fn write_file(path: string, content: string) -> bool {
+    return file_write(path, content);
+}
+// Read `path`, or `fallback` when missing/unreadable
+// (mirrors `getenv_or` in process.ns).
+fn read_file_or(path: string, fallback: string) -> string {
+    if file_exists(path) {
+        return file_read(path);
+    }
+    return fallback;
+}

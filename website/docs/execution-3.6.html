@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>execution-3.6.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="execution-3.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Eksekusi — Milestone 1: Kapabilitas + Desain (Ph">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/execution-3.6.html">
+<meta property="og:title" content="execution-3.6.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="execution-3.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Eksekusi — Milestone 1: Kapabilitas + Desain (Ph">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="execution-3.6.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="execution-3.6, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "execution-3.6.md", "category": "docs", "version": "3.0.0", "content": "execution-3.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Eksekusi — Milestone 1: Kapabilitas + Desain (Phase 105) # Status: slice arsitektur. Mandat master Phase 105 (arsitektur yang memungkinkan AOT + JIT opsional + interpreter opsional; AOT tetap defau", "code_example": "", "keywords": "execution-3.6, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/execution-3.6.html">execution-3.6.md</a></p><article><h1>execution-3.6.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="arsitektur-eksekusi-milestone-1-kapabilitas-desain-phase-105">Arsitektur Eksekusi — Milestone 1: Kapabilitas + Desain (Phase 105) <a href="#arsitektur-eksekusi-milestone-1-kapabilitas-desain-phase-105" aria-label="taut">#</a></h1>
+<p>Status: slice arsitektur. Mandat master Phase 105 (arsitektur yang</p>
+<p>memungkinkan AOT + JIT opsional + interpreter opsional; AOT tetap</p>
+<p>default; target 3.6.0). NOL penggantian compiler; NOL API produk baru.</p>
+<h2 id="1-hari-ini-aot-satu-satunya-jalur-produk">1. Hari ini (AOT — satu-satunya jalur produk) <a href="#1-hari-ini-aot-satu-satunya-jalur-produk" aria-label="taut">#</a></h2>
+<p><code>checkStages</code> → <code>Codegen</code> → <code>.ns.ll</code> → <code>clang</code> → biner natif</p>
+<p>(<code>compiler/driver/Driver.cpp::runBuild</code>). AOT default ditegakkan</p>
+<p>oleh tidak adanya jalur lain — diverifikasi <code>e2e_release</code> hijau</p>
+<p>pasca-slice (NOL perilaku).</p>
+<h2 id="2-bukti-kelayakan-jit-eksperimen-bukan-klaim">2. Bukti kelayakan JIT (eksperimen, bukan klaim) <a href="#2-bukti-kelayakan-jit-eksperimen-bukan-klaim" aria-label="taut">#</a></h2>
+<ul>
+<li>Spike <code>/tmp</code> (tak di-commit): modul IRT <code>main → puts</code> via</li>
+</ul>
+<p>  IRBuilder + ORC LLJIT in-process + <code>DynamicLibrarySearchGenerator</code></p>
+<p>  proses → <code>jit-ok</code>, rc=0, Termux AArch64/Bionic, LLVM 21.1.8.</p>
+<ul>
+<li>Dikunci repo sebagai <code>compiler/tests/test_orc.cpp</code> (ctest</li>
+</ul>
+<p>  <code>test_orc</code>): bangun <code>forty_two() → 42</code> + <code>main</code> memanggilnya +</p>
+<p>  <code>puts</code>, assert rc JIT == 0. Pagar toolchain: bila Termux/LLVM</p>
+<p>  berubah merusak ORC, test ini merah SEBELUM subsystem dibangun.</p>
+<h2 id="3-desain-penyisipan-untuk-phase-106-subsystem">3. Desain penyisipan (untuk Phase 106+/subsystem) <a href="#3-desain-penyisipan-untuk-phase-106-subsystem" aria-label="taut">#</a></h2>
+<ul>
+<li>Seam: sesudah <code>Codegen::emitIRToFile</code> (modul LLVM in-memory,</li>
+</ul>
+<p>  bukan <code>.ll</code> file) → sesi ORC per-proses → lookup <code>main</code> →</p>
+<p>  panggil. Driver tetap pemilik argv/exit-code.</p>
+<ul>
+<li>Simbol runtime: hari ini <code>nusa_rt.o</code> di-link clang. JIT butuh</li>
+</ul>
+<p>  <code>nusa_rt</code> terlihat in-process — opsi: (a) muat <code>.o</code>/<code>.so</code></p>
+<p>  runtime via <code>DynamicLibrarySearchGenerator::Load</code>, (b) tautkan</p>
+<p>  simbol ke biner <code>nusa</code> dan expose. Keduanya butuh uji Bionic</p>
+<p>  lanjutan (di luar milestone ini).</p>
+<ul>
+<li>State inkremental (syarat REPL): sesi ORC hidup + tambah modul</li>
+</ul>
+<p>  per baris + simbol persisten — API subsystem, bukan spike ini.</p>
+<ul>
+<li>Interpreter: DITUNDA eksplisit — semantik kedua = beban ganda</li>
+</ul>
+<p>  (desain + uji + drift); kebutuhan (REPL/iterasi) dipenuhi JIT</p>
+<p>  atau AOT-server bila JIT terbukti berat.</p>
+<h2 id="4-keputusan-milestone">4. Keputusan milestone <a href="#4-keputusan-milestone" aria-label="taut">#</a></h2>
+<ul>
+<li>AOT default: YA (tak tersentuh, terverifikasi).</li>
+<li>Subsystem JIT: BELUM (desain + pagar di slice ini; implementasi</li>
+</ul>
+<p>  mengikuti kebutuhan REPL Phase 106).</p>
+<ul>
+<li>Interpreter: TIDAK (ditunda beralasan, bukan ditolak permanen).</li>
+</ul>
+<h2 id="5-diverifikasi">5. Diverifikasi <a href="#5-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>test_orc</code> hijau; full build <code>-j2</code> bersih; <code>e2e_release</code> 6/6</li>
+</ul>
+<p>  hijau (NOL perilaku produk); website regen + no-drift.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 1.7.0 — Nusa Docs 1.7.0</title>
+<meta name="description" content="1.7.0 v1.7.0 Release notes # — 2026-09-07 (Phase 26: enums &amp;amp; algebraic data types) Enum dengan payload posisional, konstruktor qualified E.V(...) ">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v1.7.0.html">
+<meta property="og:title" content="Changelog 1.7.0 — Nusa Docs 1.7.0">
+<meta property="og:description" content="1.7.0 v1.7.0 Release notes # — 2026-09-07 (Phase 26: enums &amp;amp; algebraic data types) Enum dengan payload posisional, konstruktor qualified E.V(...) ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 1.7.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="1.7.0">
+<meta name="nusa:keywords" content="changelog, 1.7.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 1.7.0", "category": "changelog", "version": "1.7.0", "content": "1.7.0 v1.7.0 Release notes # — 2026-09-07 (Phase 26: enums &amp; algebraic data types) Enum dengan payload posisional, konstruktor qualified E.V(...) , pola varian + exhaustiveness, dan generic enums — semuanya via desugar hidden struct ( tag + slot payload), tanpa codegen baru kecuali toleransi fi", "code_example": "", "keywords": "changelog, 1.7.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v1.7.0.html">1.7.0</a></p><article><h1>1.7.0</h1><span class="badge historic">v1.7.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-07 (Phase 26: enums &amp; algebraic data types)</p>
+<p>Enum dengan payload posisional, konstruktor qualified <code>E.V(...)</code>,</p>
+<p>pola varian + exhaustiveness, dan generic enums — semuanya via desugar</p>
+<p>hidden struct (<code>tag</code> + slot payload), tanpa codegen baru kecuali</p>
+<p>toleransi field-hilang dan flag layout.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Lexer <code>enum</code>; AST <code>EnumVariant</code>/<code>EnumDecl</code> (+ <code>Program.enums</code>,</li>
+</ul>
+<p>  <code>Pat::Variant.tag</code>, <code>MethodCall.targs</code>, flag <code>StructDecl.hiddenEnum</code></p>
+<p>  + <code>StructLit.enumCtor</code>).</p>
+<ul>
+<li>Parser <code>enum E&lt;T&gt; { V, W(T, ...) }</code> (koma, trailing comma, <code>V()</code> =</li>
+</ul>
+<p>  unit) + ctor eksplisit <code>E&lt;T&gt;.V(args)</code> (lookahead seimbang).</p>
+<ul>
+<li>Semantic: namespace tipe bersama struct/alias, dup varian, receiver</li>
+</ul>
+<p>  enum di MethodCall/FieldAccess, blokir <code>E</code> sebagai value / <code>E {...}</code>,</p>
+<p>  hint ctor tak-qualified.</p>
+<ul>
+<li>Checker: <code>processEnumDecl</code> → hidden struct pre-pass-1a;</li>
+</ul>
+<p>  <code>checkEnumCtor</code> (inferensi via unify + eksplisit + mismatch per</p>
+<p>  posisi); pola varian enum (reinterpretasi bind-Kapital, tag test +</p>
+<p>  destruktur slot); exhaustiveness seluruh varian (pesan missing);</p>
+<p>  blokir tempa struct/pattern; print enum mengarah ke match.</p>
+<ul>
+<li><code>impl Trait for Enum</code> + metode bekerja gratis (dispatch statis).</li>
+<li><code>nusa doc</code> seksi <code>## Enums</code>; <code>docs/enums.md</code> + sentuh</li>
+</ul>
+<p>  syntax/types/pattern-matching/error-handling/spec.</p>
+<ul>
+<li>Unit: lexer 1, parser 3, semantic 5, typecheck 10; <code>e2e_enums.sh</code></li>
+</ul>
+<p>  (15 kasus: 5 runtime, 8 penolakan, fmt, doc).</p>
+<h3 id="batasan-phase-26">Batasan Phase 26 <a href="#batasan-phase-26" aria-label="taut">#</a></h3>
+<ul>
+<li>Konstruktor sintaktis (bukan first-class fn); tanpa payload bernama/</li>
+</ul>
+<p>  or-pattern/range/repr; exhaustiveness top-level saja; std</p>
+<p>  Option/Result tetap struct (sengaja).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.7.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

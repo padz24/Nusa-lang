@@ -1,0 +1,16 @@
+// Contoh v0.7.0: string & array (program milestone MASTER PROMPT).
+// Diharapkan mencetak:
+// Hello
+// 1
+// 4
+// 30
+fn main() {
+    let message: string = "Hello";
+    print(message);
+    let numbers: [i64] = [1, 2, 3, 4];
+    print(numbers[0]);
+    print(len(numbers));
+    let total: i64 = numbers[0] + numbers[1] + numbers[2] + numbers[3];
+    let doubled: [i64] = [total, total];
+    print(doubled[0] + doubled[1] + total);
+}

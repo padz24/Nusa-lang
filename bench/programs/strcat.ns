@@ -1,0 +1,9 @@
+fn main() {
+    let s = "";
+    let i = 0;
+    while i < 2000 {
+        s = str_concat(s, "ab");
+        i = i + 1;
+    }
+    print(str_len(s));
+}

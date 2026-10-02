@@ -1,0 +1,32 @@
+// OpenCL query-only via FFI — paket referensi ekosistem (bukan stdlib).
+//
+// Abstraksi akselerator vendor-netral dimulai dari SEAM yang sama
+// untuk semua backend (CUDA/Vulkan/OpenCL/WebGPU): paket + shim C +
+// wrapper Nusa + manifest [link] (pola sqlite/tls). Backend dipilih
+// PRESENSI (dlopen), bukan kompilasi — tanpa vendor lock-in di
+// bahasa inti (NOL sintaks/IR/ABI baru).
+//
+// Bangun: cc -c shim.c (hanya -ldl; TANPA header OpenCL), lalu
+// `pkg build` atau `nusa build --link ./shim.o --link dl`.
+//
+// Failure policy: 0/-1 = tak-ada/gagal (bukan error); nama device
+// (string lintas batas) = follow-up (butuh pointer).
+extern fn ocl_platforms() -> i64;
+extern fn ocl_devices() -> i64;
+extern fn ocl_device_class() -> i64;
+// Jumlah platform OpenCL (0 = driver tak ada).
+fn gpu_platforms() -> i64 {
+    return ocl_platforms();
+}
+// Jumlah device platform pertama (-1 = gagal query).
+fn gpu_devices() -> i64 {
+    return ocl_devices();
+}
+// Bitmask CL_DEVICE_TYPE device pertama (GPU=4, CPU=2; 0 = tak ada).
+fn gpu_class() -> i64 {
+    return ocl_device_class();
+}
+// Ada akselerator yang bisa dipilih?
+fn gpu_present() -> bool {
+    return ocl_devices() > 0;
+}

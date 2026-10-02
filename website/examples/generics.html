@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>generics.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="generics.ns v3.0.0 fn identity&amp;lt;T&amp;gt;(value: T) -&amp;gt; T { return value; } fn first&amp;lt;T&amp;gt;(a: T, b: T) -&amp;gt; T { return a; } fn apply&amp;lt;T, U&amp;gt;(f">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/generics.html">
+<meta property="og:title" content="generics.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="generics.ns v3.0.0 fn identity&amp;lt;T&amp;gt;(value: T) -&amp;gt; T { return value; } fn first&amp;lt;T&amp;gt;(a: T, b: T) -&amp;gt; T { return a; } fn apply&amp;lt;T, U&amp;gt;(f">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="generics.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, generics, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "generics.ns", "category": "examples", "version": "3.0.0", "content": "generics.ns v3.0.0 fn identity&lt;T&gt;(value: T) -&gt; T { return value; } fn first&lt;T&gt;(a: T, b: T) -&gt; T { return a; } fn apply&lt;T, U&gt;(f: fn(T) -&gt; U, x: T) -&gt; U { return f(x); } fn add1(x: i64) -&gt; i64 { return x + 1; } fn main() { print(identity(41) + 1); print(identity(&quot", "code_example": "fn identity<T>(value: T) -> T {\n    return value;\n}\nfn first<T>(a: T, b: T) -> T {\n    return a;\n}\nfn apply<T, U>(f: fn(T) -> U, x: T) -> U {\n    return f(x);\n}\nfn add1(x: i64) -> i64 {\n    return x + 1;\n}\nfn main() {\n    print(identity(41) + 1);\n    print(identity(\"hi\"));\n    print(first(1, 2));\n    print(apply(add1, 10));\n}\n", "keywords": "example, generics, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/generics.html">generics.ns</a></p><article><h1>generics.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">fn identity&lt;T&gt;(value: T) -&gt; T {
+    return value;
+}
+fn first&lt;T&gt;(a: T, b: T) -&gt; T {
+    return a;
+}
+fn apply&lt;T, U&gt;(f: fn(T) -&gt; U, x: T) -&gt; U {
+    return f(x);
+}
+fn add1(x: i64) -&gt; i64 {
+    return x + 1;
+}
+fn main() {
+    print(identity(41) + 1);
+    print(identity(&quot;hi&quot;));
+    print(first(1, 2));
+    print(apply(add1, 10));
+}
+</code></pre><details><summary>Output</summary><samp class="out">42
+hi
+1
+11
+</samp></details><p><a class="btn sec" href="../playground/?code=fn%20identity%3CT%3E%28value%3A%20T%29%20-%3E%20T%20%7B%0A%20%20%20%20return%20value%3B%0A%7D%0Afn%20first%3CT%3E%28a%3A%20T%2C%20b%3A%20T%29%20-%3E%20T%20%7B%0A%20%20%20%20return%20a%3B%0A%7D%0Afn%20apply%3CT%2C%20U%3E%28f%3A%20fn%28T%29%20-%3E%20U%2C%20x%3A%20T%29%20-%3E%20U%20%7B%0A%20%20%20%20return%20f%28x%29%3B%0A%7D%0Afn%20add1%28x%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%20x%20%2B%201%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28identity%2841%29%20%2B%201%29%3B%0A%20%20%20%20print%28identity%28%22hi%22%29%29%3B%0A%20%20%20%20print%28first%281%2C%202%29%29%3B%0A%20%20%20%20print%28apply%28add1%2C%2010%29%29%3B%0A%7D%0A">Coba di playground</a></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

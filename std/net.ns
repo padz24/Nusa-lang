@@ -1,0 +1,43 @@
+// Layer: platform (builtins: tcp_connect/send/recv/close +
+// listen/accept 2.0; runtime: runtime/nusa_rt.c). TCP client subset
+// (IPv4/IPv6 via getaddrinfo; DNS allowed) + server loopback-only
+// (127.0.0.1 by-design; lihat nusa_tcp_listen). Sockets are i64 fds
+// (-1 = failed).
+fn dial(host: string, port: i64) -> i64 {
+    return tcp_connect(host, port);
+}
+fn close_conn(fd: i64) -> void {
+    tcp_close(fd);
+}
+// Send whole string (builtin loops to completion). False on error.
+fn send_str(fd: i64, data: string) -> bool {
+    return tcp_send(fd, data);
+}
+// Receive up to maxlen bytes ("" on EOF/error/empty).
+fn recv_some(fd: i64, maxlen: i64) -> string {
+    return tcp_recv(fd, maxlen);
+}
+// Server loopback (2.0): listen + accept (fd client, -1 bila gagal).
+fn listen_on(port: i64) -> i64 {
+    return tcp_listen(port);
+}
+fn accept_one(srv: i64) -> i64 {
+    return tcp_accept(srv);
+}
+// Receive until '\n' included ("" on EOF-before-newline). Pure Nusa
+// over recv_some with 64-byte chunks.
+fn recv_line(fd: i64) -> string {
+    let out = "";
+    let done = false;
+    while done == false {
+        let chunk = tcp_recv(fd, 64);
+        if str_eq(chunk, "") {
+            return "";
+        }
+        out = str_concat(out, chunk);
+        if str_eq(str_char_at(chunk, str_len(chunk) - 1), "\n") {
+            done = true;
+        }
+    }
+    return out;
+}

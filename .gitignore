@@ -1,0 +1,7 @@
+build/
+Testing/
+*.ll.run.out
+*.ns.ll
+.nusa-cache/
+hello
+*.o

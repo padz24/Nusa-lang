@@ -1,0 +1,24 @@
+// Leveled logging to stdout (pure Nusa, no builtins needed).
+//
+// Levels are fixed prefixes; there is NO global filter (Nusa has
+// no mutable globals), so callers gate verbose output themselves:
+//
+// ```nusa
+// if verbose {
+//     log_debug("retrying...");
+// }
+// ```
+//
+// For machine-readable output, prefer plain `print`.
+fn log_debug(msg: string) {
+    print(str_concat("[DEBUG] ", msg));
+}
+fn log_info(msg: string) {
+    print(str_concat("[INFO] ", msg));
+}
+fn log_warn(msg: string) {
+    print(str_concat("[WARN] ", msg));
+}
+fn log_error(msg: string) {
+    print(str_concat("[ERROR] ", msg));
+}

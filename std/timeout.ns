@@ -1,0 +1,30 @@
+// Timeout untuk op i64 via task + poll deadline (murni Nusa).
+//
+// `with_timeout_ms(ms, op, fallback)`: jalankan `op` di task,
+// poll tiap 5ms hingga deadline; lewat = fallback. Worker yang
+// lewat DITINGGALKAN (tanpa preemptive kill — by-design tasks;
+// handle tak bisa di-join pasca-abandon). Granularitas ~5ms.
+// i64-only (channel generik tak ada — lihat timeout.ns di docs).
+import tasks;
+import time;
+// Jalankan `op` dengan batas `ms`; fallback bila lewat.
+fn with_timeout_ms(ms: i64, op: fn() -> i64, fallback: i64) -> i64 {
+    let f = task_spawn(op);
+    let t0: i64 = time_now_ms();
+    let done: bool = false;
+    while done == false {
+        if future_poll(f) {
+            done = true;
+        } else {
+            if time_now_ms() - t0 >= ms {
+                done = true;
+            } else {
+                sleep_ms(5);
+            }
+        }
+    }
+    if future_poll(f) {
+        return future_await(f);
+    }
+    return fallback;
+}

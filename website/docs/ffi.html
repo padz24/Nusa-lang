@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ffi.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="ffi.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. C Interoperability — FFI (Phase 32, v1.13.0) # Nusa memanggil fungsi ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/ffi.html">
+<meta property="og:title" content="ffi.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="ffi.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. C Interoperability — FFI (Phase 32, v1.13.0) # Nusa memanggil fungsi ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="ffi.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ffi, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "ffi.md", "category": "docs", "version": "3.0.0", "content": "ffi.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. C Interoperability — FFI (Phase 32, v1.13.0) # Nusa memanggil fungsi C native via deklarasi extern : extern fn strlen(s: string) -&gt; i64; extern fn isupper(c: i64) -&gt; bool; fn main() { print(strlen(&quot;abcd&quot", "code_example": "", "keywords": "ffi, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/ffi.html">ffi.md</a></p><article><h1>ffi.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="c-interoperability-ffi-phase-32-v1-13-0">C Interoperability — FFI (Phase 32, v1.13.0) <a href="#c-interoperability-ffi-phase-32-v1-13-0" aria-label="taut">#</a></h1>
+<p>Nusa memanggil fungsi C native via deklarasi <code>extern</code>:</p>
+<pre data-lang="nusa"><code class="lang-nusa">extern fn strlen(s: string) -&gt; i64;
+extern fn isupper(c: i64) -&gt; bool;
+
+fn main() {
+    print(strlen(&quot;abcd&quot;)); // 4
+    print(isupper(65));    // true
+}</code></pre>
+<h2 id="aturan-signature-batasan-eksplisit">Aturan signature (batasan eksplisit) <a href="#aturan-signature-batasan-eksplisit" aria-label="taut">#</a></h2>
+<p>Hanya primitif yang menyeberang:</p>
+<table><thead><tr><th>Nusa</th><th>C</th><th>Arah</th></tr></thead><tbody>
+<tr><td><code>i64</code></td><td><code>long long</code>/<code>int64_t</code></td><td>dua arah</td></tr>
+<tr><td><code>string</code></td><td><code>const char*</code> (NUL)</td><td>param saja</td></tr>
+<tr><td><code>bool</code></td><td><code>int</code> (truthy)</td><td>dua arah</td></tr>
+<tr><td><code>void</code></td><td><code>void</code></td><td>return saja</td></tr>
+</tbody></table>
+<ul>
+<li>Parameter: <code>i64</code>/<code>string</code>/<code>bool</code> saja. <code>void</code>/<code>array</code>/struct/</li>
+</ul>
+<p>  function values ditolak dengan arahan (tanpa layout/ABI-nya di v1).</p>
+<ul>
+<li>Return: <code>i64</code>/<code>bool</code>/<code>void</code> saja. <strong><code>string</code> DITOLAK</strong> —</li>
+</ul>
+<p>  string hasil-C ber-lifetime tak diketahui (model memori Nusa</p>
+<p>  menuntut string program-lifetime); kembalikan <code>i64</code></p>
+<p>  (handle/panjang) sebagai gantinya.</p>
+<ul>
+<li>Tanpa generik (<code>extern fn f&lt;T&gt;</code> ditolak), tanpa <code>main</code> extern,</li>
+</ul>
+<p>  tanpa body (<code>extern fn f(...) { }</code> ditolak parser).</p>
+<ul>
+<li>Extern hanya panggilan LANGSUNG (<code>let f = strlen;</code> ditolak —</li>
+</ul>
+<p>  ABI trampolin closure tak berlaku untuk pointer C).</p>
+<h2 id="linking">Linking <a href="#linking" aria-label="taut">#</a></h2>
+<pre data-lang="sh"><code class="lang-sh">nusa build app.ns -o app --link m --link ./vendor/libfoo.a --link-dir ./lib</code></pre>
+<ul>
+<li><code>--link &lt;nama|file&gt;</code> (repeatable): nama → <code>-l&lt;nama&gt;</code>, path/<code>.a</code>/<code>.o</code>/</li>
+</ul>
+<p>  <code>.so</code> → file langsung. <code>--link-dir &lt;dir&gt;</code> (repeatable) → <code>-L</code>.</p>
+<ul>
+<li>Manifest paket (<code>nusa pkg build</code>):</li>
+</ul>
+<pre data-lang="toml"><code class="lang-toml">  [link]
+  libraries = [&quot;m&quot;]
+  library-dirs = [&quot;./lib&quot;]
+  files = [&quot;vendor/libfoo.a&quot;]</code></pre>
+<p>  Path relatif terhadap direktori paket.</p>
+<ul>
+<li>Simbol hilang = error link clang yang jelas (check tetap lolos;</li>
+</ul>
+<p>  kegagalan hanya saat link). Pustaka C harus ABI-kompatibel</p>
+<p>  (LP64 AArch64; <code>long</code> = 64-bit).</p>
+<h2 id="model-keamanan">Model keamanan <a href="#model-keamanan" aria-label="taut">#</a></h2>
+<ul>
+<li><code>extern</code> adalah satu-satunya pintu unsafe, dan ia TERBATAS:</li>
+</ul>
+<p>  signature di atas ditegakkan checker (bukan konvensi).</p>
+<ul>
+<li>Yang TIDAK ada di v1 (ditolak, bukan UB diam): pointer umum,</li>
+</ul>
+<p>  struct by-value, callback Nusa→C, fungsi variadik, string-return,</p>
+<p>  <code>dlsym</code> dinamis.</p>
+<ul>
+<li>Pustaka yang di-link dipercaya penuh (kode native tanpa sandbox)</li>
+</ul>
+<p>  — pin sumbernya (vendor + checksum bila paket; lihat <code>docs/pkg.md</code>).</p>
+<h2 id="batasan-phase-32">Batasan Phase 32 <a href="#batasan-phase-32" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa <code>extern struct</code>/padding query; tanpa bitfield/enum-C;</li>
+</ul>
+<p>  tanpa <code>const</code>-correctness; tanpa name-mangling C++;</p>
+<p>  tanpa lungo/from-C callbacks; tanpa hot-reload.</p>
+<h2 id="bindgen-phase-66-v2-17-0">Bindgen (Phase 66, v2.17.0) <a href="#bindgen-phase-66-v2-17-0" aria-label="taut">#</a></h2>
+<pre data-lang="sh"><code class="lang-sh">nusa bindgen header.h [-o binding.ns]   # stdout bila tanpa -o</code></pre>
+<p>Menghasilkan deklarasi <code>extern fn</code> dari prototipe C (subset §1</p>
+<p><code>docs/ffi-bindgen-2.17.md</code>): integer C → <code>i64</code>, <code>_Bool</code> → <code>bool</code>,</p>
+<p><code>char*</code> → <code>string</code> (param), <code>void</code>, typedef umum (<code>size_t</code>…),</p>
+<p><code>extern &quot;C&quot;</code>, <code>(void)</code>. Dilewati + peringatan: float/double,</p>
+<p>pointer umum, string-return, variadik, struct/union/enum,</p>
+<p>typedef kustom, definisi inline. rc 1 bila nol fungsi. Output</p>
+<p>fmt-clean; C++ tetap ditolak (mangling).</p>
+<h2 id="pola-shim-phase-77-v2-28-0">Pola shim (Phase 77, v2.28.0) <a href="#pola-shim-phase-77-v2-28-0" aria-label="taut">#</a></h2>
+<p>API C ber-pointer/callback tak terekspresikan di <code>extern fn</code></p>
+<p>(string/i64/bool saja; return string ditolak). Pola ekosistem:</p>
+<p>shim C handle-based (pointer disembunyikan di tabel slot i64;</p>
+<p>hasil via file/buffer yang dibaca kembali) + wrapper Nusa +</p>
+<p>manifest <code>[link]</code>. Referensi: <code>packages/sqlite/</code> (libsqlite3 →</p>
+<p>CRUD <code>:memory:</code>; hasil query sebagai CSV → <code>csv.ns</code>).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

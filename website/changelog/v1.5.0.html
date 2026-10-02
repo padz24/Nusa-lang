@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 1.5.0 — Nusa Docs 1.5.0</title>
+<meta name="description" content="1.5.0 v1.5.0 Release notes # — 2026-09-07 (Phase 21–24: type system, traits, memori, error) Rilis kumulatif pasca-1.1.0: mencakup target Phase 21 (1.2">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v1.5.0.html">
+<meta property="og:title" content="Changelog 1.5.0 — Nusa Docs 1.5.0">
+<meta property="og:description" content="1.5.0 v1.5.0 Release notes # — 2026-09-07 (Phase 21–24: type system, traits, memori, error) Rilis kumulatif pasca-1.1.0: mencakup target Phase 21 (1.2">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 1.5.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="1.5.0">
+<meta name="nusa:keywords" content="changelog, 1.5.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 1.5.0", "category": "changelog", "version": "1.5.0", "content": "1.5.0 v1.5.0 Release notes # — 2026-09-07 (Phase 21–24: type system, traits, memori, error) Rilis kumulatif pasca-1.1.0: mencakup target Phase 21 (1.2.0), 22 (1.3.0), 23 (1.4.0), dan 24 (1.5.0) dalam satu rilis. Phase 24: error handling # Ditambahkan # Option&lt;T&gt; / Result&lt;T, E&gt; / Error d", "code_example": "", "keywords": "changelog, 1.5.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v1.5.0.html">1.5.0</a></p><article><h1>1.5.0</h1><span class="badge historic">v1.5.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-07 (Phase 21–24: type system, traits, memori, error)</p>
+<p>Rilis kumulatif pasca-1.1.0: mencakup target Phase 21 (1.2.0),</p>
+<p>22 (1.3.0), 23 (1.4.0), dan 24 (1.5.0) dalam satu rilis.</p>
+<h3 id="phase-24-error-handling">Phase 24: error handling <a href="#phase-24-error-handling" aria-label="taut">#</a></h3>
+<h4 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h4>
+<ul>
+<li><code>Option&lt;T&gt;</code> / <code>Result&lt;T, E&gt;</code> / <code>Error</code> di <code>std/</code> (encoding struct</li>
+</ul>
+<p>  jujur + dummy terdokumentasi; sum types asli di fase enum).</p>
+<ul>
+<li>Kombinator bebas generik (<code>is_some</code>, <code>opt_unwrap_or</code>, <code>opt_map</code>,</li>
+</ul>
+<p>  <code>is_ok</code>, <code>res_unwrap_or</code>, <code>res_map</code>, <code>res_map_err</code>, …).</p>
+<ul>
+<li>Operator propagasi <code>expr?</code> (operan dan return fungsi harus</li>
+</ul>
+<p>  <code>Result</code> sama; <code>Option</code>/void/E-beda ditolak jelas).</p>
+<ul>
+<li>Builtin <code>parse_int_valid</code> (konsisten <code>strtoll</code>) +</li>
+</ul>
+<p>  <code>parse_int_opt</code>/<code>file_read_opt</code> murni-Nusa; API lama utuh.</p>
+<ul>
+<li><code>nusa fmt</code> menempelkan <code>?</code>; <code>docs/error-handling.md</code>.</li>
+</ul>
+<h4 id="tes-phase-24">Tes (Phase 24) <a href="#tes-phase-24" aria-label="taut">#</a></h4>
+<ul>
+<li>Unit: lexer 1, parser 1, typecheck 5, builtins 2, fmt 1.</li>
+<li><code>e2e_error.sh</code> (9 kasus: aliran, kombinator, validasi, 5 penolakan,</li>
+</ul>
+<p>  fmt).</p>
+<h4 id="batasan-phase-24">Batasan Phase 24 <a href="#batasan-phase-24" aria-label="taut">#</a></h4>
+<ul>
+<li>Konstruktor butuh dummy; tanpa konversi error otomatis; tanpa <code>?</code></li>
+</ul>
+<p>  untuk <code>Option</code>; tanpa exception/panic; matching via <code>if</code> (menunggu</p>
+<p>  fase pattern matching).</p>
+<h3 id="phase-23-memory-model">Phase 23: memory model <a href="#phase-23-memory-model" aria-label="taut">#</a></h3>
+<h4 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h4>
+<ul>
+<li><code>docs/memory-model.md</code> (dokumen desain resmi): evaluasi opsi,</li>
+</ul>
+<p>  model terpilih (owned values + program-lifetime heap), dan 8 area</p>
+<p>  (Allocation, Deallocation, Ownership, References, Mutability,</p>
+<p>  Lifetime, Stack, Heap).</p>
+<ul>
+<li>Komentar &quot;bocor sengaja&quot; diganti status resmi by-design.</li>
+<li><code>e2e_memory.sh</code> (4 kasus: copy, concat-loop, input-EOF, struct).</li>
+</ul>
+<h4 id="batasan-phase-23">Batasan Phase 23 <a href="#batasan-phase-23" aria-label="taut">#</a></h4>
+<ul>
+<li>Loop alokasi tumbuh per iterasi (terdokumentasi); tanpa TCO;</li>
+</ul>
+<p>  revisi saat referensi/heap user ada.</p>
+<h3 id="phase-22-traits-interfaces">Phase 22: traits/interfaces <a href="#phase-22-traits-interfaces" aria-label="taut">#</a></h3>
+<h4 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h4>
+<ul>
+<li>Deklarasi <code>trait T { fn m(self, …) …; }</code> (metode tanpa body;</li>
+</ul>
+<p>  <code>self</code> telanjang pertama; keyword <code>trait</code>/<code>impl</code>/<code>for</code>/<code>self</code>).</p>
+<ul>
+<li><code>impl Trait for Type { … }</code> (target: struct biasa/generik-konkret,</li>
+</ul>
+<p>  primitif; array/fn/void ditolak; duplikat impl ditolak).</p>
+<ul>
+<li>Panggilan <code>recv.method(args)</code>: resolve statis (tipe, nama) →</li>
+</ul>
+<p>  rewrite ke fungsi mangled (<code>Trait_method_Type</code>); codegen nol baris.</p>
+<ul>
+<li>Bounds <code>T: Trait</code> (+ ganda <code>+</code>) di tparam fungsi dan struct;</li>
+</ul>
+<p>  dicek saat instansiasi konkret (<code>does not implement trait</code>).</p>
+<ul>
+<li>Diagnostik: unknown/ambiguous method (+ daftar), mismatch/arity</li>
+</ul>
+<p>  (<code>&#x27;T.m&#x27;</code>), missing/not-member/dup-impl/non-self, method-vs-field</p>
+<p>  hint, privacy <code>_</code>, tabrakan nama mangled.</p>
+<ul>
+<li><code>nusa doc</code>: seksi <code>## Traits</code>; <code>nusa fmt</code> untuk trait/impl/call.</li>
+</ul>
+<h3 id="tes-phase-22">Tes (Phase 22) <a href="#tes-phase-22" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit: lexer 1, parser 6, semantic 8, typecheck 17, fmt 1, doc 1.</li>
+<li><code>e2e_traits.sh</code> (18 kasus: master, bounds, primitif, generik,</li>
+</ul>
+<p>  modul, privacy, 12 penolakan, fmt, doc).</p>
+<h3 id="batasan-phase-22">Batasan Phase 22 <a href="#batasan-phase-22" aria-label="taut">#</a></h3>
+<ul>
+<li>Tanpa metode/impl generik, supertrait, body default, tipe <code>Self</code>,</li>
+</ul>
+<p>  associated function, dynamic dispatch. Koherensi: unik program-wide.</p>
+<h3 id="phase-21-type-system">Phase 21: type system <a href="#phase-21-type-system" aria-label="taut">#</a></h3>
+<p>Slice pertama Phase 21 (Advanced Type System). Tanpa perubahan bahasa</p>
+<p>selain penambahan deklarasi <code>type</code>; tanpa perubahan IR/ABI.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Deklarasi <code>type Name = T;</code> (top-level, keyword <code>type</code> reserved):</li>
+</ul>
+<p>  <code>i64</code>/<code>bool</code>/<code>string</code>/<code>void</code>/<code>[T]</code>/bernama sebagai target.</p>
+<ul>
+<li>Resolusi alias transparan di typechecker (forward reference OK,</li>
+</ul>
+<p>  dikanonikalisasi in-place agar codegen tak berubah).</p>
+<ul>
+<li>Validasi eager: target unknown, <code>circular type alias</code> (dengan rantai</li>
+</ul>
+<p>  <code>A -&gt; B -&gt; A</code>), <code>type alias chain too deep</code> (&gt; 100) — tepat satu</p>
+<p>  error per masalah (memo situs gagal).</p>
+<ul>
+<li>Namespace tipe bersama struct (<code>duplicate type</code>), tolak nama</li>
+</ul>
+<p>  reserved, tolak konstruksi struct via alias.</p>
+<ul>
+<li><code>nusa doc</code>: seksi <code>## Type Aliases</code>; <code>nusa fmt</code> memformat deklarasi</li>
+</ul>
+<p>  alias (<code>type Nums = [i64];</code>).</p>
+<h3 id="tes">Tes <a href="#tes" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit: lexer keyword; parser (parse/dump/3 penolakan); semantic</li>
+</ul>
+<p>  (6: ok/duplikat/2 arah tabrakan/reserved/structlit); typecheck</p>
+<p>  (15: resolve/forward/rantai/unknown 1x/siklus 2/depth/dup-direct/</p>
+<p>  tabrakan-direct/array-param/field/void); fmt; doc.</p>
+<ul>
+<li><code>e2e_alias.sh</code> (11 kasus: nilai runtime 42/3, 7 penolakan, fmt, doc).</li>
+</ul>
+<h3 id="batasan-slice-21a-ke-slice-21-berikutnya">Batasan slice 21a (ke slice 21 berikutnya) <a href="#batasan-slice-21a-ke-slice-21-berikutnya" aria-label="taut">#</a></h3>
+<ul>
+<li>Tanpa nullable/optional (ditunda ke Phase 24 bersama <code>Option</code>/<code>Result</code>).</li>
+<li>Tanpa type constraints/bounds (Phase 22, butuh traits).</li>
+</ul>
+<h3 id="batasan-slice-21c-ke-slice-21d">Batasan slice 21c (ke slice 21d) <a href="#batasan-slice-21c-ke-slice-21d" aria-label="taut">#</a></h3>
+<ul>
+<li>Tanpa struct generik, tanpa type constraints/bounds, tanpa argumen</li>
+</ul>
+<p>  tipe eksplisit (inferensi saja).</p>
+<h3 id="slice-21d-generic-structs-struct-by-value">Slice 21d — generic structs + struct by-value <a href="#slice-21d-generic-structs-struct-by-value" aria-label="taut">#</a></h3>
+<ul>
+<li>Sintaks <code>struct P&lt;T, U&gt; { … }</code>; aplikasi <code>Point&lt;i64&gt;</code> (nested OK);</li>
+</ul>
+<p>  literal eksplisit <code>Point&lt;i64&gt; { … }</code> (lookahead seimbang; <code>if a&lt;b {</code></p>
+<p>  tetap perbandingan).</p>
+<ul>
+<li>Monomorphisasi cermin fn: inferensi field/eksplisit, instance layout</li>
+</ul>
+<p>  mangled (<code>Point_i64</code>), template dibuang; rigid dipertahankan agar</p>
+<p>  diagnostik cantik; siklus = error ukuran-infinit; cap 64 bersama fn.</p>
+<ul>
+<li>Struct by-value di param/return (menutup TODO v0.8.0 &quot;records&quot;):</li>
+</ul>
+<p>  load/store di call/return; berlaku umum (bukan cuma generik).</p>
+<p>  Test penolakan lama dikonversi menjadi penerimaan + runtime.</p>
+<ul>
+<li>Tabrakan nama mangled vs deklarasi user ditolak (fn + struct).</li>
+<li><code>fmt</code>: scan bracket seimbang untuk aplikasi tipe; <code>doc</code>: header</li>
+</ul>
+<p>  <code>struct P&lt;T&gt;</code>. Spaceless <code>T&gt;=</code> tetap butuh spasi (ambigu perbandingan).</p>
+<h3 id="tes-slice-21d">Tes slice 21d <a href="#tes-slice-21d" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit: parser 4, semantic 1, typecheck 11, codegen 1 (IR record),</li>
+</ul>
+<p>  fmt 1, doc 1.</p>
+<ul>
+<li><code>e2e_structs_gen.sh</code> (14 kasus: runtime nested/eksplisit/alias/</li>
+</ul>
+<p>  by-value, IR instance-only, 9 penolakan, fmt, doc).</p>
+<h3 id="slice-21b-function-types">Slice 21b — function types <a href="#slice-21b-function-types" aria-label="taut">#</a></h3>
+<ul>
+<li>Sintaks tipe <code>fn(T, …) -&gt; T</code> di posisi anotasi (<code>-&gt; T</code> absen = <code>void</code>).</li>
+<li>Function reference: nama fn top-level sebagai value (<code>let op = add;</code>);</li>
+</ul>
+<p>  <code>main</code>/builtin/<code>print</code> sebagai value ditolak; privacy <code>_</code> dicerminkan.</p>
+<ul>
+<li>Panggilan tak langsung via variabel/locals/param/return (<code>f(x)</code>,</li>
+</ul>
+<p>  <code>apply(add, …)</code>, <code>mk()</code> mengembalikan fn); arity/mismatch dicek sama</p>
+<p>  seperti panggilan langsung (helper bersama <code>checkCallArgs</code>).</p>
+<ul>
+<li>Codegen: <code>ValueKind::Func</code> (pointer), decay bitcast, signature per</li>
+</ul>
+<p>  nama (<code>funcTypes_</code>), indirect <code>call</code> via loaded ptr (void tanpa nama</p>
+<p>  hasil — regression teruji di IR).</p>
+<ul>
+<li>Ditolak jelas: <code>print(f)</code>, <code>f == g</code>, <code>[f]</code>, field <code>f: fn…</code>, panggil</li>
+</ul>
+<p>  non-fungsi.</p>
+<ul>
+<li>Batasan slice 21b: tanpa closure/lambda/currying (tanpa captures).</li>
+</ul>
+<h3 id="slice-21c-generic-functions-monomorphisasi">Slice 21c — generic functions (monomorphisasi) <a href="#slice-21c-generic-functions-monomorphisasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Sintaks <code>fn f&lt;T, U&gt;(...)</code> (tparams; <code>main</code> generik dan dup tparam</li>
+</ul>
+<p>  ditolak); inferensi tipe di call-site dari argumen (tanpa turbofish).</p>
+<ul>
+<li>Monomorphisasi di checker: unifikasi struktural (tembus <code>[T]</code>/<code>fn</code>),</li>
+</ul>
+<p>  konflik/arity/uninferrable ditolak dengan pesan panggilan yang sama;</p>
+<p>  tiap kombinasi argumen → instance konkret bernama-mangled</p>
+<p>  (<code>identity_i64</code>) yang dicek penuh (aturan void/array/struct natural</p>
+<p>  berlaku); template dibuang sebelum codegen (codegen nol baris).</p>
+<ul>
+<li>Body template dicek per-instance (model C++); cache instance</li>
+</ul>
+<p>  (rekursi tipe-sama berhenti); cap kedalaman 64 anti-divergensi;</p>
+<p>  state checker (env/ret/func) save-restore anti-korupsi bersarang.</p>
+<ul>
+<li>Fungsi generik sebagai value ditolak eksplisit (inferensi butuh</li>
+</ul>
+<p>  argumen konkret).</p>
+<ul>
+<li><code>fmt</code> merekatkan bracket generik (<code>f&lt;T, U&gt;(</code>); perbandingan <code>a &lt; b</code></li>
+</ul>
+<p>  tak tersentuh. <code>doc</code> merender <code>f&lt;T&gt;(…)</code>.</p>
+<h3 id="tes-slice-21c">Tes slice 21c <a href="#tes-slice-21c" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit: parser 3, semantic 1, typecheck 9, fmt 1, doc 1 (clone via</li>
+</ul>
+<p>  semua jalur instance).</p>
+<ul>
+<li><code>e2e_generics.sh</code> (12 kasus: runtime 5 nilai + nested/rekursi,</li>
+</ul>
+<p>  IR instance-only tanpa template, 7 penolakan, fmt, doc).</p>
+<h3 id="tes-slice-21b">Tes slice 21b <a href="#tes-slice-21b" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit: parser 3 (parse/dump/2 gagal), semantic 5, typecheck 11,</li>
+</ul>
+<p>  codegen 2 (bentuk IR + regression void), fmt 1.</p>
+<ul>
+<li><code>e2e_fn.sh</code> (14 kasus: runtime 42/3/7/30/100/100/6, 10 penolakan,</li>
+</ul>
+<p>  alias-to-fn, lintas modul, fmt).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.5.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

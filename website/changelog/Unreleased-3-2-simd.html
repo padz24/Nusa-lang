@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog Unreleased: 3.2-simd — Nusa Docs 3.0.0</title>
+<meta name="description" content="Unreleased: 3.2-simd v3.0.0 Release notes # — Phase 122: SIMD/VECTOR TYPES (milestone 1) RFC tipe vektor (aturan: fitur bahasa via RFC dulu). TANPA im">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/Unreleased-3-2-simd.html">
+<meta property="og:title" content="Changelog Unreleased: 3.2-simd — Nusa Docs 3.0.0">
+<meta property="og:description" content="Unreleased: 3.2-simd v3.0.0 Release notes # — Phase 122: SIMD/VECTOR TYPES (milestone 1) RFC tipe vektor (aturan: fitur bahasa via RFC dulu). TANPA im">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog Unreleased: 3.2-simd">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="changelog, 3.0.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog Unreleased: 3.2-simd", "category": "changelog", "version": "3.0.0", "content": "Unreleased: 3.2-simd v3.0.0 Release notes # — Phase 122: SIMD/VECTOR TYPES (milestone 1) RFC tipe vektor (aturan: fitur bahasa via RFC dulu). TANPA implementasi; autovek LLVM terbukti nol (bukan janji). Baru rfcs/RFC-0013-vectors.md (Proposed): vector&lt;i64,N&gt; slice-1, elementwise, index fail-f", "code_example": "", "keywords": "changelog, 3.0.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/Unreleased-3-2-simd.html">Unreleased: 3.2-simd</a></p><article><h1>Unreleased: 3.2-simd</h1><span class="badge historic">v3.0.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Phase 122: SIMD/VECTOR TYPES (milestone 1)</p>
+<p>RFC tipe vektor (aturan: fitur bahasa via RFC dulu).</p>
+<p>TANPA implementasi; autovek LLVM terbukti nol (bukan janji).</p>
+<ul>
+<li>Baru <code>rfcs/RFC-0013-vectors.md</code> (Proposed): <code>vector&lt;i64,N&gt;</code></li>
+</ul>
+<p>  slice-1, elementwise, index fail-fast, reduksi, penurunan</p>
+<p>  <code>&lt;N x i64&gt;</code>, ABI per-target, alternatif ditolak berbukti.</p>
+<ul>
+<li>Bukti: loop reduksi + <code>array_sum</code> di <code>-O2</code> = 0 instruksi SIMD.</li>
+<li>Diverifikasi: <code>e2e_rfc</code> (13 RFC); korpus <code>vector</code> = C++ saja.</li>
+<li>Batas: Accepted menunggu sintaks-N + ABI + prototipe run.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

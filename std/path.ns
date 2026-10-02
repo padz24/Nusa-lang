@@ -1,0 +1,197 @@
+// Layer: pure (builtins: str_len/concat/eq/char_at/slice only).
+// Lexical path manipulation (no filesystem access; no symlink
+// resolution). Separators: '/' (POSIX/Android). Empty segments
+// and '.' are dropped; '..' pops (never above root).
+// NOTE: Nusa v1 has no `else if` / `||` / `break`, and `if <ident> {`
+// parses as struct literal — bool flags use `== true`, loops latch
+// (single pass, no early exit).
+fn path_is_absolute(p: string) -> bool {
+    if str_eq(str_char_at(p, 0), "/") {
+        return true;
+    }
+    return false;
+}
+// Index after trailing slashes (end of last segment), 0 when none.
+fn path_seg_end(p: string) -> i64 {
+    let n = str_len(p);
+    let end = 0;
+    let i = n;
+    let latched = false;
+    while i > 0 {
+        if latched == true {
+        } else {
+            if str_eq(str_char_at(p, i - 1), "/") {
+            } else {
+                end = i;
+                latched = true;
+            }
+        }
+        i = i - 1;
+    }
+    return end;
+}
+// Last component ("a/b/c" -> "c", "/a/" -> "a", "/" -> "").
+fn path_basename(p: string) -> string {
+    let end = path_seg_end(p);
+    if end == 0 {
+        return "";
+    }
+    let start = 0;
+    let i = 0;
+    while i < end {
+        if str_eq(str_char_at(p, i), "/") {
+            start = i + 1;
+        }
+        i = i + 1;
+    }
+    return str_slice(p, start, end);
+}
+// Directory part ("a/b/c" -> "a/b", "c" -> ".", "/c" -> "/").
+fn path_dirname(p: string) -> string {
+    let b = path_basename(p);
+    let end = str_len(p) - str_len(b);
+    let back = end;
+    let i = end;
+    let latched = false;
+    while i > 0 {
+        if latched == true {
+        } else {
+            if str_eq(str_char_at(p, i - 1), "/") {
+            } else {
+                back = i;
+                latched = true;
+            }
+        }
+        i = i - 1;
+    }
+    if back == 0 {
+        if path_is_absolute(p) {
+            return "/";
+        }
+        return ".";
+    }
+    return str_slice(p, 0, back);
+}
+// Extension without dot ("a.tar.gz" -> "gz", "a" -> "").
+fn path_ext(p: string) -> string {
+    let b = path_basename(p);
+    let n = str_len(b);
+    let found = 0 - 1;
+    let i = n;
+    while i > 0 {
+        if str_eq(str_char_at(b, i - 1), ".") {
+            if found < 0 {
+                found = i;
+            }
+        }
+        i = i - 1;
+    }
+    if found < 0 {
+        return "";
+    }
+    return str_slice(b, found, n);
+}
+// Strip last extension ("a.tar.gz" -> "a.tar").
+fn path_strip_ext(p: string) -> string {
+    let e = path_ext(p);
+    if str_eq(e, "") {
+        return p;
+    }
+    return str_slice(p, 0, str_len(p) - str_len(e) - 1);
+}
+// Join two segments with exactly one '/' (unless empty/abs second).
+fn path_join(a: string, b: string) -> string {
+    if str_eq(a, "") {
+        return b;
+    }
+    if str_eq(b, "") {
+        return a;
+    }
+    if path_is_absolute(b) {
+        return b;
+    }
+    if str_eq(str_char_at(a, str_len(a) - 1), "/") {
+        return str_concat(a, b);
+    }
+    return str_concat(str_concat(a, "/"), b);
+}
+// Lexical normalize ("a/./b/../c" -> "a/c").
+fn path_normalize(p: string) -> string {
+    let abs = path_is_absolute(p);
+    let out = "";
+    let cur = "";
+    let i = 0;
+    let n = str_len(p);
+    while i <= n {
+        let ch = "";
+        if i < n {
+            ch = str_char_at(p, i);
+        }
+        if str_eq(ch, "/") {
+            out = path_step(out, cur);
+            cur = "";
+        } else {
+            if str_eq(ch, "") {
+                out = path_step(out, cur);
+                cur = "";
+            } else {
+                cur = str_concat(cur, ch);
+            }
+        }
+        i = i + 1;
+    }
+    if str_eq(out, "") {
+        if abs {
+            return "/";
+        }
+        return ".";
+    }
+    if abs {
+        return str_concat("/", out);
+    }
+    return out;
+}
+// Fold one segment into the accumulator (helper for normalize).
+fn path_step(out: string, seg: string) -> string {
+    if str_eq(seg, "") {
+        return out;
+    }
+    if str_eq(seg, ".") {
+        return out;
+    }
+    if str_eq(seg, "..") {
+        return path_pop(out);
+    }
+    return path_push(out, seg);
+}
+// Append one clean segment (helper for normalize).
+fn path_push(out: string, seg: string) -> string {
+    if str_eq(out, "") {
+        return seg;
+    }
+    return str_concat(str_concat(out, "/"), seg);
+}
+// Drop last segment ("" stays "").
+fn path_pop(out: string) -> string {
+    let n = str_len(out);
+    if n == 0 {
+        return "";
+    }
+    let pos = 0 - 1;
+    let i = n;
+    let latched = false;
+    while i > 0 {
+        if latched == true {
+        } else {
+            if str_eq(str_char_at(out, i - 1), "/") {
+                pos = i - 1;
+                latched = true;
+            }
+        }
+        i = i - 1;
+    }
+    if pos < 0 {
+        return "";
+    }
+    return str_slice(out, 0, pos);
+}

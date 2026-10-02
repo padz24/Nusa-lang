@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>parallel-3.22.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="parallel-3.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Parallel Computing — Milestone 1: Partisi Statik (Phase 121">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/parallel-3.22.html">
+<meta property="og:title" content="parallel-3.22.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="parallel-3.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Parallel Computing — Milestone 1: Partisi Statik (Phase 121">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="parallel-3.22.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="parallel-3.22, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "parallel-3.22.md", "category": "docs", "version": "3.0.0", "content": "parallel-3.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Parallel Computing — Milestone 1: Partisi Statik (Phase 121) # Status: slice implementasi level-pustaka (target 3.22.0). Mandat master: parallel loop, task paralel, work stealing, koleksi paralel, abstraksi S", "code_example": "", "keywords": "parallel-3.22, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/parallel-3.22.html">parallel-3.22.md</a></p><article><h1>parallel-3.22.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="parallel-computing-milestone-1-partisi-statik-phase-121">Parallel Computing — Milestone 1: Partisi Statik (Phase 121) <a href="#parallel-computing-milestone-1-partisi-statik-phase-121" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi level-pustaka (target 3.22.0). Mandat</p>
+<p>master: parallel loop, task paralel, work stealing, koleksi</p>
+<p>paralel, abstraksi SIMD; vektorisasi compiler bila aman; LLVM</p>
+<p>untuk optimasi level-rendah.</p>
+<h2 id="1-cakupan-std-parallel-ns-murni-nusa-tanpa-sintaks-baru">1. Cakupan: <code>std/parallel.ns</code> (murni Nusa, tanpa sintaks baru) <a href="#1-cakupan-std-parallel-ns-murni-nusa-tanpa-sintaks-baru" aria-label="taut">#</a></h2>
+<ul>
+<li><code>par_map_sum(n, w, f)</code>: jumlah <code>f(i)</code>, i in [0,n), atas <code>w</code></li>
+</ul>
+<p>  worker (dibatasi 1..n; n≤0 → 0). Partisi BLOCK</p>
+<p>  <code>[n*k/w, n*(k+1)/w)</code> — statik, tanpa work-stealing.</p>
+<ul>
+<li>Mekanisme: thread per blok (closure capture, pola <code>par_map2</code>)</li>
+</ul>
+<p>  + channel hasil + recv-semua sebagai barrier efek.</p>
+<ul>
+<li>Deterministik untuk <code>f</code> murni (penjumlahan komutatif;</li>
+</ul>
+<p>  dibuktikan 3x run = 2646700 eksak).</p>
+<h2 id="2-keputusan-jujur">2. Keputusan jujur <a href="#2-keputusan-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Work stealing: TIDAK (butuh deque + select; follow-up).</li>
+</ul>
+<p>  Beban tak-seimbang = blok tak-merata, didokumentasikan.</p>
+<ul>
+<li>Koleksi paralel: array tak bisa lewat batas fungsi (model</li>
+</ul>
+<p>  bahasa) → loop atas RENTANG, bukan koleksi.</p>
+<ul>
+<li>SIMD/vektor: Phase 122 (butuh tipe vektor). Vektorisasi</li>
+</ul>
+<p>  otomatis LLVM via <code>-O</code> = perilaku backend yang ada (tanpa</p>
+<p>  klaim khusus pustaka ini).</p>
+<ul>
+<li>Task paralel umum: tercakup <code>par_map_sum</code> + <code>tasks.ns</code> +</li>
+</ul>
+<p>  <code>par_map2</code> (komposisi, bukan primitif baru).</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>tests/parallel_test.ns</code> (sum/sq/clamp/nol); <code>e2e_parallel</code></li>
+</ul>
+<p>  3/3 (test-file, determinisme 3x, kanonis + fmt); concurrency/</p>
+<p>  stress + <code>e2e_release</code> hijau; <code>.ns</code> + IR OK (NOL compiler).</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Work stealing, koleksi paralel sejati (butuh slice bahasa),</li>
+</ul>
+<p>  SIMD (122), pool/chunk adaptif.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

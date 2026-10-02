@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>reflection-3.9.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="reflection-3.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reflection &amp;amp; Introspection — Milestone 1: Evaluasi + M">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/reflection-3.9.html">
+<meta property="og:title" content="reflection-3.9.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="reflection-3.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reflection &amp;amp; Introspection — Milestone 1: Evaluasi + M">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="reflection-3.9.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="reflection-3.9, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "reflection-3.9.md", "category": "docs", "version": "3.0.0", "content": "reflection-3.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reflection &amp; Introspection — Milestone 1: Evaluasi + Metadata (Phase 108) # Status: slice evaluasi + implementasi tooling (target 3.9.0). Mandat master: evaluasi reflection; runtime reflection hanya bila", "code_example": "", "keywords": "reflection-3.9, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/reflection-3.9.html">reflection-3.9.md</a></p><article><h1>reflection-3.9.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="reflection-introspection-milestone-1-evaluasi-metadata-phase-108">Reflection &amp; Introspection — Milestone 1: Evaluasi + Metadata (Phase 108) <a href="#reflection-introspection-milestone-1-evaluasi-metadata-phase-108" aria-label="taut">#</a></h1>
+<p>Status: slice evaluasi + implementasi tooling (target 3.9.0).</p>
+<p>Mandat master: evaluasi reflection; runtime reflection hanya bila</p>
+<p>perlu; pertimbangkan compile-time reflection + metadata tipe/</p>
+<p>struct/enum/fungsi untuk serialization, codegen, tooling,</p>
+<p>diagnostics.</p>
+<h2 id="1-evaluasi-vonis">1. Evaluasi → vonis <a href="#1-evaluasi-vonis" aria-label="taut">#</a></h2>
+<ul>
+<li>Runtime reflection (query tipe saat jalan, downcast dinamis):</li>
+</ul>
+<p>  TIDAK DIBANGUN. Alasan: Nusa monomorphisasi statis tanpa</p>
+<p>  type-info runtime; menambahnya = biaya memori + permukaan</p>
+<p>  keamanan + preseden dinamis yang bertentangan dengan model</p>
+<p>  owned-values statis. Nol kebutuhan dari <code>realworld/</code> (F1–F6</p>
+<p>  tak menyebut refleksi).</p>
+<ul>
+<li>Compile-time reflection (kode menanya tipe saat kompilasi,</li>
+</ul>
+<p>  mis. <code>typeof(x)</code>): DITUNDA ke RFC (level bahasa — aturan §4.10),</p>
+<p>  BUKAN ditolak. Prasyarat: kasus serialization nyata yang gagal</p>
+<p>  tanpa itu (belum ada: JSON/TOML/CSV getter + RPC envelope</p>
+<p>  bekerja dengan getter eksplisit).</p>
+<ul>
+<li>Metadata untuk tooling: DIBANGUN slice ini — `nusa doc</li>
+</ul>
+<p>  --format json`: render mesin dari data yang SAMA dengan</p>
+<p>  Markdown (fungsi/struct/alias/const/enum/trait/extern +</p>
+<p>  signature + tipe + <code>///</code>). Tanpa semantik baru, tanpa RFC</p>
+<p>  (flag opt-in; UX Markdown tak berubah).</p>
+<h2 id="2-skema-json-deterministik-urutan-urutan-sumber">2. Skema JSON (deterministik; urutan = urutan sumber) <a href="#2-skema-json-deterministik-urutan-urutan-sumber" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">{&quot;file&quot;: &quot;...&quot;,
+ &quot;functions&quot;: [{&quot;name&quot;,&quot;tparams&quot;:[],&quot;params&quot;:[{&quot;name&quot;,&quot;type&quot;}],
+                &quot;ret&quot;:&quot;...&quot;,&quot;extern&quot;:false,&quot;doc&quot;:&quot;...&quot;}],
+ &quot;structs&quot;: [{&quot;name&quot;,&quot;tparams&quot;:[],&quot;fields&quot;:[{&quot;name&quot;,&quot;type&quot;}],&quot;doc&quot;}],
+ &quot;aliases&quot;: [{&quot;name&quot;,&quot;target&quot;,&quot;doc&quot;}],
+ &quot;consts&quot;: [{&quot;name&quot;,&quot;type&quot;:null|&quot;...&quot;,&quot;doc&quot;}],
+ &quot;enums&quot;: [{&quot;name&quot;,&quot;tparams&quot;:[],&quot;variants&quot;:[{&quot;name&quot;,&quot;payload&quot;:[]}],&quot;doc&quot;}],
+ &quot;traits&quot;: [{&quot;name&quot;,&quot;methods&quot;:[...],&quot;doc&quot;}],
+ &quot;externs&quot;: [...]}</code></pre>
+<p>String di-escape JSON (<code>\&quot; \\ \n \t \r \u00XX</code>); <code>doc</code> = gabungan</p>
+<p><code>///</code> menempel (&quot;&quot; bila tak ada); tipe = <code>Type::name()</code> yang sama</p>
+<p>dengan Markdown (satu kebenaran). Import tak diikuti (cermin</p>
+<p>Markdown). Gagal lex/parse → rc=1 + error identik Markdown.</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit <code>test_doc</code> 11/11 (9 lama — Markdown byte-identik pasca</li>
+</ul>
+<p>  refactor prolog — + 2 baru JSON/struktur + error-paritas).</p>
+<ul>
+<li><code>e2e_tooling</code> + JSON (golden + <code>-o</code> + format-asing + bad);</li>
+</ul>
+<p>  <code>e2e_release</code> hijau; <code>.ns</code> + IR OK (tanpa sentuh pipeline).</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li><code>typeof</code>/introspeksi level-bahasa (RFC bila ada kebutuhan</li>
+</ul>
+<p>  serialization nyata); runtime reflection (tidak direncanakan);</p>
+<p>  resolve-import di metadata (gabung manual seperti Markdown).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

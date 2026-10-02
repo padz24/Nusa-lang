@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>closures.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="closures.ns v3.0.0 fn apply(f: fn(i64) -&amp;gt; i64, x: i64) -&amp;gt; i64 { return f(x); } fn main() { let add = |a: i64, b: i64| a + b; print(add(1, 2)); p">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/closures.html">
+<meta property="og:title" content="closures.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="closures.ns v3.0.0 fn apply(f: fn(i64) -&amp;gt; i64, x: i64) -&amp;gt; i64 { return f(x); } fn main() { let add = |a: i64, b: i64| a + b; print(add(1, 2)); p">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="closures.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, closures, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "closures.ns", "category": "examples", "version": "3.0.0", "content": "closures.ns v3.0.0 fn apply(f: fn(i64) -&gt; i64, x: i64) -&gt; i64 { return f(x); } fn main() { let add = |a: i64, b: i64| a + b; print(add(1, 2)); print(apply(|x: i64| x * 2, 21)); let k = 10; let f = |x: i64| x + k; print(f(5)); print(apply(|x| x + k, 1)); } Output 3 42 15 11 Coba di playground", "code_example": "fn apply(f: fn(i64) -> i64, x: i64) -> i64 {\n    return f(x);\n}\nfn main() {\n    let add = |a: i64, b: i64| a + b;\n    print(add(1, 2));\n    print(apply(|x: i64| x * 2, 21));\n    let k = 10;\n    let f = |x: i64| x + k;\n    print(f(5));\n    print(apply(|x| x + k, 1));\n}\n", "keywords": "example, closures, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/closures.html">closures.ns</a></p><article><h1>closures.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">fn apply(f: fn(i64) -&gt; i64, x: i64) -&gt; i64 {
+    return f(x);
+}
+fn main() {
+    let add = |a: i64, b: i64| a + b;
+    print(add(1, 2));
+    print(apply(|x: i64| x * 2, 21));
+    let k = 10;
+    let f = |x: i64| x + k;
+    print(f(5));
+    print(apply(|x| x + k, 1));
+}
+</code></pre><details><summary>Output</summary><samp class="out">3
+42
+15
+11
+</samp></details><p><a class="btn sec" href="../playground/?code=fn%20apply%28f%3A%20fn%28i64%29%20-%3E%20i64%2C%20x%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%20f%28x%29%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20let%20add%20%3D%20%7Ca%3A%20i64%2C%20b%3A%20i64%7C%20a%20%2B%20b%3B%0A%20%20%20%20print%28add%281%2C%202%29%29%3B%0A%20%20%20%20print%28apply%28%7Cx%3A%20i64%7C%20x%20%2A%202%2C%2021%29%29%3B%0A%20%20%20%20let%20k%20%3D%2010%3B%0A%20%20%20%20let%20f%20%3D%20%7Cx%3A%20i64%7C%20x%20%2B%20k%3B%0A%20%20%20%20print%28f%285%29%29%3B%0A%20%20%20%20print%28apply%28%7Cx%7C%20x%20%2B%20k%2C%201%29%29%3B%0A%7D%0A">Coba di playground</a></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

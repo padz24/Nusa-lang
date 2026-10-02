@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.9.0 — Nusa Docs 0.9.0</title>
+<meta name="description" content="0.9.0 v0.9.0 Release notes # — Standard Library &amp;amp; Tooling (2026-09-05) Milestone stdlib &amp;amp; tooling sesuai MASTER PROMPT: mulai std/ (io/math/st">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.9.0.html">
+<meta property="og:title" content="Changelog 0.9.0 — Nusa Docs 0.9.0">
+<meta property="og:description" content="0.9.0 v0.9.0 Release notes # — Standard Library &amp;amp; Tooling (2026-09-05) Milestone stdlib &amp;amp; tooling sesuai MASTER PROMPT: mulai std/ (io/math/st">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.9.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.9.0">
+<meta name="nusa:keywords" content="changelog, 0.9.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.9.0", "category": "changelog", "version": "0.9.0", "content": "0.9.0 v0.9.0 Release notes # — Standard Library &amp; Tooling (2026-09-05) Milestone stdlib &amp; tooling sesuai MASTER PROMPT: mulai std/ (io/math/string/collections/fs/system), 11 builtin runtime, dan CLI check / test / fmt / doc + formatter sederhana + dokumentasi API. Minimal tetapi nyata dan t", "code_example": "", "keywords": "changelog, 0.9.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.9.0.html">0.9.0</a></p><article><h1>0.9.0</h1><span class="badge historic">v0.9.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Standard Library &amp; Tooling (2026-09-05)</p>
+<p>Milestone stdlib &amp; tooling sesuai MASTER PROMPT: mulai <code>std/</code></p>
+<p>(io/math/string/collections/fs/system), 11 builtin runtime, dan CLI</p>
+<p><code>check</code>/<code>test</code>/<code>fmt</code>/<code>doc</code> + formatter sederhana + dokumentasi API.</p>
+<p>Minimal tetapi nyata dan teruji.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Builtins global (reserved, ter-typecheck, emisi libc langsung):</li>
+</ul>
+<p>  <code>input</code> (getline + strip newline, EOF→<code>&quot;&quot;</code>), <code>assert</code> (pesan lokasi +</p>
+<p>  exit), <code>str_len</code>, <code>str_concat</code> (malloc), <code>parse_int</code> (strtoll),</p>
+<p>  <code>file_read</code> (fopen→ftell→malloc→fread, hilang→<code>&quot;&quot;</code>), <code>file_write</code>,</p>
+<p>  <code>file_exists</code>, <code>array_sum/min/max</code> (loop inline, init 0/MAX/MIN).</p>
+<p>  Heap string bocor sengaja (GC = roadmap 1.x/2.x).</p>
+<ul>
+<li><code>std/</code>: io (<code>read_int</code>), math murni (abs/min/max/clamp/pow/fact/gcd/</li>
+</ul>
+<p>  is_even/isqrt Newton), string (repeat/pad via builtins), collections</p>
+<p>  (panduan builtin — array tak bisa lewat batas fungsi), fs</p>
+<p>  (copy_file/file_size), system (<code>die</code>). Semua <code>///</code>-documented.</p>
+<ul>
+<li>Resolusi modul: lokal → <code>$NUSA_PATH</code> → <code>&lt;exe&gt;/../std</code></li>
+</ul>
+<p>  (<code>/proc/self/exe</code>); <code>import string;</code> valid (keyword tipe diterima</p>
+<p>  sebagai nama modul).</p>
+<ul>
+<li>CLI: <code>check</code> (tahapan bersama <code>checkStages</code>, tanpa codegen),</li>
+</ul>
+<p>  <code>test</code> (<code>*_test.ns</code>, fork+alarm 10 dtk, stdio anak dialihkan,</p>
+<p>  ringkasan), <code>fmt</code> (+<code>--check</code>), <code>doc</code> (stdout/<code>-o</code>).</p>
+<ul>
+<li>Formatter token-based: aturan terdokumentasi, unary kontekstual,</li>
+</ul>
+<p>  string re-escape, komentar utuh, deterministik + idempoten (diuji).</p>
+<ul>
+<li>Docgen: signature AST + <code>///</code> menempel + intro modul → Markdown.</li>
+<li>Lexer menangkap komentar (<code>line/text/doc</code>); parser tak tersentuh.</li>
+<li>Contoh dogfood <code>tests/{math,strings,files}_test.ns</code> (jalan via</li>
+</ul>
+<p>  <code>nusa test tests/</code>).</p>
+<ul>
+<li>Tests: <code>test_builtins</code> (typing + IR libc + reserved), <code>test_fmt</code></li>
+</ul>
+<p>  (golden + idempotensi + escape), <code>test_doc</code> (fn/struct/intro/error),</p>
+<p>  <code>e2e_stdlib</code> (runtime + pipe + roundtrip + std-resolve + assert-gagal),</p>
+<p>  <code>e2e_tooling</code> (check/test/fmt/doc incl. timeout/build-error).</p>
+<ul>
+<li>Docs: <code>docs/stdlib.md</code> (referensi API), README/getting-started/</li>
+</ul>
+<p>  compiler diperbarui.</p>
+<h3 id="diperbaiki-temuan-selama-milestone">Diperbaiki (temuan selama milestone) <a href="#diperbaiki-temuan-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li><code>ConstantInt::get</code> bertipe <code>Constant*</code> di LLVM ini (bukan</li>
+</ul>
+<p>  <code>ConstantInt*</code>) — satu baris array_sum.</p>
+<ul>
+<li><code>nusa test</code> ganda-print: buffer stdio terwarisi anak fork —</li>
+</ul>
+<p>  <code>fflush(nullptr)</code> sebelum <code>fork</code> (pelajaran klasik).</p>
+<ul>
+<li>Ekspektasi e2e (copy_file true; kebutuhan <code>import fs</code>) — data, bukan kode.</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>18/18 passed</strong>.</li>
+<li><code>echo 5 | nusa run</code> (import io+math) → <code>120</code>; <code>nusa test tests/</code> →</li>
+</ul>
+<p>  <code>3 passed, 0 failed</code>; <code>fmt</code> idempoten; <code>doc</code> golden.</p>
+<ul>
+<li>AArch64 executable; <code>std</code> ter-resolve dari direktori mana pun.</li>
+</ul>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>String buram (tanpa <code>==</code>/substring/indexing); file tanpa error rinci;</li>
+</ul>
+<p>  array fixed-size lokal (tanpa param/return/generik).</p>
+<ul>
+<li><code>fmt</code> sederhana (aturan token); <code>test</code> sekuensial, timeout 10 dtk statis.</li>
+<li>Tanpa package manager (sesuai master v0.8.0).</li>
+<li><code>nusa check</code> memvalidasi program (file lib tanpa <code>main</code> tetap error).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.9.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

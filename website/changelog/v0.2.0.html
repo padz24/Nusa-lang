@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.2.0 — Nusa Docs 0.2.0</title>
+<meta name="description" content="0.2.0 v0.2.0 Release notes # — Lexer &amp;amp; Parser (2026-09-05) Milestone front-end sesuai MASTER PROMPT. Scope: lexer penuh + parser dengan operator p">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.2.0.html">
+<meta property="og:title" content="Changelog 0.2.0 — Nusa Docs 0.2.0">
+<meta property="og:description" content="0.2.0 v0.2.0 Release notes # — Lexer &amp;amp; Parser (2026-09-05) Milestone front-end sesuai MASTER PROMPT. Scope: lexer penuh + parser dengan operator p">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.2.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.2.0">
+<meta name="nusa:keywords" content="changelog, 0.2.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.2.0", "category": "changelog", "version": "0.2.0", "content": "0.2.0 v0.2.0 Release notes # — Lexer &amp; Parser (2026-09-05) Milestone front-end sesuai MASTER PROMPT. Scope: lexer penuh + parser dengan operator precedence yang benar. Codegen sengaja tetap subset v0.1.0 (eksekusi let /ekspresi = v0.3.0). Ditambahkan # Lexer penuh: keywords fn let return if els", "code_example": "", "keywords": "changelog, 0.2.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.2.0.html">0.2.0</a></p><article><h1>0.2.0</h1><span class="badge historic">v0.2.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Lexer &amp; Parser (2026-09-05)</p>
+<p>Milestone front-end sesuai MASTER PROMPT. Scope: lexer penuh + parser</p>
+<p>dengan operator precedence yang benar. Codegen sengaja tetap subset</p>
+<p>v0.1.0 (eksekusi <code>let</code>/ekspresi = v0.3.0).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Lexer penuh: keywords <code>fn let return if else while true false</code>,</li>
+</ul>
+<p>  identifier, integer literal desimal (i64, cek overflow,</p>
+<p>  <code>123abc</code> ditolak), string literal + escapes, operator</p>
+<p>  <code>+ - * / = == != &lt; &gt; &lt;= &gt;=</code>, simbol <code>( ) { } [ ] : , ;</code>,</p>
+<p>  source location (file/line/column) di setiap token,</p>
+<p>  error rapi (<code>unexpected &#x27;!&#x27; — did you mean &#x27;!=&#x27;?</code>, dsb.).</p>
+<ul>
+<li>AST ekspresi (<code>compiler/ast/</code>): <code>LiteralInt/Bool/String</code>, <code>VarRef</code>,</li>
+</ul>
+<p>  <code>Unary</code>, <code>Binary</code>, <code>LetStmt</code>, <code>PrintStmt(&lt;expr&gt;)</code> + s-expr <code>dump()</code></p>
+<p>  untuk test &amp; debugging, mis. <code>(+ 10 (* 20 3))</code>.</p>
+<ul>
+<li>Parser precedence-climbing:</li>
+</ul>
+<p>  <code>equality → comparison → term → factor → unary → primary</code>,</p>
+<p>  sehingga <code>10 + 20 * 3</code> = <code>(+ 10 (* 20 3))</code> (bukan <code>(10+20)*3</code>).</p>
+<p>  <code>return</code>/<code>if</code>/<code>while</code> ditolak dengan hint versi (v0.5.0/v0.6.0).</p>
+<p>  <code>;</code> tetap opsional (kompatibel v0.1.0).</p>
+<ul>
+<li>Codegen: subset v0.1.0 tidak berubah; <code>let</code> / <code>print(non-string)</code></li>
+</ul>
+<p>  ditolak dengan error lokasi + <code>help: ... coming in v0.3.0</code>.</p>
+<p>  Error codegen kini diformat lengkap (<code>file:line:col: error:</code>).</p>
+<ul>
+<li>Contoh <code>examples/expr.ns</code> (front-end demo: ter-parse, build ditunda).</li>
+<li>Tests: <code>test_lexer</code> (12 cek: keywords, int, operator, simbol, lokasi,</li>
+</ul>
+<p>  overflow, <code>!</code>, …), <code>test_parser</code> (18 cek: precedence, asosiatif,</p>
+<p>  parens, unary, bool, error <code>==</code>/<code>return</code>/<code>if</code>/<code>)</code>), <code>test_codegen</code></p>
+<p>  (subset + 2 penolakan v0.3.0), integration baru <code>e2e_frontend</code></p>
+<p>  (parse-OK-lalu-deferral + 3 negative tests).</p>
+<ul>
+<li>Docs: <code>docs/syntax.md</code> (spesifikasi syntax saat ini);</li>
+</ul>
+<p>  <code>README</code>/<code>getting-started</code>/<code>compiler</code> diperbarui ke v0.2.0.</p>
+<h3 id="diperbaiki">Diperbaiki <a href="#diperbaiki" aria-label="taut">#</a></h3>
+<ul>
+<li><code>Parser::parse()</code> kini <code>return std::move(result_)</code>: me-return member</li>
+</ul>
+<p>  tidak mendapat implicit-move, dan AST move-only (variant + unique_ptr)</p>
+<p>  membuat fallback copy gagal compile. Ditemukan via bisect empiris.</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>5/5 passed</strong>.</li>
+<li><code>hello.ns</code> regression: executable AArch64 mencetak <code>Hello, Nusa!</code>,</li>
+</ul>
+<p>  IR memuat <code>define i32 @main()</code> + <code>declare i32 @puts(ptr)</code>.</p>
+<ul>
+<li><code>expr.ns</code>: gagal di codegen dengan pesan v0.3.0 (tanpa kata &quot;expected&quot;,</li>
+</ul>
+<p>  tanpa crash) — bukti front-end menerima, backend menunda.</p>
+<ul>
+<li>Malformed (<code>let x = 10 + ;</code>, <code>let x == 3;</code>, <code>return</code>) gagal di parser</li>
+</ul>
+<p>  dengan diagnostic + snippet, tanpa crash.</p>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>Hanya <code>fn main()</code> + <code>let</code>/<code>print</code>; codegen executable hanya untuk</li>
+</ul>
+<p>  <code>print(&quot;string literal&quot;)</code>.</p>
+<ul>
+<li>Tanpa fitur v0.3.0+: symbol table, evaluasi variabel/ekspresi, dsb.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.2.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

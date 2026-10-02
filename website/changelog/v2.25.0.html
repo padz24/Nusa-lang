@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.25.0 — Nusa Docs 2.25.0</title>
+<meta name="description" content="2.25.0 v2.25.0 Release notes # — 2026-09-11 (Phase 74: SELF-HOSTING FULL — bootstrap 4-stage) Rantai bootstrap lengkap + validasi Stage N == Stage N+1">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.25.0.html">
+<meta property="og:title" content="Changelog 2.25.0 — Nusa Docs 2.25.0">
+<meta property="og:description" content="2.25.0 v2.25.0 Release notes # — 2026-09-11 (Phase 74: SELF-HOSTING FULL — bootstrap 4-stage) Rantai bootstrap lengkap + validasi Stage N == Stage N+1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.25.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.25.0">
+<meta name="nusa:keywords" content="changelog, 2.25.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.25.0", "category": "changelog", "version": "2.25.0", "content": "2.25.0 v2.25.0 Release notes # — 2026-09-11 (Phase 74: SELF-HOSTING FULL — bootstrap 4-stage) Rantai bootstrap lengkap + validasi Stage N == Stage N+1 (master Phase 74, &quot;sebisa mungkin&quot;). Nol perubahan bahasa/IR/ABI. Ditambahkan # nusa bootstrap ... [--rebuild DIR] : Stage 3 (fresh-rebuil", "code_example": "", "keywords": "changelog, 2.25.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.25.0.html">2.25.0</a></p><article><h1>2.25.0</h1><span class="badge stable">v2.25.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-11 (Phase 74: SELF-HOSTING FULL — bootstrap 4-stage)</p>
+<p>Rantai bootstrap lengkap + validasi Stage N == Stage N+1</p>
+<p>(master Phase 74, &quot;sebisa mungkin&quot;). Nol perubahan bahasa/IR/ABI.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>nusa bootstrap ... [--rebuild DIR]</code>: Stage 3 (fresh-rebuild</li>
+</ul>
+<p>  Stage 1 di dir lain + 1 run + banding D2 + diagnosis</p>
+<p>  beda-pertama); tanpa flag = perilaku 2.24.0 persis.</p>
+<ul>
+<li><code>docs/bootstrap-full-2.25.md</code>: peta 4 stage, tabel Nusa-vs-C++</li>
+</ul>
+<p>  per tahap pipeline, reproduksi manual, diagnosis.</p>
+<ul>
+<li><code>e2e_bootstrap.sh</code> 10 kasus (rebuild lex/parse/standalone).</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>REBUILD PASS lex (35.511 B) + parse (49.954 B); full <code>ctest -j2</code></li>
+</ul>
+<p>  hijau; <code>.ns</code> + IR OK; <code>bench.sh</code> identik 2.24.0.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.25.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

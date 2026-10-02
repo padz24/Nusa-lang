@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04-generics-traits Generics &amp; Traits — Nusa Docs 3.0.0</title>
+<meta name="description" content="04-generics-traits — Generics &amp;amp; Traits v3.0.0 Estimasi 60 menit · Tparam &amp;lt;T&amp;gt;, monomorphisasi, trait/impl, bound T: Show. Penjelasan 04 — Gen">
+<link rel="canonical" href="https://nusa-lang.org/docs/learn/04-generics-traits.html">
+<meta property="og:title" content="04-generics-traits Generics &amp; Traits — Nusa Docs 3.0.0">
+<meta property="og:description" content="04-generics-traits — Generics &amp;amp; Traits v3.0.0 Estimasi 60 menit · Tparam &amp;lt;T&amp;gt;, monomorphisasi, trait/impl, bound T: Show. Penjelasan 04 — Gen">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="04-generics-traits Generics &amp; Traits">
+<meta name="nusa:category" content="learn/intermediate">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="tutorial, 04-generics-traits, generics &amp; traits">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "04-generics-traits Generics & Traits", "category": "learn/intermediate", "version": "3.0.0", "content": "04-generics-traits — Generics &amp; Traits v3.0.0 Estimasi 60 menit · Tparam &lt;T&gt;, monomorphisasi, trait/impl, bound T: Show. Penjelasan 04 — Generics &amp; traits # Tujuan: fn f&lt;T&gt; , struct P&lt;T&gt; , trait / impl , bounds T: Trait . Prasyarat: tutorials/03-functions/ . ./build/nusa r", "code_example": "fn identity<T>(value: T) -> T {\n    return value;\n}\ntrait Show {\n    fn show(self) -> string;\n}\nstruct A {\n    x: i64;\n}\nimpl Show for A {\n    fn show(self) -> string {\n        return \"A\";\n    }\n}\nfn f < T: Show >(v: T) -> string {\n    return v.show();\n}\nfn main() {\n    print(identity(41) + 1);\n    print(identity(\"hi\"));\n    print(f(A {\n        x: 1\n    }\n));\n}\n", "keywords": "tutorial, 04-generics-traits, generics & traits"}</script>
+</head>
+<body class="kind-learn-intermediate">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/" aria-current="page">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../learn/">Kurikulum</a></li><li><a href="../learn/01-hello.html">01-hello Program Pertama</a></li><li><a href="../learn/02-variables.html">02-variables Variabel &amp; Tipe Dasar</a></li><li><a href="../learn/03-functions.html">03-functions Fungsi &amp; Struct</a></li><li><a href="../learn/04-generics-traits.html" aria-current="page">04-generics-traits Generics &amp; Traits</a></li><li><a href="../learn/05-match-enum.html">05-match-enum Match &amp; Enum</a></li><li><a href="../learn/06-error-handling.html">06-error-handling Error Handling</a></li><li><a href="../learn/07-closures-concurrency.html">07-closures-concurrency Closures &amp; Concurrency</a></li><li><a href="../learn/08-package-project.html">08-package-project Package Project</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../learn/">Learn</a> / <a href="../learn/04-generics-traits.html">04-generics-traits</a></p><article><h1>04-generics-traits — Generics &amp; Traits</h1><span class="badge historic">v3.0.0</span> <p><small>Estimasi 60 menit · Tparam &lt;T&gt;, monomorphisasi, trait/impl, bound T: Show.</small></p><h2>Penjelasan</h2><h1 id="04-generics-traits">04 — Generics &amp; traits <a href="#04-generics-traits" aria-label="taut">#</a></h1>
+<p>Tujuan: <code>fn f&lt;T&gt;</code>, <code>struct P&lt;T&gt;</code>, <code>trait</code>/<code>impl</code>, bounds <code>T: Trait</code>.</p>
+<p>Prasyarat: <code>tutorials/03-functions/</code>.</p>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run tutorials/04-generics-traits/main.ns
+# 42
+# hi
+# A</code></pre>
+<p>Aturan: inferensi di call-site (tanpa turbofish); monomorphisasi per</p>
+<p>kombinasi argumen; fungsi generik sebagai value ditolak; dispatch</p>
+<p>trait selalu statis (rewrite ke fungsi mangled); satu impl per</p>
+<p>(trait, tipe) program-wide.</p>
+<p>Lihat: <code>docs/</code> generics (via <code>docs/language-spec-2.0.md</code> §8–§9),</p>
+<p><code>docs/traits.md</code>, RFC-0001/0002.</p>
+<p>Lanjut: <code>tutorials/05-match-enum/</code>.</p><h2>Source code (.ns)</h2><pre data-lang="nusa"><code class="lang-nusa">fn identity&lt;T&gt;(value: T) -&gt; T {
+    return value;
+}
+trait Show {
+    fn show(self) -&gt; string;
+}
+struct A {
+    x: i64;
+}
+impl Show for A {
+    fn show(self) -&gt; string {
+        return &quot;A&quot;;
+    }
+}
+fn f &lt; T: Show &gt;(v: T) -&gt; string {
+    return v.show();
+}
+fn main() {
+    print(identity(41) + 1);
+    print(identity(&quot;hi&quot;));
+    print(f(A {
+        x: 1
+    }
+));
+}
+</code></pre><h2>Output program</h2><samp class="out">42
+hi
+A
+</samp><p><a class="btn sec" href="../playground/?code=fn%20identity%3CT%3E%28value%3A%20T%29%20-%3E%20T%20%7B%0A%20%20%20%20return%20value%3B%0A%7D%0Atrait%20Show%20%7B%0A%20%20%20%20fn%20show%28self%29%20-%3E%20string%3B%0A%7D%0Astruct%20A%20%7B%0A%20%20%20%20x%3A%20i64%3B%0A%7D%0Aimpl%20Show%20for%20A%20%7B%0A%20%20%20%20fn%20show%28self%29%20-%3E%20string%20%7B%0A%20%20%20%20%20%20%20%20return%20%22A%22%3B%0A%20%20%20%20%7D%0A%7D%0Afn%20f%20%3C%20T%3A%20Show%20%3E%28v%3A%20T%29%20-%3E%20string%20%7B%0A%20%20%20%20return%20v.show%28%29%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28identity%2841%29%20%2B%201%29%3B%0A%20%20%20%20print%28identity%28%22hi%22%29%29%3B%0A%20%20%20%20print%28f%28A%20%7B%0A%20%20%20%20%20%20%20%20x%3A%201%0A%20%20%20%20%7D%0A%29%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Exercise</h2><ol><li>Tulis fn first&lt;T&gt;(a: T, b: T) -&gt; T yang mengembalikan a.<details><summary>Solusi</summary><p>fn first&lt;T&gt;(a: T, b: T) -&gt; T { return a; }</p></details></li><li>Implementasikan Show untuk struct B dan panggil f.<details><summary>Solusi</summary><p>impl Show for B { fn show(self) -&gt; string { return &quot;B&quot;; } }</p></details></li></ol><h2>Next step</h2><ul><li>Lanjut: <a href="05-match-enum.html">05-match-enum — Match &amp; Enum</a></li><li>Referensi: <a href="../language/generics.html">language/generics</a></li><li>Referensi: <a href="../language/traits.html">language/traits</a></li></ul></article><div class="prevnext"><a href="../learn/03-functions.html">← 03-functions</a><a href="../learn/05-match-enum.html">05-match-enum →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

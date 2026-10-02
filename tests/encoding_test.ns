@@ -1,0 +1,24 @@
+// Sample `nusa test` target: encoding stdlib.
+import encoding;
+fn main() {
+    assert(str_eq(hex_encode_i64(0), "0"));
+    assert(str_eq(hex_encode_i64(255), "ff"));
+    assert(str_eq(hex_encode_i64(16), "10"));
+    assert(str_eq(hex_encode_i64(0 - 1), "ffffffffffffffff"));
+    assert(str_eq(hex_encode_i64(9223372036854775807), "7fffffffffffffff"));
+    assert(hex_decode_i64("ff") == 255);
+    assert(hex_decode_i64("FF") == 255);
+    assert(hex_decode_i64("0") == 0);
+    assert(hex_decode_i64("ffffffffffffffff") == 0 - 1);
+    assert(hex_decode_i64("zz") == 0);
+    assert(hex_decode_i64("") == 0);
+    assert(hex_valid("1a2B"));
+    assert(hex_valid("0"));
+    assert(hex_valid("") == false);
+    assert(hex_valid("xyz") == false);
+    assert(hex_valid_any("1a2B"));
+    assert(hex_valid("fffffffffffffffff") == false);
+    assert(hex_valid_any("fffffffffffffffff"));
+    assert(is_hex_digit("f"));
+    assert(is_hex_digit("G") == false);
+}

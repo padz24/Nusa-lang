@@ -1,0 +1,38 @@
+// Cryptography helpers (pure Nusa over sha256_hex/crypto_rand_hex;
+// lihat RFC-0011 + docs/crypto-2.27.md).
+//
+// Failure policy: primitif gagal-eksplisit (`""`); wrapper di sini
+// fail-closed (panjang salah → die). Perbandingan tanpa early-exit
+// (beda panjang → false; panjang bocor — didokumentasikan).
+// Kunci hex `nbytes` byte acak OS (2*n char). Gagal (sumber tak
+// terbaca) → die bersama panjang yang diharapkan.
+fn crypto_key_hex(nbytes: i64) -> string {
+    let k: string = crypto_rand_hex(nbytes);
+    if str_len(k) != 2 * nbytes {
+        print(str_concat("FAIL crypto_key_hex: entropy source unreadable (want ", str_concat(int_to_str(2 * nbytes), " chars)")));
+        assert(false);
+    }
+    return k;
+}
+// Bandingkan dua string tanpa early-exit (akumulasi beda di semua
+// posisi; waktu ~ f(len), bukan posisi beda pertama). Beda
+// panjang → false.
+fn crypto_compare(a: string, b: string) -> bool {
+    if str_len(a) != str_len(b) {
+        return false;
+    }
+    let n: i64 = str_len(a);
+    let diff: bool = false;
+    let i: i64 = 0;
+    while i < n {
+        if str_eq(str_char_at(a, i), str_char_at(b, i)) == false {
+            diff = true;
+        }
+        i = i + 1;
+    }
+    return diff == false;
+}
+// SHA-256 hex isi file (komposisi; hilang/tak terbaca = hash "").
+fn sha256_file(path: string) -> string {
+    return sha256_hex(file_read(path));
+}

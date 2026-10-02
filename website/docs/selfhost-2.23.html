@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>selfhost-2.23.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="selfhost-2.23.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Milestone — Design (Phase 72, target 2.23.0) #">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/selfhost-2.23.html">
+<meta property="og:title" content="selfhost-2.23.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="selfhost-2.23.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Milestone — Design (Phase 72, target 2.23.0) #">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="selfhost-2.23.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="selfhost-2.23, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "selfhost-2.23.md", "category": "docs", "version": "3.0.0", "content": "selfhost-2.23.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Milestone — Design (Phase 72, target 2.23.0) # Status: Langkah 2 (parser+AST) selesai; payung: docs/selfhosting.md . Spec bahasa tak berubah (murni aditif: 1 CLI debug + 1 program Nusa). 1. Arsit", "code_example": "", "keywords": "selfhost-2.23, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/selfhost-2.23.html">selfhost-2.23.md</a></p><article><h1>selfhost-2.23.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="self-hosting-milestone-design-phase-72-target-2-23-0">Self-Hosting Milestone — Design (Phase 72, target 2.23.0) <a href="#self-hosting-milestone-design-phase-72-target-2-23-0" aria-label="taut">#</a></h1>
+<p>Status: Langkah 2 (parser+AST) selesai; payung: <code>docs/selfhosting.md</code>.</p>
+<p>Spec bahasa tak berubah (murni aditif: 1 CLI debug + 1 program Nusa).</p>
+<h2 id="1-arsitektur-fused-lexer-parser">1. Arsitektur (fused lexer-parser) <a href="#1-arsitektur-fused-lexer-parser" aria-label="taut">#</a></h2>
+<p>Buffer token tak mungkin di Nusa v2 (array fixed-size tanpa</p>
+<p>indexed-assign/param/return; tanpa global/tuple) — maka</p>
+<p><code>selfhost/parse.ns</code> = lexer+parser fused atas string sumber</p>
+<p>(hasil <code>file_read</code>), cermin gaya streaming <code>lex.ns</code> (loop</p>
+<p><code>end</code>/<code>lim</code>, tanpa break; semua loop maju strikt).</p>
+<p>Threading state tanpa tuple: struct by-value (didukung v1.2.0,</p>
+<p>diverifikasi) + rekursi (diverifikasi: <code>fact(10)</code> = 3628800):</p>
+<ul>
+<li><code>ShTok { kind: string, lex: string, pos: i64 }</code></li>
+<li><code>ShRes { s: string, pos: i64 }</code> (potongan dump + posisi lanjut)</li>
+</ul>
+<p><code>kind</code>: nama keyword persis (<code>fn</code>, <code>const</code>, ...) atau</p>
+<p><code>ident/int/str/true/false</code>, 1 char untuk simbol, 2 char untuk</p>
+<p><code>== != &lt;= &gt;= -&gt; =&gt;</code>, <code>eof</code>, <code>unknown</code> (di-skip cermin C++</p>
+<p>yang membuang Unknown pra-parse).</p>
+<h2 id="2-cakupan-vs-c-parser-ekuivalen-dump-pada-korpus-valid">2. Cakupan vs C++ Parser (ekuivalen dump pada korpus valid) <a href="#2-cakupan-vs-c-parser-ekuivalen-dump-pada-korpus-valid" aria-label="taut">#</a></h2>
+<p>Top-level: import/type/const/trait/impl/struct/enum/extern/fn</p>
+<p>(urutan cetak program: imports, aliases, traits, impls,</p>
+<p>structs, enums, consts, functions — 7 string kategori di main).</p>
+<p>Stmt: let/print/return/if/while/match/assign/call-stmt.</p>
+<p>Expr: precedence climbing equality→unary, postfix <code>?</code>/index/</p>
+<p>field/method, atom (lambda <code>|..|</code>, <code>self</code>, int/str/bool,</p>
+<p>call, struct-lit + generik, array, paren) + disambiguasi</p>
+<p>lookahead (<code>Name {</code>, <code>E&lt;T&gt;.V(</code>, <code>Point&lt;T&gt; {</code>).</p>
+<p>Normalisasi yang direplika: lambda 1-expr → <code>(return e)</code>;</p>
+<p>match single-stmt → Block; <code>else if</code> → Block 1-stmt;</p>
+<p><code>(fn name... -&gt; void )</code> body kosong; int via parse_int.</p>
+<h2 id="3-oracle-nusa-ast-file">3. Oracle: <code>nusa ast &lt;file&gt;</code> <a href="#3-oracle-nusa-ast-file" aria-label="taut">#</a></h2>
+<p>CLI debug cermin <code>nusa lex</code> (Phase 38): parse + cetak</p>
+<p><code>program.dump()</code>; rc!=0 bila gagal. Diferensial</p>
+<p><code>e2e_parse.sh</code>: korpus valid (<code>nusa ast</code> rc 0 atas</p>
+<p>std+examples+bench+selfhost) byte-identik; N≥25.</p>
+<h2 id="4-batas-yang-jujur-divergensi-terdokumentasi">4. Batas yang jujur (divergensi terdokumentasi) <a href="#4-batas-yang-jujur-divergensi-terdokumentasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Input invalid: best-effort (seperti lexer); korpus hanya valid.</li>
+<li>Nesting dalam adversarial: rekursi native (tanpa cap</li>
+</ul>
+<p>   <code>too deeply nested</code>); korpus dangkal (terverifikasi).</p>
+<ul>
+<li>Escape <code>\0</code>: string Nusa = C string (warisan lexer);</li>
+</ul>
+<p>   korpus bebas (hazard check).</p>
+<ul>
+<li><code>123abc</code>/overflow literal: korpus bebas (hazard check).</li>
+</ul>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa ast</code> + <code>parse.ns</code> byte-identik ≥25 file korpus;</li>
+</ul>
+<p>  <code>e2e_selfhost</code>/<code>e2e_bootstrap</code> tetap hijau (lex.ns tak</p>
+<p>  tersentuh); suite hijau; bench identik; <code>.ns.ll</code> bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

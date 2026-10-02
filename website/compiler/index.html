@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compiler Internals — Nusa Docs 3.0.0</title>
+<meta name="description" content="Compiler Internals v3.0.0 Pipeline Source (.ns) ↓ Lexer → Parser → AST → Semantic → TypeChecker ↓ MIR (2.3+) → Opt (2.4+) → LLVM 21.1.8 Backend → Nati">
+<link rel="canonical" href="https://nusa-lang.org/docs/compiler/">
+<meta property="og:title" content="Compiler Internals — Nusa Docs 3.0.0">
+<meta property="og:description" content="Compiler Internals v3.0.0 Pipeline Source (.ns) ↓ Lexer → Parser → AST → Semantic → TypeChecker ↓ MIR (2.3+) → Opt (2.4+) → LLVM 21.1.8 Backend → Nati">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Compiler Internals">
+<meta name="nusa:category" content="compiler">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="compiler, llvm, pipeline, runtime, MIR">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Compiler Internals", "category": "compiler", "version": "3.0.0", "content": "Compiler Internals v3.0.0 Pipeline Source (.ns) ↓ Lexer → Parser → AST → Semantic → TypeChecker ↓ MIR (2.3+) → Opt (2.4+) → LLVM 21.1.8 Backend → Native Binary Architecture 2.2.0 — Peta lapisan ~26.000 baris: Frontend (lexer/parser/ast + Builtin) → Semantic (namespace/scope) → Typ Frontend (Lexer/P", "code_example": "", "keywords": "compiler, llvm, pipeline, runtime, MIR"}</script>
+</head>
+<body class="kind-compiler">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/" aria-current="page">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../compiler/" aria-current="page">Pipeline</a></li><li><a href="../compiler/architecture.html">Architecture</a></li><li><a href="../compiler/frontend.html">Frontend (Lexer/Parser/AST/Semantic/TypeChecker)</a></li><li><a href="../compiler/mir.html">MIR (Nusa IR)</a></li><li><a href="../compiler/optimizations.html">Optimizations</a></li><li><a href="../compiler/runtime.html">Runtime</a></li><li><a href="../compiler/memory-model.html">Memory Model</a></li><li><a href="../compiler/llvm.html">LLVM Integration</a></li><li><a href="../compiler/debugging.html">Debugging (DWARF)</a></li><li><a href="../compiler/lsp.html">Language Server (LSP)</a></li><li><a href="../compiler/incremental.html">Incremental Compilation</a></li><li><a href="../compiler/bootstrap.html">Bootstrap &amp; Self-Hosting</a></li><li><a href="../compiler/ffi.html">C FFI &amp; Bindgen</a></li><li><a href="../compiler/targets.html">Targets &amp; Cross Compilation</a></li><li><a href="../compiler/profiling.html">Profiling &amp; Build Stats</a></li></ul></aside>
+<main id="main"><article><h1>Compiler Internals</h1><span class="badge historic">v3.0.0</span> <h2>Pipeline</h2>
+<pre data-lang="text"><code class="lang-text">Source (.ns)
+  ↓ Lexer → Parser → AST → Semantic → TypeChecker
+  ↓ MIR (2.3+) → Opt (2.4+) → LLVM 21.1.8 Backend → Native Binary</code></pre>
+<ul><li><a href="architecture.html"><b>Architecture</b></a> <span class="badge stable">2.2.0</span> — Peta lapisan ~26.000 baris: Frontend (lexer/parser/ast + Builtin) → Semantic (namespace/scope) → Typ</li><li><a href="frontend.html"><b>Frontend (Lexer/Parser/AST/Semantic/TypeChecker)</b></a> <span class="badge stable">2.0.0</span> — Lexer (token + // ///, keyword extern/enum/match/trait/impl/self/type, reserved async/await) → Parse</li><li><a href="mir.html"><b>MIR (Nusa IR)</b></a> <span class="badge stable">2.3.0</span> — compiler/mir/Mir (nusa::mir): typed values I64/Bool/Str/Void/Ptr, instruksi arith/cmp/call/alloc/loa</li><li><a href="optimizations.html"><b>Optimizations</b></a> <span class="badge stable">2.4.0</span> — Pass internal pertama di atas MIR: foldConstants (arith/cmp konstanta; div aman: pembagi nol dan INT</li><li><a href="runtime.html"><b>Runtime</b></a> <span class="badge stable">2.6.0</span> — runtime/nusa_rt.c = agregator satu TU; subsistem rt_handle/thread/sync/chan/time/net + rt_platform.h</li><li><a href="memory-model.html"><b>Memory Model</b></a> <span class="badge stable">2.5.0</span> — Owned values + program-lifetime heap (by-design, bukan bocor). 8 area docs/memory-model.md. Audit 2.</li><li><a href="llvm.html"><b>LLVM Integration</b></a> <span class="badge stable">2.0.0</span> — Backend LLVM 21.1.8: functions/blocks/arrays/structs/libc, bool=i32 ABI untuk FFI, trampolin closure</li><li><a href="debugging.html"><b>Debugging (DWARF)</b></a> <span class="badge stable">2.15.0</span> — DWARF via DIBuilder di balik -g: compile-unit malas-per-file, subprogram, line table per statement, </li><li><a href="lsp.html"><b>Language Server (LSP)</b></a> <span class="badge stable">2.14.0</span> — nusa lsp (stdio): diagnostics, completion, hover, goto-definition, symbols, formatting, rename (1.17</li><li><a href="incremental.html"><b>Incremental Compilation</b></a> <span class="badge stable">1.16.0</span> — Fingerprint sumber+flag + cache artefak hash IR (.nusa-cache/fingerprint: compiler/target/opt/emit/s</li><li><a href="bootstrap.html"><b>Bootstrap & Self-Hosting</b></a> <span class="badge stable">1.20.0</span> — selfhost/lex.ns: lexer streaming murni-Nusa ekuivalen lexer C++ (differential 33 file) + builtin int</li><li><a href="ffi.html"><b>C FFI & Bindgen</b></a> <span class="badge stable">2.17.0</span> — extern fn primitif (i64/string/bool; return i64/bool/void) ABI C (bool=int, zext arg + icmp return).</li><li><a href="targets.html"><b>Targets & Cross Compilation</b></a> <span class="badge stable">2.18.0</span> — Host Android AArch64. Cross Linux AArch64/x86-64 via clang --target (compile-only tanpa sysroot; lin</li><li><a href="profiling.html"><b>Profiling & Build Stats</b></a> <span class="badge stable">2.16.0</span> — nusa bench &lt;file&gt; [-n N]: build --fresh sekali + N run via fork+wait4 (dinding + maxRSS anak; min/me</li></ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

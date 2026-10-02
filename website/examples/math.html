@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>math.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="math.ns v3.0.0 // Modul library v0.8.0: diimpor oleh main.ns. // Semua item publik kecuali `_`-awalan (module-private). fn add(a: i64, b: i64) -&amp;gt; i">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/math.html">
+<meta property="og:title" content="math.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="math.ns v3.0.0 // Modul library v0.8.0: diimpor oleh main.ns. // Semua item publik kecuali `_`-awalan (module-private). fn add(a: i64, b: i64) -&amp;gt; i">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="math.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, math, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "math.ns", "category": "examples", "version": "3.0.0", "content": "math.ns v3.0.0 // Modul library v0.8.0: diimpor oleh main.ns. // Semua item publik kecuali `_`-awalan (module-private). fn add(a: i64, b: i64) -&gt; i64 { return a + b + _bias(); } fn _bias() -&gt; i64 { return 1; } Coba di playground Contoh ini butuh argumen/konteks khusus (lihat komentar sumber)", "code_example": "// Modul library v0.8.0: diimpor oleh main.ns.\n// Semua item publik kecuali `_`-awalan (module-private).\nfn add(a: i64, b: i64) -> i64 {\n    return a + b + _bias();\n}\nfn _bias() -> i64 {\n    return 1;\n}\n", "keywords": "example, math, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/math.html">math.ns</a></p><article><h1>math.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">// Modul library v0.8.0: diimpor oleh main.ns.
+// Semua item publik kecuali `_`-awalan (module-private).
+fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b + _bias();
+}
+fn _bias() -&gt; i64 {
+    return 1;
+}
+</code></pre><p><a class="btn sec" href="../playground/?code=%2F%2F%20Modul%20library%20v0.8.0%3A%20diimpor%20oleh%20main.ns.%0A%2F%2F%20Semua%20item%20publik%20kecuali%20%60_%60-awalan%20%28module-private%29.%0Afn%20add%28a%3A%20i64%2C%20b%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%20a%20%2B%20b%20%2B%20_bias%28%29%3B%0A%7D%0Afn%20_bias%28%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%201%3B%0A%7D%0A">Coba di playground</a></p><div class="warn"><p>Contoh ini butuh argumen/konteks khusus (lihat komentar sumber) sehingga output tidak di-capture otomatis.</p></div></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

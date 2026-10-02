@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bootstrap.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="bootstrap.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Chain (Phase 39, v1.20.0; multi-komponen Phase 73, v2">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/bootstrap.html">
+<meta property="og:title" content="bootstrap.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="bootstrap.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Chain (Phase 39, v1.20.0; multi-komponen Phase 73, v2">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="bootstrap.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="bootstrap, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "bootstrap.md", "category": "docs", "version": "3.0.0", "content": "bootstrap.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Chain (Phase 39, v1.20.0; multi-komponen Phase 73, v2.24.0; full Phase 74, v2.25.0) # Dokumentasi proses lengkap (peta 4 stage, tabel Nusa-vs-C++, reproduksi manual, diagnosis): docs/bootstrap-full-2.25", "code_example": "", "keywords": "bootstrap, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/bootstrap.html">bootstrap.md</a></p><article><h1>bootstrap.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="bootstrap-chain-phase-39-v1-20-0-multi-komponen-phase-73-v2-24-0-full-phase-74-v2-25-0">Bootstrap Chain (Phase 39, v1.20.0; multi-komponen Phase 73, v2.24.0; full Phase 74, v2.25.0) <a href="#bootstrap-chain-phase-39-v1-20-0-multi-komponen-phase-73-v2-24-0-full-phase-74-v2-25-0" aria-label="taut">#</a></h1>
+<blockquote><p>Dokumentasi proses lengkap (peta 4 stage, tabel Nusa-vs-C++,</p></blockquote>
+<blockquote><p>reproduksi manual, diagnosis): <code>docs/bootstrap-full-2.25.md</code>.</p></blockquote>
+<pre data-lang="text"><code class="lang-text">Stage 0                    Stage 1                    Stage 2
+C++ compiler  ──build──▶  &lt;base&gt;_stage1 (native,  ──run──▶  dump
+(build/nusa)              ditulis dalam Nusa)            ║
+      │                                                  ║ bandingkan
+      └──────────── referensi C++ ═══════════════════════╝
+                        (--as lex: nusa lex | --as ast: nusa ast)</code></pre>
+<p>Perintah: <code>nusa bootstrap [file.ns] [--as lex|ast] [-o DIR] [--rebuild RDIR]</code></p>
+<p>(default file <code>&lt;exe&gt;/../selfhost/lex.ns</code> lalu <code>selfhost/lex.ns</code>;</p>
+<p>default DIR <code>bootstrap-out</code>; default <code>--as lex</code>; <code>--rebuild</code></p>
+<p>menjalankan Stage 3: fresh-rebuild + banding D2).</p>
+<p>Rantai yang dikunci:</p>
+<table><thead><tr><th>Komponen</th><th>Stage 1</th><th>Stage 2 (self-application)</th><th>Stage 0</th></tr></thead><tbody>
+<tr><td><code>selfhost/lex.ns</code></td><td><code>lex_stage1</code></td><td>token dump dirinya</td><td><code>nusa lex</code></td></tr>
+<tr><td><code>selfhost/parse.ns</code></td><td><code>parse_stage1</code></td><td>AST dump dirinya</td><td><code>nusa ast</code></td></tr>
+</tbody></table>
+<h2 id="yang-dibuktikan-dan-yang-belum">Yang dibuktikan (dan yang belum) <a href="#yang-dibuktikan-dan-yang-belum" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Stage 1</strong>: compiler C++ mampu mengkompilasi komponen compiler</li>
+</ul>
+<p>  yang ditulis dalam Nusa (lexer) menjadi biner native — build nyata</p>
+<p>  (<code>--fresh</code>, bukan cache).</p>
+<ul>
+<li><strong>Stage 2 = Stage 0</strong>: biner Nusa menokenisasi <code>lex.ns</code> sendiri</li>
+</ul>
+<p>  (self-lexing) byte-identik dengan dump lexer C++ (34.648 byte).</p>
+<ul>
+<li><strong>Reproduksibilitas</strong>: Stage 2 dijalankan 2x — byte-identik</li>
+</ul>
+<p>  (determinisme output; hash implisit via perbandingan penuh).</p>
+<ul>
+<li><strong>Belum</strong>: rantai penuh compiler (parser/AST/semantik masih C++ —</li>
+</ul>
+<p>  lihat <code>docs/selfhosting.md</code>). Setiap komponen Nusa berikutnya</p>
+<p>  mengikuti pola yang sama: tulis → differential test → masuk rantai</p>
+<p>  (argumen <code>lex.ns</code> pada perintah menerima komponen masa depan yang</p>
+<p>  memenuhi kontrak &quot;biner menerima path sumber, mencetak dump ke</p>
+<p>  stdout&quot;).</p>
+<h2 id="kontrak-komponen-bootstrap">Kontrak komponen bootstrap <a href="#kontrak-komponen-bootstrap" aria-label="taut">#</a></h2>
+<ul>
+<li>Program Nusa valid (<code>nusa check</code> hijau) dengan <code>fn main()</code>.</li>
+<li>Membaca satu path sumber dari <code>process_argv(1)</code>.</li>
+<li>Mencetak hasil ke stdout dengan format stabil (untuk lexer:</li>
+</ul>
+<p>   <code>kind|lexeme|line|col</code> + escape di <code>docs/selfhosting.md</code>).</p>
+<ul>
+<li>Deterministik (tanpa waktu/acak/PID di output).</li>
+<li>Korpus valid: batas <code>selfhosting.md</code> berlaku (\0/overflow/invalid</li>
+</ul>
+<p>   di luar kontrak).</p>
+<h2 id="artefak-reproduksi-manual">Artefak &amp; reproduksi manual <a href="#artefak-reproduksi-manual" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">nusa bootstrap selfhost/lex.ns -o bootstrap-out
+./bootstrap-out/lex_stage1 selfhost/lex.ns | cmp - &lt;(nusa lex selfhost/lex.ns) \
+  &amp;&amp; echo &quot;Stage 2 == Stage 0&quot;
+nusa bootstrap selfhost/parse.ns --as ast -o bootstrap-out-parse
+./bootstrap-out-parse/parse_stage1 selfhost/parse.ns | cmp - &lt;(nusa ast selfhost/parse.ns) \
+  &amp;&amp; echo &quot;Stage 2 == Stage 0&quot;</code></pre>
+<p>Kegagalan mencetak byte beda pertama (kedua sisi) agar dapat</p>
+<p>didiagnosis tanpa mengulang rantai.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

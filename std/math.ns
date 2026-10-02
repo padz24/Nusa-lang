@@ -1,0 +1,78 @@
+// Integer math helpers (pure Nusa, no builtins needed).
+//
+// All functions work on `i64`. Division-heavy helpers assume
+// non-negative inputs where noted.
+// Absolute value.
+fn abs(n: i64) -> i64 {
+    if n < 0 {
+        return 0 - n;
+    }
+    return n;
+}
+// Minimum of two integers.
+fn min(a: i64, b: i64) -> i64 {
+    if a < b {
+        return a;
+    }
+    return b;
+}
+// Maximum of two integers.
+fn max(a: i64, b: i64) -> i64 {
+    if a > b {
+        return a;
+    }
+    return b;
+}
+// Clamp `n` into the inclusive range [`lo`, `hi`].
+fn clamp(n: i64, lo: i64, hi: i64) -> i64 {
+    if n < lo {
+        return lo;
+    }
+    if n > hi {
+        return hi;
+    }
+    return n;
+}
+// Integer power (`exp` must be >= 0; negative exponents give 1).
+fn pow(base: i64, exp: i64) -> i64 {
+    let r: i64 = 1;
+    let i: i64 = 0;
+    while i < exp {
+        r = r * base;
+        i = i + 1;
+    }
+    return r;
+}
+// Factorial (`fact(0)` is 1; negative inputs give 1).
+fn fact(n: i64) -> i64 {
+    if n <= 1 {
+        return 1;
+    }
+    return n * fact(n - 1);
+}
+// Greatest common divisor (Euclidean algorithm).
+// Correct for non-negative inputs.
+fn gcd(a: i64, b: i64) -> i64 {
+    while b != 0 {
+        let t: i64 = b;
+        b = a - (a / b) * b;
+        a = t;
+    }
+    return a;
+}
+// True if `n` is even (works for negative numbers too).
+fn is_even(n: i64) -> bool {
+    return n - (n / 2) * 2 == 0;
+}
+// Integer square root (floor) via Newton iteration.
+// `isqrt(0)` and negative inputs give 0.
+fn isqrt(n: i64) -> i64 {
+    if n <= 0 {
+        return 0;
+    }
+    let x: i64 = n;
+    while x * x > n {
+        x = (x + n / x) / 2;
+    }
+    return x;
+}

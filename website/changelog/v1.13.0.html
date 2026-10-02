@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 1.13.0 — Nusa Docs 1.13.0</title>
+<meta name="description" content="1.13.0 v1.13.0 Release notes # — 2026-09-07 (Phase 32: C interoperability) FFI terbatas: deklarasi extern fn , ABI C untuk primitif (bool = int), dan ">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v1.13.0.html">
+<meta property="og:title" content="Changelog 1.13.0 — Nusa Docs 1.13.0">
+<meta property="og:description" content="1.13.0 v1.13.0 Release notes # — 2026-09-07 (Phase 32: C interoperability) FFI terbatas: deklarasi extern fn , ABI C untuk primitif (bool = int), dan ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 1.13.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="1.13.0">
+<meta name="nusa:keywords" content="changelog, 1.13.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 1.13.0", "category": "changelog", "version": "1.13.0", "content": "1.13.0 v1.13.0 Release notes # — 2026-09-07 (Phase 32: C interoperability) FFI terbatas: deklarasi extern fn , ABI C untuk primitif (bool = int), dan integrasi linker ( --link , manifest [link] ). Ditambahkan # Lexer extern ; AST FunctionDecl.isExtern ; parser extern fn ...; (tanpa body; tanpa cek", "code_example": "", "keywords": "changelog, 1.13.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v1.13.0.html">1.13.0</a></p><article><h1>1.13.0</h1><span class="badge historic">v1.13.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-07 (Phase 32: C interoperability)</p>
+<p>FFI terbatas: deklarasi <code>extern fn</code>, ABI C untuk primitif</p>
+<p>(bool = int), dan integrasi linker (<code>--link</code>, manifest <code>[link]</code>).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Lexer <code>extern</code>; AST <code>FunctionDecl.isExtern</code>; parser</li>
+</ul>
+<p>  <code>extern fn ...;</code> (tanpa body; tanpa cek main ganda).</p>
+<ul>
+<li>Semantic: namespace fungsi bersama, tolak generik/main;</li>
+</ul>
+<p>  checker <code>checkExternSig</code> (param i64/string/bool; return</p>
+<p>  i64/bool/void + alasan per-jenis); tolak extern-as-value.</p>
+<ul>
+<li>Codegen: deklarasi saja (tanpa body), <code>ffiType</code> (bool→i32),</li>
+</ul>
+<p>  zext argumen + icmp return, <code>externFns_</code> set.</p>
+<ul>
+<li>Linker: <code>LinkSpec</code> (libs/dirs/files) → clang <code>-l/-L</code>;</li>
+</ul>
+<p>  <code>nusa build --link/--link-dir</code> (repeatable); manifest <code>[link]</code>.</p>
+<ul>
+<li><code>nusa doc</code> § Extern Functions; <code>docs/ffi.md</code> (+ tabel mapping,</li>
+</ul>
+<p>  model keamanan, batasan); sentuh syntax/spec.</p>
+<ul>
+<li>Unit: lexer 1, parser 2, semantic 2, typecheck 4, doc 1;</li>
+</ul>
+<p>  <code>e2e_ffi.sh</code> (10 kasus: libc/bool-mapping/.o/-L-l/[link]/</p>
+<p>  5 penolakan/simbol-hilang).</p>
+<h3 id="batasan-phase-32">Batasan Phase 32 <a href="#batasan-phase-32" aria-label="taut">#</a></h3>
+<ul>
+<li>Tanpa pointer umum/struct-by-value/callback/variadik/</li>
+</ul>
+<p>  string-return/dlsym; pustaka dipercaya penuh (pin sumbernya).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.13.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

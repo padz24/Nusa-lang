@@ -1,0 +1,17 @@
+// Sample `nusa test` target: strings, arrays, builtins.
+import string;
+fn main() {
+    assert(str_len("hello") == 5);
+    assert(str_len(str_repeat("ab", 3)) == 6);
+    assert(str_len(str_pad_left("7", 3, "0")) == 3);
+    assert(str_len(str_pad_right("7", 3, "0")) == 3);
+    assert(parse_int("42") == 42);
+    // stdin is /dev/null under `nusa test`: input() hits EOF -> "".
+    assert(parse_int(input()) == 0);
+    let a: [i64] = [3, 1, 2];
+    assert(len(a) == 3);
+    assert(array_sum(a) == 6);
+    assert(array_min(a) == 1);
+    assert(array_max(a) == 3);
+    assert(a[0] + a[2] == 5);
+}

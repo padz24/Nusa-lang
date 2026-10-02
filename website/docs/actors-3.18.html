@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>actors-3.18.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="actors-3.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Actor / Message-Passing — Milestone 1: Pustaka (Phase 117) # ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/actors-3.18.html">
+<meta property="og:title" content="actors-3.18.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="actors-3.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Actor / Message-Passing — Milestone 1: Pustaka (Phase 117) # ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="actors-3.18.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="actors-3.18, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "actors-3.18.md", "category": "docs", "version": "3.0.0", "content": "actors-3.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Actor / Message-Passing — Milestone 1: Pustaka (Phase 117) # Status: slice implementasi level-pustaka (target 3.18.0). Mandat master: bila bermanfaat, model actor/message-passing sebagai LIBRARY atau abstraksi", "code_example": "", "keywords": "actors-3.18, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/actors-3.18.html">actors-3.18.md</a></p><article><h1>actors-3.18.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="actor-message-passing-milestone-1-pustaka-phase-117">Actor / Message-Passing — Milestone 1: Pustaka (Phase 117) <a href="#actor-message-passing-milestone-1-pustaka-phase-117" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi level-pustaka (target 3.18.0). Mandat</p>
+<p>master: bila bermanfaat, model actor/message-passing sebagai</p>
+<p>LIBRARY atau abstraksi dukungan-bahasa; JANGAN fitur inti tanpa</p>
+<p>RFC; pustaka DULU. Sintaks <code>actor Counter {...}</code> konseptual =</p>
+<p>Bukan slice ini (butuh RFC).</p>
+<h2 id="1-desain-std-actor-ns-murni-nusa-70-baris">1. Desain (<code>std/actor.ns</code>, murni Nusa, ~70 baris) <a href="#1-desain-std-actor-ns-murni-nusa-70-baris" aria-label="taut">#</a></h2>
+<ul>
+<li><code>struct ActorRef { mb, lock }</code>: mailbox FIFO + mutex urutan.</li>
+<li><code>actor_spawn(h, init)</code>: thread loop <code>actor_loop</code> (closure</li>
+</ul>
+<p>  capture mailbox/handler/state — pola <code>par_map2</code> yang terbukti).</p>
+<ul>
+<li>Handler <code>fn(op, arg, reply, state) -&gt; state-baru</code>: menjawab</li>
+</ul>
+<p>  SENDIRI (<code>chan_send(reply, v)</code>), mengembalikan state (fungsional</p>
+<p>  — selaras owned-values; tanpa mutat bersama).</p>
+<ul>
+<li><code>actor_call</code> sinkron (triple-kirim atomik + tunggu);</li>
+</ul>
+<p>  <code>actor_cast</code> tanpa-tunggu (reply-chan dibuang; handler tetap</p>
+<p>  menjawab — protokol seragam).</p>
+<ul>
+<li>Kunci kebenaran: mutex-mailbox membuat triple (op,arg,reply)</li>
+</ul>
+<p>  atomik antar-klien; tanpanya FIFO bersama interleave dan</p>
+<p>  request korup (stres §3 memberi bukti positif: 4×25 = tepat</p>
+<p>  100 hanya bila protokol atomik).</p>
+<h2 id="2-batas-jujur-level-pustaka">2. Batas jujur (level-pustaka) <a href="#2-batas-jujur-level-pustaka" aria-label="taut">#</a></h2>
+<ul>
+<li>Hidup selama proses (tanpa stop — konsisten heap model);</li>
+</ul>
+<p>  tanpa selective-receive; self-call sinkron = deadlock klasik</p>
+<p>  (terdokumentasikan, bukan dideteksi).</p>
+<ul>
+<li>Pesan = i64 (tag + arg + reply-handle; handle ADALAH i64).</li>
+</ul>
+<p>  Payload kaya (string/struct) = follow-up (butuh ownership</p>
+<p>  lintas-aktor yang dirancang).</p>
+<ul>
+<li>Sintaks <code>actor</code> + supervision/linking + pola OTP = butuh RFC</li>
+</ul>
+<p>  (di luar cakupan by-design).</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>tests/actor_test.ns</code> via <code>nusa test</code> (counter/isolasi/cast).</li>
+<li><code>e2e_actor</code> 3/3: test-file, stres deterministik 100,</li>
+</ul>
+<p>  <code>import std.actor</code> + fmt-clean.</p>
+<ul>
+<li><code>e2e_concurrency</code>/<code>stress</code>/<code>stdlib3</code> + <code>e2e_release</code> hijau;</li>
+</ul>
+<p>  <code>.ns</code> + IR OK (NOL jalur compiler — aditif std).</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Sintaks + RFC, payload non-i64, stop/supervisi/selective,</li>
+</ul>
+<p>  pool aktor, distribusi (ranah Phase 118 bila ada kebutuhan).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

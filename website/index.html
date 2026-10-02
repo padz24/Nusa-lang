@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nusa Docs 3.0.0 — dokumentasi resmi Bahasa Nusa</title>
+<meta name="description" content="Dokumentasi resmi bahasa Nusa: compiled .ns ke native via LLVM 21.1.8.">
+<link rel="canonical" href="https://nusa-lang.org/docs/index.html">
+<meta property="og:title" content="Nusa Docs 3.0.0 — dokumentasi resmi Bahasa Nusa">
+<meta property="og:description" content="Dokumentasi resmi bahasa Nusa: compiled .ns ke native via LLVM 21.1.8.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Nusa Docs">
+<meta name="nusa:category" content="home">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="nusa, dokumentasi, llvm, termux, aarch64, tutorial">
+<meta name="nusa-base" content=".">
+<link rel="stylesheet" href="./assets/style.css">
+<link rel="manifest" href="./manifest.webmanifest">
+<script type="application/ld+json">{"title": "Nusa Docs", "category": "home", "version": "3.0.0", "content": "Nusa, dari sumber ke biner. Nusa adalah bahasa compiled modern oleh Padil (Banyumas) : tulis .ns , dapatkan executable native lewat LLVM 21.1.8 di Termux Android. Unduh Nusa 3.0.0 Mulai dari nol hello.ns fn main() { print(\"Hello, Nusa!\"); } $ nusa run hello.ns Hello, Nusa! biner ~20 KB · acuan benc", "code_example": "", "keywords": "nusa, dokumentasi, llvm, termux, aarch64, tutorial"}</script>
+</head>
+<body class="kind-home">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="./index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="./learn/">Learn</a><a href="./language/">Language</a><a href="./stdlib/">Stdlib</a><a href="./compiler/">Compiler</a><a href="./ecosystem/">Ecosystem</a><a href="./reference/">Reference</a><a href="./rfcs/">RFCs</a><a href="./changelog/">Changelog</a><a href="./downloads/">Downloads</a><a href="./playground/">Playground</a><a href="./search/">Search</a></nav>
+<a class="btn" href="./downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><article>
+<h1 class="hero-title">Nusa, dari sumber ke biner.</h1>
+<p class="hero-sub">Nusa adalah bahasa compiled modern oleh <b>Padil (Banyumas)</b>:
+tulis <code>.ns</code>, dapatkan executable native lewat LLVM 21.1.8 di Termux Android.</p>
+<div class="hero-cta"><a class="btn" href="downloads/">Unduh Nusa 3.0.0</a>
+<a class="btn sec" href="learn/">Mulai dari nol</a></div>
+<div class="hero-grid">
+<div class="pane"><div class="pane-bar">hello.ns</div>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    print("Hello, Nusa!");
+}</code></pre></div>
+<div class="pane"><div class="pane-bar">$ nusa run hello.ns</div>
+<span class="term-out"><span class="ok">Hello, Nusa!</span><br><span class="dim">biner ~20 KB · acuan bench/ AArch64: ~1,4 dtk</span><span class="caret" aria-hidden="true"></span></span></div>
+</div>
+<h2>Kenapa Nusa</h2>
+<div class="cards">
+<div class="card"><span class="sig">let x: i64 = 30;</span><a href="language/types.html"><b class="t">Pengetikan statis</b></a><br><small>i64, bool, string, array, dan alias type yang dicek ketat sebelum biner dibuat.</small></div><div class="card"><span class="sig">fn identity<T>(v: T) -> T</span><a href="language/generics.html"><b class="t">Generik dan trait</b></a><br><small>Monomorfisasi per tipe konkret, dispatch statis, bound T: Show.</small></div><div class="card"><span class="sig">let n = parse_age(s)?;</span><a href="language/error-handling.html"><b class="t">Enum, match, dan ?</b></a><br><small>Option/Result natif, exhaustiveness wajib, propagasi error eksplisit.</small></div><div class="card"><span class="sig">chan_len(c: i64) -> i64</span><a href="language/concurrency.html"><b class="t">Konkurensi</b></a><br><small>Thread, channel, mutex, atomik, plus observability antrean.</small></div><div class="card"><span class="sig">nusa pkg build</span><a href="ecosystem/packaging.html"><b class="t">Paket, registry, FFI</b></a><br><small>Manifes terkunci, registry file-backed, extern fn C.</small></div><div class="card"><span class="sig">nusa lsp</span><a href="compiler/lsp.html"><b class="t">Perkakas bahasa</b></a><br><small>Server bahasa 7 fitur, info DWARF -g, dan rantai bootstrap.</small></div></div>
+<h2>Mulai dalam lima baris</h2>
+<pre data-lang="bash"><code class="lang-bash">pkg install clang cmake llvm
+cd ~/nusa && cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j"$(nproc)"
+./build/nusa run tutorials/01-hello/main.ns
+# Hello, Nusa!</code></pre>
+<h2>Pilih jalurmu</h2>
+<ul>
+<li><b>Pemula</b> — program pertama dalam 15 menit lewat <a href="learn/">kurikulum 01–08</a>.</li>
+<li><b>Developer</b> — <a href="language/">referensi bahasa</a> dan <a href="stdlib/">18 modul stdlib</a> untuk kerja nyata.</li>
+<li><b>Peretas compiler</b> — <a href="compiler/">bedah internal</a> dari lexer sampai biner LLVM.</li>
+<li><b>Kontributor</b> — <a href="rfcs/">proses RFC</a> dan <a href="ecosystem/security.html">model keamanan</a>.</li>
+</ul>
+</article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="./sitemap.xml">Peta situs</a><a href="./ai/">Data AI</a><a href="./search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="./assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+// Sample `nusa test` target: core stdlib (run with `nusa test tests/`).
+// PASS = exit 0 via asserts.
+import core;
+fn main() {
+    assert(sign(7) == 1);
+    assert(sign(0) == 0);
+    assert(sign(0 - 7) == 0 - 1);
+    assert(abs_diff(10, 3) == 7);
+    assert(abs_diff(3, 10) == 7);
+    assert(ceil_div(7, 3) == 3);
+    assert(ceil_div(6, 3) == 2);
+    assert(ceil_div(0 - 7, 3) == 0 - 2);
+    assert(mod_euclid(7, 3) == 1);
+    assert(mod_euclid(0 - 7, 3) == 2);
+    assert(mod_euclid(7, 0) == 0);
+    assert(div_euclid(7, 3) == 2);
+    assert(div_euclid(0 - 7, 3) == 0 - 3);
+    assert(powmod(2, 10, 1000) == 24);
+    assert(powmod(3, 0, 7) == 1);
+    assert(ilog2(1) == 0);
+    assert(ilog2(16) == 4);
+    assert(ilog2(15) == 3);
+    assert(is_pow2(1));
+    assert(is_pow2(16));
+    assert(is_pow2(3) == false);
+    assert(is_pow2(0) == false);
+    assert(sum_to(100) == 5050);
+    assert(sum_to(0) == 0);
+}

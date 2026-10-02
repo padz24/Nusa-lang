@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pgo-3.5.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="pgo-3.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profile-Guided Optimization — Milestone 1: Alur clang (Phase 104)">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/pgo-3.5.html">
+<meta property="og:title" content="pgo-3.5.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="pgo-3.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profile-Guided Optimization — Milestone 1: Alur clang (Phase 104)">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="pgo-3.5.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="pgo-3.5, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "pgo-3.5.md", "category": "docs", "version": "3.0.0", "content": "pgo-3.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profile-Guided Optimization — Milestone 1: Alur clang (Phase 104) # Status: slice implementasi. Mandat master Phase 104 (PGO: build instrumented → run workload → collect → optimize → release; CLI build --profile /", "code_example": "", "keywords": "pgo-3.5, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/pgo-3.5.html">pgo-3.5.md</a></p><article><h1>pgo-3.5.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="profile-guided-optimization-milestone-1-alur-clang-phase-104">Profile-Guided Optimization — Milestone 1: Alur clang (Phase 104) <a href="#profile-guided-optimization-milestone-1-alur-clang-phase-104" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi. Mandat master Phase 104 (PGO: build</p>
+<p>instrumented → run workload → collect → optimize → release; CLI</p>
+<p><code>build --profile</code> / <code>profile</code> / <code>build --use-profile</code>; target 3.5.0;</p>
+<p>implikasi reproducibility didokumentasikan).</p>
+<h2 id="1-deviasi-cli-disengaja-tercatat">1. Deviasi CLI (disengaja, tercatat) <a href="#1-deviasi-cli-disengaja-tercatat" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa build --profile</code> SUDAH MILIK Phase 62 (dev/debug/release);</li>
+</ul>
+<p>  <code>nusa bench</code> + <code>build --stats</code> (Phase 65) menutup peran `nusa</p>
+<p>  profile`. Menimpa keduanya = breaking perubahan stabilitas.</p>
+<ul>
+<li>Dipilih namespace <code>--pgo-*</code> (prioritas master: stability &gt; features):</li>
+</ul>
+<p>  - <code>nusa build prog.ns -o prog_inst --pgo-generate</code> (clang</p>
+<p>    <code>-fprofile-generate</code>; biner menulis <code>*.profraw</code> saat workload).</p>
+<p>  - <code>llvm-profdata merge -o prog.profdata *.profraw</code> (langkah manual</p>
+<p>    eksplisit — nama <code>.profraw</code> bervariasi per run, glob aman).</p>
+<p>  - <code>nusa build prog.ns -o prog_opt --pgo-use=prog.profdata</code></p>
+<p>    (clang <code>-fprofile-use=</code>; juga bentuk <code>--pgo-use FILE</code>).</p>
+<p>  - <code>nusa pkg build</code> meneruskan kedua flag (cermin <code>--stats</code>).</p>
+<ul>
+<li>Validasi dini (pre-build): kombinasi generate+use ditolak</li>
+</ul>
+<p>  (eksklusif); profil hilang ditolak dengan arahan merge.</p>
+<h2 id="2-cache-safety-temuan-desain">2. Cache safety (temuan desain) <a href="#2-cache-safety-temuan-desain" aria-label="taut">#</a></h2>
+<p>Mode PGO ADALAH flag: <code>Fingerprint::pgo</code> =</p>
+<p><code>&quot;&quot; | &quot;generate&quot; | &quot;use:&lt;sha-profdata&gt;&quot;</code> (<code>compiler/incr/</code>,</p>
+<p><code>sameFlags</code>, serialisasi; lama tanpa-<code>pgo</code> tetap terbaca).</p>
+<p>Tanpa ini biner instrumented/teroptimasi/base tertukar via</p>
+<p><code>Fresh (cached)</code> — diverifikasi negatif di <code>e2e_pgo</code> (kasus</p>
+<p><code>pgo-cache</code>). Isi profdata ikut sha: profil baru → rebuild.</p>
+<h2 id="3-implikasi-reproducibility-mandat">3. Implikasi reproducibility (mandat) <a href="#3-implikasi-reproducibility-mandat" aria-label="taut">#</a></h2>
+<ul>
+<li>PGO MENGGUGURKAN jaminan reproducible-builds (§61) untuk artefak</li>
+</ul>
+<p>  yang memakainya: <code>.profdata</code> bergantung workload, input, urutan</p>
+<p>  scheduling, dan mesin (counter + layout). Dua mesin → dua</p>
+<p>  <code>.profdata</code> → dua biner yang sah-berbeda.</p>
+<ul>
+<li>Aturan: rilis yang mengklaim reproducible (lockfile/pin) DILARANG</li>
+</ul>
+<p>  memakai <code>--pgo-use</code>; PGO hanya untuk artefak performa-tertakar</p>
+<p>  (<code>bench/suite.sh</code> + workload terkunci); simpan <code>.profdata</code> +</p>
+<p>  perintah merge persis di catatan rilis bila dipakai.</p>
+<ul>
+<li>Determinisme compiler sendiri tak tersentuh (flag hanya</li>
+</ul>
+<p>  diteruskan ke clang; tanpa PGO perilaku bit-identik).</p>
+<h2 id="4-diverifikasi-termux-aarch64-clang-llvm-profdata-21-1-8">4. Diverifikasi (Termux AArch64, clang/llvm-profdata 21.1.8) <a href="#4-diverifikasi-termux-aarch64-clang-llvm-profdata-21-1-8" aria-label="taut">#</a></h2>
+<ul>
+<li>Loop penuh <code>fib(20)</code> → <code>6765</code> identik di ketiga biner</li>
+</ul>
+<p>  (base/instrumented/optimized); <code>e2e_pgo</code> 4/4 (loop, missing,</p>
+<p>  exclusive, cache); <code>test_incr</code> + <code>test_pkg</code> hijau; <code>e2e_release</code></p>
+<p>  hijau; <code>.ns</code> + IR OK.</p>
+<ul>
+<li>Ukuran <code>hello</code>: base 5816 B, instrumented 85424 B, PGO 5816 B</li>
+</ul>
+<p>  (ilustrasi, bukan klaim speedup — workload mainan).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

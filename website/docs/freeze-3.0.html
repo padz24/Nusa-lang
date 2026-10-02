@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>freeze-3.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="freeze-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Freeze — Design (Phase 81, kandidat spesifikasi ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/freeze-3.0.html">
+<meta property="og:title" content="freeze-3.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="freeze-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Freeze — Design (Phase 81, kandidat spesifikasi ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="freeze-3.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="freeze-3.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "freeze-3.0.md", "category": "docs", "version": "3.0.0", "content": "freeze-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Freeze — Design (Phase 81, kandidat spesifikasi 3.0) # Status: implementasi slice ini. Mandat master: PHASE 81 (freeze syntax, type semantics, memory semantics, module semantics, error semantics, c", "code_example": "", "keywords": "freeze-3.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/freeze-3.0.html">freeze-3.0.md</a></p><article><h1>freeze-3.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-language-freeze-design-phase-81-kandidat-spesifikasi-3-0">Nusa Language Freeze — Design (Phase 81, kandidat spesifikasi 3.0) <a href="#nusa-language-freeze-design-phase-81-kandidat-spesifikasi-3-0" aria-label="taut">#</a></h1>
+<p>Status: implementasi slice ini. Mandat master: PHASE 81</p>
+<p>(freeze syntax, type semantics, memory semantics, module</p>
+<p>semantics, error semantics, concurrency semantics; hanya bug</p>
+<p>fix + carefully approved improvements; tujuan = Nusa 3.0</p>
+<p>specification candidate). Spec bahasa TAK BERUBAH.</p>
+<h2 id="1-penomoran-keputusan-tercatat">1. Penomoran (keputusan tercatat) <a href="#1-penomoran-keputusan-tercatat" aria-label="taut">#</a></h2>
+<p>Rilis ini BUKAN 3.0 (final di Phase 82+, beta di 84).</p>
+<p>Versi compiler tetap <strong>2.30.1</strong>. Artefak Phase 81 = kandidat</p>
+<p>spesifikasi + enforcement, nol perubahan bahasa/IR/ABI.</p>
+<p>Bump versi ditunda sampai beta (menghindari klaim 3.0 prematur).</p>
+<h2 id="2-basis-freeze">2. Basis freeze <a href="#2-basis-freeze" aria-label="taut">#</a></h2>
+<ul>
+<li>Normatif: <code>docs/language-spec-2.0.md</code> (289 baris, 15 topik +</li>
+</ul>
+<p>  Appendix UB) + <code>e2e_spec2.sh</code> (6 kasus, hijau baseline).</p>
+<ul>
+<li>Delta 2.1→2.30 = murni library/paket/harness (stdlib,</li>
+</ul>
+<p>  registry, server, dist, stabilitas); NOL sintaks/semantik</p>
+<p>  baru sejak 2.0 (parser/checker/codegen tak tersentuh sejak</p>
+<p>  09-11, diverifikasi Phase 80).</p>
+<ul>
+<li>Kandidat 3.0 = spec 2.0 DIKUNCI + lampiran freeze (§5 di</li>
+</ul>
+<p>  dokumen kandidat), bukan rewrite.</p>
+<h2 id="3-freeze-scope-6-area-pemetaan-ke-spec">3. Freeze scope (6 area, pemetaan ke spec) <a href="#3-freeze-scope-6-area-pemetaan-ke-spec" aria-label="taut">#</a></h2>
+<ul>
+<li>syntax → spec §1–§3 + <code>docs/syntax.md</code>.</li>
+<li>type semantics → spec §4,§8,§9,§10 + <code>types.md</code>.</li>
+<li>memory semantics → spec §5 + <code>memory-model.md</code> + Appendix A.</li>
+<li>module semantics → spec §7 + <code>modules.md</code>.</li>
+<li>error semantics → spec §6,§14 + <code>error-handling.md</code>.</li>
+<li>concurrency semantics → spec §11 + <code>concurrency.md</code>.</li>
+</ul>
+<p>FFI/compile-time/macro/async = tetap di luar kontrak stabil</p>
+<p>(UB/reserved, Appendix A); paket std non-normatif (§13).</p>
+<h2 id="4-aturan-perubahan-selama-freeze">4. Aturan perubahan selama freeze <a href="#4-aturan-perubahan-selama-freeze" aria-label="taut">#</a></h2>
+<ul>
+<li>DILARANG: keyword/grammar baru, tipe baru, ownership/GC</li>
+</ul>
+<p>  baru, modul/paket semantik baru, error shape baru,</p>
+<p>  primitif konkurensi baru — tanpa RFC khusus.</p>
+<ul>
+<li>BOLEH: bugfix crash/hang/miscompile + perbaikan redaksional</li>
+</ul>
+<p>  spec (klarifikasi tanpa mengubah makna), masing-masing</p>
+<p>  tercatat di kandidat §6 + CHANGELOG.</p>
+<ul>
+<li>Slice ini: NOL bugfix bahasa ditemukan (sweep hijau);</li>
+</ul>
+<p>  NOL improvement disetujui (antre ke RFC Phase 82+).</p>
+<h2 id="5-enforcement-harness">5. Enforcement (harness) <a href="#5-enforcement-harness" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_freeze.sh</code> (baru): (a) spec kandidat ada + 6 area</li>
+</ul>
+<p>  terpetakan eksplisit; (b) <code>e2e_spec2</code> hijau; (c) guard</p>
+<p>  sentuh-bahasa: `Parser.cpp/TypeChecker.cpp/Codegen.cpp/</p>
+<p>  Lexer.cpp` mtime/baseline tak berubah dalam slice</p>
+<p>  (dokumentatif — bukan ganti review).</p>
+<ul>
+<li>Ambang korpus <code>e2e_compat</code> tetap (81 file) sebagai jaring</li>
+</ul>
+<p>  regresi semantik.</p>
+<h2 id="6-baseline-2-30-1-diukur-ulang-termux-aarch64">6. Baseline 2.30.1 (diukur ulang, Termux AArch64) <a href="#6-baseline-2-30-1-diukur-ulang-termux-aarch64" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_spec2</code> 6/6; <code>e2e_compat</code> 2/2 (46 ok + 35 lib).</li>
+<li>Full <code>ctest -j2</code>: 80/80 hijau (1230 dtk; final).</li>
+</ul>
+<h2 id="7-dokumentasi">7. Dokumentasi <a href="#7-dokumentasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Baru: <code>docs/language-spec-3.0-candidate.md</code> (kandidat,</li>
+</ul>
+<p>  menunjuk 2.0 + lampiran freeze).</p>
+<ul>
+<li>File ini + CHANGELOG [Unreleased-3.0-candidate] (tanpa bump).</li>
+<li>Website regen (no drift).</li>
+</ul>
+<h2 id="8-acceptance-criteria">8. Acceptance criteria <a href="#8-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>Nol perubahan parser/checker/codegen/lexer.</li>
+<li>Kandidat memetakan 6/6 area + UB + conformance.</li>
+<li><code>e2e_freeze</code> + <code>e2e_spec2</code> + <code>e2e_compat</code> hijau.</li>
+<li>Website no drift; <code>.ns.ll</code> bersih.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

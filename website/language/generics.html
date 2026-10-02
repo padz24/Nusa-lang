@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generics — Nusa Docs 3.0.0</title>
+<meta name="description" content="Generics v3.0.0 Overview Fungsi/struct generik dengan monomorphisasi per instansiasi konkret. Inferensi via unify + eksplisit + mismatch per posisi. S">
+<link rel="canonical" href="https://nusa-lang.org/docs/language/generics.html">
+<meta property="og:title" content="Generics — Nusa Docs 3.0.0">
+<meta property="og:description" content="Generics v3.0.0 Overview Fungsi/struct generik dengan monomorphisasi per instansiasi konkret. Inferensi via unify + eksplisit + mismatch per posisi. S">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Generics">
+<meta name="nusa:category" content="language">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="generics, monomorphization, identity, type param">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Generics", "category": "language", "version": "3.0.0", "content": "Generics v3.0.0 Overview Fungsi/struct generik dengan monomorphisasi per instansiasi konkret. Inferensi via unify + eksplisit + mismatch per posisi. Syntax fn identity&lt;T&gt;(value: T) -&gt; T { return value; } Example fn identity&lt;T&gt;(value: T) -&gt; T { return value; } fn main() { print(ide", "code_example": "fn identity<T>(value: T) -> T {\n    return value;\n}\nfn main() {\n    print(identity(41) + 1);\n    print(identity(\"hi\"));\n}\n", "keywords": "generics, monomorphization, identity, type param"}</script>
+</head>
+<body class="kind-language">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/" aria-current="page">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../language/">Indeks</a></li><li><a href="../language/syntax.html">Syntax</a></li><li><a href="../language/variables.html">Variables</a></li><li><a href="../language/functions.html">Functions</a></li><li><a href="../language/types.html">Types</a></li><li><a href="../language/structs.html">Struct</a></li><li><a href="../language/enums.html">Enum</a></li><li><a href="../language/generics.html" aria-current="page">Generics</a></li><li><a href="../language/traits.html">Traits</a></li><li><a href="../language/pattern-matching.html">Pattern Matching</a></li><li><a href="../language/error-handling.html">Error Handling</a></li><li><a href="../language/concurrency.html">Concurrency</a></li><li><a href="../language/modules.html">Modules</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../language/">Language</a> / <a href="../language/generics.html">Generics</a></p><article><h1>Generics</h1><span class="badge historic">v3.0.0</span> <h2>Overview</h2><p>Fungsi/struct generik dengan monomorphisasi per instansiasi konkret. Inferensi via unify + eksplisit + mismatch per posisi.</p><h2>Syntax</h2><pre data-lang="nusa"><code class="lang-nusa">fn identity&lt;T&gt;(value: T) -&gt; T {
+    return value;
+}</code></pre><h2>Example</h2><pre data-lang="nusa"><code class="lang-nusa">fn identity&lt;T&gt;(value: T) -&gt; T {
+    return value;
+}
+fn main() {
+    print(identity(41) + 1);
+    print(identity(&quot;hi&quot;));
+}
+</code></pre><details><summary>Output</summary><samp class="out">42
+hi</samp></details><p><a class="btn sec" href="../playground/?code=fn%20identity%3CT%3E%28value%3A%20T%29%20-%3E%20T%20%7B%0A%20%20%20%20return%20value%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28identity%2841%29%20%2B%201%29%3B%0A%20%20%20%20print%28identity%28%22hi%22%29%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Rules</h2><ul><li>Substitusi tparam menjangkau posisi-tipe ekspresi body (Option&lt;U&gt;.Some).</li><li>Bounds T: Trait dicek saat instansiasi konkret.</li></ul><h2>Compiler behavior</h2><p>Monomorphisasi + recheck StructLit rewrite (tipe applied, bukan named-mangled). Dua putaran propagasi konteks.</p><div class="warn"><h2>Limitations</h2><ul><li>Tanpa metode/impl generik parsial; tanpa higher-kinded types.</li><li>Error bound: does not implement trait.</li></ul></div><h2>Related topics</h2><ul><li><a href="../language/traits.html">language/traits</a></li><li><a href="../language/types.html">language/types</a></li></ul><h2>Spec &amp; Tests</h2><p>Spec: <code>docs/language-spec-2.0.md §9 + RFC-0001 (Implemented)</code> · Uji pengunci: <code>examples/generics.ns + e2e_traits/generic suites</code></p></article><div class="prevnext"><a href="../language/enums.html">← Enum</a><a href="../language/traits.html">Traits →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

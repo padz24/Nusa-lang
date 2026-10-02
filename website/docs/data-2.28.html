@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>data-2.28.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="data-2.28.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Database / Data Tooling — Design (Phase 77, target 2.28.0) # St">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/data-2.28.html">
+<meta property="og:title" content="data-2.28.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="data-2.28.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Database / Data Tooling — Design (Phase 77, target 2.28.0) # St">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="data-2.28.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="data-2.28, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "data-2.28.md", "category": "docs", "version": "3.0.0", "content": "data-2.28.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Database / Data Tooling — Design (Phase 77, target 2.28.0) # Status: implementasi slice ini. Mandat master: PHASE 77 (TANPA engine di stdlib; FFI stabil + networking + serialisasi + ekosistem paket agar ekosistem", "code_example": "", "keywords": "data-2.28, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/data-2.28.html">data-2.28.md</a></p><article><h1>data-2.28.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="database-data-tooling-design-phase-77-target-2-28-0">Database / Data Tooling — Design (Phase 77, target 2.28.0) <a href="#database-data-tooling-design-phase-77-target-2-28-0" aria-label="taut">#</a></h1>
+<p>Status: implementasi slice ini. Mandat master: PHASE 77 (TANPA</p>
+<p>engine di stdlib; FFI stabil + networking + serialisasi +</p>
+<p>ekosistem paket agar ekosistem sediakan SQLite/dll; JSON TOML</p>
+<p>CSV format biner). Spec bahasa tak berubah.</p>
+<h2 id="1-keputusan-cakupan-jujur">1. Keputusan cakupan (jujur) <a href="#1-keputusan-cakupan-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Engine: TIDAK ADA (mandat). Bukti pola: paket referensi</li>
+</ul>
+<p>  <code>packages/sqlite/</code> (shim C handle-based + wrapper Nusa +</p>
+<p>  manifest <code>[link]</code>), bukan modul std.</p>
+<ul>
+<li>FFI dianggap stabil (10 kasus hijau); fase ini hanya</li>
+</ul>
+<p>  menambah POLA terdokumentasi (shim untuk API pointer/</p>
+<p>  callback yang tak terekspresikan di <code>extern fn</code>).</p>
+<ul>
+<li>Networking: cukup (tcp + http + e2e localhost); tanpa Shu.</li>
+<li>Biner: DITUNDA (<code>ord</code> belum ada — preseden crypto-2.27).</li>
+<li>Base64: DITUNDA (butuh <code>ord</code>).</li>
+</ul>
+<h2 id="2-serialisasi-murni-nusa-gaya-index-getter-tanpa">2. Serialisasi murni-Nusa (gaya index/getter — tanpa <a href="#2-serialisasi-murni-nusa-gaya-index-getter-tanpa" aria-label="taut">#</a></h2>
+<p>// callback/array-return yang berisiko)</p>
+<ul>
+<li><code>std/csv.ns</code> (RFC-4180 praktis): <code>csv_num_rows(text)</code>,</li>
+</ul>
+<p>  <code>csv_row(text, i)</code>, <code>csv_num_fields(row)</code>, `csv_field(row,</p>
+<p>  i)<code> — quote ganda, </code>&quot;&quot;<code> escape, </code>\n<code> dalam quote, </code>\r\n`</p>
+<p>  ditoleransi; OOB → <code>&quot;&quot;</code>.</p>
+<ul>
+<li><code>std/json.ns</code> (objek datar): <code>json_has_key</code>,</li>
+</ul>
+<p>  <code>json_get_string/int/bool</code> (unescape <code>\&quot; \\ \n \t \r</code>;</p>
+<p>  unknown-escape → char apa adanya cermin lexer; int via</p>
+<p>  prefix digit + parse_int; bool hanya literal <code>true</code>),</p>
+<p>  <code>json_valid</code> (kurung seimbang di luar string). Nested/</p>
+<p>  array = first-match datar (didokumentasikan).</p>
+<ul>
+<li><code>std/toml.ns</code> (skalar baris): `toml_get_string/int/bool(</li>
+</ul>
+<p>  doc, section, key)<code> (section </code>&quot;&quot;<code> = top-level; </code>#` penuh</p>
+<p>  baris + inline di luar string diabaikan; <code>[[array]]</code></p>
+<p>  tak didukung).</p>
+<h2 id="3-paket-packages-sqlite-referensi-ekosistem">3. Paket <code>packages/sqlite/</code> (referensi ekosistem) <a href="#3-paket-packages-sqlite-referensi-ekosistem" aria-label="taut">#</a></h2>
+<ul>
+<li><code>shim.c</code>: tabel 16 slot <code>sqlite3*</code>; <code>ndb_open(path)</code>,</li>
+</ul>
+<p>  <code>ndb_exec(id, sql)</code> (changes/-1), `ndb_query_dump(id, sql,</p>
+<p>  path)<code> (CSV + header nama kolom; rows/-1), </code>ndb_close`.</p>
+<p>  (<code>extern fn</code> menolak return string — kepemilikan memori —</p>
+<p>  maka hasil via file + csv.ns; SELECT-only, didokumentasikan.)</p>
+<ul>
+<li><code>sqlite.ns</code>: <code>extern fn</code> + alias <code>db_open/exec/query/close</code>.</li>
+<li><code>nusa.toml</code>: <code>[link] files=[&quot;shim.o&quot;] libraries=[&quot;sqlite3&quot;]</code></li>
+</ul>
+<p>  + <code>[capabilities] native=true</code>; <code>.o</code> TIDAK di-commit</p>
+<p>  (dibangun di e2e; lihat README).</p>
+<ul>
+<li>e2e: guard libsqlite3 (SKIP bersih bila absen); alur</li>
+</ul>
+<p>  <code>pkg init app</code> + <code>pkg add --path</code> + <code>pkg build</code> (jalur</p>
+<p>  ekosistem) + CRUD :memory: + tutup + negatif</p>
+<p>  (open buruk, SQL buruk, query buruk).</p>
+<h2 id="4-peta-implementasi">4. Peta implementasi <a href="#4-peta-implementasi" aria-label="taut">#</a></h2>
+<p><code>std/csv.ns</code> + <code>std/json.ns</code> + <code>std/toml.ns</code> →</p>
+<p><code>tests/csv_test.ns</code>, <code>tests/json_test.ns</code>, <code>tests/toml_test.ns</code></p>
+<p>(<code>nusa test</code>) → <code>packages/sqlite/*</code> → <code>e2e_data.sh</code> (serialisasi</p>
+<p>+ sqlite + negatif) → docs (<code>data-2.28.md</code> + standard-library +</p>
+<p>ffi pola + sqlite README) + CHANGELOG + regen.</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nusa test</code> +3 file hijau; <code>e2e_data</code> hijau (atau SKIP</li>
+</ul>
+<p>  sqlite yang eksplisit); suite lama hijau; bench identik;</p>
+<p>  <code>.ns.ll</code> + artefak sqlite bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

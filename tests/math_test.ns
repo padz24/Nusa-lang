@@ -1,0 +1,17 @@
+// Sample `nusa test` target: math stdlib (run with `nusa test tests/`).
+// Needs no stdin; PASS = exit 0 via asserts.
+import math;
+fn main() {
+    assert(abs(5) == 5);
+    assert(abs(0 - 5) == 5);
+    assert(min(3, 7) == 3);
+    assert(max(3, 7) == 7);
+    assert(clamp(10, 0, 5) == 5);
+    assert(clamp(0 - 3, 0, 5) == 0);
+    assert(pow(2, 10) == 1024);
+    assert(fact(5) == 120);
+    assert(gcd(12, 8) == 4);
+    assert(is_even(4));
+    assert(isqrt(16) == 4);
+    assert(isqrt(15) == 3);
+}

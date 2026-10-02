@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spec.md — Nusa Docs 1.0.0</title>
+<meta name="description" content="spec.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Spesifikasi Bahasa Nusa — v1.0.0 (dasar; riwayat) # Dokumen historis">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/spec.html">
+<meta property="og:title" content="spec.md — Nusa Docs 1.0.0">
+<meta property="og:description" content="spec.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Spesifikasi Bahasa Nusa — v1.0.0 (dasar; riwayat) # Dokumen historis">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="spec.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="1.0.0">
+<meta name="nusa:keywords" content="spec, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "spec.md", "category": "docs", "version": "1.0.0", "content": "spec.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Spesifikasi Bahasa Nusa — v1.0.0 (dasar; riwayat) # Dokumen historis (beku sejak v1.0.0, diperkaya catatan versi hingga v1.13.0). Definisi bahasa yang berlaku saat ini: docs/language-spec-3.0.md (normatif final; bila", "code_example": "", "keywords": "spec, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/spec.html">spec.md</a></p><article><h1>spec.md</h1><p><span class="badge historic">sumber v1.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="spesifikasi-bahasa-nusa-v1-0-0-dasar-riwayat">Spesifikasi Bahasa Nusa — v1.0.0 (dasar; riwayat) <a href="#spesifikasi-bahasa-nusa-v1-0-0-dasar-riwayat" aria-label="taut">#</a></h1>
+<blockquote><p>Dokumen historis (beku sejak v1.0.0, diperkaya catatan versi</p></blockquote>
+<blockquote><p>hingga v1.13.0). Definisi bahasa yang berlaku saat ini:</p></blockquote>
+<blockquote><p><strong><code>docs/language-spec-3.0.md</code></strong> (normatif final; bila bertentangan,</p></blockquote>
+<blockquote><p>dokumen itu yang menang). Versi 2.0 diabadikan di</p></blockquote>
+<blockquote><p><code>docs/language-spec-2.0.md</code>, 1.20.0 di</p></blockquote>
+<blockquote><p><code>docs/language-spec-1.0.md</code>.</p></blockquote>
+<h2 id="1-leksikal">1. Leksikal <a href="#1-leksikal" aria-label="taut">#</a></h2>
+<ul>
+<li>Encoding sumber: UTF-8 (konten non-ASCII selain di string/kommen</li>
+</ul>
+<p>  ditolak lexer per karakter).</p>
+<ul>
+<li>Whitespace: spasi, tab, CR, LF (tanpa makna selain pemisah).</li>
+<li>Komentar: <code>//</code> sampai akhir baris; <code>///</code> = dokumentasi API.</li>
+<li>Keyword (reserved): `fn let return if else while true false i64 bool</li>
+</ul>
+<p>  string void struct import`.</p>
+<ul>
+<li>Identifier: <code>[A-Za-z_][A-Za-z0-9_]*</code> di luar keyword.</li>
+<li>Integer: <code>[0-9]+</code> desimal, rentang <code>i64</code> (overflow/ekor-alpha ditolak).</li>
+<li>String: <code>&quot;…&quot;</code> dengan escapes <code>\&quot; \\ \n \t \r \0</code>; newline mentah /</li>
+</ul>
+<p>  EOF sebelum penutup ditolak.</p>
+<ul>
+<li>Operator/simbol: <code>+ - * / = == != &lt; &gt; &lt;= &gt;= -&gt; ( ) { } [ ] : , ; .</code></li>
+</ul>
+<p>  (<code>-&gt;</code> greedy; <code>!</code> tunggal ditolak dengan saran <code>!=</code>).</p>
+<h2 id="2-grammar-ringkas-normatif-penuh-di-syntax-md">2. Grammar (ringkas; normatif penuh di <code>syntax.md</code>) <a href="#2-grammar-ringkas-normatif-penuh-di-syntax-md" aria-label="taut">#</a></h2>
+<p>Detail per topik: <code>types.md</code>, <code>functions.md</code>,</p>
+<p><code>control-flow.md</code>, <code>arrays.md</code>, <code>structs.md</code>, <code>modules.md</code>,</p>
+<p><code>standard-library.md</code>. Sintaks gabungan: <code>syntax.md</code>.</p>
+<pre data-lang="text"><code class="lang-text">Program    := (Import | TypeAliasDecl | TraitDecl | ImplBlock |
+               StructDecl | EnumDecl | FuncDecl | ExternDecl)*
+Import     := &quot;import&quot; Ident [&quot;;&quot;]
+TypeAliasDecl := &quot;type&quot; Ident &quot;=&quot; Type [&quot;;&quot;]                          // v1.2.0
+TraitDecl  := &quot;trait&quot; Ident &quot;{&quot; (FuncSig &quot;;&quot;)* &quot;}&quot;                    // v1.3.0
+ImplBlock  := &quot;impl&quot; Ident &quot;for&quot; Type &quot;{&quot; FuncDecl* &quot;}&quot;               // v1.3.0
+StructDecl := &quot;struct&quot; Ident [&quot;&lt;&quot; Ident (&quot;,&quot; Ident)* &quot;&gt;&quot;] &quot;{&quot; (FieldDecl [&quot;;&quot;])* &quot;}&quot;
+FieldDecl  := Ident &quot;:&quot; Type
+EnumDecl   := &quot;enum&quot; Ident [&quot;&lt;&quot; Ident (&quot;,&quot; Ident)* &quot;&gt;&quot;]               // v1.7.0
+              &quot;{&quot; Variant (&quot;,&quot; Variant)* [&quot;,&quot;] &quot;}&quot;
+Variant    := Ident [&quot;(&quot; [Type (&quot;,&quot; Type)*] &quot;)&quot;]
+FuncDecl   := &quot;fn&quot; Ident [&quot;&lt;&quot; Ident (&quot;,&quot; Ident)* &quot;&gt;&quot;] &quot;(&quot; [Param (&quot;,&quot; Param)*] &quot;)&quot; [&quot;-&gt;&quot; Type] Block
+ExternDecl := &quot;extern&quot; &quot;fn&quot; Ident &quot;(&quot; [Param (&quot;,&quot; Param)*] &quot;)&quot;        // v1.13.0
+              [&quot;-&gt;&quot; Type] &quot;;&quot;
+Param      := Ident &quot;:&quot; Type
+Block      := &quot;{&quot; Stmt* &quot;}&quot;
+Stmt       := LetStmt | AssignStmt | PrintStmt | ReturnStmt | ExprStmt
+            | IfStmt | WhileStmt | MatchStmt                             // v1.6.0
+Type       := &quot;i64&quot; | &quot;bool&quot; | &quot;string&quot; | &quot;void&quot; | &quot;[&quot; Type &quot;]&quot; | Ident
+            | &quot;fn&quot; &quot;(&quot; [Type (&quot;,&quot; Type)*] &quot;)&quot; [&quot;-&gt;&quot; Type]          // v1.2.0
+Expr       := equality (precedence: == != &lt; &gt; &lt;= &gt;= + - * / unary postfix)</code></pre>
+<p><code>main</code> (<code>fn main()</code>, tanpa parameter, return <code>void</code>) wajib tepat satu</p>
+<p>per program gabungan. <code>;</code> opsional di akhir statement.</p>
+<h2 id="3-sistem-tipe">3. Sistem tipe <a href="#3-sistem-tipe" aria-label="taut">#</a></h2>
+<p>Statis, nominal untuk struct, struktural untuk sisanya; tanpa coercion.</p>
+<p>Alias <code>type X = T;</code> (v1.2.0) transparan — identik dengan</p>
+<p><code>T</code>, namespace bersama struct. Tipe fungsi <code>fn(T)-&gt;T</code> (v1.2.0): value</p>
+<p>hanya nama fn top-level (tanpa closure); berlaku di let/param/return/</p>
+<p>call; print/<code>==</code>/array-elemen/field-struct ditolak. Fungsi generik</p>
+<p><code>fn f&lt;T&gt;(x: T) -&gt; T</code> (v1.2.0): inferensi call-site, monomorphisasi</p>
+<p>per kombinasi argumen, body dicek per-instance. Struct generik</p>
+<p><code>struct P&lt;T&gt; { … }</code> (v1.2.0): konstruksi inferensi/eksplisit,</p>
+<p>monomorphisasi per kombinasi, struct by-value di param/return.</p>
+<p>Trait <code>trait T { fn m(self); }</code> + <code>impl T for P { … }</code> (v1.3.0):</p>
+<p>dispatch statis ke fungsi mangled; bounds <code>T: Trait</code> (+ ganda)</p>
+<p>dicek saat instansiasi. Lihat <code>types.md</code>, <code>traits.md</code>.</p>
+<p><code>Option&lt;T&gt;</code>/<code>Result&lt;T, E&gt;</code> (v1.5.0 sebagai struct generik biasa;</p>
+<p><strong>sejak 2.0 enum natif</strong> — lihat <code>docs/error-handling.md</code> dan</p>
+<p><code>docs/migration-2.0.md</code>) + propagasi <code>expr?</code> (operan dan return</p>
+<p>fungsi harus <code>Result</code> sama).</p>
+<p>Lihat <code>error-handling.md</code>.</p>
+<p><code>let x: T = e</code> menuntut <code>typeof(e) == T</code>; tanpa anotasi</p>
+<p>menurunkan dari inisialisasi. Nilai <code>void</code> tak bisa disimpan/dicetak/</p>
+<p>dibandingkan. Operator numerik butuh <code>i64</code>; kondisi butuh <code>bool</code>;</p>
+<p>equality butuh sisi sama (non-<code>string</code>/<code>void</code>/array/struct).</p>
+<p>Panggilan dicek arity + tipe; return dicek terhadap return type</p>
+<p>(all-paths untuk non-<code>void</code>). Lihat <code>types.md</code>.</p>
+<h2 id="4-semantik-runtime">4. Semantik runtime <a href="#4-semantik-runtime" aria-label="taut">#</a></h2>
+<ul>
+<li>Evaluasi eager, urutan kiri-ke-kanan; statement sekuensial.</li>
+<li>Model memori normatif: <code>docs/memory-model.md</code> (owned values di</li>
+</ul>
+<p>  stack + heap string program-lifetime; tanpa GC/pinjaman).</p>
+<ul>
+<li>Variabel = slot stack per scope (shadowing antar-scope; tiap Block</li>
+</ul>
+<p>  scope baru). Assignment menimpa slot terdekat.</p>
+<ul>
+<li>Integer: aritmetika two&#x27;s-complement wrapping, kecuali pembagi nol</li>
+</ul>
+<p>  (statis: compile error; dinamis: <code>runtime error: division by zero</code> +</p>
+<p>  exit 1).</p>
+<ul>
+<li>Boolean untuk kontrol; tanpa operator short-circuit (<code>&amp;&amp;</code>/<code>||</code></li>
+</ul>
+<p>  tidak ada di v1.0.0) — semua operand selalu dievaluasi.</p>
+<ul>
+<li>String: pointer NUL-terminated buram; komparasi/manipulasi di luar</li>
+</ul>
+<p>  builtin (<code>str_len</code>, <code>str_concat</code>) tidak ada.</p>
+<ul>
+<li>Array: alloca <code>[N x T]</code>; index di-bounds-check (<code>exit 1</code> bila gagal);</li>
+</ul>
+<p>  copy semantik nilai (agregat).</p>
+<ul>
+<li>Struct: alloca named type; field via offset statis; nilai = pointer;</li>
+</ul>
+<p>  copy agregat.</p>
+<ul>
+<li>Panggilan: konvensi C AArch64 via LLVM; rekursi didukung.</li>
+<li><code>main</code> mengembalikan 0 ke OS. <code>exit(n)</code> tak terekspos (kecuali via</li>
+</ul>
+<p>  abort runtime: assert/OOB/div-0 → exit 1).</p>
+<ul>
+<li>Memori: tanpa GC; string heap (<code>input</code>, <code>str_concat</code>, <code>file_read</code>)</li>
+</ul>
+<p>  bocor sengaja hingga roadmap GC.</p>
+<h2 id="5-modul-dan-visibilitas">5. Modul dan visibilitas <a href="#5-modul-dan-visibilitas" aria-label="taut">#</a></h2>
+<p>Satu file = satu modul. <code>import</code> merge nama publik; <code>_</code>-awalan privat</p>
+<p>(fungsi/struct); siklus ditolak; rantai &gt; 100 ditolak. Lihat</p>
+<p><code>modules.md</code>. Dependensi antar-paket: <code>docs/pkg.md</code> (sejak v1.11.0).</p>
+<h2 id="6-diagnostics">6. Diagnostics <a href="#6-diagnostics" aria-label="taut">#</a></h2>
+<p>Setiap error: <code>file:line:col</code>, pesan, snippet + caret span, opsional</p>
+<p><code>saran help:</code>. Compiler exit != 0 tanpa sinyal pada input apapun yang</p>
+<p>ditolak; hang dilarang (test runner memagari 10 dtk).</p>
+<h2 id="7-batasan-normatif-v1-0-0-historis">7. Batasan normatif v1.0.0 (historis) <a href="#7-batasan-normatif-v1-0-0-historis" aria-label="taut">#</a></h2>
+<p>Paragraf ini merekam batas v1.0.0 dan TIDAK berlaku lagi apa adanya:</p>
+<p>generics, traits, match, enum, closures, concurrency, FFI, package</p>
+<p>manager, registry, self-hosting, dan cross-toolchain semuanya sudah</p>
+<p>mendarat di 1.x/2.x (lihat CHANGELOG + <code>docs/language-spec-2.0.md</code></p>
+<p>§1–§13 untuk status normatif tiap area). (<code>async</code>/<code>await</code> tetap</p>
+<p>reserved tanpa sintaks — RFC-0004 Proposed.) Perilaku program yang</p>
+<p>mengandalkan area di luar spec 2.0 adalah undefined.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

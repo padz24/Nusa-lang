@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.6.0 — Nusa Docs 0.6.0</title>
+<meta name="description" content="0.6.0 v0.6.0 Release notes # — Control Flow (2026-09-05) Milestone control flow sesuai MASTER PROMPT: if / else , while , nested if, nested loops — de">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.6.0.html">
+<meta property="og:title" content="Changelog 0.6.0 — Nusa Docs 0.6.0">
+<meta property="og:description" content="0.6.0 v0.6.0 Release notes # — Control Flow (2026-09-05) Milestone control flow sesuai MASTER PROMPT: if / else , while , nested if, nested loops — de">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.6.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.6.0">
+<meta name="nusa:keywords" content="changelog, 0.6.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.6.0", "category": "changelog", "version": "0.6.0", "content": "0.6.0 v0.6.0 Release notes # — Control Flow (2026-09-05) Milestone control flow sesuai MASTER PROMPT: if / else , while , nested if, nested loops — dengan LLVM basic blocks yang benar (entry/then/else/merge, loop.cond/body/after). Ditambahkan # Parser: if Expr Block [else Block | else if …] , while", "code_example": "", "keywords": "changelog, 0.6.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.6.0.html">0.6.0</a></p><article><h1>0.6.0</h1><span class="badge historic">v0.6.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Control Flow (2026-09-05)</p>
+<p>Milestone control flow sesuai MASTER PROMPT: <code>if</code>/<code>else</code>, <code>while</code>,</p>
+<p>nested if, nested loops — dengan LLVM basic blocks yang benar</p>
+<p>(entry/then/else/merge, loop.cond/body/after).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Parser: <code>if Expr Block [else Block | else if …]</code>, <code>while Expr Block</code></li>
+</ul>
+<p>  (tanpa parens di kondisi, sesuai contoh master); dangling-else terikat</p>
+<p>  ke <code>if</code> terdekat via rekursi; <code>else</code> nyasar &amp; <code>{</code> hilang ditolak jelas.</p>
+<ul>
+<li>AST: <code>IfStmt</code>, <code>WhileStmt</code>, <code>AssignStmt</code> (<code>(set x …)</code>); <code>Block</code> dipegang</li>
+</ul>
+<p>  via <code>unique_ptr</code> (memutus siklus definisi); dump <code>(if c (t) (e))</code>,</p>
+<p>  <code>(while c (body))</code>.</p>
+<ul>
+<li><code>Scopes&lt;T&gt;</code> (<code>compiler/semantic/Scopes.h</code>, header-only): tumpukan scope</li>
+</ul>
+<p>  leksikal dipakai identik oleh semantic, checker, dan codegen.</p>
+<p>  Shadowing antar-scope diizinkan; duplikat se-scope tetap ditolak</p>
+<p>  (aturan v0.9.5 <code>duplicate variable</code> terpenuhi).</p>
+<ul>
+<li>Semantic: tiap Block scope baru; var luar terlihat di dalam, tak</li>
+</ul>
+<p>  sebaliknya; assignment memeriksa eksistensi (<code>undefined variable</code>).</p>
+<ul>
+<li>TypeChecker: kondisi <code>if</code>/<code>while</code> wajib <code>bool</code>; unreachable per-block;</li>
+</ul>
+<p>  generalisasi all-paths (v0.5.0 return-last → tiap cabang <code>if</code>/<code>else</code></p>
+<p>  harus return; <code>while</code> tak dihitung karena bisa nol iterasi —</p>
+<p>  konservatif &amp; terdokumentasi); assignment dicek tipenya.</p>
+<ul>
+<li>Codegen: <code>genBlock</code> (scope+terminator), <code>genIf</code> (CondBr then/else/merge),</li>
+</ul>
+<p>  <code>genWhile</code> (br cond → CondBr body/after → br cond); return di cabang</p>
+<p>  → <code>ret</code> benar; merge tak-terjangkau di non-void → <code>unreachable</code></p>
+<p>  (IR tetap valid); semua alloca di entry.</p>
+<ul>
+<li>Assignment <code>x = expr;</code> (v0.6.0): mutasi agar loop bisa progres —</li>
+</ul>
+<p>  klausul &quot;jika diperlukan&quot; v0.3.0 kini terpicu; tipe harus sama.</p>
+<ul>
+<li>Contoh <code>examples/control.ns</code> → <code>10/3/2/1</code>.</li>
+<li>Tests: parser +7 (master/else-if/nested/missing-brace/stray-else/assign)</li>
+</ul>
+<p>  &amp; <code>testIfRejected</code> pensiun; semantic +4 (shadow/visibility/dup-block);</p>
+<p>  typecheck +9 (cond-bool, both-return, no-else, while-return, unreachable</p>
+<p>  cabang, void-branch, assign ±); codegen +3 (then/else/merge,</p>
+<p>  loop.cond/body/after, branch-return); <code>e2e_control</code> baru (9 kasus +</p>
+<p>  timeout anti-gantung + cek IR).</p>
+<h3 id="diperbaiki-temuan-selama-milestone">Diperbaiki (temuan selama milestone) <a href="#diperbaiki-temuan-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li>Void-call butuh statement → <code>ExprStmt</code> (v0.5.0, sudah ada) kini terpakai</li>
+</ul>
+<p>  penuh; tiga <code>std::get</code> final diganti cabang eksplisit (anti crash).</p>
+<ul>
+<li><code>.gitignore</code>: <code>*.ns.ll</code> (artefak IR regenerable tak mengotori tree).</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>11/11 passed</strong>.</li>
+<li>Contoh master verbatim → AArch64 → <code>10</code> lalu countdown <code>3/2/1</code>;</li>
+</ul>
+<p>  nested loops → <code>11..33</code>; sum 1..10 → <code>55</code>; IR memuat label</p>
+<p>  <code>then/else/merge/loop.cond/loop.body/loop.after</code> + <code>br i1</code>.</p>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li><code>while true { return …; }</code> tak dihitung sebagai return (konservatif);</li>
+</ul>
+<p>  tanpa <code>break</code>/<code>continue</code> (belum di roadmap — diusulkan 1.x bila perlu);</p>
+<p>  tanpa assignment gabungan (<code>+=</code>); kondisi non-bool ditolak.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.6.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

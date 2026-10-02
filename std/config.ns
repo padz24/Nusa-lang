@@ -1,0 +1,55 @@
+// Layered configuration (pure Nusa over env + TOML).
+//
+// Precedence per key: environment (non-empty) > TOML document >
+// fallback. Reads process env via `getenv_or`-style check and
+// TOML scalars via toml getters (see toml.ns).
+import toml;
+import process;
+// String config: $ENV, else [section] key, else fallback.
+fn config_str(doc: string, section: string, key: string, env: string, fallback: string) -> string {
+    let v: string = process_env(env);
+    if str_eq(v, "") == false {
+        return v;
+    }
+    let t: string = toml_get_string(doc, section, key);
+    if str_eq(t, "") == false {
+        return t;
+    }
+    return fallback;
+}
+// Integer config: valid $ENV, else TOML int, else fallback.
+fn config_int(doc: string, section: string, key: string, env: string, fallback: i64) -> i64 {
+    let v: string = process_env(env);
+    if parse_int_valid(v) {
+        return parse_int(v);
+    }
+    let t: i64 = toml_get_int(doc, section, key);
+    if t != 0 {
+        return t;
+    }
+    if str_eq(toml_get_string(doc, section, key), "0") {
+        return 0;
+    }
+    return fallback;
+}
+// Boolean config: $ENV "1"/"true" (exact), else TOML, else fallback.
+// Explicit-false TOML menang atas fallback-true (via has_key).
+fn config_bool(doc: string, section: string, key: string, env: string, fallback: bool) -> bool {
+    let v: string = process_env(env);
+    if str_eq(v, "1") {
+        return true;
+    }
+    if str_eq(v, "true") {
+        return true;
+    }
+    if str_eq(v, "0") {
+        return false;
+    }
+    if str_eq(v, "false") {
+        return false;
+    }
+    if toml_has_key(doc, section, key) {
+        return toml_get_bool(doc, section, key);
+    }
+    return fallback;
+}

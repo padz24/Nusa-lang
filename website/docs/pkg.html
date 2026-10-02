@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pkg.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="pkg.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Manager (Phase 30, v1.11.0; registry Phase 31, v1.12.0) # nus">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/pkg.html">
+<meta property="og:title" content="pkg.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="pkg.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Manager (Phase 30, v1.11.0; registry Phase 31, v1.12.0) # nus">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="pkg.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="pkg, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "pkg.md", "category": "docs", "version": "3.0.0", "content": "pkg.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Manager (Phase 30, v1.11.0; registry Phase 31, v1.12.0) # nusa pkg mengelola paket sumber-lokal: manifest, dependensi path, lock file + checksum, build reproduksibel, dan kemas tarball. Registry file-backed: pu", "code_example": "", "keywords": "pkg, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/pkg.html">pkg.md</a></p><article><h1>pkg.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="package-manager-phase-30-v1-11-0-registry-phase-31-v1-12-0">Package Manager (Phase 30, v1.11.0; registry Phase 31, v1.12.0) <a href="#package-manager-phase-30-v1-11-0-registry-phase-31-v1-12-0" aria-label="taut">#</a></h1>
+<p><code>nusa pkg</code> mengelola paket sumber-lokal: manifest, dependensi path,</p>
+<p>lock file + checksum, build reproduksibel, dan kemas tarball.</p>
+<p>Registry file-backed: publish/download/search/install (§ Registry).</p>
+<h2 id="manifest-nusa-toml">Manifest <code>nusa.toml</code> <a href="#manifest-nusa-toml" aria-label="taut">#</a></h2>
+<pre data-lang="toml"><code class="lang-toml">[package]
+name = &quot;myapp&quot;
+version = &quot;0.1.0&quot;
+compiler = &quot;1.11.0&quot;   # versi compiler minimum (opsional)
+target = &quot;aarch64-linux-android&quot;  # opsional, bebas
+features = [&quot;net&quot;]    # opsional, bebas
+entry = &quot;src/main.ns&quot; # opsional (default main.ns, lalu src/main.ns)
+
+[capabilities]        # v2.10.0 (semua default false; key asing ditolak)
+filesystem = false    # file_read/file_write/file_exists
+network = false       # tcp_*/dial (std.net/http)
+process = false       # process_exit/env/cwd
+environment = false   # dicadangkan
+native = false        # extern fn + [link] — DIENFORCE pkg build
+
+[dependencies]
+greet = { path = &quot;../libs/greet&quot; }
+future = &quot;1.2.3&quot;      # versi registry — diresolve via registry (Phase 31)</code></pre>
+<ul>
+<li>Nama: <code>[A-Za-z_][A-Za-z0-9_]*</code>; versi: semver <code>M.m.p[-pre]</code>.</li>
+<li>Subset TOML: section, <code>key = &quot;str&quot;/int/true/false/[&quot;a&quot;]</code>,</li>
+</ul>
+<p>  inline-table <code>{ k = v }</code>, komentar <code>#</code>.</p>
+<h2 id="alur-kerja">Alur kerja <a href="#alur-kerja" aria-label="taut">#</a></h2>
+<pre data-lang="sh"><code class="lang-sh">nusa pkg init myapp --dir app   # manifest + stub main.ns
+nusa pkg add greet --path ../libs/greet
+nusa pkg update                 # tulis nusa.lock (+ checksum)
+nusa pkg build                  # -&gt; target/myapp (NUSA_PATH otomatis)
+./target/myapp
+nusa pkg remove greet
+nusa pkg publish --dry-run      # validasi + tarball dist/
+nusa tree                       # graf dependensi (juga `pkg tree`)
+nusa verify                     # verifikasi ulang checksum lock
+nusa outdated                   # versi registry lebih baru
+nusa audit                      # capability + checksum per paket</code></pre>
+<ul>
+<li><code>init [name] [--dir D]</code>: menolak bila <code>nusa.toml</code> ada; nama default</li>
+</ul>
+<p>  = basename direktori.</p>
+<ul>
+<li><code>add &lt;name&gt; (--path &lt;dir&gt; | &lt;version&gt;)</code>: target path HARUS paket</li>
+</ul>
+<p>  (punya <code>nusa.toml</code> bernama sama).</p>
+<ul>
+<li><code>update</code>: closure transitif path-deps (rekursif via manifest</li>
+</ul>
+<p>  masing-masing) + registry-deps (perlu sumber registry:</p>
+<p>  <code>--registry DIR</code>/<code>$NUSA_REGISTRY</code>; tanpa sumber → error dengan</p>
+<p>  arahan). Konflik versi ganda / siklus langsung error.</p>
+<ul>
+<li><code>build [-o out]</code>: cek minimum compiler; buat lock bila absen;</li>
+</ul>
+<p>  TOLAK bila lock basi (checksum/daftar berubah — jalankan <code>update</code>);</p>
+<p>  set <code>NUSA_PATH</code> ke dir dep (warisan env dipertahankan) lalu build.</p>
+<p>  Mencetak <code>capabilities: …</code>; menolak <code>extern fn</code>/<code>[link]</code> tanpa</p>
+<p>  <code>native = true</code> (Phase 59).</p>
+<ul>
+<li><code>publish [--dry-run]</code>: butuh lock segar + build lolos; kemas</li>
+</ul>
+<p>  <code>dist/&lt;name&gt;-&lt;version&gt;.tar.gz</code> (file terurut: manifest, lock,</p>
+<p>  <code>*.ns</code>) + cetak sha256. Publish ke registry: <code>--registry DIR</code></p>
+<p>  (§ Registry di bawah).</p>
+<h2 id="lock-file-nusa-lock">Lock file <code>nusa.lock</code> <a href="#lock-file-nusa-lock" aria-label="taut">#</a></h2>
+<pre data-lang="toml"><code class="lang-toml"># GENERATED by `nusa pkg` — do not edit.
+
+[meta]
+compiler = &quot;2.12.0&quot;   # pin eksak (Phase 61; beda/absen = basi)
+
+[[package]]
+name = &quot;greet&quot;
+version = &quot;0.1.0&quot;
+path = &quot;../libs/greet&quot;
+checksum = &quot;sha256:...&quot;</code></pre>
+<ul>
+<li>Path relatif terhadap manifest akar bila memungkinkan (portabel);</li>
+</ul>
+<p>  absolut bila tak berhubungan.</p>
+<ul>
+<li>Checksum = SHA-256 (LLVM) atas <code>*.ns</code> + <code>nusa.toml</code> top-level paket,</li>
+</ul>
+<p>  terurut nama — perubahan apa pun membuat lock basi.</p>
+<h2 id="reproduksibilitas">Reproduksibilitas <a href="#reproduksibilitas" aria-label="taut">#</a></h2>
+<p>Build hanya memakai sumber yang dikunci (nama + versi + checksum).</p>
+<p><code>target/</code> dan <code>dist/</code> adalah artefak (tak di-checksum; masukkan ke</p>
+<p><code>.gitignore</code> bila pakai git).</p>
+<p>Jaminan penuh + batas: <code>docs/repro-2.12.md</code>. Ringkasnya (v2.12.0):</p>
+<p>resolusi deterministik (registry-order sama), lock mem-pin</p>
+<p>compiler eksak (basi bila beda), tarball publish byte-deterministik</p>
+<p>(sort/mtime/owner ternormalisasi + <code>gzip -n</code>), build <code>--fresh</code></p>
+<p>ulang di path sama byte-identik. Tidak dijamin lintas path</p>
+<p>(path tertulis di IR), versi compiler, atau platform.</p>
+<h2 id="inspeksi-read-only-v2-11-0-phase-60">Inspeksi read-only (v2.11.0, Phase 60) <a href="#inspeksi-read-only-v2-11-0-phase-60" aria-label="taut">#</a></h2>
+<p>Keempatnya tersedia top-level (<code>nusa tree</code>) maupun <code>nusa pkg tree</code>:</p>
+<ul>
+<li><code>tree</code>: graf dependensi (<code>name version</code>, path-dep direkursi</li>
+</ul>
+<p>  aman-siklus, registry-dep <code>req -&gt; locked</code>); tanpa lock =</p>
+<p>  registry tak-teresolusi (catatan).</p>
+<ul>
+<li><code>verify [--registry DIR]</code>: manifest + tiap pin lock (path:</li>
+</ul>
+<p>  checksum + isi aman; registry: tarball cache vs index +</p>
+<p>  konten vs pin; SKIP jujur bila tak-tercache). rc != 0 bila FAIL.</p>
+<ul>
+<li><code>outdated [--registry DIR]</code>: butuh lock; `name req: locked -&gt;</li>
+</ul>
+<p>  latest` bila registry punya lebih baru (+ penanda beyond-req).</p>
+<ul>
+<li><code>audit</code>: capability + checksum closure (root, path-dep</li>
+</ul>
+<p>  rekursif, manifest cache registry); `signatures: unavailable</p>
+<p>  (checksums only)` — signing = follow-up. Advisory (rc 0).</p>
+<p>Mirrors = beberapa registry via <code>--registry</code>/<code>$NUSA_REGISTRY</code></p>
+<p>(<code>:</code>-separated; pertama cocok menang). Offline = cache valid</p>
+<p>berfungsi tanpa registry (dibuktikan <code>verify</code>). Resolusi</p>
+<p>reproduksibel = lock + tulis terurut + <code>lockFresh</code>.</p>
+<h2 id="registry-file-backed-v1-12-0-phase-31">Registry file-backed (v1.12.0, Phase 31) <a href="#registry-file-backed-v1-12-0-phase-31" aria-label="taut">#</a></h2>
+<p>Registry = direktori (lokal/shared; tanpa server/network):</p>
+<p><code>&lt;reg&gt;/index/&lt;name&gt;.toml</code> + <code>&lt;reg&gt;/packages/&lt;name&gt;-&lt;ver&gt;.tar.gz</code>.</p>
+<p>Sumber registry: <code>--registry DIR</code> atau <code>$NUSA_REGISTRY</code> (boleh</p>
+<p>beberapa, dipisah <code>:</code>; pertama yang cocok menang).</p>
+<pre data-lang="sh"><code class="lang-sh">nusa pkg publish --registry ./reg   # validasi + tarball + index
+nusa search calc --registry ./reg   # cari (substring nama)
+nusa install calc                   # add (caret) + update
+nusa install &#x27;calc@^0.1.0&#x27;          # req eksplisit (persis/caret)
+nusa publish --registry ./reg       # top-level ≡ pkg publish</code></pre>
+<ul>
+<li>Requirement: <code>&quot;1.2.3&quot;</code> persis atau <code>&quot;^1.2.3&quot;</code> caret</li>
+</ul>
+<p>  (<code>^1.2.3</code> → <code>&gt;=1.2.3 &lt;2.0.0</code>; <code>^0.2.3</code> → <code>&lt;0.3.0</code>; <code>^0.0.3</code> →</p>
+<p>  <code>=0.0.3</code>). Instalasi bare menyimpan caret atas versi termaksimum.</p>
+<ul>
+<li>Unduhan → cache <code>$HOME/.cache/nusa/registry/&lt;reg&gt;/&lt;name&gt;/&lt;ver&gt;/</code></li>
+</ul>
+<p>  + verifikasi ganda: hash transport tarball, lalu hash konten hasil</p>
+<p>  unpack. Cache rusak sembuh otomatis dari registry.</p>
+<ul>
+<li>Lock mencatat <code>registry = &quot;&lt;asal&gt;&quot;</code>; build memverifikasi pin</li>
+</ul>
+<p>  tanpa I/O registry bila cache hangat (hermetik); tamper cache</p>
+<p>  terdeteksi (checksum ulang) dan disembuhkan.</p>
+<ul>
+<li>Republish versi sama: identik → idempoten (hash transport</li>
+</ul>
+<p>  disegarkan — gzip tak deterministik); konten beda → ditolak.</p>
+<ul>
+<li>Paket berversi yang di-publish tak boleh punya path-deps</li>
+</ul>
+<p>  (tak relokatable — publish dep-nya dulu sebagai versi).</p>
+<ul>
+<li>Keamanan: checksum dua lapis, integritas versi (tulis-sekali),</li>
+</ul>
+<p>  verifikasi dependensi transitif + lock.</p>
+<h2 id="batasan-phase-30-dilonggarkan-phase-31-untuk-registry">Batasan Phase 30 (dilonggarkan Phase 31 untuk registry) <a href="#batasan-phase-30-dilonggarkan-phase-31-untuk-registry" aria-label="taut">#</a></h2>
+<ul>
+<li>Path-deps: versi = persis (konflik = error). Registry-deps:</li>
+</ul>
+<p>  <code>&quot;1.2.3&quot;</code> persis atau <code>&quot;^1.2.3&quot;</code> caret (§ Registry) —</p>
+<p>  <code>compiler =</code> minimum tetap berlaku untuk keduanya.</p>
+<ul>
+<li>Tanpa fitur selektif per-dep, tanpa profile release/debug,</li>
+</ul>
+<p>  tanpa parallel build, tanpa yank.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

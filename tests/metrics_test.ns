@@ -1,0 +1,13 @@
+// Sample `nusa test` target: metrics stdlib.
+import metrics;
+import string;
+fn main() {
+    let m = metrics_new();
+    m = m_req(m);
+    m = m_req(m);
+    m = m_err(m);
+    m = m_bytes(m, 100);
+    m = m_bytes(m, 28);
+    assert(str_starts_with(render_prometheus(m, "app"), "# TYPE app_requests counter\napp_requests 2\n"));
+    assert(m_elapsed_ms(m) >= 0);
+}

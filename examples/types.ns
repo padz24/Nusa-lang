@@ -1,0 +1,17 @@
+// Contoh v0.4.0: anotasi tipe + inferensi.
+// Diharapkan mencetak:
+// 15
+// true
+// Nusa
+// 30
+fn main() {
+    let age: i64 = 15;
+    let active: bool = true;
+    let name: string = "Nusa";
+    print(age);
+    print(active);
+    print(name);
+    let delta = 15;
+    let doubled: i64 = delta * 2;
+    print(doubled);
+}

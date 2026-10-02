@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>memory-3.16.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="memory-3.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Model 3.0 — Audit Menyeluruh (Phase 115, milestone 1) ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/memory-3.16.html">
+<meta property="og:title" content="memory-3.16.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="memory-3.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Model 3.0 — Audit Menyeluruh (Phase 115, milestone 1) ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="memory-3.16.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="memory-3.16, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "memory-3.16.md", "category": "docs", "version": "3.0.0", "content": "memory-3.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Model 3.0 — Audit Menyeluruh (Phase 115, milestone 1) # Status: audit 8 area + kunci mesin cakupan OOM (target 3.16.0). NOL perubahan semantik (model tetap: owned values + heap program-lifetime + handle", "code_example": "", "keywords": "memory-3.16, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/memory-3.16.html">memory-3.16.md</a></p><article><h1>memory-3.16.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="memory-model-3-0-audit-menyeluruh-phase-115-milestone-1">Memory Model 3.0 — Audit Menyeluruh (Phase 115, milestone 1) <a href="#memory-model-3-0-audit-menyeluruh-phase-115-milestone-1" aria-label="taut">#</a></h1>
+<p>Status: audit 8 area + kunci mesin cakupan OOM (target 3.16.0).</p>
+<p>NOL perubahan semantik (model tetap: owned values + heap</p>
+<p>program-lifetime + handle fail-fast). Temuan kode: NIHIL</p>
+<p>(disiplin terverifikasi bersih) — nilai slice ini = matriks</p>
+<p>keputusan + register residual + kunci anti-regresi.</p>
+<h2 id="1-matriks-audit-bukti-per-area">1. Matriks audit (bukti per area) <a href="#1-matriks-audit-bukti-per-area" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Area</th><th>Putusan</th><th>Bukti</th></tr></thead><tbody>
+<tr><td>Stack</td><td>aman-terbatas</td><td>satu-satunya alloca = entry-block locals/struct/array (<code>entryAlloca</code>); ukuran bounded per fungsi; tanpa alloca dinamis</td></tr>
+<tr><td>Heap</td><td>fail-closed penuh</td><td>SEMUA alokasi via <code>mallocFor</code> + 4 situs langsung, SEMUANYA <code>emitOomCheck</code> (pesan + exit 1); dikunci <code>oom-coverage</code></td></tr>
+<tr><td>Ownership</td><td>by-construction</td><td>nilai di-copy; tanpa move/borrow/referensi di bahasa → use-after-move dkk TAK TERREPRESENTASI</td></tr>
+<tr><td>Borrowing/lifetimes</td><td>N/A (tak ada fitur)</td><td>tanpa referensi = tanpa lifetime checker; penambahannya = RFC bahasa</td></tr>
+<tr><td>References</td><td>N/A</td><td>idem; handle i64 BUKAN referensi (lihat bawah)</td></tr>
+<tr><td>Concurrency safety</td><td>fail-fast sekuensial</td><td>registry <code>rt_handle.c</code> (add/has/remove + mutex); misuse ganda/basi/nol → exit 1 (<code>e2e_memsafe</code> 6/6 lama)</td></tr>
+<tr><td>FFI boundaries</td><td>kontrak (tak dienforce)</td><td>string C = pinjaman (JANGAN free — <code>headers</code>); <code>bool</code> i1 vs i32 dipetakan checker; variadik/struct-return/callback ditolak</td></tr>
+<tr><td>OOM runtime C</td><td>terdokumentasi per-situs</td><td>chan/mutex/atomic/thread/crypto/net: NULL → 0/sentinel/drop (kode dibaca; perilaku tercatat)</td></tr>
+</tbody></table>
+<h2 id="2-register-residual-jujur-bukan-blocker">2. Register residual jujur (bukan blocker) <a href="#2-register-residual-jujur-bukan-blocker" aria-label="taut">#</a></h2>
+<ul>
+<li>ABA reuse alamat handle (sejak 2.5.0): pointer mentah + remove</li>
+</ul>
+<p>  → alokasi-ulang alamat sama + salinan basi = lolos cek.</p>
+<p>  Perbaikan sejati = id generasional (perubahan runtime luas +</p>
+<p>  biaya lookup; butuh desain — BUKAN slice ini).</p>
+<ul>
+<li>Rekursi dalam → stack overflow = sinyal (kelas hang-by-design;</li>
+</ul>
+<p>  probe stack codegen = follow-up; <code>-fstack-clash</code> hanya</p>
+<p>  mengubahnya jadi SIGSEGV andal, bukan error bersih).</p>
+<ul>
+<li><code>free</code>-while-borrowed konkuren (sejak 2.5.0): tetap UB.</li>
+<li>Tumbuh-per-iterasi string/loop (by-design, §model): diamati,</li>
+</ul>
+<p>  bukan diperbaiki di sini.</p>
+<ul>
+<li>C me-free string Nusa / menahan pointer: kontrak kepercayaan</li>
+</ul>
+<p>  FFI (Phase 59); pelanggaran = UB hulu yang tak terdeteksi.</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_memsafe</code> + <code>oom-coverage</code> (malloc==oom-check di IR,</li>
+</ul>
+<p>  fixture closure+concat+int_to_str); suite lama hijau;</p>
+<p>  <code>e2e_release</code> hijau; <code>.ns</code> + IR OK.</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Id generasional, probe stack, borrow checker/<code>unsafe{}</code> (semua</li>
+</ul>
+<p>  butuh RFC/desain — kandidat Phase 116+; unsafe TETAP tak ada</p>
+<p>  di bahasa).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

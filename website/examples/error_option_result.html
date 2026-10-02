@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>error_option_result.ns — Nusa Docs 3.0.0</title>
+<meta name="description" content="error_option_result.ns v3.0.0 import option; import result; fn parse_age(s: string) -&amp;gt; Result&amp;lt;i64, string&amp;gt; { let o = parse_int_opt(s); if is_">
+<link rel="canonical" href="https://nusa-lang.org/docs/examples/error_option_result.html">
+<meta property="og:title" content="error_option_result.ns — Nusa Docs 3.0.0">
+<meta property="og:description" content="error_option_result.ns v3.0.0 import option; import result; fn parse_age(s: string) -&amp;gt; Result&amp;lt;i64, string&amp;gt; { let o = parse_int_opt(s); if is_">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="error_option_result.ns">
+<meta name="nusa:category" content="examples">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="example, error_option_result, runnable">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "error_option_result.ns", "category": "examples", "version": "3.0.0", "content": "error_option_result.ns v3.0.0 import option; import result; fn parse_age(s: string) -&gt; Result&lt;i64, string&gt; { let o = parse_int_opt(s); if is_none(o) { return Result &lt; i64, string &gt; .Err(str_concat(&quot;bad age: &quot;, s)); } match o { Some(v) =&gt; { return Result &lt; i64, string", "code_example": "import option;\nimport result;\nfn parse_age(s: string) -> Result<i64, string> {\n    let o = parse_int_opt(s);\n    if is_none(o) {\n        return Result < i64, string > .Err(str_concat(\"bad age: \", s));\n    }\n    match o {\n        Some(v) => {\n            return Result < i64, string > .Ok(v);\n        },\n        None => {\n            return Result < i64, string > .Err(\"unreachable\");\n        },\n    }\n    return Result < i64, string > .Err(\"unreachable\");\n}\nfn get_age(s: string) -> Result<i64, string> {\n    let n = parse_age(s)?;\n    return Result < i64, string > .Ok(n + 1);\n}\nfn main() {\n    print(res_unwrap_or(get_age(\"41\"), 0));\n    print(res_unwrap_or(get_age(\"abc\"), 0));\n    print(opt_unwrap_or(parse_int_opt(\"21\"), 0));\n    print(is_some(parse_int_opt(\"5\")));\n    print(is_none(parse_int_opt(\"zz\")));\n}\n", "keywords": "example, error_option_result, runnable"}</script>
+</head>
+<body class="kind-examples">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../examples/">Examples</a> / <a href="../examples/error_option_result.html">error_option_result.ns</a></p><article><h1>error_option_result.ns</h1><span class="badge historic">v3.0.0</span> <pre data-lang="nusa"><code class="lang-nusa">import option;
+import result;
+fn parse_age(s: string) -&gt; Result&lt;i64, string&gt; {
+    let o = parse_int_opt(s);
+    if is_none(o) {
+        return Result &lt; i64, string &gt; .Err(str_concat(&quot;bad age: &quot;, s));
+    }
+    match o {
+        Some(v) =&gt; {
+            return Result &lt; i64, string &gt; .Ok(v);
+        },
+        None =&gt; {
+            return Result &lt; i64, string &gt; .Err(&quot;unreachable&quot;);
+        },
+    }
+    return Result &lt; i64, string &gt; .Err(&quot;unreachable&quot;);
+}
+fn get_age(s: string) -&gt; Result&lt;i64, string&gt; {
+    let n = parse_age(s)?;
+    return Result &lt; i64, string &gt; .Ok(n + 1);
+}
+fn main() {
+    print(res_unwrap_or(get_age(&quot;41&quot;), 0));
+    print(res_unwrap_or(get_age(&quot;abc&quot;), 0));
+    print(opt_unwrap_or(parse_int_opt(&quot;21&quot;), 0));
+    print(is_some(parse_int_opt(&quot;5&quot;)));
+    print(is_none(parse_int_opt(&quot;zz&quot;)));
+}
+</code></pre><details><summary>Output</summary><samp class="out">42
+0
+21
+true
+true
+</samp></details><p><a class="btn sec" href="../playground/?code=import%20option%3B%0Aimport%20result%3B%0Afn%20parse_age%28s%3A%20string%29%20-%3E%20Result%3Ci64%2C%20string%3E%20%7B%0A%20%20%20%20let%20o%20%3D%20parse_int_opt%28s%29%3B%0A%20%20%20%20if%20is_none%28o%29%20%7B%0A%20%20%20%20%20%20%20%20return%20Result%20%3C%20i64%2C%20string%20%3E%20.Err%28str_concat%28%22bad%20age%3A%20%22%2C%20s%29%29%3B%0A%20%20%20%20%7D%0A%20%20%20%20match%20o%20%7B%0A%20%20%20%20%20%20%20%20Some%28v%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20Result%20%3C%20i64%2C%20string%20%3E%20.Ok%28v%29%3B%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20None%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20Result%20%3C%20i64%2C%20string%20%3E%20.Err%28%22unreachable%22%29%3B%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%7D%0A%20%20%20%20return%20Result%20%3C%20i64%2C%20string%20%3E%20.Err%28%22unreachable%22%29%3B%0A%7D%0Afn%20get_age%28s%3A%20string%29%20-%3E%20Result%3Ci64%2C%20string%3E%20%7B%0A%20%20%20%20let%20n%20%3D%20parse_age%28s%29%3F%3B%0A%20%20%20%20return%20Result%20%3C%20i64%2C%20string%20%3E%20.Ok%28n%20%2B%201%29%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28res_unwrap_or%28get_age%28%2241%22%29%2C%200%29%29%3B%0A%20%20%20%20print%28res_unwrap_or%28get_age%28%22abc%22%29%2C%200%29%29%3B%0A%20%20%20%20print%28opt_unwrap_or%28parse_int_opt%28%2221%22%29%2C%200%29%29%3B%0A%20%20%20%20print%28is_some%28parse_int_opt%28%225%22%29%29%29%3B%0A%20%20%20%20print%28is_none%28parse_int_opt%28%22zz%22%29%29%29%3B%0A%7D%0A">Coba di playground</a></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

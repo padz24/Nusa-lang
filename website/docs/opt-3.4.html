@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>opt-3.4.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="opt-3.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Advanced Optimizer — Milestone 1: Inlining (Phase 103) # Status: ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/opt-3.4.html">
+<meta property="og:title" content="opt-3.4.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="opt-3.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Advanced Optimizer — Milestone 1: Inlining (Phase 103) # Status: ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="opt-3.4.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="opt-3.4, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "opt-3.4.md", "category": "docs", "version": "3.0.0", "content": "opt-3.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Advanced Optimizer — Milestone 1: Inlining (Phase 103) # Status: slice implementasi. Mandat master Phase 103 (interprosedural, inlining, constant propagation, DCE, loop, spesialisasi, devirtualisasi, escape, alokas", "code_example": "", "keywords": "opt-3.4, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/opt-3.4.html">opt-3.4.md</a></p><article><h1>opt-3.4.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="advanced-optimizer-milestone-1-inlining-phase-103">Advanced Optimizer — Milestone 1: Inlining (Phase 103) <a href="#advanced-optimizer-milestone-1-inlining-phase-103" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi. Mandat master Phase 103 (interprosedural,</p>
+<p>inlining, constant propagation, DCE, loop, spesialisasi,</p>
+<p>devirtualisasi, escape, alokasi; target 3.4.0; LLVM tetap optimizer</p>
+<p>utama; tiap optimisasi ber-bench). NOL rewire pipeline.</p>
+<h2 id="1-pemilihan-milestone">1. Pemilihan milestone <a href="#1-pemilihan-milestone" aria-label="taut">#</a></h2>
+<ul>
+<li>Propagasi konstanta: SUDAH ADA (peta produsen per fungsi di</li>
+</ul>
+<p>  <code>foldConstants</code>, lintas-block).</p>
+<ul>
+<li>DCE/loop/escape/alokasi: DCE ada; loop butuh loop-analysis,</li>
+</ul>
+<p>  escape butuh model memori formal — prasyarat belum ada.</p>
+<ul>
+<li>Devirtualisasi/spesialisasi: N/A (tanpa dynamic dispatch di MIR).</li>
+<li>Dipilih: <strong>inlining</strong> (&quot;better inlining&quot; eksplisit di mandat) —</li>
+</ul>
+<p>  membuka fold/DCE lintas batas call; terukur via bench + unit.</p>
+<h2 id="2-perubahan-compiler-mir-opt-h-cpp">2. Perubahan (<code>compiler/mir/Opt.{h,cpp}</code>) <a href="#2-perubahan-compiler-mir-opt-h-cpp" aria-label="taut">#</a></h2>
+<ul>
+<li><code>inlineSmallCalls(fn, mod, stats)</code>: salin badan callee</li>
+</ul>
+<p>  SATU-BLOCK ke situs call langsung. Syarat: callee se-modul,</p>
+<p>  1 block, terminator <code>Return</code>, ≤ <code>kMaxInlineInstrs</code> (32),</p>
+<p>  bukan caller (anti-rekursi langsung), arity cocok, void-ness</p>
+<p>  cocok. Sekali jalan (bukan fixpoint) → terminasi terjamin.</p>
+<ul>
+<li>Kebenaran: id hasil di-remap ke id segar (cermin</li>
+</ul>
+<p>  <code>MirBuilder::fresh</code>); param → argumen aktual; slot memori</p>
+<p>  di-rename <code>.inlN</code> per situs (anti-tabrakan — BUG KELAS INI</p>
+<p>  DICEGAH by design, dikunci <code>testInlineSlotRename</code>); hasil</p>
+<p>  <code>ret</code> disubstitusi ke semua pemakai hasil call; urutan efek</p>
+<p>  (print/store) lestari karena sisip-di-posisi.</p>
+<ul>
+<li><code>OptStats::inlined</code>; dipanggil sekali di awal <code>optimizeModule</code></li>
+</ul>
+<p>  (sebelum pass per-fungsi) agar fold+DCE melipat lintas call.</p>
+<ul>
+<li>Batas jujur: callee multi-block, rekursi, callee raksasa, dan</li>
+</ul>
+<p>  fungsi-mati-pasca-inline (dead-function elimination) =</p>
+<p>  milestone berikut.</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit <code>test_mir</code> 16/16 (13 lama + 3 baru: <code>testInlineSmallCall</code></li>
+</ul>
+<p>  — call hilang + lipat jadi <code>print(30)</code>; <code>testInlineGuards</code> —</p>
+<p>  rekursi/multi-block/raksasa lestari; <code>testInlineSlotRename</code>).</p>
+<ul>
+<li><code>e2e_mir</code> 2/2; <code>e2e_opt</code> 4/4: bench sintetik 6002 → 2 instruksi</li>
+</ul>
+<p>  (reduksi IDENTIK baseline — workload tanpa call, benar tak</p>
+<p>  berubah); <code>e2e_release</code> 6/6; <code>.ns</code> + IR OK (MIR belum rewire).</p>
+<ul>
+<li>Bench waktu dalam varian perangkat (beban build paralel saat</li>
+</ul>
+<p>  ukur); tidak diklaim sebagai speedup.</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Inlining multi-block, heuristik budget adaptif, dead-function</li>
+</ul>
+<p>  elimination, loop/escape/specialization (butuh analisis prasyarat).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bootstrap &amp; Self-Hosting — Nusa Docs 1.20.0</title>
+<meta name="description" content="Bootstrap &amp;amp; Self-Hosting v1.20.0 Overview selfhost/lex.ns: lexer streaming murni-Nusa ekuivalen lexer C++ (differential 33 file) + builtin int_to_">
+<link rel="canonical" href="https://nusa-lang.org/docs/compiler/bootstrap.html">
+<meta property="og:title" content="Bootstrap &amp; Self-Hosting — Nusa Docs 1.20.0">
+<meta property="og:description" content="Bootstrap &amp;amp; Self-Hosting v1.20.0 Overview selfhost/lex.ns: lexer streaming murni-Nusa ekuivalen lexer C++ (differential 33 file) + builtin int_to_">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Bootstrap &amp; Self-Hosting">
+<meta name="nusa:category" content="compiler">
+<meta name="nusa:version" content="1.20.0">
+<meta name="nusa:keywords" content="bootstrap, selfhost, lexer, Stage 0, deterministic">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Bootstrap & Self-Hosting", "category": "compiler", "version": "1.20.0", "content": "Bootstrap &amp; Self-Hosting v1.20.0 Overview selfhost/lex.ns: lexer streaming murni-Nusa ekuivalen lexer C++ (differential 33 file) + builtin int_to_str. nusa bootstrap [lex.ns]: Stage 0 (C++) → Stage 1 (biner native) → byte-identik Stage 2 = Stage 0 + cek determinisme 2x + diagnosis byte beda per", "code_example": "", "keywords": "bootstrap, selfhost, lexer, Stage 0, deterministic"}</script>
+</head>
+<body class="kind-compiler">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/" aria-current="page">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../compiler/">Pipeline</a></li><li><a href="../compiler/architecture.html">Architecture</a></li><li><a href="../compiler/frontend.html">Frontend (Lexer/Parser/AST/Semantic/TypeChecker)</a></li><li><a href="../compiler/mir.html">MIR (Nusa IR)</a></li><li><a href="../compiler/optimizations.html">Optimizations</a></li><li><a href="../compiler/runtime.html">Runtime</a></li><li><a href="../compiler/memory-model.html">Memory Model</a></li><li><a href="../compiler/llvm.html">LLVM Integration</a></li><li><a href="../compiler/debugging.html">Debugging (DWARF)</a></li><li><a href="../compiler/lsp.html">Language Server (LSP)</a></li><li><a href="../compiler/incremental.html">Incremental Compilation</a></li><li><a href="../compiler/bootstrap.html" aria-current="page">Bootstrap &amp; Self-Hosting</a></li><li><a href="../compiler/ffi.html">C FFI &amp; Bindgen</a></li><li><a href="../compiler/targets.html">Targets &amp; Cross Compilation</a></li><li><a href="../compiler/profiling.html">Profiling &amp; Build Stats</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../compiler/">Compiler</a> / <a href="../compiler/bootstrap.html">Bootstrap &amp; Self-Hosting</a></p><article><h1>Bootstrap &amp; Self-Hosting</h1><span class="badge historic">v1.20.0</span> <h2>Overview</h2><p>selfhost/lex.ns: lexer streaming murni-Nusa ekuivalen lexer C++ (differential 33 file) + builtin int_to_str. nusa bootstrap [lex.ns]: Stage 0 (C++) → Stage 1 (biner native) → byte-identik Stage 2 = Stage 0 + cek determinisme 2x + diagnosis byte beda pertama. nusa lex dump kind|lexeme|line|col.</p><h2>Source</h2><ul><li><code>selfhost/lex.ns</code></li><li><code>compiler/driver/ (runLex/runBootstrap)</code></li><li><code>docs/bootstrap.md</code></li><li><code>docs/selfhosting.md</code></li></ul><div class="warn"><h2>Limitations</h2><ul><li>Rantai mencakup lexer SAJA (parser/AST/semantik masih C++). Divergensi hanya di luar korpus valid; performa ~O(n²).</li></ul></div><h2>Tests</h2><p><code>e2e_bootstrap.sh (4) + e2e_selfhost.sh (5)</code></p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.20.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>targets.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="targets.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cross Compilation — Targets (Phase 33, v1.14.0) # Nusa mengemisik">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/targets.html">
+<meta property="og:title" content="targets.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="targets.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cross Compilation — Targets (Phase 33, v1.14.0) # Nusa mengemisik">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="targets.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="targets, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "targets.md", "category": "docs", "version": "3.0.0", "content": "targets.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cross Compilation — Targets (Phase 33, v1.14.0) # Nusa mengemisikan LLVM IR tekstual lalu memanggil clang sistem. Cross-compilation = clang --target + sysroot yang cocok. nusa build app.ns --target linux-x86_64 -c", "code_example": "", "keywords": "targets, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/targets.html">targets.md</a></p><article><h1>targets.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="cross-compilation-targets-phase-33-v1-14-0">Cross Compilation — Targets (Phase 33, v1.14.0) <a href="#cross-compilation-targets-phase-33-v1-14-0" aria-label="taut">#</a></h1>
+<p>Nusa mengemisikan LLVM IR tekstual lalu memanggil <code>clang</code> sistem.</p>
+<p>Cross-compilation = clang <code>--target</code> + sysroot yang cocok.</p>
+<pre data-lang="sh"><code class="lang-sh">nusa build app.ns --target linux-x86_64 -c -o app.o        # objek ELF x86-64
+nusa build app.ns --target linux-aarch64 --emit-ir -o app.ll
+nusa build app.ns --target linux-x86_64 --sysroot /path/to/sysroot</code></pre>
+<h2 id="matriks-target">Matriks target <a href="#matriks-target" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Alias</th><th>Triple</th><th>OS/Ars</th><th>ABI/Objek</th><th>Linker</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>android-aarch64</code></td><td>host clang ini</td><td>Android/AArch64</td><td>Bionic/ELF</td><td>clang</td><td><strong>penuh (utama)</strong></td></tr>
+<tr><td><code>linux-aarch64</code></td><td><code>aarch64-linux-gnu</code></td><td>Linux/AArch64</td><td>glibc/ELF</td><td>clang + sysroot</td><td>compile-only tanpa sysroot</td></tr>
+<tr><td><code>linux-x86_64</code></td><td><code>x86_64-linux-gnu</code></td><td>Linux/x86-64</td><td>glibc/ELF</td><td>clang + sysroot</td><td>compile-only tanpa sysroot</td></tr>
+<tr><td><code>wasm32</code></td><td><code>wasm32-unknown-unknown</code></td><td>WebAssembly/32</td><td>ILP32/wasm</td><td>clang + sysroot</td><td>compile-only tanpa sysroot (v2.18.0)</td></tr>
+</tbody></table>
+<ul>
+<li>Alias atau triple persis diterima (<code>--target x86_64-linux-gnu</code>);</li>
+</ul>
+<p>  sisanya ditolak dengan daftar. Triple host (<code>android-aarch64</code>)</p>
+<p>  = perilaku lama bit-identik (tanpa triple di IR).</p>
+<ul>
+<li>Triple eksplisit ditulis ke IR (<code>target triple = &quot;...&quot;</code>);</li>
+</ul>
+<p>  DataLayout disimpulkan clang dari triple (tidak di-pin).</p>
+<h2 id="mode-emisi">Mode emisi <a href="#mode-emisi" aria-label="taut">#</a></h2>
+<ul>
+<li>(default) link executable — cross WAJIB <code>--sysroot</code> (tanpanya</li>
+</ul>
+<p>  ditolak dini dengan arahan, bukan dump <code>ld</code>).</p>
+<ul>
+<li><code>--emit-ir</code> (<code>-o x.ll</code>), <code>--emit-asm</code> (<code>-o x.s</code>), <code>-c</code>/</li>
+</ul>
+<p>  <code>--emit-obj</code> (<code>-o x.o</code>): compile-only, tanpa linker/sysroot/</p>
+<p>  runtime C (simbol <code>nusa_*</code> unresolved di <code>.o</code> — wajar, tersambung</p>
+<p>  saat link final).</p>
+<ul>
+<li><code>nusa run --target &lt;host&gt;</code> OK; target non-host ditolak</li>
+</ul>
+<p>  (binary tak bisa dieksekusi di sini).</p>
+<ul>
+<li>Manifest: <code>[package] target = &quot;linux-x86_64&quot;</code> dipakai <code>pkg build</code></li>
+</ul>
+<p>  (CLI <code>--target</code> menang; <code>--sysroot</code> diteruskan).</p>
+<h2 id="asumsi-portabilitas-mengapa-hanya-lp64-elf">Asumsi portabilitas (mengapa hanya LP64 ELF) <a href="#asumsi-portabilitas-mengapa-hanya-lp64-elf" aria-label="taut">#</a></h2>
+<p>Kode yang di-generate mengasumsikan LP64 (<code>i64</code> ≡ pointer 64-bit:</p>
+<p>pair closure, handle opak, cast trampolin→pthread). Berlaku untuk</p>
+<p>ketiga target prioritas (Android/Linux AArch64/x86-64).</p>
+<h2 id="wasm32-subset-portabel-v2-18-0-phase-67">wasm32: subset portabel (v2.18.0, Phase 67) <a href="#wasm32-subset-portabel-v2-18-0-phase-67" aria-label="taut">#</a></h2>
+<p><code>wasm32</code> = bare-metal ILP32 (<code>wasm32-unknown-unknown</code>):</p>
+<p>compile-only (<code>--emit-ir</code>/<code>--emit-asm</code>/<code>-c</code>), link butuh sysroot,</p>
+<p><code>run</code> ditolak. Asumsi LP64 TAK berlaku: pointer round-trip</p>
+<p><code>i64</code>↔<code>i32</code> secara nilai, tapi thread/mutex/channel/TCP/net</p>
+<p>(concurrency + <code>nusa_rt.c</code>) tak tersedia tanpa wasi-sysroot —</p>
+<p>jangan bawa builtin itu ke wasm. Terjamin: komputasi murni</p>
+<p>(arith/control/string/array/struct inline). Detail + follow-up</p>
+<p>(WASI, entry <code>_start</code>, runtime port): <code>docs/wasm-2.18.md</code>.</p>
+<h2 id="dievaluasi-belum-didukung">Dievaluasi, belum didukung <a href="#dievaluasi-belum-didukung" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Windows</strong> (x86-64): COFF + LLP64 (<code>long</code> 32-bit mematahkan</li>
+</ul>
+<p>  asumsi LP64) + linker MSVC/LLD-COFF + runtime C MSVCRT</p>
+<p>  (getaddrinfo/<code>nanosleep</code> berbeda). Butuh audit ABI penuh.</p>
+<ul>
+<li><strong>macOS</strong> (AArch64): Mach-O + tidak ada toolchain di sini untuk</li>
+</ul>
+<p>  verifikasi + perbedaan libc. Butuh mesin dan uji.</p>
+<ul>
+<li>Bare-metal lain/wasm64: di luar roadmap saat ini.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

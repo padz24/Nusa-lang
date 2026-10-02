@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Types — Nusa Docs 3.0.0</title>
+<meta name="description" content="Types v3.0.0 Overview Static typing: i64/bool/string/void, fn, array [T], struct/enum bernama, dan alias type Name = T (transparan, forward-ref OK). S">
+<link rel="canonical" href="https://nusa-lang.org/docs/language/types.html">
+<meta property="og:title" content="Types — Nusa Docs 3.0.0">
+<meta property="og:description" content="Types v3.0.0 Overview Static typing: i64/bool/string/void, fn, array [T], struct/enum bernama, dan alias type Name = T (transparan, forward-ref OK). S">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Types">
+<meta name="nusa:category" content="language">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="types, i64, bool, string, void, array, alias, static typing">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Types", "category": "language", "version": "3.0.0", "content": "Types v3.0.0 Overview Static typing: i64/bool/string/void, fn, array [T], struct/enum bernama, dan alias type Name = T (transparan, forward-ref OK). Syntax type UserId = i64; let u: UserId = 7; let xs: [i64] = [1, 2]; Example type UserId = i64; fn main() { let u: UserId = 7; print(u); } Output 7 Co", "code_example": "type UserId = i64;\nfn main() {\n    let u: UserId = 7;\n    print(u);\n}\n", "keywords": "types, i64, bool, string, void, array, alias, static typing"}</script>
+</head>
+<body class="kind-language">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/" aria-current="page">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../language/">Indeks</a></li><li><a href="../language/syntax.html">Syntax</a></li><li><a href="../language/variables.html">Variables</a></li><li><a href="../language/functions.html">Functions</a></li><li><a href="../language/types.html" aria-current="page">Types</a></li><li><a href="../language/structs.html">Struct</a></li><li><a href="../language/enums.html">Enum</a></li><li><a href="../language/generics.html">Generics</a></li><li><a href="../language/traits.html">Traits</a></li><li><a href="../language/pattern-matching.html">Pattern Matching</a></li><li><a href="../language/error-handling.html">Error Handling</a></li><li><a href="../language/concurrency.html">Concurrency</a></li><li><a href="../language/modules.html">Modules</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../language/">Language</a> / <a href="../language/types.html">Types</a></p><article><h1>Types</h1><span class="badge historic">v3.0.0</span> <h2>Overview</h2><p>Static typing: i64/bool/string/void, fn, array [T], struct/enum bernama, dan alias type Name = T (transparan, forward-ref OK).</p><h2>Syntax</h2><pre data-lang="nusa"><code class="lang-nusa">type UserId = i64;
+let u: UserId = 7;
+let xs: [i64] = [1, 2];</code></pre><h2>Example</h2><pre data-lang="nusa"><code class="lang-nusa">type UserId = i64;
+fn main() {
+    let u: UserId = 7;
+    print(u);
+}
+</code></pre><details><summary>Output</summary><samp class="out">7</samp></details><p><a class="btn sec" href="../playground/?code=type%20UserId%20%3D%20i64%3B%0Afn%20main%28%29%20%7B%0A%20%20%20%20let%20u%3A%20UserId%20%3D%207%3B%0A%20%20%20%20print%28u%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Rules</h2><ul><li>Alias dikanonikalisasi in-place (codegen tak berubah).</li><li>Circular alias ditolak dengan rantai A -&gt; B -&gt; A; chain &gt; 100 ditolak.</li><li>Nama reserved tak boleh dipakai ulang.</li></ul><h2>Compiler behavior</h2><p>TypeChecker resolusi alias eager + memo situs gagal (tepat satu error per masalah). ptr dikeluarkan dari grammar Type (handle = i64/string).</p><div class="warn"><h2>Limitations</h2><ul><li>Tanpa float, tanpa pointer yang dapat ditulis.</li><li>Tanpa union/cast numerik implisit.</li></ul></div><h2>Related topics</h2><ul><li><a href="../language/variables.html">language/variables</a></li><li><a href="../language/structs.html">language/structs</a></li></ul><h2>Spec &amp; Tests</h2><p>Spec: <code>docs/language-spec-2.0.md §5 + docs/types.md</code> · Uji pengunci: <code>examples/types.ns + unit typecheck</code></p></article><div class="prevnext"><a href="../language/functions.html">← Functions</a><a href="../language/structs.html">Struct →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

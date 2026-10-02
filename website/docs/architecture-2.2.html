@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>architecture-2.2.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="architecture-2.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Compiler Nusa 2.2 (Phase 51 — Design Proposal">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/architecture-2.2.html">
+<meta property="og:title" content="architecture-2.2.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="architecture-2.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Compiler Nusa 2.2 (Phase 51 — Design Proposal">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="architecture-2.2.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="architecture-2.2, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "architecture-2.2.md", "category": "docs", "version": "3.0.0", "content": "architecture-2.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Compiler Nusa 2.2 (Phase 51 — Design Proposal) # Status: Proposed → Implementation (satu milestone). Spec bahasa tidak berubah (normatif tetap docs/language-spec-2.0.md ). 1. Lapisan saat ini (t", "code_example": "", "keywords": "architecture-2.2, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/architecture-2.2.html">architecture-2.2.md</a></p><article><h1>architecture-2.2.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="arsitektur-compiler-nusa-2-2-phase-51-design-proposal">Arsitektur Compiler Nusa 2.2 (Phase 51 — Design Proposal) <a href="#arsitektur-compiler-nusa-2-2-phase-51-design-proposal" aria-label="taut">#</a></h1>
+<p>Status: Proposed → Implementation (satu milestone). Spec bahasa tidak</p>
+<p>berubah (normatif tetap <code>docs/language-spec-2.0.md</code>).</p>
+<h2 id="1-lapisan-saat-ini-terukur-2-1-0-total-26000-baris">1. Lapisan saat ini (terukur 2.1.0, total ~26000 baris) <a href="#1-lapisan-saat-ini-terukur-2-1-0-total-26000-baris" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Lapisan</th><th>Modul</th><th>LOC utama</th></tr></thead><tbody>
+<tr><td>Frontend</td><td>lexer (354), parser (1866), ast (1030), types, diagnostics</td><td>~3500</td></tr>
+<tr><td>Semantic</td><td>Semantic (713+87), TypeChecker (4156+375)</td><td>~5300</td></tr>
+<tr><td>Backend</td><td>codegen (2587+208)</td><td>~2800</td></tr>
+<tr><td>Runtime</td><td>runtime/nusa_rt.c</td><td>~409</td></tr>
+<tr><td>Tooling</td><td>fmt (447), doc (234), lsp (1600), incr (263), driver (755+347+268+362+353)</td><td>~4300</td></tr>
+<tr><td>Package</td><td>pkg (2024+298)</td><td>~2300</td></tr>
+</tbody></table>
+<h2 id="2-kopling-terukur-include-antar-modul-2-1-0">2. Kopling terukur (include antar-modul, 2.1.0) <a href="#2-kopling-terukur-include-antar-modul-2-1-0" aria-label="taut">#</a></h2>
+<p>Sehat (dipertahankan):</p>
+<ul>
+<li>Frontend hanya bergantung ke dalam/di samping (lexer/parser/ast/</li>
+</ul>
+<p>  diagnostics/types). <code>fmt</code> → hanya <code>lexer</code>. <code>doc</code> → ast/lexer/</p>
+<p>  parser/diagnostics. <code>Modules</code> → hanya ast.</p>
+<ul>
+<li><code>Driver</code> → semua lapisan (wajar: orkestrator tunggal).</li>
+<li><code>TypeChecker.h</code> → <code>Semantic.h</code> (butuh <code>SemanticError</code>; wajar:</li>
+</ul>
+<p>  satu Semantic Layer).</p>
+<p>Pelanggaran batas (temuan audit):</p>
+<ul>
+<li><code>codegen/Codegen.cpp</code> → <code>semantic/Semantic.h</code>, HANYA untuk</li>
+</ul>
+<p>   <code>isBuiltin()</code> (satu fungsi murni tanpa state). Backend tidak</p>
+<p>   boleh bergantung pada Semantic Layer.</p>
+<ul>
+<li><code>pkg/Pkg.cpp</code> → <code>driver/Driver.h</code> (<code>pkg::runPkg</code> menerima</li>
+</ul>
+<p>   <code>Driver&amp;</code>, <code>cmdBuild</code> memanggil <code>driver.runBuild</code>). Package</p>
+<p>   System tidak boleh bergantung pada Driver (inversi: driver yang</p>
+<p>   mengorkestrasi pkg). DITUNDA (lihat §4).</p>
+<ul>
+<li><code>incr/Incr.cpp</code> → <code>pkg/Pkg.h</code>, HANYA untuk <code>pkg::sha256Hex</code>.</li>
+</ul>
+<p>   Utilitas checksum bukan pengetahuan paket. DITUNDA (lihat §4).</p>
+<ul>
+<li><code>lsp/Lsp.cpp</code> → <code>semantic/Semantic.h</code> (<code>SemanticAnalyzer</code></li>
+</ul>
+<p>   dipakai langsung). Tooling memakai semantic = dapat diterima</p>
+<p>   untuk v1 (LSP satu-file), dicatat sebagai utang jujur.</p>
+<h2 id="3-target-mandat-master-tanpa-rewrite-total">3. Target (mandat master, tanpa rewrite total) <a href="#3-target-mandat-master-tanpa-rewrite-total" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">NUSA SOURCE → Lexer → Parser → AST → Semantic → Type System
+   → HIR → MIR → LLVM IR → LLVM 21.1.8 → Target</code></pre>
+<p>HIR/MIR penuh = Phase 52. Phase 51 hanya menegakkan batas modul</p>
+<p>agar HIR/MIR kelak punya tempat yang jelas.</p>
+<h2 id="4-milestone-1-satu-satunya-perubahan-kode-phase-51">4. Milestone 1 (SATU-SATUNYA perubahan kode Phase 51) <a href="#4-milestone-1-satu-satunya-perubahan-kode-phase-51" aria-label="taut">#</a></h2>
+<p>Ekstrak registry builtin ke lapisan Frontend:</p>
+<ul>
+<li>Baru: <code>compiler/frontend/Builtin.{h,cpp}</code> — <code>nusa::isBuiltin()</code></li>
+</ul>
+<p>  (implementasi dipindah verbatim dari <code>Semantic.cpp</code>; nol</p>
+<p>  perubahan perilaku).</p>
+<ul>
+<li><code>semantic/Semantic.h</code>: hapus deklarasi <code>isBuiltin</code>.</li>
+<li><code>Semantic.cpp</code>, <code>TypeChecker.cpp</code>: include frontend baru.</li>
+<li><code>codegen/Codegen.cpp</code>: ganti include <code>semantic/Semantic.h</code></li>
+</ul>
+<p>  → <code>frontend/Builtin.h</code>. Backend kini nol-include ke semantic/.</p>
+<ul>
+<li><code>CMakeLists.txt</code>: tambah satu source ke <code>NUSA_LIB_SOURCES</code>.</li>
+<li>Batas mesin: <code>codegen/</code> tidak include <code>semantic/Semantic.h</code> /</li>
+</ul>
+<p>  <code>semantic/TypeChecker.h</code> (dikunci <code>e2e_arch.sh</code>). <code>Scopes.h</code></p>
+<p>  (template utilitas header-only yang kebetulan tinggal di</p>
+<p>  <code>semantic/</code>) dikecualikan eksplisit — kandidat pindah ke</p>
+<p>  <code>support/</code> pada milestone berikut, bersama (2) dan (3).</p>
+<p>DITUNDA dengan alasan (bukan diabaikan):</p>
+<ul>
+<li>(2) Pkg→Driver butuh interface build-request/callback; menyentuh</li>
+</ul>
+<p>  alur <code>pkg build/publish/install</code>. Risiko sedang, dikerjakan</p>
+<p>  sebagai milestone tersendiri setelah batas frontend stabil.</p>
+<ul>
+<li>(3) <code>sha256Hex</code> pindah ke modul support netral bersamaan dengan</li>
+</ul>
+<p>  kebutuhan checksum berikutnya (reproducible builds, Phase 61).</p>
+<ul>
+<li>(4) LSP→semantic diterima untuk v1 (batas jujur <code>docs/lsp.md</code>).</li>
+</ul>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>grep -rn &#x27;semantic/&#x27; compiler/codegen/</code> kosong (dikunci test).</li>
+<li>Seluruh suite hijau (unit + e2e incl. <code>e2e_stability</code> baru Phase 50).</li>
+<li>Program <code>.ns</code> nyata + LLVM IR + benchmark identik baseline 2.1.0.</li>
+<li>Test baru: <code>compiler/tests/e2e_arch.sh</code> (batas lapisan mesin).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

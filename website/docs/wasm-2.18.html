@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wasm-2.18.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="wasm-2.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASM Target — Design (Phase 67, target 2.18.0) # Status: audit ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/wasm-2.18.html">
+<meta property="og:title" content="wasm-2.18.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="wasm-2.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASM Target — Design (Phase 67, target 2.18.0) # Status: audit ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="wasm-2.18.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="wasm-2.18, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "wasm-2.18.md", "category": "docs", "version": "3.0.0", "content": "wasm-2.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASM Target — Design (Phase 67, target 2.18.0) # Status: audit → Implementation (milestone 1: alias wasm32 compile-only). Spec tak berubah. 1. Keputusan triple # wasm32 → wasm32-unknown-unknown (bare metal; diduk", "code_example": "", "keywords": "wasm-2.18, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/wasm-2.18.html">wasm-2.18.md</a></p><article><h1>wasm-2.18.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="wasm-target-design-phase-67-target-2-18-0">WASM Target — Design (Phase 67, target 2.18.0) <a href="#wasm-target-design-phase-67-target-2-18-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: alias wasm32</p>
+<p>compile-only). Spec tak berubah.</p>
+<h2 id="1-keputusan-triple">1. Keputusan triple <a href="#1-keputusan-triple" aria-label="taut">#</a></h2>
+<p><code>wasm32</code> → <code>wasm32-unknown-unknown</code> (bare metal; didukung clang</p>
+<p>21 LLVM ini). BUKAN <code>wasm32-wasi</code> (butuh wasi-sysroot yang tak</p>
+<p>ada di sini; kandidat follow-up bila sysroot tersedia).</p>
+<h2 id="2-cakupan-milestone-1-cermin-target-linux">2. Cakupan milestone 1 (cermin target Linux) <a href="#2-cakupan-milestone-1-cermin-target-linux" aria-label="taut">#</a></h2>
+<ul>
+<li><code>--emit-ir</code>/<code>--emit-asm</code>/<code>-c</code>: compile-only, tanpa sysroot.</li>
+<li>Link (<code>-o</code> exe) tanpa sysroot → ditolak guard existing</li>
+</ul>
+<p>  (&quot;needs --sysroot&quot;). <code>run --target wasm32</code> → ditolak (non-host).</p>
+<ul>
+<li>Alias + triple persis diterima; pesan error diperbarui.</li>
+</ul>
+<h2 id="3-batas-jujur-platform-abstraction">3. Batas jujur (platform abstraction) <a href="#3-batas-jujur-platform-abstraction" aria-label="taut">#</a></h2>
+<ul>
+<li>Asumsi LP64 codegen (<code>i64</code> ≡ pointer) TIDAK berlaku di wasm32</li>
+</ul>
+<p>  (ILP32): pointer round-trip i64→i32 secara nilai, TAPI kelas</p>
+<p>  permukaan handle/closure-pair/thread/net = TAK DIDUKUNG</p>
+<p>  (runtime memakai pthread/socket; tak ada wasi-sysroot).</p>
+<ul>
+<li>Portable garantis: komputasi murni (arith/control/string/</li>
+</ul>
+<p>  array/struct inline). Sandbox WebAssembly = sifat inheren</p>
+<p>  format (linear memory), bukan klaim implementasi.</p>
+<ul>
+<li>WASI sysroot + runtime port + entry <code>_start</code> = follow-up.</li>
+</ul>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>IR triple <code>wasm32-unknown-unknown</code>; objek <code>file</code> =</li>
+</ul>
+<p>  WebAssembly; link/run ditolak jelas; e2e_cross kasus baru.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

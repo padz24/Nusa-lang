@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.1.0 — Nusa Docs 2.1.0</title>
+<meta name="description" content="2.1.0 v2.1.0 Release notes # — 2026-09-10 (Phase 50: NUSA 2.1 STABILITY) Fokus: stability, correctness, compatibility. Tanpa perubahan semantik bahasa">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.1.0.html">
+<meta property="og:title" content="Changelog 2.1.0 — Nusa Docs 2.1.0">
+<meta property="og:description" content="2.1.0 v2.1.0 Release notes # — 2026-09-10 (Phase 50: NUSA 2.1 STABILITY) Fokus: stability, correctness, compatibility. Tanpa perubahan semantik bahasa">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.1.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.1.0">
+<meta name="nusa:keywords" content="changelog, 2.1.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.1.0", "category": "changelog", "version": "2.1.0", "content": "2.1.0 v2.1.0 Release notes # — 2026-09-10 (Phase 50: NUSA 2.1 STABILITY) Fokus: stability, correctness, compatibility. Tanpa perubahan semantik bahasa (spec 2.0 tetap normatif). Baseline 51/51 ctest 2.0.0 terverifikasi hijau sebelum perubahan; benchmark bench/bench.sh identik (hello ~1.4 dtk/20032", "code_example": "", "keywords": "changelog, 2.1.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.1.0.html">2.1.0</a></p><article><h1>2.1.0</h1><span class="badge stable">v2.1.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-10 (Phase 50: NUSA 2.1 STABILITY)</p>
+<p>Fokus: stability, correctness, compatibility. Tanpa perubahan</p>
+<p>semantik bahasa (spec 2.0 tetap normatif). Baseline 51/51 ctest</p>
+<p>2.0.0 terverifikasi hijau sebelum perubahan; benchmark</p>
+<p><code>bench/bench.sh</code> identik (hello ~1.4 dtk/20032 B, perf2000 ~7.3 dtk).</p>
+<h3 id="diperbaiki">Diperbaiki <a href="#diperbaiki" aria-label="taut">#</a></h3>
+<ul>
+<li>Formatter lambda sesudah <code>(</code>/<code>[</code> menempel tanpa spasi</li>
+</ul>
+<p>  (<code>apply(|x| …)</code>, <code>thread_spawn(|| …)</code>; dulu <code>apply( |x| …)</code> —</p>
+<p>  bug <code>isOpener</code> di <code>compiler/fmt/Formatter.cpp</code>). Kanonisasi ulang:</p>
+<p>  <code>examples/closures.ns</code>, <code>examples/concurrency.ns</code>,</p>
+<p>  <code>tutorials/07-closures-concurrency/main.ns</code>, <code>std/random.ns</code>,</p>
+<p>  <code>std/process.ns</code>, <code>std/thread.ns</code>, <code>bench/programs/closureapply.ns</code>,</p>
+<p>  <code>bench/programs/matchdispatch.ns</code> (kini <code>fmt --check</code> bersih 51/51).</p>
+<ul>
+<li>Build env: symlink <code>/usr/bin/ar|ranlib</code> → Termux <code>llvm-ar</code></li>
+</ul>
+<p>  (cache CMake lama merujuk <code>/usr/bin/ar</code> yang hilang; bukan bug Nusa).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit <code>testLambdaAfterParen</code> (<code>compiler/tests/test_fmt.cpp</code>):</li>
+</ul>
+<p>  lambda sesudah <code>(</code> + <code>||</code> sesudah <code>(</code>.</p>
+<ul>
+<li><code>compiler/tests/e2e_stability.sh</code> (22 kasus, terdaftar <code>e2e_stability</code></li>
+</ul>
+<p>  di CMake): 9 area audit Phase 50 — crash/malformed, parser,</p>
+<p>  typechecker, codegen+IR, runtime OOB/string, memory copy/loop,</p>
+<p>  pkg manifest-invalid, LSP smoke, formatter idempoten+regresi.</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Unit 10/10 + <code>e2e_stability</code> 22/22 + subset regresi</li>
+</ul>
+<p>  (closures/concurrency/tooling/stdlib2/ecosystem/new) hijau.</p>
+<ul>
+<li>Program <code>.ns</code> nyata (hello/closures/concurrency/tutorial-07) run OK;</li>
+</ul>
+<p>  LLVM IR <code>@main</code> terverifikasi; <code>bench/bench.sh</code> stabil.</p>
+<ul>
+<li>Fuzz manual 16 pola malformed: semua exit != 0, rc ≤ 128 (tanpa sinyal).</li>
+</ul>
+<h3 id="batasan-2-1-0-kontrak-bukan-utang-baru">Batasan 2.1.0 (kontrak, bukan utang baru) <a href="#batasan-2-1-0-kontrak-bukan-utang-baru" aria-label="taut">#</a></h3>
+<ul>
+<li>Spec bahasa = 2.0 (tidak diubah); tanpa GC/FFI-callback/async</li>
+</ul>
+<p>  (tetap RFC-0007/0008/0004); channel tanpa select/close; registry lokal.</p>
+<ul>
+<li>Env membutuhkan <code>ar</code>/<code>ranlib</code> di PATH (diatasi via symlink di CI ini).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.1.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

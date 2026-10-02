@@ -1,0 +1,41 @@
+// Layer: platform (builtin: random_u64) + pure Nusa (LCG below).
+// Random numbers: OS entropy seeds a userspace LCG (Knuth MMIX).
+// NOT cryptographic: no bitwise ops in v1, hence multiply-add LCG
+// with division-based range reduction (small modulo bias).
+// State is an explicit `i64` you thread through calls:
+// let s = rand_seed();
+// let r = rand_below(s, 100);
+// s = rand_next(s);
+fn rand_seed() -> i64 {
+    return random_u64();
+}
+// Next LCG state (also usable as a raw value).
+fn rand_next(state: i64) -> i64 {
+    return state * 6364136223846793005 + 1442695040888963407;
+}
+// Non-negative helper (INT64_MIN maps to 0).
+fn rand_abs(state: i64) -> i64 {
+    let s = state;
+    if s < 0 {
+        s = 0 - s;
+    }
+    if s < 0 {
+        s = 0;
+    }
+    return s;
+}
+// Uniform-ish value in [0, n). Requires n > 0.
+fn rand_below(state: i64, n: i64) -> i64 {
+    let s = rand_abs(state);
+    let q = s / n;
+    return s - q * n;
+}
+// Uniform-ish value in [lo, hi). Requires hi > lo.
+fn rand_range(state: i64, lo: i64, hi: i64) -> i64 {
+    return lo + rand_below(state, hi - lo);
+}
+// Random boolean (parity of state).
+fn rand_bool(state: i64) -> bool {
+    let q = state / 2;
+    return state - q * 2 != 0;
+}

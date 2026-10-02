@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lsp.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="lsp.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Server (Phase 36, v1.17.0) # nusa lsp # LSP via stdio (">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/lsp.html">
+<meta property="og:title" content="lsp.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="lsp.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Server (Phase 36, v1.17.0) # nusa lsp # LSP via stdio (">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="lsp.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="lsp, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "lsp.md", "category": "docs", "version": "3.0.0", "content": "lsp.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Server (Phase 36, v1.17.0) # nusa lsp # LSP via stdio (JSON-RPC + Content-Length) Server bicara LSP murni — tanpa protokol proprietary. Colokkan ke client apa pun (VS Code, Neovim, helix, Emacs) sebagai c", "code_example": "", "keywords": "lsp, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/lsp.html">lsp.md</a></p><article><h1>lsp.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-language-server-phase-36-v1-17-0">Nusa Language Server (Phase 36, v1.17.0) <a href="#nusa-language-server-phase-36-v1-17-0" aria-label="taut">#</a></h1>
+<pre data-lang="sh"><code class="lang-sh">nusa lsp   # LSP via stdio (JSON-RPC + Content-Length)</code></pre>
+<p>Server bicara <a href="https://microsoft.github.io/language-server-protocol/">LSP</a></p>
+<p>murni — tanpa protokol proprietary. Colokkan ke client apa pun</p>
+<p>(VS Code, Neovim, helix, Emacs) sebagai <code>command = [&quot;nusa&quot;, &quot;lsp&quot;]</code>.</p>
+<h2 id="fitur">Fitur <a href="#fitur" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Fitur</th><th>Metode</th><th>Catatan</th></tr></thead><tbody>
+<tr><td>Diagnostics</td><td><code>publishDiagnostics</code></td><td>lexer + parser (recovery) + semantic, per open/change</td></tr>
+<tr><td>Completion</td><td><code>textDocument/completion</code></td><td>keyword + builtin + simbol top-level + local terlihat</td></tr>
+<tr><td>Hover</td><td><code>textDocument/hover</code></td><td>signature top-level, bantuan keyword</td></tr>
+<tr><td>Goto definition</td><td><code>textDocument/definition</code></td><td>fungsi + local (scope-aware)</td></tr>
+<tr><td>Symbols</td><td><code>textDocument/documentSymbol</code></td><td>fn/struct/enum(+varian)/trait(+metode)/alias + range</td></tr>
+<tr><td>Formatting</td><td><code>textDocument/formatting</code></td><td><code>nusa fmt</code> (gagal → null edit)</td></tr>
+<tr><td>Rename</td><td><code>textDocument/rename</code></td><td>semua referensi satu definisi</td></tr>
+<tr><td>References</td><td><code>textDocument/references</code></td><td>v2.14.0: def + uses (<code>includeDeclaration</code> dihormati)</td></tr>
+</tbody></table>
+<h2 id="batas-yang-jujur-v1">Batas yang jujur (v1) <a href="#batas-yang-jujur-v1" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Satu file</strong>: analisis teks terbuka saja (impor disk tak</li>
+</ul>
+<p>  di-resolve; proyek multi-file terbaik via <code>nusa check</code>).</p>
+<ul>
+<li><strong>Tanpa typechecker</strong>: hover local tanpa tipe; goto/rename/</li>
+</ul>
+<p>  references sintaksis-scope (benar untuk shadowing, tanpa</p>
+<p>  inferensi; himpunan references ≡ rename).</p>
+<ul>
+<li><strong>Tanpa goto untuk tipe</strong> (struct/enum di posisi tipe), tanpa</li>
+</ul>
+<p>  prepareRename/codeAction, tanpa folding/selectionRange.</p>
+<ul>
+<li>Posisi byte-based (ASCII tepat; non-ASCII pendekatan).</li>
+<li><code>shutdown</code> → <code>exit</code> (kode 0 bila berurutan, 1 bila tidak);</li>
+</ul>
+<p>  pesan rusak diabaikan (server tetap hidup); method tak dikenal</p>
+<p>  → <code>-32601</code>.</p>
+<h2 id="klien-minimal-uji-manual">Klien minimal (uji manual) <a href="#klien-minimal-uji-manual" aria-label="taut">#</a></h2>
+<p>Kirim (perhatikan <code>\r\n\r\n</code>):</p>
+<pre data-lang="text"><code class="lang-text">Content-Length: 65\r\n\r\n{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;initialize&quot;,&quot;params&quot;:{}}</code></pre>
+<p>lalu <code>initialized</code>, <code>textDocument/didOpen</code>, dst. Lihat</p>
+<p><code>compiler/tests/e2e_lsp.py</code> (harness python yang dipakai CI).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

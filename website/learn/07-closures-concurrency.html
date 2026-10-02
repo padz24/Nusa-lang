@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>07-closures-concurrency Closures &amp; Concurrency — Nusa Docs 3.0.0</title>
+<meta name="description" content="07-closures-concurrency — Closures &amp;amp; Concurrency v3.0.0 Estimasi 60 menit · Lambda |x| by-value capture, thread_spawn/join, atomic. Penjelasan 07 ">
+<link rel="canonical" href="https://nusa-lang.org/docs/learn/07-closures-concurrency.html">
+<meta property="og:title" content="07-closures-concurrency Closures &amp; Concurrency — Nusa Docs 3.0.0">
+<meta property="og:description" content="07-closures-concurrency — Closures &amp;amp; Concurrency v3.0.0 Estimasi 60 menit · Lambda |x| by-value capture, thread_spawn/join, atomic. Penjelasan 07 ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="07-closures-concurrency Closures &amp; Concurrency">
+<meta name="nusa:category" content="learn/advanced">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="tutorial, 07-closures-concurrency, closures &amp; concurrency">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "07-closures-concurrency Closures & Concurrency", "category": "learn/advanced", "version": "3.0.0", "content": "07-closures-concurrency — Closures &amp; Concurrency v3.0.0 Estimasi 60 menit · Lambda |x| by-value capture, thread_spawn/join, atomic. Penjelasan 07 — Closures &amp; concurrency # Tujuan: lambda |x| , capture by-value, thread_spawn / join , atomic (pola channel: lihat examples/concurrency.ns ). Pr", "code_example": "fn apply(f: fn(i64) -> i64, x: i64) -> i64 {\n    return f(x);\n}\nfn work() -> i64 {\n    return 40 + 2;\n}\nfn main() {\n    let add = |a: i64, b: i64| a + b;\n    print(add(1, 2));\n    print(apply(|x: i64| x * 2, 21));\n    let k = 10;\n    let f = |x: i64| x + k;\n    print(f(5));\n    let h = thread_spawn(work);\n    print(thread_join(h));\n    let total = atomic_new(0);\n    atomic_add(total, 1);\n    print(atomic_get(total));\n    atomic_free(total);\n}\n", "keywords": "tutorial, 07-closures-concurrency, closures & concurrency"}</script>
+</head>
+<body class="kind-learn-advanced">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/" aria-current="page">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../learn/">Kurikulum</a></li><li><a href="../learn/01-hello.html">01-hello Program Pertama</a></li><li><a href="../learn/02-variables.html">02-variables Variabel &amp; Tipe Dasar</a></li><li><a href="../learn/03-functions.html">03-functions Fungsi &amp; Struct</a></li><li><a href="../learn/04-generics-traits.html">04-generics-traits Generics &amp; Traits</a></li><li><a href="../learn/05-match-enum.html">05-match-enum Match &amp; Enum</a></li><li><a href="../learn/06-error-handling.html">06-error-handling Error Handling</a></li><li><a href="../learn/07-closures-concurrency.html" aria-current="page">07-closures-concurrency Closures &amp; Concurrency</a></li><li><a href="../learn/08-package-project.html">08-package-project Package Project</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../learn/">Learn</a> / <a href="../learn/07-closures-concurrency.html">07-closures-concurrency</a></p><article><h1>07-closures-concurrency — Closures &amp; Concurrency</h1><span class="badge historic">v3.0.0</span> <p><small>Estimasi 60 menit · Lambda |x| by-value capture, thread_spawn/join, atomic.</small></p><h2>Penjelasan</h2><h1 id="07-closures-concurrency">07 — Closures &amp; concurrency <a href="#07-closures-concurrency" aria-label="taut">#</a></h1>
+<p>Tujuan: lambda <code>|x|</code>, capture by-value, <code>thread_spawn</code>/<code>join</code>,</p>
+<p>atomic (pola channel: lihat <code>examples/concurrency.ns</code>).</p>
+<p>Prasyarat: <code>tutorials/06-error-handling/</code>.</p>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run tutorials/07-closures-concurrency/main.ns
+# 3
+# 42
+# 15
+# 42
+# 1</code></pre>
+<p>Aturan: capture SELALU by-value (snapshot per pembuatan closure);</p>
+<p><code>thread_spawn</code> butuh <code>fn() -&gt; i64</code> ketat (lambda <code>|| ...</code> OK);</p>
+<p>penjadwalan undefined — sinkronisasi eksplisit via join/channel;</p>
+<p>tanpa select/close/async.</p>
+<p>Lihat: <code>docs/closures.md</code>, <code>docs/concurrency.md</code>.</p>
+<p>Lanjut: <code>tutorials/08-package-project/</code>.</p><h2>Source code (.ns)</h2><pre data-lang="nusa"><code class="lang-nusa">fn apply(f: fn(i64) -&gt; i64, x: i64) -&gt; i64 {
+    return f(x);
+}
+fn work() -&gt; i64 {
+    return 40 + 2;
+}
+fn main() {
+    let add = |a: i64, b: i64| a + b;
+    print(add(1, 2));
+    print(apply(|x: i64| x * 2, 21));
+    let k = 10;
+    let f = |x: i64| x + k;
+    print(f(5));
+    let h = thread_spawn(work);
+    print(thread_join(h));
+    let total = atomic_new(0);
+    atomic_add(total, 1);
+    print(atomic_get(total));
+    atomic_free(total);
+}
+</code></pre><h2>Output program</h2><samp class="out">3
+42
+15
+42
+1
+</samp><p><a class="btn sec" href="../playground/?code=fn%20apply%28f%3A%20fn%28i64%29%20-%3E%20i64%2C%20x%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%20f%28x%29%3B%0A%7D%0Afn%20work%28%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%2040%20%2B%202%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20let%20add%20%3D%20%7Ca%3A%20i64%2C%20b%3A%20i64%7C%20a%20%2B%20b%3B%0A%20%20%20%20print%28add%281%2C%202%29%29%3B%0A%20%20%20%20print%28apply%28%7Cx%3A%20i64%7C%20x%20%2A%202%2C%2021%29%29%3B%0A%20%20%20%20let%20k%20%3D%2010%3B%0A%20%20%20%20let%20f%20%3D%20%7Cx%3A%20i64%7C%20x%20%2B%20k%3B%0A%20%20%20%20print%28f%285%29%29%3B%0A%20%20%20%20let%20h%20%3D%20thread_spawn%28work%29%3B%0A%20%20%20%20print%28thread_join%28h%29%29%3B%0A%20%20%20%20let%20total%20%3D%20atomic_new%280%29%3B%0A%20%20%20%20atomic_add%28total%2C%201%29%3B%0A%20%20%20%20print%28atomic_get%28total%29%29%3B%0A%20%20%20%20atomic_free%28total%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Exercise</h2><ol><li>Ubah capture k menjadi 20 dan prediksi output f(5).<details><summary>Solusi</summary><p>25 (capture by-value saat lambda dibuat).</p></details></li><li>Ganti work() agar mengembalikan 100; apa output join?<details><summary>Solusi</summary><p>100.</p></details></li></ol><h2>Next step</h2><ul><li>Lanjut: <a href="08-package-project.html">08-package-project — Package Project</a></li><li>Referensi: <a href="../language/concurrency.html">language/concurrency</a></li></ul></article><div class="prevnext"><a href="../learn/06-error-handling.html">← 06-error-handling</a><a href="../learn/08-package-project.html">08-package-project →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

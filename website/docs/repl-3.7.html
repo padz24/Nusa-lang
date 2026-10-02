@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>repl-3.7.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="repl-3.7.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. NUSA REPL — Milestone 1: AOT-Loop (Phase 106) # Status: slice im">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/repl-3.7.html">
+<meta property="og:title" content="repl-3.7.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="repl-3.7.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. NUSA REPL — Milestone 1: AOT-Loop (Phase 106) # Status: slice im">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="repl-3.7.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="repl-3.7, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "repl-3.7.md", "category": "docs", "version": "3.0.0", "content": "repl-3.7.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. NUSA REPL — Milestone 1: AOT-Loop (Phase 106) # Status: slice implementasi ( nusa repl ; target 3.7.0). Prinsip master: infrastruktur compiler yang sama, tanpa bahasa kedua. Dipilih AOT-loop (bukan JIT): subsystem", "code_example": "", "keywords": "repl-3.7, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/repl-3.7.html">repl-3.7.md</a></p><article><h1>repl-3.7.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-repl-milestone-1-aot-loop-phase-106">NUSA REPL — Milestone 1: AOT-Loop (Phase 106) <a href="#nusa-repl-milestone-1-aot-loop-phase-106" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (<code>nusa repl</code>; target 3.7.0). Prinsip</p>
+<p>master: infrastruktur compiler yang sama, tanpa bahasa kedua.</p>
+<p>Dipilih AOT-loop (bukan JIT): subsystem JIT belum ada (Phase 105),</p>
+<p>sementara kebutuhan iterasi terpenuhi transkrip + rebuild cache.</p>
+<h2 id="1-cara-kerja-compiler-driver-repl-cpp-driver-runrepl">1. Cara kerja (<code>compiler/driver/Repl.cpp</code>, <code>Driver::runRepl</code>) <a href="#1-cara-kerja-compiler-driver-repl-cpp-driver-runrepl" aria-label="taut">#</a></h2>
+<ul>
+<li>Sesi = daftar baris → <code>session.ns</code> (<code>fn main() { ... }</code>) di</li>
+</ul>
+<p>  <code>mkdtemp</code> privat → <code>runBuild</code> (checkStages/codegen/clang +</p>
+<p>  cache inkremental) → eksekusi → stdout diteruskan.</p>
+<ul>
+<li>Baris gagal (diagnostik compiler di stderr) TIDAK masuk sesi</li>
+</ul>
+<p>  (anti-racun); <code>:reset</code> membuang sesi; EOF/<code>:quit</code> keluar 0 +</p>
+<p>  bersih total (termasuk <code>.nusa-cache</code>).</p>
+<ul>
+<li>SEMANTIK PUTAR-ULANG (jujur, bawaan AOT-loop): tiap giliran sukses</li>
+</ul>
+<p>  mengeksekusi SELURUH sesi dari awal — efek samping (print)</p>
+<p>  giliran lama terulang. Untuk nilai, pakai ekspresi; <code>let</code> murni</p>
+<p>  dan blok bisu tak mencetak. JIT inkremental (Phase 105) akan</p>
+<p>  menghilangkan ini (follow-up tercatat).</p>
+<ul>
+<li>Konvensi input (REPL, bukan sintaks baru): akhir <code>;</code>/<code>{</code>/<code>}</code></li>
+</ul>
+<p>  = statement <code>.ns</code> apa adanya; sisanya ekspresi → <code>print(...);</code>.</p>
+<ul>
+<li>Prompt <code>nusa&gt; </code>/<code>... </code> hanya di TTY (terpipa bersih untuk skrip</li>
+</ul>
+<p>  + uji). Blok multi-baris via penghitung <code>{[(</code> sadar string +</p>
+<p>  komentar <code>//</code>.</p>
+<h2 id="2-batas-jujur-milestone-1">2. Batas jujur (milestone 1) <a href="#2-batas-jujur-milestone-1" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa definisi <code>fn</code>/<code>struct</code>/<code>trait</code>/<code>impl</code>/<code>import</code> (bukan</li>
+</ul>
+<p>  statement — ditolak bersih, sesi utuh).</p>
+<ul>
+<li>Tanpa timeout eksekusi (program gantung = Ctrl-C; ikut model</li>
+</ul>
+<p>  <code>nusa run</code>). Tanpa riwayat/edit baris (readline) — follow-up.</p>
+<ul>
+<li>Biaya per baris = rebuild sesi penuh (~2 dtk clang, tumbuh</li>
+</ul>
+<p>  bersama sesi); JIT inkremental (Phase 105) = jalur cepat</p>
+<p>  masa depan bila dibutuhkan.</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_repl</code> 5/5: sesi+blok, anti-racun, reset/bantuan/</li>
+</ul>
+<p>  perintah-asing, tolak-fn, argumen+kebersihan.</p>
+<ul>
+<li><code>e2e_release</code> hijau (help baru tak merusak gate); <code>.ns</code> + IR OK.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

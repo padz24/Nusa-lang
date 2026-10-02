@@ -1,0 +1,123 @@
+// Layer: HTTP/1.x primitives murni Nusa di atas TCP (lihat docs/net-2.9.md).
+// BUKAN framework: tanpa router/TLS/chunked/keep-alive (ekosistem).
+// Membutuhkan modul string di pengimpor (`import string;`) untuk
+// str_index_of/str_contains/str_slice (lihat §4 docs/net-2.9.md).
+// Baca request hingga header lengkap (maks 32 chunk 256 B).
+fn _read_request(fd: i64) -> string {
+    let out = "";
+    let i = 0;
+    while i < 32 {
+        let chunk = tcp_recv(fd, 256);
+        if str_eq(chunk, "") {
+            return out;
+        }
+        out = str_concat(out, chunk);
+        if str_contains(out, "\r\n\r\n") {
+            return out;
+        }
+        i = i + 1;
+    }
+    return out;
+}
+// Dial dengan retry loopback (server thread butuh start).
+// Mengembalikan fd atau -1.
+fn _dial_retry(host: string, port: i64) -> i64 {
+    let i = 0;
+    while i < 200 {
+        let fd = tcp_connect(host, port);
+        if fd != 0 - 1 {
+            return fd;
+        }
+        sleep_ms(5);
+        i = i + 1;
+    }
+    return 0 - 1;
+}
+// Baca hingga close/EOF (maks 64 chunk 512 B).
+fn _read_all(fd: i64) -> string {
+    let out = "";
+    let i = 0;
+    while i < 64 {
+        let chunk = tcp_recv(fd, 512);
+        if str_eq(chunk, "") {
+            return out;
+        }
+        out = str_concat(out, chunk);
+        i = i + 1;
+    }
+    return out;
+}
+/// Kode status baris pertama ("HTTP/1.1 200 OK" -> 200; -1 malformed).
+fn http_status(resp: string) -> i64 {
+    let eol = str_index_of(resp, "\r\n", 0);
+    if eol == 0 - 1 {
+        eol = str_index_of(resp, "\n", 0);
+    }
+    if eol == 0 - 1 {
+        return 0 - 1;
+    }
+    let line = str_slice(resp, 0, eol);
+    let sp1 = str_index_of(line, " ", 0);
+    if sp1 == 0 - 1 {
+        return 0 - 1;
+    }
+    let sp2 = str_index_of(line, " ", sp1 + 1);
+    if sp2 == 0 - 1 {
+        sp2 = str_len(line);
+    }
+    return parse_int(str_slice(line, sp1 + 1, sp2));
+}
+/// Badan respons (setelah CRLFCRLF/LFLF; "" bila tanpa header).
+fn http_body(resp: string) -> string {
+    let sep = str_index_of(resp, "\r\n\r\n", 0);
+    let skip = 4;
+    if sep == 0 - 1 {
+        sep = str_index_of(resp, "\n\n", 0);
+        skip = 2;
+    }
+    if sep == 0 - 1 {
+        return "";
+    }
+    return str_slice(resp, sep + skip, str_len(resp));
+}
+/// GET/1.0 sinkron; "" bila dial gagal (server menutup = akhir body).
+fn http_get(host: string, port: i64, path: string) -> string {
+    let fd = _dial_retry(host, port);
+    if fd == 0 - 1 {
+        return "";
+    }
+    let req = "GET ";
+    req = str_concat(req, path);
+    req = str_concat(req, " HTTP/1.0\r\nHost: ");
+    req = str_concat(req, host);
+    req = str_concat(req, "\r\n\r\n");
+    tcp_send(fd, req);
+    let resp = _read_all(fd);
+    tcp_close(fd);
+    return resp;
+}
+/// Serve-once loopback: 200 OK + body (0 ok, -1 gagal).
+fn http_serve_once(port: i64, body: string) -> i64 {
+    let srv = tcp_listen(port);
+    if srv == 0 - 1 {
+        return 0 - 1;
+    }
+    let fd = tcp_accept(srv);
+    if fd == 0 - 1 {
+        tcp_close(srv);
+        return 0 - 1;
+    }
+    let req = _read_request(fd);
+    if str_eq(req, "") {
+        tcp_close(fd);
+        tcp_close(srv);
+        return 0 - 1;
+    }
+    let head = "HTTP/1.0 200 OK\r\nContent-Length: ";
+    head = str_concat(head, int_to_str(str_len(body)));
+    head = str_concat(head, "\r\nConnection: close\r\n\r\n");
+    tcp_send(fd, str_concat(head, body));
+    tcp_close(fd);
+    tcp_close(srv);
+    return 0;
+}

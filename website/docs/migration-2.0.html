@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>migration-2.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="migration-2.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 1.x → 2.0 # Dua breaking change (B1, B2-keywords) +">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/migration-2.0.html">
+<meta property="og:title" content="migration-2.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="migration-2.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 1.x → 2.0 # Dua breaking change (B1, B2-keywords) +">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="migration-2.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="migration-2.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "migration-2.0.md", "category": "docs", "version": "3.0.0", "content": "migration-2.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 1.x → 2.0 # Dua breaking change (B1, B2-keywords) + selebihnya aditif. Semua pola lama yang ditolak memiliki pesan dengan arahan. B1: Option/Result struct → enum natif # 1.x (ditolak di 2.0) 2.0 none(", "code_example": "", "keywords": "migration-2.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/migration-2.0.html">migration-2.0.md</a></p><article><h1>migration-2.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="migrasi-1-x-2-0">Migrasi 1.x → 2.0 <a href="#migrasi-1-x-2-0" aria-label="taut">#</a></h1>
+<p>Dua breaking change (B1, B2-keywords) + selebihnya aditif. Semua</p>
+<p>pola lama yang ditolak memiliki pesan dengan arahan.</p>
+<h2 id="b1-option-result-struct-enum-natif">B1: Option/Result struct → enum natif <a href="#b1-option-result-struct-enum-natif" aria-label="taut">#</a></h2>
+<table><thead><tr><th>1.x (ditolak di 2.0)</th><th>2.0</th></tr></thead><tbody>
+<tr><td><code>none(0)</code> / <code>none(&quot;&quot;)</code></td><td><code>Option&lt;i64&gt;.None()</code> / <code>Option&lt;string&gt;.None()</code></td></tr>
+<tr><td><code>ok(5, &quot;&quot;)</code></td><td><code>Result&lt;i64, string&gt;.Ok(5)</code></td></tr>
+<tr><td><code>err(0, &quot;boom&quot;)</code></td><td><code>Result&lt;i64, string&gt;.Err(&quot;boom&quot;)</code></td></tr>
+<tr><td><code>opt_map(o, f, dummy)</code></td><td><code>opt_map(o, f)</code></td></tr>
+<tr><td><code>res_map(r, f, dummy)</code></td><td><code>res_map(r, f)</code></td></tr>
+<tr><td><code>res_map_err(r, f, dt, df)</code></td><td><code>res_map_err(r, f)</code></td></tr>
+<tr><td><code>o.value</code>, <code>o.has_value</code></td><td><code>match o { Some(v) =&gt; …, None =&gt; … }</code> atau kombinator</td></tr>
+<tr><td><code>r.value</code>, <code>r.is_ok</code>, <code>r.error</code></td><td><code>match</code> / <code>is_ok(r)</code> / <code>?</code> / kombinator</td></tr>
+<tr><td><code>struct Option</code>/<code>struct Result</code> sendiri + pola <code>Some</code>/<code>None</code></td><td>ganti ke enum (atau ganti nama tipe)</td></tr>
+</tbody></table>
+<p>TIDAK berubah sintaksnya: pola <code>Some(v)</code>/<code>None</code>/<code>Ok(v)</code>/<code>Err(e)</code>,</p>
+<p>operator <code>?</code>, <code>is_some</code>/<code>is_none</code>/<code>opt_unwrap_or</code>/<code>res_unwrap_or</code>,</p>
+<p><code>parse_int_opt</code>, <code>file_read_opt</code>, <code>Error</code>/<code>error()</code>.</p>
+<p>Aturan praktis <code>None</code>: tipe eksplisit wajib</p>
+<p>(<code>Option&lt;i64&gt;.None()</code> — cermin <code>Point&lt;i64&gt; { … }</code> dan literal <code>[]</code></p>
+<p>yang butuh anotasi). Helper <code>some(v)</code> tetap inferensi.</p>
+<h2 id="b2-keyword-async-await-di-reserved">B2: keyword <code>async</code>/<code>await</code> di-reserved <a href="#b2-keyword-async-await-di-reserved" aria-label="taut">#</a></h2>
+<p>Program yang memakai <code>async</code>/<code>await</code> sebagai identifier (fungsi,</p>
+<p>variabel, field, modul) WAJIB diganti namanya. Korpus repo</p>
+<p>nol pemakaian (diverifikasi). Tanpa sintaks async di 2.0</p>
+<p>(RFC-0004 tetap Proposed).</p>
+<h2 id="aditif-tanpa-migrasi">Aditif (tanpa migrasi) <a href="#aditif-tanpa-migrasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Channel bertag: <code>chan_new_bool/send_bool/recv_bool</code>,</li>
+</ul>
+<p>  <code>chan_new_str/send_str/recv_str</code> (RFC-0006). <code>chan_*</code> lama</p>
+<p>  identik (tag 0, kini diverifikasi runtime).</p>
+<ul>
+<li>TCP server: <code>tcp_listen</code>/<code>tcp_accept</code> + <code>std.net</code></li>
+</ul>
+<p>  <code>listen_on</code>/<code>accept_one</code> (loopback-only).</p>
+<ul>
+<li>Bare <code>return;</code> di tengah <code>main</code> kini legal (dulu gagal</li>
+</ul>
+<p>  verifikasi IR — bug, bukan fitur).</p>
+<h2 id="cek-migrasi-paket-anda">Cek migrasi paket Anda <a href="#cek-migrasi-paket-anda" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">nusa check main.ns        # baca semua error sekaligus (recovery)
+nusa test                 # hijau = selesai
+nusa fmt --check .        # gaya tetap</code></pre></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

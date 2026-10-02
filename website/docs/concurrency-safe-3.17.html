@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>concurrency-safe-3.17.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="concurrency-safe-3.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Safe Concurrency Model — Milestone 1: Klaim-Join At">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/concurrency-safe-3.17.html">
+<meta property="og:title" content="concurrency-safe-3.17.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="concurrency-safe-3.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Safe Concurrency Model — Milestone 1: Klaim-Join At">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="concurrency-safe-3.17.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="concurrency-safe-3.17, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "concurrency-safe-3.17.md", "category": "docs", "version": "3.0.0", "content": "concurrency-safe-3.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Safe Concurrency Model — Milestone 1: Klaim-Join Atomik (Phase 116) # Status: slice implementasi (target 3.17.0). Mandat master: data-race resistance, semantik send/sync, thread safety, ownership lint", "code_example": "", "keywords": "concurrency-safe-3.17, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/concurrency-safe-3.17.html">concurrency-safe-3.17.md</a></p><article><h1>concurrency-safe-3.17.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="safe-concurrency-model-milestone-1-klaim-join-atomik-phase-116">Safe Concurrency Model — Milestone 1: Klaim-Join Atomik (Phase 116) <a href="#safe-concurrency-model-milestone-1-klaim-join-atomik-phase-116" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi (target 3.17.0). Mandat master:</p>
+<p>data-race resistance, semantik send/sync, thread safety,</p>
+<p>ownership lintas-task, shared state aman; memori + konkurensi</p>
+<p>tak boleh bertentangan.</p>
+<h2 id="1-model-yang-diformalkan-share-nothing-handle">1. Model yang diformalkan (share-nothing + handle) <a href="#1-model-yang-diformalkan-share-nothing-handle" aria-label="taut">#</a></h2>
+<ul>
+<li>Semua nilai Nusa adalah Send-by-move: capture closure</li>
+</ul>
+<p>  by-value, argumen/return by-value, channel menyalin i64 —</p>
+<p>  TAK ADA memori bersama yang bisa di-race dari bahasa.</p>
+<ul>
+<li>Berbagi eksplisit HANYA via handle (thread/mutex/chan/atomic)</li>
+</ul>
+<p>  + registry lifecycle: pakai-selalu-hidup, join/free tepat</p>
+<p>  sekali; salinan tak memperpanjang lifetime. Aturan ini SATU</p>
+<p>  sistem untuk memori dan konkurensi (bukan dua yang bertentangan).</p>
+<ul>
+<li>Semantik send/sync ala-Rust DINYATAKAN tak perlu: checker</li>
+</ul>
+<p>  tambahan akan melarang pola yang hari ini sound (handle</p>
+<p>  memang dirancang dibagikan). Bila pola berbagi baru muncul</p>
+<p>  (select/close, actor), keputusannya dicatat saat itu.</p>
+<h2 id="2-bug-nyata-yang-ditutup-toctou-join">2. Bug nyata yang ditutup (TOCTOU join) <a href="#2-bug-nyata-yang-ditutup-toctou-join" aria-label="taut">#</a></h2>
+<p><code>nusa_thread_join</code> dulu check → pthread_join (blokir) → remove +</p>
+<p>free: double-join KONKUREN sama-sama lolos cek → pthread_join</p>
+<p>ganda (UB) + double-free + panggil kedua dapat 0 diam-diam</p>
+<p>(terbukti 3/3 run pra-fix: <code>{0,7}</code> rc=0). Semua <code>*_free</code></p>
+<p>sudah claim-first sejak Phase 54 — join satu-satunya yang tidak.</p>
+<p>Perbaikan (<code>runtime/rt_thread.c</code>, runtime-only, NOL ABI):</p>
+<p>klaim atomik DULU (<code>hremove</code>, kalah = <code>invalid handle</code> exit 1),</p>
+<p>baru pthread_join + free. Sekuensial identik (pesan/rc sama);</p>
+<p>konkuren: tepat satu pemenang, yang kalah fail-fast, tanpa UB.</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_stress</code> + <code>s_racejoin</code> (3x: rc=1 + pesan klaim + tanpa</li>
+</ul>
+<p>  baris <code>0</code> + tanpa sinyal); concurrency/memsafe/async/stress</p>
+<p>  + <code>e2e_release</code> hijau; <code>.ns</code> + IR OK (NOL jalur compiler).</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Free-while-borrowed konkuren (pakai-vs-destroy balapan):</li>
+</ul>
+<p>  tetap UB — butuh refcounting (desain tersendiri).</p>
+<ul>
+<li>ABA reuse alamat (Phase 115); select/close channel; pola</li>
+</ul>
+<p>  berbagi baru mengikuti fitur baru.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

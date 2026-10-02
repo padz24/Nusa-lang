@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>crypto-2.27.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="crypto-2.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cryptography Foundation — Design (Phase 76, target 2.27.0) # ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/crypto-2.27.html">
+<meta property="og:title" content="crypto-2.27.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="crypto-2.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cryptography Foundation — Design (Phase 76, target 2.27.0) # ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="crypto-2.27.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="crypto-2.27, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "crypto-2.27.md", "category": "docs", "version": "3.0.0", "content": "crypto-2.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cryptography Foundation — Design (Phase 76, target 2.27.0) # Status: RFC-0011 Proposed → Implementation slice 1 (2 builtin + std/crypto.ns ). Bukan pustaka kripto umum (tanpa AES/HMAC/ base64 — butuh ord , ditu", "code_example": "", "keywords": "crypto-2.27, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/crypto-2.27.html">crypto-2.27.md</a></p><article><h1>crypto-2.27.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="cryptography-foundation-design-phase-76-target-2-27-0">Cryptography Foundation — Design (Phase 76, target 2.27.0) <a href="#cryptography-foundation-design-phase-76-target-2-27-0" aria-label="taut">#</a></h1>
+<p>Status: RFC-0011 Proposed → Implementation slice 1 (2 builtin</p>
+<p>+ <code>std/crypto.ns</code>). Bukan pustaka kripto umum (tanpa AES/HMAC/</p>
+<p>base64 — butuh <code>ord</code>, ditunda jujur).</p>
+<h2 id="1-hasil-evaluasi-gate-kualitas">1. Hasil evaluasi gate kualitas <a href="#1-hasil-evaluasi-gate-kualitas" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Prioritas master</th><th>Putusan</th><th>Dasar</th></tr></thead><tbody>
+<tr><td>hashing</td><td>LULUS</td><td>FIPS 180-4 verbatim di runtime; vektor NIST + cross-check independen</td></tr>
+<tr><td>randomness</td><td>LULUS</td><td><code>/dev/urandom</code> langsung; gagal-eksplisit (<code>&quot;&quot;</code>), tanpa fallback diam</td></tr>
+<tr><td>key representations</td><td>LULUS</td><td>hex string (codec <code>encoding.ns</code> sudah ada)</td></tr>
+<tr><td>secure comparison</td><td>LULUS</td><td>tanpa early-exit murni-Nusa (bocor panjang didokumentasikan)</td></tr>
+<tr><td>encoding (base64)</td><td>GAGAL</td><td>butuh <code>ord</code> (blokir bahasa, tercatat)</td></tr>
+<tr><td>klaim &quot;teraudit&quot;</td><td>GAGAL</td><td>dinyatakan apa adanya: provenance + vektor, bukan audit</td></tr>
+</tbody></table>
+<h2 id="2-kontrak-builtin">2. Kontrak builtin <a href="#2-kontrak-builtin" aria-label="taut">#</a></h2>
+<ul>
+<li><code>sha256_hex(s: string) -&gt; string</code>: 64 hex lowercase; input =</li>
+</ul>
+<p>  byte string (<code>strlen</code>; NUL mustahil — konsisten batas lexer).</p>
+<p>  Deterministik total.</p>
+<ul>
+<li><code>crypto_rand_hex(n: i64) -&gt; string</code>: <code>2*n</code> hex; <code>&quot;&quot;</code> bila</li>
+</ul>
+<p>  <code>n &lt;= 0</code>, malloc gagal, atau <code>/dev/urandom</code> tak terbaca</p>
+<p>  penuh. PANGGILAN WAJIB dicek panjangnya (std melakukannya).</p>
+<ul>
+<li>Keduanya: arity/tipe dicek checker (cermin <code>file_read</code>/</li>
+</ul>
+<p>  <code>int_to_str</code>); malloc tanpa free (konvensi runtime).</p>
+<h2 id="3-lapisan-std-crypto-ns-tanpa-import">3. Lapisan std (<code>crypto.ns</code>, tanpa import) <a href="#3-lapisan-std-crypto-ns-tanpa-import" aria-label="taut">#</a></h2>
+<ul>
+<li><code>crypto_key_hex(n)</code>: kunci <code>n</code> byte; panjang salah → die</li>
+</ul>
+<p>  (fail-closed di sini, bukan di primitif).</p>
+<ul>
+<li><code>crypto_compare(a, b) -&gt; bool</code>: pindai SEMUA char, akumulasi</li>
+</ul>
+<p>  beda (tanpa early-exit); panjang beda → false.</p>
+<ul>
+<li><code>sha256_file(path)</code>: <code>sha256_hex(file_read(path))</code>.</li>
+</ul>
+<h2 id="4-peta-implementasi">4. Peta implementasi <a href="#4-peta-implementasi" aria-label="taut">#</a></h2>
+<p><code>runtime/rt_crypto.c</code> (baru; include di <code>nusa_rt.c</code>) →</p>
+<p><code>Builtin.cpp</code> + <code>TypeChecker</code> + <code>Codegen</code> (pola <code>file_read</code>) →</p>
+<p><code>std/crypto.ns</code> → <code>test_builtins</code> + <code>e2e_crypto.sh</code> →</p>
+<p>docs + CHANGELOG + regen.</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>Vektor NIST hijau (unit + e2e) + cross-check independen;</li>
+</ul>
+<p>  keygen panjang/unik/fail-closed; compare benar; misuse</p>
+<p>  bertipe ditolak; suite hijau; bench identik; <code>.ns.ll</code> bersih.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

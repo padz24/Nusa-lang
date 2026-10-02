@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC-0002-traits — Nusa Docs 3.0.0</title>
+<meta name="description" content="RFC-0002-traits Implemented RFC-0002: Traits # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Menggantikan: — Digantikan oleh">
+<link rel="canonical" href="https://nusa-lang.org/docs/rfcs/RFC-0002-traits.html">
+<meta property="og:title" content="RFC-0002-traits — Nusa Docs 3.0.0">
+<meta property="og:description" content="RFC-0002-traits Implemented RFC-0002: Traits # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Menggantikan: — Digantikan oleh">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="RFC-0002-traits">
+<meta name="nusa:category" content="rfcs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="rfc, rfc-0002-traits, implemented">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "RFC-0002-traits", "category": "rfcs", "version": "3.0.0", "content": "RFC-0002-traits Implemented RFC-0002: Traits # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Menggantikan: — Digantikan oleh: — Summary # Mekanisme abstraksi trait + impl Trait for Type dengan dispatch statis (rewrite ke fungsi mangled) dan bounds T: Trait (+ ganda). Terim", "code_example": "", "keywords": "rfc, rfc-0002-traits, implemented"}</script>
+</head>
+<body class="kind-rfcs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/" aria-current="page">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../rfcs/">Indeks</a></li><li><a href="../rfcs/RFC-0001-generics.html">RFC-0001-generics</a></li><li><a href="../rfcs/RFC-0002-traits.html" aria-current="page">RFC-0002-traits</a></li><li><a href="../rfcs/RFC-0003-ownership.html">RFC-0003-ownership</a></li><li><a href="../rfcs/RFC-0004-async.html">RFC-0004-async</a></li><li><a href="../rfcs/RFC-0005-nusa-2.0.html">RFC-0005-nusa-2.0</a></li><li><a href="../rfcs/RFC-0006-channels.html">RFC-0006-channels</a></li><li><a href="../rfcs/RFC-0007-gc.html">RFC-0007-gc</a></li><li><a href="../rfcs/RFC-0008-ffi.html">RFC-0008-ffi</a></li><li><a href="../rfcs/RFC-0009-comptime.html">RFC-0009-comptime</a></li><li><a href="../rfcs/RFC-0010-verification.html">RFC-0010-verification</a></li><li><a href="../rfcs/RFC-0011-crypto.html">RFC-0011-crypto</a></li><li><a href="../rfcs/RFC-0012-macros.html">RFC-0012-macros</a></li><li><a href="../rfcs/RFC-0013-vectors.html">RFC-0013-vectors</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../rfcs/">RFCs</a> / <a href="../rfcs/RFC-0002-traits.html">RFC-0002-traits</a></p><article><h1>RFC-0002-traits</h1><p><span class="badge stable">Implemented</span></p><h1 id="rfc-0002-traits">RFC-0002: Traits <a href="#rfc-0002-traits" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: Implemented</li>
+<li>Penulis: Nusa team (retroaktif)</li>
+<li>Tanggal: 2026-09-06</li>
+<li>Menggantikan: —</li>
+<li>Digantikan oleh: —</li>
+</ul>
+<h2 id="summary">Summary <a href="#summary" aria-label="taut">#</a></h2>
+<p>Mekanisme abstraksi <code>trait</code> + <code>impl Trait for Type</code> dengan dispatch</p>
+<p>statis (rewrite ke fungsi mangled) dan bounds <code>T: Trait</code> (+ ganda).</p>
+<p>Terimplementasi sebagai Phase 22 (v1.3.0).</p>
+<h2 id="motivation">Motivation <a href="#motivation" aria-label="taut">#</a></h2>
+<p>Generik (RFC-0001) butuh batasan bermakna (<code>fn max&lt;T: Ord&gt;(…)</code>):</p>
+<p>tanpa traits, bounds tak terungkap dan overloading ad-hoc tak</p>
+<p>terkendali.</p>
+<h2 id="design">Design <a href="#design" aria-label="taut">#</a></h2>
+<ul>
+<li><code>trait T { fn m(self, …); }</code> (tanpa body; <code>self</code> telanjang</li>
+</ul>
+<p>  pertama); <code>impl T for P { … }</code> untuk struct (termasuk</p>
+<p>  generik-konkret) dan primitif; array/fn/void ditolak.</p>
+<ul>
+<li>Panggilan <code>recv.m(args)</code>: resolve statis (tipe, nama) → rewrite</li>
+</ul>
+<p>  <code>Trait_method_Type</code>; codegen nol baris.</p>
+<ul>
+<li>Bounds dicek saat instansiasi konkret; koherensi unik</li>
+</ul>
+<p>  program-wide (satu impl per pasangan trait–tipe).</p>
+<h2 id="alternatives">Alternatives <a href="#alternatives" aria-label="taut">#</a></h2>
+<ul>
+<li>Dynamic dispatch (vtable/objek trait): ditolak untuk fase ini</li>
+</ul>
+<p>  (biaya runtime + interaksi borrow-checker yang belum ada).</p>
+<ul>
+<li>Body default/supertrait/<code>Self</code>/associated items: ditunda (ruang</li>
+</ul>
+<p>  untuk RFC lanjutan tanpa merusak yang ada).</p>
+<h2 id="compatibility">Compatibility <a href="#compatibility" aria-label="taut">#</a></h2>
+<p>Aditif murni; mangling memakai namespace terpisah (tabrakan nama</p>
+<p>mangled vs deklarasi user ditolak eksplisit).</p>
+<h2 id="tests">Tests <a href="#tests" aria-label="taut">#</a></h2>
+<p>Unit: lexer/parser/semantic/typecheck/fmt/doc; <code>e2e_traits.sh</code></p>
+<p>(18 kasus: bounds, primitif, generik, modul, privacy, penolakan).</p>
+<h2 id="specification">Specification <a href="#specification" aria-label="taut">#</a></h2>
+<p><code>docs/language-spec-1.0.md</code> §9; <code>docs/traits.md</code>.</p>
+<h2 id="discussion">Discussion <a href="#discussion" aria-label="taut">#</a></h2>
+<ul>
+<li>2026-09-06: dispatch statis dipilih agar kompatibel model memori</li>
+</ul>
+<p>  (tanpa fat pointer); bounds ganda <code>T: A + B</code> didukung sejak awal</p>
+<p>  karena murah di checker.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

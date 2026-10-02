@@ -1,0 +1,24 @@
+// Layer: platform (builtins: mutex_*/atomic_*).
+// Small guard + counter helpers over raw primitives.
+fn lock_new() -> i64 {
+    return mutex_new();
+}
+fn lock_free(m: i64) -> void {
+    mutex_free(m);
+}
+// Run f() under the mutex, return its value (no exceptions in Nusa,
+// so unlock always runs on the single exit path).
+fn with_lock(m: i64, f: fn() -> i64) -> i64 {
+    mutex_lock(m);
+    let r = f();
+    mutex_unlock(m);
+    return r;
+}
+// Atomically add 1, return the new value.
+fn atomic_inc(a: i64) -> i64 {
+    return atomic_add(a, 1);
+}
+// Atomically subtract 1, return the new value.
+fn atomic_dec(a: i64) -> i64 {
+    return atomic_add(a, 0 - 1);
+}

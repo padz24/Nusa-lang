@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nusa-2.0-design.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="nusa-2.0-design.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.0 Design Review (Phase 44 — dokumen, tanpa code) #">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/nusa-2.0-design.html">
+<meta property="og:title" content="nusa-2.0-design.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="nusa-2.0-design.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.0 Design Review (Phase 44 — dokumen, tanpa code) #">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="nusa-2.0-design.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="nusa-2.0-design, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "nusa-2.0-design.md", "category": "docs", "version": "3.0.0", "content": "nusa-2.0-design.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.0 Design Review (Phase 44 — dokumen, tanpa code) # Evaluasi menyeluruh pra-2.0 per 15 area mandat master. Keputusan diusulkan di RFC-0005 ( rfcs/RFC-0005-nusa-2.0.md , Proposed); dokumen ini = bahan", "code_example": "", "keywords": "nusa-2.0-design, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/nusa-2.0-design.html">nusa-2.0-design.md</a></p><article><h1>nusa-2.0-design.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-2-0-design-review-phase-44-dokumen-tanpa-code">Nusa 2.0 Design Review (Phase 44 — dokumen, tanpa code) <a href="#nusa-2-0-design-review-phase-44-dokumen-tanpa-code" aria-label="taut">#</a></h1>
+<p>Evaluasi menyeluruh pra-2.0 per 15 area mandat master. Keputusan</p>
+<p>diusulkan di RFC-0005 (<code>rfcs/RFC-0005-nusa-2.0.md</code>, Proposed);</p>
+<p>dokumen ini = bahan mentah temuan. Bukti dirujuk ke test/doc yang</p>
+<p>ada — bukan opini.</p>
+<h2 id="1-syntax-keep-2-reserved">1. Syntax — KEEP (+2 reserved) <a href="#1-syntax-keep-2-reserved" aria-label="taut">#</a></h2>
+<p>Stabil sejak 1.0; match/enum/lambda/extern menempel tanpa merusak</p>
+<p>program lama. Utang: <code>return</code> wajib terakhir per block + **bug</p>
+<p>terkonfirmasi: bare <code>return;</code> di dalam <code>if</code> pada <code>fn main</code></p>
+<p>gagal verifikasi IR** (<code>ret void</code> vs <code>i32 @main</code>; repro:</p>
+<p><code>if c { return; }</code> di main — workaround <code>else</code>). WAJIB diperbaiki</p>
+<p>pre-2.0 (bukan breaking: program pemicu dziś tak terkompilasi).</p>
+<p><code>async</code>/<code>await</code> reserved mengikuti RFC-0004 bila Accepted.</p>
+<h2 id="2-type-system-keep-satu-kandidat-breaking">2. Type System — KEEP, satu kandidat breaking <a href="#2-type-system-keep-satu-kandidat-breaking" aria-label="taut">#</a></h2>
+<p>Alias transparan + monomorphisasi + bounds terbukti (e2e 11–18</p>
+<p>kasus per area). Kandidat breaking: <code>Option</code>/<code>Result</code> encoding</p>
+<p>struct (konstruktor butuh dummy) → sum-type natif (bersama enum</p>
+<p>1.7.0, fondasi sudah ada). Dampak: API std berubah → butuh migrasi</p>
+<p>tercatat. Tanpa itu, 2.0 mengunci encoding dummy selamanya.</p>
+<h2 id="3-memory-model-keep-gc-sebagai-pertanyaan-terbuka">3. Memory Model — KEEP + GC sebagai pertanyaan terbuka <a href="#3-memory-model-keep-gc-sebagai-pertanyaan-terbuka" aria-label="taut">#</a></h2>
+<p>Owned + program-lifetime heap sudah normatif (§5 spec 1.0).</p>
+<p>Fakta: string bocor by-design; loop alokasi tumbuh/iterasi; tanpa</p>
+<p>TCO. Pertanyaan 2.0: GC (tracing/RC/arena-return) atau pertahankan</p>
+<p>tanpa-GC + dokumentasi? Keputusan memengaruhi FFI + async.</p>
+<h2 id="4-generics-keep">4. Generics — KEEP <a href="#4-generics-keep" aria-label="taut">#</a></h2>
+<p>Tanpa temuan. Ekstensi (metode generik, turbofish) = RFC lanjutan,</p>
+<p>bukan 2.0-blocker.</p>
+<h2 id="5-traits-keep">5. Traits — KEEP <a href="#5-traits-keep" aria-label="taut">#</a></h2>
+<p>Dispatch statis + koherensi unik program-wide stabil. Supertrait/</p>
+<p>default-body/<code>Self</code> = RFC lanjutan.</p>
+<h2 id="6-error-handling-keep-tergantung-2">6. Error Handling — KEEP, tergantung §2 <a href="#6-error-handling-keep-tergantung-2" aria-label="taut">#</a></h2>
+<p><code>?</code> + kombinator stabil. Bila sum-type natif (§2) diterima,</p>
+<p><code>Option</code>/<code>?</code>-untuk-<code>Option</code> + konversi error otomatis jadi kandidat</p>
+<p>2.0 (butuh RFC rincian sendiri).</p>
+<h2 id="7-concurrency-keep-async-di-luar-2-0-kecuali-rfc-0004-accepted">7. Concurrency — KEEP + async di luar 2.0 kecuali RFC-0004 Accepted <a href="#7-concurrency-keep-async-di-luar-2-0-kecuali-rfc-0004-accepted" aria-label="taut">#</a></h2>
+<p>Primitif 1.9.0 deterministik-teruji. Channel <code>i64</code>-saja + tanpa</p>
+<p>select/close = batas terdokumentasi (generik channel butuh</p>
+<p>monomorphisasi runtime × tipe — desain belum ada; JANGAN dijanjikan</p>
+<p>di 2.0).</p>
+<h2 id="8-modules-keep">8. Modules — KEEP <a href="#8-modules-keep" aria-label="taut">#</a></h2>
+<p>Flat-neighbor + pkg system koeksis baik. Tanpa perubahan.</p>
+<h2 id="9-package-system-keep">9. Package System — KEEP <a href="#9-package-system-keep" aria-label="taut">#</a></h2>
+<p>Path-deps + registry file-backed + checksum dua-lapis memadai untuk</p>
+<p>ekosistem kini. Yank/namespace/HTTP-registry = non-blocker.</p>
+<h2 id="10-ffi-keep">10. FFI — KEEP <a href="#10-ffi-keep" aria-label="taut">#</a></h2>
+<p>Batasan primitif (§12 spec) = batas keamanan sadar, bukan utang.</p>
+<p>Perluasan (struct-by-value/callback) = RFC + audit keamanan.</p>
+<h2 id="11-compiler-architecture-perbaiki-sebelum-2-0">11. Compiler Architecture — PERBAIKI SEBELUM 2.0 <a href="#11-compiler-architecture-perbaiki-sebelum-2-0" aria-label="taut">#</a></h2>
+<p>Utang: (a) bug bare-return-main (§1); (b) incremental =</p>
+<p>frontend-selalu (disengaja, murah — pertahankan, catat);</p>
+<p>(c) LSP satu-file tanpa typechecker; (d) DWARF skalar-saja;</p>
+<p>(e) cap 500 nesting / 100 rantai / 25 error (disengaja — pertahankan</p>
+<p>+ dokumentasikan sebagai kontrak, bukan malu-maluin).</p>
+<p>(a) satu-satunya bug; sisanya keputusan sadar → nyatakan normatif.</p>
+<h2 id="12-runtime-keep">12. Runtime — KEEP <a href="#12-runtime-keep" aria-label="taut">#</a></h2>
+<p><code>nusa_rt.c</code> + precompiled obj stabil. <code>RLIMIT_AS</code> dilarang di</p>
+<p>Bionic (temuan Phase 42) → runtime 2.0 tetap polling + dokumentasi.</p>
+<h2 id="13-standard-library-tambah-terbatas">13. Standard Library — TAMBAH TERBATAS <a href="#13-standard-library-tambah-terbatas" aria-label="taut">#</a></h2>
+<p>Kesenjangan terkonfirmasi: <code>tcp_listen</code>/<code>accept</code> (template server</p>
+<p>masih stub!), UDP/TLS (sengaja-tidak), PRNG non-kripto, cap recv</p>
+<p>1 MiB. Usulan 2.0: <code>tcp_listen</code>/<code>accept</code> SAJA (menutup janji</p>
+<p>template); sisanya tetap-batas.</p>
+<h2 id="14-tooling-keep">14. Tooling — KEEP <a href="#14-tooling-keep" aria-label="taut">#</a></h2>
+<p>fmt/lsp/pkg/test/doc/bootstrap/sandbox/playground/new lengkap.</p>
+<p>LSP multi-file + typechecker-hover = non-blocker.</p>
+<h2 id="15-cross-compilation-keep">15. Cross Compilation — KEEP <a href="#15-cross-compilation-keep" aria-label="taut">#</a></h2>
+<p>LP64 ELF matriks (host + linux-aarch64/x86-64) + penolakan</p>
+<p>Windows/macOS beralasan. Tanpa perubahan.</p>
+<h2 id="konsolidasi">Konsolidasi <a href="#konsolidasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Breaking changes (diusulkan): (B1) sum-type natif Option/Result;</li>
+</ul>
+<p>  (B2) keyword <code>async</code>/<code>await</code> (bila RFC-0004 Accepted).</p>
+<ul>
+<li>Deprecated (diusulkan): konstruktor struct-dummy Option/Result</li>
+</ul>
+<p>  (bila B1); <code>import</code> tetangga-flat untuk paket (arahkan ke pkg,</p>
+<p>  tanpa menghapus).</p>
+<ul>
+<li>Technical debt (wajib pre-2.0): bug bare-return-main; selebihnya</li>
+</ul>
+<p>  (O(n²) selfhost-lex, channel-i64, registry-lokal, playground-</p>
+<p>  sekuensial, leak-by-design, wrapping, caps) DINYATAKAN kontrak.</p>
+<ul>
+<li>Compiler limitations → spec 2.0 (jujur, bukan janji).</li>
+<li>Stdlib limitations → tambah listen/accept, sisanya kontrak.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+// Modul library v0.8.0: diimpor oleh main.ns.
+// Semua item publik kecuali `_`-awalan (module-private).
+fn add(a: i64, b: i64) -> i64 {
+    return a + b + _bias();
+}
+fn _bias() -> i64 {
+    return 1;
+}

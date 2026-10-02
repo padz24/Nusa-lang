@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC-0013-vectors — Nusa Docs 3.0.0</title>
+<meta name="description" content="RFC-0013-vectors Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0013: Vector/SIMD types # Status: Proposed Penulis: Nusa ">
+<link rel="canonical" href="https://nusa-lang.org/docs/rfcs/RFC-0013-vectors.html">
+<meta property="og:title" content="RFC-0013-vectors — Nusa Docs 3.0.0">
+<meta property="og:description" content="RFC-0013-vectors Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0013: Vector/SIMD types # Status: Proposed Penulis: Nusa ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="RFC-0013-vectors">
+<meta name="nusa:category" content="rfcs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="rfc, rfc-0013-vectors, proposed">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "RFC-0013-vectors", "category": "rfcs", "version": "3.0.0", "content": "RFC-0013-vectors Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0013: Vector/SIMD types # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-22 Menggantikan: — Digantikan oleh: — Summary # Menambahkan tipe vektor fixed-width vector&lt;T, N&gt; (slice 1: `T = i64 , N`", "code_example": "", "keywords": "rfc, rfc-0013-vectors, proposed"}</script>
+</head>
+<body class="kind-rfcs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/" aria-current="page">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../rfcs/">Indeks</a></li><li><a href="../rfcs/RFC-0001-generics.html">RFC-0001-generics</a></li><li><a href="../rfcs/RFC-0002-traits.html">RFC-0002-traits</a></li><li><a href="../rfcs/RFC-0003-ownership.html">RFC-0003-ownership</a></li><li><a href="../rfcs/RFC-0004-async.html">RFC-0004-async</a></li><li><a href="../rfcs/RFC-0005-nusa-2.0.html">RFC-0005-nusa-2.0</a></li><li><a href="../rfcs/RFC-0006-channels.html">RFC-0006-channels</a></li><li><a href="../rfcs/RFC-0007-gc.html">RFC-0007-gc</a></li><li><a href="../rfcs/RFC-0008-ffi.html">RFC-0008-ffi</a></li><li><a href="../rfcs/RFC-0009-comptime.html">RFC-0009-comptime</a></li><li><a href="../rfcs/RFC-0010-verification.html">RFC-0010-verification</a></li><li><a href="../rfcs/RFC-0011-crypto.html">RFC-0011-crypto</a></li><li><a href="../rfcs/RFC-0012-macros.html">RFC-0012-macros</a></li><li><a href="../rfcs/RFC-0013-vectors.html" aria-current="page">RFC-0013-vectors</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../rfcs/">RFCs</a> / <a href="../rfcs/RFC-0013-vectors.html">RFC-0013-vectors</a></p><article><h1>RFC-0013-vectors</h1><p><span class="badge proposed">Proposed</span></p><div class="warn"><p>Badge Proposed: implementasi DILARANG sebelum status Accepted.</p></div><h1 id="rfc-0013-vector-simd-types">RFC-0013: Vector/SIMD types <a href="#rfc-0013-vector-simd-types" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: Proposed</li>
+<li>Penulis: Nusa team</li>
+<li>Tanggal: 2026-09-22</li>
+<li>Menggantikan: —</li>
+<li>Digantikan oleh: —</li>
+</ul>
+<h2 id="summary">Summary <a href="#summary" aria-label="taut">#</a></h2>
+<p>Menambahkan tipe vektor fixed-width <code>vector&lt;T, N&gt;</code> (slice 1: `T =</p>
+<p>i64<code>, </code>N` ∈ {2, 4, 8, 16}) yang diturunkan ke LLVM vector types,</p>
+<p>dengan arith elementwise, komparasi, load/store/index, dan reduksi</p>
+<p>horizontal. RFC ini Proposed; TANPA implementasi di slice ini</p>
+<p>(aturan: fitur bahasa via RFC dulu; butuh juga keputusan ABI di</p>
+<p>bawah). Slice disengaja minimal agar dapat diuji tuntas sebelum</p>
+<p>mask/boolean-vector/float (Nusa belum punya float — F2 3.0).</p>
+<h2 id="motivation">Motivation <a href="#motivation" aria-label="taut">#</a></h2>
+<p>Bukti kebutuhan (bukan asumsi): loop Nusa pada <code>-O2</code> mengeluarkan</p>
+<p>NOL instruksi SIMD — diverifikasi pada loop reduksi skalar dan</p>
+<p><code>array_sum</code> (<code>--emit-asm</code>, grep <code>q[0-9]/v[0-9].*</code>: 0). Penyebab:</p>
+<p>alloca skalar + pointer opak + dependensi bawa-loop; autovektorisasi</p>
+<p>LLVM tak tersentuh pola IR hari ini. Jalur jujur ke SIMD adalah</p>
+<p>tipe vektor eksplisit (programmer opt-in, compiler menurunkan</p>
+<p>1:1), BUKAN janji &quot;LLVM akan menanganinya&quot;. Kasus: agregasi</p>
+<p>numerik, DSP mini, pra-pemrosesan data (<code>csvsum</code>-kelas), grafika</p>
+<p>2D integer.</p>
+<h2 id="design">Design <a href="#design" aria-label="taut">#</a></h2>
+<p>Sketsa normatif-informal (slice 1):</p>
+<pre data-lang="nusa"><code class="lang-nusa">let v: vector&lt;i64, 4&gt; = vector.fill(7);  // [7,7,7,7]
+let w: vector&lt;i64, 4&gt; = vector.from4(1, 2, 3, 4);
+let s: vector&lt;i64, 4&gt; = v + w;           // elementwise + - *
+let t: i64 = vector.sum(s);              // reduksi horizontal
+let x: i64 = s[2];                       // index konstan/variabel</code></pre>
+<p>Aturan (mengikat bila Accepted):</p>
+<ul>
+<li>Sintaks tipe <code>vector&lt;T, N&gt;</code>: <code>T</code> = <code>i64</code> (slice 1), <code>N</code> =</li>
+</ul>
+<p>   literal 2/4/8/16. <code>vector</code> menjadi keyword tipe (nol pemakaian</p>
+<p>   korpus — hanya <code>std::vector</code> di C++ bench, bukan <code>.ns</code>).</p>
+<p>   N general/bukan-literal DITOLAK (monomorphisasi butuh layout</p>
+<p>   statis; cermin cap-64 generik).</p>
+<ul>
+<li>Semantik nilai (copy) seperti struct: parameter/return</li>
+</ul>
+<p>   by-value; tanpa aliasing tersembunyi (selaras owned-values).</p>
+<ul>
+<li>Operasi: <code>+ - *</code> elementwise (div menyusul — semantik</li>
+</ul>
+<p>   div-nol per-lane butuh keputusan), <code>==</code>/<code>!=</code> → <code>vector&lt;bool&gt;</code></p>
+<p>   DITUNDA (tanpa bool-vector slice 1; komparasi via</p>
+<p>   <code>vector.any_eq(v, x)</code> helper?), index baca <code>v[i]</code> (OOB =</p>
+<p>   fail-fast cermin array), <code>vector.fill/sum/min/max</code>.</p>
+<ul>
+<li>Penurunan LLVM: <code>&lt;N x i64&gt;</code>, alignment 16, operasi =</li>
+</ul>
+<p>   instruksi vektor natif (<code>add &lt;4 x i64&gt;</code>). Tanpa fallback</p>
+<p>   skalar diam-diam: target tanpa SIMD → error compile eksplisit</p>
+<p>   (keputusan portabilitas, bukan UB senyap).</p>
+<ul>
+<li>ABI: vektor by-value mengikuti PCS target untuk tipe vektor</li>
+</ul>
+<p>   C sepadan (AArch64: register SIMD untuk N kecil) —</p>
+<p>   DIDOKUMENTASIKAN per-target di <code>docs/abi-*.md</code> saat Accepted</p>
+<p>   (risiko: divergensi x86_64 vs AArch64 untuk N besar).</p>
+<ul>
+<li>Determinisme: operasi murni, urutan lane tetap, hasil</li>
+</ul>
+<p>   bit-identik antar-run (syarat reproducible-builds).</p>
+<p>Di luar slice 1 (RFC lanjutan): float (butuh tipe float dulu —</p>
+<p>F2), bool-vector/mask, lane-div, shuffle/blend, gather/scatter,</p>
+<p>intrinsik bernama vendor (DITOLAK permanen sebagai permukaan</p>
+<p>bahasa — vendor di paket, bukan inti).</p>
+<h2 id="alternatives">Alternatives <a href="#alternatives" aria-label="taut">#</a></h2>
+<ul>
+<li>Builtin intrinsik (<code>simd_add4(...)</code>): ditolak (permukaan</li>
+</ul>
+<p>  kombinatorial, tak terkomposisi, tiap backend beda nama).</p>
+<ul>
+<li>Hanya autovektorisasi: ditolak BERDASAR BUKTI (0 SIMD di</li>
+</ul>
+<p>  keluaran <code>-O2</code> hari ini; memperbaikinya butuh model alias/TBAA</p>
+<p>  atas model memori baru — proyek tersendiri yang lebih besar).</p>
+<ul>
+<li>Array + syntax-sugar: ditolak (array fixed-size + tanpa</li>
+</ul>
+<p>  operasi elementwise + layout beda <code>[N x i64]</code> vs <code>&lt;N x i64&gt;</code>).</p>
+<ul>
+<li>Tanpa SIMD selamanya: opsi sah — RFC ini boleh di-Reject bila</li>
+</ul>
+<p>  beban ABI/portabilitas dinilai lebih besar dari manfaat.</p>
+<h2 id="compatibility">Compatibility <a href="#compatibility" aria-label="taut">#</a></h2>
+<p>Aditif: keyword <code>vector</code> baru (nol korpus; diverifikasi grep),</p>
+<p>konstruktor <code>vector.fill</code> sebagai namespace fungsi (bukan</p>
+<p>keyword baru). IR baru (<code>&lt;N x i64&gt;</code>) hanya muncul bila tipe</p>
+<p>dipakai; ABI lama tak berubah. Migrasi: tidak perlu.</p>
+<h2 id="tests">Tests <a href="#tests" aria-label="taut">#</a></h2>
+<p>Unit: lexer (keyword), parser (bentuk + 5 penolakan: N</p>
+<p>non-literal/bukan-{2,4,8,16}, T bukan-i64, payload campur),</p>
+<p>semantic (unknown/arity), typecheck (elementwise sejenis,</p>
+<p>index-OOB-statis, sum→i64), codegen (bentuk <code>&lt;4 x i64&gt;</code> +</p>
+<p><code>add &lt;4 x i64&gt;</code> di IR). E2E <code>e2e_simd.sh</code>: runtime 4 nilai</p>
+<p>(fill/arith/index/sum), 5 penolakan, <code>--emit-asm</code> mengandung</p>
+<p>register vektor (bukti mesin, bukan klaim), fuzz 20 program</p>
+<p>bervektor, bench skalar-vs-vektor TERUKUR (bukan janji).</p>
+<h2 id="specification">Specification <a href="#specification" aria-label="taut">#</a></h2>
+<p>Bila Accepted: <code>docs/language-spec-3.0.md</code> + EBNF tipe</p>
+<p>(<code>VectorType</code>), § semantik nilai/operasi, § ABI vektor</p>
+<p>per-target; <code>docs/abi-3.10.md</code> + baris vektor.</p>
+<h2 id="discussion">Discussion <a href="#discussion" aria-label="taut">#</a></h2>
+<ul>
+<li>2026-09-22: Proposed tanpa implementasi (Phase 122,</li>
+</ul>
+<p>  milestone 1). Accepted menunggu: (a) review sintaks N-sebagai-</p>
+<p>  nilai (preseden pertama value-arg di posisi tipe); (b) keputusan</p>
+<p>  ABI per-target; (c) bukti backend: prototipe codegen</p>
+<p>  <code>&lt;4 x i64&gt;</code> + run benar di AArch64 SEBELUM janji slice.</p>
+<h2 id="security">Security <a href="#security" aria-label="taut">#</a></h2>
+<p>Tanpa permukaan baru: tanpa IO, tanpa input eksternal, tanpa</p>
+<p>alokasi dinamis (nilai register/stack), OOB di-fail-fast-kan.</p>
+<p>Risiko satu-satunya = divergensi antar-target (butir 5) —</p>
+<p>dimitigasi dokumentasi + penolakan eksplisit, bukan perilaku</p>
+<p>diam-diam.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

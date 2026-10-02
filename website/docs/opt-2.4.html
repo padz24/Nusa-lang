@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>opt-2.4.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="opt-2.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Optimization Framework — Design (Phase 53, target 2.4.0) # Status">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/opt-2.4.html">
+<meta property="og:title" content="opt-2.4.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="opt-2.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Optimization Framework — Design (Phase 53, target 2.4.0) # Status">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="opt-2.4.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="opt-2.4, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "opt-2.4.md", "category": "docs", "version": "3.0.0", "content": "opt-2.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Optimization Framework — Design (Phase 53, target 2.4.0) # Status: Proposed → Implementation (milestone 1: ConstFold + DCE). LLVM tetap optimizer utama backend; pass Nusa jalan di MIR dan semua punya benchmark (man", "code_example": "", "keywords": "opt-2.4, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/opt-2.4.html">opt-2.4.md</a></p><article><h1>opt-2.4.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="optimization-framework-design-phase-53-target-2-4-0">Optimization Framework — Design (Phase 53, target 2.4.0) <a href="#optimization-framework-design-phase-53-target-2-4-0" aria-label="taut">#</a></h1>
+<p>Status: Proposed → Implementation (milestone 1: ConstFold + DCE).</p>
+<p>LLVM tetap optimizer utama backend; pass Nusa jalan di MIR dan</p>
+<p>semua punya benchmark (mandat master: jangan optimasi berdasar</p>
+<p>asumsi). Pipeline <code>.ns</code> belum di-rewire (nol perilaku).</p>
+<h2 id="1-antarmuka-pass-kecil-seragam">1. Antarmuka pass (kecil, seragam) <a href="#1-antarmuka-pass-kecil-seragam" aria-label="taut">#</a></h2>
+<pre data-lang="cpp"><code class="lang-cpp">// compiler/mir/Opt.h (nusa::mir) — murni C++ standar.
+struct OptStats { int folded = 0; int eliminated = 0; };
+bool foldConstants(MirFunction &amp;fn, OptStats *stats = nullptr);
+bool eliminateDeadCode(MirFunction &amp;fn, OptStats *stats = nullptr);
+int optimizeFunction(MirFunction &amp;fn, OptStats *stats = nullptr);
+int optimizeModule(MirModule &amp;mod, OptStats *stats = nullptr);</code></pre>
+<ul>
+<li>Tiap pass mengembalikan <code>changed</code>; <code>optimizeFunction</code> mengulang</li>
+</ul>
+<p>  fold+DCE sampai fixpoint (batas iterasi = jumlah instruksi + 1).</p>
+<ul>
+<li>Pass tidak pernah mengubah semantik terobservasi: hanya rewrite</li>
+</ul>
+<p>  yang terbukti aman (lihat §3). Hasil selalu lolos <code>verify()</code>.</p>
+<h2 id="2-milestone-1-satu-satunya-perubahan-perilaku-ir-fase-ini">2. Milestone 1 (SATU-SATUNYA perubahan perilaku-IR fase ini) <a href="#2-milestone-1-satu-satunya-perubahan-perilaku-ir-fase-ini" aria-label="taut">#</a></h2>
+<ul>
+<li><strong>Constant folding</strong>: arith (<code>Add/Sub/Mul/Div</code>) dan cmp atas</li>
+</ul>
+<p>   operand yang keduanya konstanta → satu <code>Const</code>. Div aman:</p>
+<p>   pembagi nol dan <code>INT64_MIN / -1</code> TIDAK difold (tetap runtime,</p>
+<p>   konsisten dengan trap div-zero Nusa).</p>
+<ul>
+<li><strong>Dead code elimination</strong>: hapus instruksi murni (const/arith/</li>
+</ul>
+<p>   cmp) yang hasilnya tak dipakai siapa pun. calls, alloc/load/</p>
+<p>   store, print, terminator = efek samping → selalu dipertahankan.</p>
+<p>   Fixpoint (penghapusan berantai).</p>
+<p>DITUNDA (butuh fondasi lebih dulu, masing-masing milestone sendiri):</p>
+<p>dead store elimination (butuh analisis alias slot), block</p>
+<p>simplification (butuh CFG: pred/succ + jump-threading), inlining</p>
+<p>(butuh batas budget + rekrutmen id), escape analysis (butuh model</p>
+<p>ownership — terkait Phase 54), specialization/CSE (butuh hashing</p>
+<p>nilai + numbering).</p>
+<h2 id="3-aturan-keamanan-anti-ub-c">3. Aturan keamanan (anti-UB C++) <a href="#3-aturan-keamanan-anti-ub-c" aria-label="taut">#</a></h2>
+<ul>
+<li>Aritmetika folding memakai <code>uint64_t</code> + cast (wrap terdefinisi),</li>
+</ul>
+<p>  BUKAN <code>int64_t</code> langsung (signed overflow = UB).</p>
+<ul>
+<li>Perbandingan bertanda dihitung via <code>&lt;</code>/<code>==</code> pada <code>int64_t</code></li>
+</ul>
+<p>  (terdefinisi untuk semua nilai; tanpa overflow).</p>
+<ul>
+<li><code>Div</code> hanya difold bila aman (§2); <code>1/0</code> di MIR tetap instruksi</li>
+</ul>
+<p>  (runtime Nusa yang trap, bukan folder).</p>
+<h2 id="4-benchmark-mandat">4. Benchmark (mandat) <a href="#4-benchmark-mandat" aria-label="taut">#</a></h2>
+<ul>
+<li><code>bench/mir_opt_main.cpp</code>: workload sintetik (rantai arith +</li>
+</ul>
+<p>  dead code) → lapor instruksi sebelum/sesudah + waktu dinding.</p>
+<ul>
+<li><code>compiler/tests/e2e_opt.sh</code>: kompilasi + jalankan bench,</li>
+</ul>
+<p>  asersi reduksi + <code>verify()</code> pasca-opt + regresi <code>.ns</code>.</p>
+<ul>
+<li>Angka acuan dicatat di CHANGELOG (perangkat-spesifik, ulangi ≥3x).</li>
+</ul>
+<h2 id="5-hasil-milestone-1-terukur-termux-aarch64">5. Hasil milestone 1 (terukur, Termux AArch64) <a href="#5-hasil-milestone-1-terukur-termux-aarch64" aria-label="taut">#</a></h2>
+<ul>
+<li>Workload <code>bench/mir_opt_main.cpp</code> (n=2000: rantai add + dead mul):</li>
+</ul>
+<p>  6002 → 2 instruksi (folded=4000, eliminated=6000),</p>
+<p>  <code>verify</code> pra/pasca = ok, ~20ms (3 run: 19.9/21.9/23.4ms).</p>
+<ul>
+<li>Temuan performa selama milestone: DCE <code>erase</code> satu-per-satu =</li>
+</ul>
+<p>  O(n²) (~2s untuk 6002 instruksi) → filter partisi sekali jalan</p>
+<p>  (~20ms, ~100x). Didokumentasikan agar pass berikut tidak</p>
+<p>  mengulang pola yang sama.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

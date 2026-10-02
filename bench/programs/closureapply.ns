@@ -1,0 +1,13 @@
+fn apply(f: fn(i64) -> i64, x: i64) -> i64 {
+    return f(x);
+}
+fn main() {
+    let k = 7;
+    let sum = 0;
+    let i = 0;
+    while i < 200000 {
+        sum = sum + apply(|x| x + k, i);
+        i = i + 1;
+    }
+    print(sum);
+}

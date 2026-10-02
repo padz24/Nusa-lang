@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>verification-2.22.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="verification-2.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Verification Foundation — Design (Phase 71, target 2.22">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/verification-2.22.html">
+<meta property="og:title" content="verification-2.22.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="verification-2.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Verification Foundation — Design (Phase 71, target 2.22">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="verification-2.22.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="verification-2.22, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "verification-2.22.md", "category": "docs", "version": "3.0.0", "content": "verification-2.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Verification Foundation — Design (Phase 71, target 2.22.0) # Status: RFC-0010 Proposed → Implementation slice 1 (properti + fuzz berseed + diferensial). Bukan proof penuh. Spec bahasa tak berubah. 1. Inva", "code_example": "", "keywords": "verification-2.22, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/verification-2.22.html">verification-2.22.md</a></p><article><h1>verification-2.22.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="verification-foundation-design-phase-71-target-2-22-0">Verification Foundation — Design (Phase 71, target 2.22.0) <a href="#verification-foundation-design-phase-71-target-2-22-0" aria-label="taut">#</a></h1>
+<p>Status: RFC-0010 Proposed → Implementation slice 1</p>
+<p>(properti + fuzz berseed + diferensial). Bukan proof penuh.</p>
+<p>Spec bahasa tak berubah.</p>
+<h2 id="1-invarian-per-tahap-kontrak">1. Invarian per tahap (kontrak) <a href="#1-invarian-per-tahap-kontrak" aria-label="taut">#</a></h2>
+<ul>
+<li>I-LEX totalitas: input byte arbitrer (termasuk NUL/non-UTF8)</li>
+</ul>
+<p>  selalu selesai → token atau error TERBATAS; tak pernah</p>
+<p>  sinyal-crash; <code>errors()</code> di-cap (ada <code>testLexerErrorCap</code>).</p>
+<ul>
+<li>I-PARSE recovery: <code>parse()</code> selalu kembali; error terbatas;</li>
+</ul>
+<p>  <code>synchronizeTopLevel</code> terminating; nesting di-cap</p>
+<p>  (<code>too deeply nested</code>).</p>
+<ul>
+<li>I-FMT idempotence: <code>fmt(fmt(x)) == fmt(x)</code>; <code>ok</code> stabil</li>
+</ul>
+<p>  (reformat hasil-ok tetap ok + identik).</p>
+<ul>
+<li>I-CHECK determinisme: sumber sama → urutan diagnostik</li>
+</ul>
+<p>  (kode+pesan) sama persis, dua run berurutan.</p>
+<ul>
+<li>I-MIR verify: modul hasil <code>MirBuilder</code> lolos <code>verify()</code>;</li>
+</ul>
+<p>  <code>optimizeModule</code> mempertahankan verify dan tak menambah</p>
+<p>  jumlah instr (<code>after &lt;= before</code>).</p>
+<ul>
+<li>I-IR llvm-verify: setiap build sukses telah melewati</li>
+</ul>
+<p>  <code>llvm::verifyModule</code> (enforce di <code>Codegen</code>; e2e mengunci</p>
+<p>  lewat build korpus yang sukses).</p>
+<ul>
+<li>I-RUN diferensial: program check-ok yang terminating ⇒</li>
+</ul>
+<p>  <code>stdout+exit(O0) == stdout+exit(O2)</code> dan</p>
+<p>  <code>nusa run == nusa build+exec</code> (O0).</p>
+<p>NON-tujuan eksplisit: bit-identik <code>.ll</code> antar-run</p>
+<p>(path absolut boleh bocor); proof mekanis semantik.</p>
+<h2 id="2-peta-implementasi">2. Peta implementasi <a href="#2-peta-implementasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit <code>compiler/tests/test_verify.cpp</code> (deterministik penuh;</li>
+</ul>
+<p>  keacakan semu = LCG seed tetap di-kode, bukan waktu):</p>
+<p>  1. <code>lexTotality</code>: 256 byte tunggal + 4 KiB soup LCG +</p>
+<p>     input kosong → selesai, error terbatas.</p>
+<p>  2. <code>fmtIdempotent</code>: korpus ~8 sumber (fn/struct/enum/</p>
+<p>     match/const/komentar) → ok ⇒ reformat identik + ok.</p>
+<p>  3. <code>parseDeterministic</code> + 4. <code>checkDeterministic</code>:</p>
+<p>     korpus ok + error → dump/diagnostik identik 2 run.</p>
+<p>  5. <code>mirOptPreserves</code>: modul builder (foldable + cfg) →</p>
+<p>     verify pra; optimize; verify pasca; instr tak naik.</p>
+<ul>
+<li>Generator <code>compiler/tests/fuzz_gen.py</code> (stdlib saja):</li>
+</ul>
+<p>  <code>fuzz_gen.py &lt;seed&gt; &lt;count&gt; &lt;outdir&gt;</code> → <code>prog_&lt;i&gt;.ns</code></p>
+<p>  bounded-terminating (loop countdown literal, tanpa input,</p>
+<p>  tanpa rekursi; print nilai terhitung ⇒ output deterministik).</p>
+<ul>
+<li>Orkestrasi <code>compiler/tests/e2e_verify.sh &lt;nusa-bin&gt;</code></li>
+</ul>
+<p>  (<code>NUSA_VERIFY_FUZZ_N</code>, default 40; <code>timeout</code> per-invokasi):</p>
+<p>  diferensial O0≡O2 korpus inline; run≡build+exec; fuzz loop</p>
+<p>  (oracle: rc&gt;128 = CRASH→gagal; check 2× rc sama;</p>
+<p>  check-ok ⇒ run O0≡O2≡run-cmd 2×).</p>
+<ul>
+<li>CMake: <code>test_verify</code> + <code>e2e_verify</code>.</li>
+</ul>
+<h2 id="3-ditunda-butuh-rfc-lanjutan">3. DITUNDA (butuh RFC lanjutan) <a href="#3-ditunda-butuh-rfc-lanjutan" aria-label="taut">#</a></h2>
+<p>LibFuzzer/AFL, proof assistant, snapshot pesan-error,</p>
+<p>bit-identik IR, verifikasi backend-LLVM itu sendiri,</p>
+<p>concurrency nondeterminism oracle (thread/channel butuh</p>
+<p>model happens-before — di luar slice 1).</p>
+<h2 id="4-keamanan-ringkas">4. Keamanan (ringkas) <a href="#4-keamanan-ringkas" aria-label="taut">#</a></h2>
+<p>Fuzz berjalan sebagai skrip shell biasa atas biner yang sama</p>
+<p>+ <code>timeout</code>; tanpa eksekusi kode asing; generator murni</p>
+<p>Python stdlib; tak ada jaringan; artefak di <code>mktemp -d</code>.</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>test_verify</code> hijau (5 properti); <code>e2e_verify.sh</code> hijau</li>
+</ul>
+<p>  (diferensial + fuzz default + no-crash); suite lain hijau;</p>
+<p>  bench identik; <code>.ns.ll</code> dibersihkan.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

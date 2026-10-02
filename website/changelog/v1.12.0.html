@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 1.12.0 — Nusa Docs 1.12.0</title>
+<meta name="description" content="1.12.0 v1.12.0 Release notes # — 2026-09-07 (Phase 31: package registry) Registry file-backed (tanpa server): index + tarball per direktori, nusa sear">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v1.12.0.html">
+<meta property="og:title" content="Changelog 1.12.0 — Nusa Docs 1.12.0">
+<meta property="og:description" content="1.12.0 v1.12.0 Release notes # — 2026-09-07 (Phase 31: package registry) Registry file-backed (tanpa server): index + tarball per direktori, nusa sear">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 1.12.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="1.12.0">
+<meta name="nusa:keywords" content="changelog, 1.12.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 1.12.0", "category": "changelog", "version": "1.12.0", "content": "1.12.0 v1.12.0 Release notes # — 2026-09-07 (Phase 31: package registry) Registry file-backed (tanpa server): index + tarball per direktori, nusa search/install/publish , resolver versi (persis/caret) dengan cache terverifikasi, keamanan dua-lapis checksum. Ditambahkan # Layout registry ( index/&lt", "code_example": "", "keywords": "changelog, 1.12.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v1.12.0.html">1.12.0</a></p><article><h1>1.12.0</h1><span class="badge historic">v1.12.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-07 (Phase 31: package registry)</p>
+<p>Registry file-backed (tanpa server): index + tarball per direktori,</p>
+<p><code>nusa search/install/publish</code>, resolver versi (persis/caret) dengan</p>
+<p>cache terverifikasi, keamanan dua-lapis checksum.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Layout registry (<code>index/&lt;name&gt;.toml</code> + <code>packages/*.tar.gz</code>);</li>
+</ul>
+<p>  sumber <code>--registry</code>/<code>$NUSA_REGISTRY</code> (fallback berurutan).</p>
+<ul>
+<li><code>pkg publish --registry</code> (tolak path-deps; tulis-sekali per versi;</li>
+</ul>
+<p>  idempoten bila identik; segarkan hash transport), <code>pkg search</code>,</p>
+<p>  <code>pkg install name[@req]</code> (add caret + update), top-level</p>
+<p>  <code>nusa search/install/publish</code>.</p>
+<ul>
+<li>Resolver versi: seleksi maksimum-memenuhi, pin lock</li>
+</ul>
+<p>  (nama/versi/registry/checksum), cache <code>$HOME/.cache</code> + verifikasi</p>
+<p>  transport &amp; konten, sembuh-otomatis, build hermetik bila hangat.</p>
+<ul>
+<li><code>satisfiesReq</code> (caret 0.x benar); lock <code>registry</code> opsional;</li>
+</ul>
+<p>  manifest <code>description</code> (searchable, round-trip).</p>
+<ul>
+<li>Unit <code>testSatisfiesReq</code>; <code>e2e_registry.sh</code> (19 kasus: publish/</li>
+</ul>
+<p>  search/install/caret-max/tamper-tarball/tamper-cache-heal/</p>
+<p>  konflik/republish); <code>docs/pkg.md</code> § Registry.</p>
+<h3 id="batasan-phase-31">Batasan Phase 31 <a href="#batasan-phase-31" aria-label="taut">#</a></h3>
+<ul>
+<li>Registry lokal/shared-dir saja (tanpa HTTP); tanpa yank;</li>
+</ul>
+<p>  tanpa offline-flag eksplisit (implisit bila cache hangat);</p>
+<p>  tanpa namespace/owners.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.12.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

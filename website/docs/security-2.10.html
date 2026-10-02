@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>security-2.10.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="security-2.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Model — Audit &amp;amp; Design (Phase 59, target 2.10.">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/security-2.10.html">
+<meta property="og:title" content="security-2.10.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="security-2.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Model — Audit &amp;amp; Design (Phase 59, target 2.10.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="security-2.10.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="security-2.10, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "security-2.10.md", "category": "docs", "version": "3.0.0", "content": "security-2.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Model — Audit &amp; Design (Phase 59, target 2.10.0) # Status: audit selesai → Implementation (milestone 1: capability declaration + 2 enforcement). nusa audit/tree/outdated/verify tetap milik Phase", "code_example": "", "keywords": "security-2.10, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/security-2.10.html">security-2.10.md</a></p><article><h1>security-2.10.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="security-model-audit-design-phase-59-target-2-10-0">Security Model — Audit &amp; Design (Phase 59, target 2.10.0) <a href="#security-model-audit-design-phase-59-target-2-10-0" aria-label="taut">#</a></h1>
+<p>Status: audit selesai → Implementation (milestone 1: capability</p>
+<p>declaration + 2 enforcement). <code>nusa audit/tree/outdated/verify</code></p>
+<p>tetap milik Phase 60.</p>
+<h2 id="1-hasil-audit-evidence">1. Hasil audit (evidence) <a href="#1-hasil-audit-evidence" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Area</th><th>Temuan</th></tr></thead><tbody>
+<tr><td>Package installation</td><td>Registry file-backed + checksum 2-lapis, TAPI <code>tar -xzf</code> tanpa validasi entri → <strong>path traversal</strong> bila registry jahat (file di luar dir lolos checksum). TERBUKTI by-reading (ensureCached).</td></tr>
+<tr><td>Dependency execution</td><td>TIDAK ADA eksekusi saat install (tanpa build script/ install hook — hanya tar + clang). Deps = sumber, dikompilasi saat build. Permukaan lebih kecil dari cargo/npm.</td></tr>
+<tr><td>FFI</td><td><code>extern fn</code> + <code>--link</code>/manifest <code>[link]</code> menaut kode native apa pun; TANPA deklarasi capability.</td></tr>
+<tr><td>Filesystem/process/net</td><td>Builtin <code>file_*</code>, <code>process_*</code>, <code>tcp_*</code> tanpa izin; program ad-hoc = user menjalankan kode sendiri (kepercayaan eksplisit).</td></tr>
+<tr><td>Unsafe code</td><td>Tanpa dialek <code>unsafe{}</code>; permukaan = builtin + FFI (lih. mem-2.5.md §2).</td></tr>
+<tr><td>Build scripts</td><td>Tidak ada (bukan fitur).</td></tr>
+<tr><td>Registry tampering</td><td>Ditutup checksum transport + konten (Phase 31, e2e_registry).</td></tr>
+</tbody></table>
+<h2 id="2-model-izin-deklaratif-deny-by-default-bertahap">2. Model izin (deklaratif, deny-by-default bertahap) <a href="#2-model-izin-deklaratif-deny-by-default-bertahap" aria-label="taut">#</a></h2>
+<pre data-lang="toml"><code class="lang-toml">[capabilities]
+filesystem = false  # file_read/file_write/file_exists
+network = false     # tcp_*/dial (std.net/http)
+process = false     # process_exit/env/cwd (+ spawn kelak)
+environment = false # (dicadangkan: env terperinci)
+native = false      # extern fn + [link] (FFI)</code></pre>
+<ul>
+<li>Default <code>false</code> (aman bila bagian hilang); unknown key di</li>
+</ul>
+<p>  <code>[capabilities]</code> ditolak (typo fail-closed).</p>
+<ul>
+<li><code>pkg init</code>/<code>new</code> scaffold mencantumkan bagian (semua false).</li>
+<li><code>pkg build</code> mencetak ringkasan capability (visibilitas) dan</li>
+</ul>
+<p>  MENOLAK: sumber memakai <code>extern fn</code> ATAU <code>[link]</code> non-kosong</p>
+<p>  tanpa <code>native = true</code>. Ad-hoc <code>nusa build</code> tak tersentuh</p>
+<p>  (tanpa konteks paket; didokumentasikan).</p>
+<ul>
+<li>filesystem/network/process/environment = DEKLARASI (advisory)</li>
+</ul>
+<p>  milestone ini; enforcement syscall milik follow-up (butuh</p>
+<p>  interposisi; tercatat jujur). <code>native</code> dienforce SEKARANG</p>
+<p>  karena überprüfbar di AST (<code>FunctionDecl.isExtern</code>).</p>
+<h2 id="3-traversal-guard-enforcement-kedua-kecil-kritis">3. Traversal guard (enforcement kedua, kecil-kritis) <a href="#3-traversal-guard-enforcement-kedua-kecil-kritis" aria-label="taut">#</a></h2>
+<p>Selepas <code>tar -xzf</code> di <code>ensureCached</code>, SEBELUM checksum: walk</p>
+<p>direktori — tolak (hapus + error) bila ada subdirektori,</p>
+<p>symlink/file-khusus, atau nama tak-waras (kosong/<code>.</code>/<code>..</code>/</p>
+<p>mengandung <code>/</code> <code>\</code> atau berawalan <code>.</code>). Murni <code>std::filesystem</code></p>
+<p>(tanpa dialek tar). Publish kita hanya memancarkan top-level</p>
+<p><code>*.ns</code> + <code>nusa.toml</code>, sehingga paket legitim tak terdampak.</p>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit: round-trip <code>[capabilities]</code> + traversal-walk validator.</li>
+<li><code>e2e_sec.sh</code>: extern tanpa cap → tolak; +<code>native=true</code> → build;</li>
+</ul>
+<p>  <code>[link]</code> tanpa cap → tolak; evil-tarball → tolak bersih;</p>
+<p>  paket bersih build + ringkasan capability.</p>
+<ul>
+<li>Seluruh suite hijau; bench identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>latency-3.25.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="latency-3.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-Time / Low-Latency Profile — Milestone 1: Ukur + Aturan">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/latency-3.25.html">
+<meta property="og:title" content="latency-3.25.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="latency-3.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-Time / Low-Latency Profile — Milestone 1: Ukur + Aturan">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="latency-3.25.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="latency-3.25, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "latency-3.25.md", "category": "docs", "version": "3.0.0", "content": "latency-3.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-Time / Low-Latency Profile — Milestone 1: Ukur + Aturan (Phase 124) # Status: slice profil (target 3.25.0). Mandat master: profil low-latency BILA model+runtime memungkinkan; alokasi prediktabel, latensi", "code_example": "", "keywords": "latency-3.25, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/latency-3.25.html">latency-3.25.md</a></p><article><h1>latency-3.25.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="real-time-low-latency-profile-milestone-1-ukur-aturan-phase-124">Real-Time / Low-Latency Profile — Milestone 1: Ukur + Aturan (Phase 124) <a href="#real-time-low-latency-profile-milestone-1-ukur-aturan-phase-124" aria-label="taut">#</a></h1>
+<p>Status: slice profil (target 3.25.0). Mandat master: profil</p>
+<p>low-latency BILA model+runtime memungkinkan; alokasi prediktabel,</p>
+<p>latensi terbatas, overhead minimal; TANPA klaim hard real-time</p>
+<p>tanpa bukti formal (dipatuhi: nol klaim semacam itu di sini).</p>
+<h2 id="1-vonis-kelayakan-bukti-bukan-asumsi">1. Vonis kelayakan (bukti, bukan asumsi) <a href="#1-vonis-kelayakan-bukti-bukan-asumsi" aria-label="taut">#</a></h2>
+<ul>
+<li>MENDUKUNG latensi: TANPA GC = tanpa jeda koleksi by-construction;</li>
+</ul>
+<p>  alokasi heap O(1) fail-closed; bounded-channel (3.19.0) membatasi</p>
+<p>  antre; mutex/cond POSIX standar; <code>-O2</code> backend.</p>
+<ul>
+<li>MELAWAN latensi: heap tak pernah dibebaskan (jejak tumbuh;</li>
+</ul>
+<p>  fragmentasi malloc jangka-panjang), mutex default TANPA</p>
+<p>  priority-inheritance (inversi prioritas mungkin), tanpa</p>
+<p>  deadline-scheduler, tanpa probe stack (overflow = sinyal),</p>
+<p>  wall-clock satu-satunya jam (tanpa monotonik terpisah).</p>
+<ul>
+<li>Vonis: profil &quot;latensi-lunak terdokumentasi&quot; YA; hard</li>
+</ul>
+<p>  real-time TIDAK (butuh bukti formal + scheduler + analisis</p>
+<p>  WCET — di luar Nusa hari ini).</p>
+<h2 id="2-aturan-profil-low-latency-disiplin-bukan-flag">2. Aturan profil low-latency (disiplin, bukan flag) <a href="#2-aturan-profil-low-latency-disiplin-bukan-flag" aria-label="taut">#</a></h2>
+<ul>
+<li>Prealokasi di luar loop panas (heap tumbuh = jejak, bukan</li>
+</ul>
+<p>   jeda — tapi RSS menekan cache/TLB).</p>
+<ul>
+<li>Antre pakai <code>chan_new_bounded</code> (bukan tak-terbatas) agar</li>
+</ul>
+<p>   backlog TAK PERNAH tak-terbatas.</p>
+<ul>
+<li>Hindari kontensi mutex di jalur panas (partisi ala</li>
+</ul>
+<p>   <code>par_map_sum</code>; actor per-bagian).</p>
+<ul>
+<li>Build <code>-O2</code> + runtime minimal (seam alokator bila target</li>
+</ul>
+<p>   mengharuskan arena).</p>
+<ul>
+<li>Ukur dengan <code>bench/latency.sh</code> di target SEBENARNYA; angka</li>
+</ul>
+<p>   CI ini BUKAN janji perangkat lain.</p>
+<h2 id="3-angka-acuan-ci-termux-aarch64-ping-pong-2000x">3. Angka acuan CI (Termux AArch64, ping-pong 2000x) <a href="#3-angka-acuan-ci-termux-aarch64-ping-pong-2000x" aria-label="taut">#</a></h2>
+<p>n=15: min 90ms, median 100ms, max 119ms, spread 29ms</p>
+<p>(≈45–60µs per putaran send/recv+malloc/free-node). Output</p>
+<p>deterministik 1999000. Disimpan sebagai baseline, bukan batas.</p>
+<h2 id="4-diverifikasi">4. Diverifikasi <a href="#4-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>e2e_latency</code> 3/3 (selesai + dimensi + urutan robust);</li>
+</ul>
+<p>  <code>e2e_release</code> hijau; <code>.ns</code> + IR OK (NOL jalur compiler).</p>
+<h2 id="5-ditunda-jujur">5. Ditunda jujur <a href="#5-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Flag <code>--profile=realtime</code>, priority-inheritance, deadline,</li>
+</ul>
+<p>  jam monotonik, analisis WCET, bukti formal (prasyarat</p>
+<p>  klaim hard real-time — tidak dijanjikan).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

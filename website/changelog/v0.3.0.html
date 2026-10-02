@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.3.0 — Nusa Docs 0.3.0</title>
+<meta name="description" content="0.3.0 v0.3.0 Release notes # — Variables &amp;amp; Expressions (2026-09-05) Milestone eksekusi sesuai MASTER PROMPT: let , variabel, integer, boolean, bin">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.3.0.html">
+<meta property="og:title" content="Changelog 0.3.0 — Nusa Docs 0.3.0">
+<meta property="og:description" content="0.3.0 v0.3.0 Release notes # — Variables &amp;amp; Expressions (2026-09-05) Milestone eksekusi sesuai MASTER PROMPT: let , variabel, integer, boolean, bin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.3.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.3.0">
+<meta name="nusa:keywords" content="changelog, 0.3.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.3.0", "category": "changelog", "version": "0.3.0", "content": "0.3.0 v0.3.0 Release notes # — Variables &amp; Expressions (2026-09-05) Milestone eksekusi sesuai MASTER PROMPT: let , variabel, integer, boolean, binary/unary expressions, dan symbol table — semuanya menjadi native executable. Type system penuh = v0.4.0. Ditambahkan # Semantic analysis ( compiler/", "code_example": "", "keywords": "changelog, 0.3.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.3.0.html">0.3.0</a></p><article><h1>0.3.0</h1><span class="badge historic">v0.3.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Variables &amp; Expressions (2026-09-05)</p>
+<p>Milestone eksekusi sesuai MASTER PROMPT: <code>let</code>, variabel, integer,</p>
+<p>boolean, binary/unary expressions, dan symbol table — semuanya menjadi</p>
+<p>native executable. Type system penuh = v0.4.0.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Semantic analysis (<code>compiler/semantic/</code>): <code>SymbolTable</code> + pemeriksa</li>
+</ul>
+<p>  sekuensial single-scope. <code>print(x)</code> tanpa deklarasi →</p>
+<p>  <code>error: undefined variable &#x27;x&#x27;</code> + snippet + <code>help:</code> (bukan crash,</p>
+<p>  sesuai tuntutan MASTER PROMPT). Deklarasi ganda → `duplicate</p>
+<p>  variable &#x27;x&#x27;<code> + lokasi deklarasi sebelumnya. </code>let x = x;` dan</p>
+<p>  use-before-def ditolak.</p>
+<ul>
+<li>Codegen variabel/ekspresi: integer→i64 (<code>add/sub/mul/sdiv</code> bertanda),</li>
+</ul>
+<p>  boolean→i1 (<code>icmp</code> bertanda <code>slt/sgt/sle/sge</code>, <code>eq/ne</code> + equality bool),</p>
+<p>  string→ptr (variabel string + <code>print</code> variabel string), unary minus</p>
+<p>  (<code>CreateNeg</code>), <code>alloca</code> entry-block + <code>load</code>/<code>store</code>, <code>verifyModule</code></p>
+<p>  tetap wajib.</p>
+<ul>
+<li><code>print</code> segala tipe: string→<code>puts</code>, integer→<code>printf(&quot;%lld\n&quot;)</code>,</li>
+</ul>
+<p>  boolean→<code>select &quot;true&quot;/&quot;false&quot;</code> + <code>puts</code>. Mencetak ekspresi langsung</p>
+<p>  (<code>print(a + b)</code>) juga bisa.</p>
+<ul>
+<li>Validasi bentuk operand minimal di codegen (mismatch → error bersih</li>
+</ul>
+<p>  ber-hint v0.4.0; string <code>==</code> ditolak eksplisit) — bukan type system,</p>
+<p>  hanya penjaga IR valid.</p>
+<ul>
+<li>Contoh <code>examples/arithmetic.ns</code> → mencetak <code>30</code>, <code>70</code>, <code>true</code>.</li>
+<li>Tests: <code>test_semantic</code> baru (8 cek), <code>test_codegen</code> ditulis ulang</li>
+</ul>
+<p>  (8 cek bentuk IR: <code>add/mul/sdiv/sub/icmp/select/printf/puts</code> +</p>
+<p>  penolakan mismatch), <code>e2e_variables</code> baru (nilai eksekusi: milestone</p>
+<p>  <code>30</code>, mixed <code>70/-5/4/2/false/true/Nusa</code>, undefined + duplicate).</p>
+<p>  <code>e2e_frontend</code> diperbarui (expr.ns kini build+run sukses).</p>
+<ul>
+<li>Driver pipeline: lex → parse → <strong>semantic</strong> → codegen → clang.</li>
+</ul>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>7/7 passed</strong>.</li>
+<li>Program milestone verbatim → executable AArch64 mencetak <code>30</code>;</li>
+</ul>
+<p>  IR memuat <code>alloca i64</code>/<code>load</code>/<code>add i64</code>/<code>printf</code> + <code>ret i32 0</code>.</p>
+<ul>
+<li>Error wajib verbatim: <code>print(x)</code> → <code>error: undefined variable &#x27;x&#x27;</code>,</li>
+</ul>
+<p>  exit 1, tanpa crash.</p>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>Single flat scope; tanpa assignment terpisah; tanpa anotasi &amp; type</li>
+</ul>
+<p>  checking (v0.4.0); <code>return</code>/<code>if</code>/<code>while</code> tetap ditolak ber-hint versi.</p>
+<ul>
+<li><code>sdiv</code> dengan pembagi nol menjebak (trap) saat runtime — ditangani</li>
+</ul>
+<p>  diagnostics/runtime di versi hardening.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.3.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

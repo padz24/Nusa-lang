@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>release-3.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="release-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0 — Release Record (Phase 89, FINAL) # Status: final">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/release-3.0.html">
+<meta property="og:title" content="release-3.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="release-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0 — Release Record (Phase 89, FINAL) # Status: final">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="release-3.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="release-3.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "release-3.0.md", "category": "docs", "version": "3.0.0", "content": "release-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0 — Release Record (Phase 89, FINAL) # Status: final stable. Freeze sejak beta dipertahankan: semantik bahasa ( docs/language-spec-3.0.md normatif), arsitektur compiler ( docs/compiler.md ), API standa", "code_example": "", "keywords": "release-3.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/release-3.0.html">release-3.0.md</a></p><article><h1>release-3.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-3-0-0-release-record-phase-89-final">Nusa 3.0.0 — Release Record (Phase 89, FINAL) <a href="#nusa-3-0-0-release-record-phase-89-final" aria-label="taut">#</a></h1>
+<p>Status: final stable. Freeze sejak beta dipertahankan:</p>
+<p>semantik bahasa (<code>docs/language-spec-3.0.md</code> normatif),</p>
+<p>arsitektur compiler (<code>docs/compiler.md</code>), API standard library</p>
+<p>(<code>docs/standard-library.md</code> v3.0.0), format paket/manifest</p>
+<p>(<code>docs/pkg.md</code>). Delta rc.1 → final: hapus suffix</p>
+<p>(<code>3.0.0-rc.1</code> → <code>3.0.0</code>, help <code>RC</code> → <code>Stable</code>), gate final</p>
+<p>(<code>compiler/tests/e2e_release.sh</code>), record ini, changelog,</p>
+<p>regen website. <code>e2e_beta</code>/<code>e2e_rc</code> dipertahankan sebagai regresi.</p>
+<h2 id="1-penomoran">1. Penomoran <a href="#1-penomoran" aria-label="taut">#</a></h2>
+<ul>
+<li><code>project(... VERSION 3.0.0)</code> = label manusia `NUSA_VERSION_STR</li>
+</ul>
+<p>  = &quot;3.0.0&quot;<code> (sumber tunggal di CMakeLists; deb </code>3.0.0-1`).</p>
+<ul>
+<li><code>e2e_new</code> (suffix-aware) + <code>e2e_repro</code> (pin dinamis) lolos</li>
+</ul>
+<p>  tanpa perubahan; <code>e2e_beta</code>/<code>e2e_rc</code> dilonggarkan ke final</p>
+<p>  sebagai regresi; ketegasan final ada di <code>e2e_release.sh</code>.</p>
+<h2 id="2-definition-of-done-45-master">2. Definition of Done (§45 master) <a href="#2-definition-of-done-45-master" aria-label="taut">#</a></h2>
+<ul>
+<li>[x] Language specification stable (<code>language-spec-3.0.md</code> normatif)</li>
+<li>[x] Compiler stable (full suite hijau, §4)</li>
+<li>[x] Self-hosting compiler stable (<code>e2e_selfhost</code> + <code>e2e_parse</code>)</li>
+<li>[x] Bootstrap process documented (<code>bootstrap*.md</code>)</li>
+<li>[x] Memory model stable (<code>memory-model.md</code> + <code>mem-2.5.md</code>)</li>
+<li>[x] Type system stable (suite types/generik/trait)</li>
+<li>[x] Generic system stable (<code>e2e_generics</code> + <code>e2e_structs_gen</code>)</li>
+<li>[x] Trait system stable (<code>e2e_traits</code>)</li>
+<li>[x] Pattern matching stable (<code>e2e_match</code>)</li>
+<li>[x] Error handling stable (<code>e2e_error</code>)</li>
+<li>[x] Concurrency stable (<code>e2e_concurrency</code> + <code>e2e_stress</code>)</li>
+<li>[x] Async stable (<code>std/tasks.ns</code> + <code>e2e_async</code>; sintaks tetap reserved via RFC-0004)</li>
+<li>[x] Runtime stable (<code>e2e_runtime</code>, 29+ simbol identik)</li>
+<li>[x] Standard library mature (18 modul, <code>standard-library.md</code> v3.0.0)</li>
+<li>[x] Package manager stable (<code>e2e_pkg</code> + <code>e2e_eco2</code>)</li>
+<li>[x] Registry stable (<code>e2e_registry</code> + <code>e2e_deb</code>)</li>
+<li>[x] Reproducible builds (<code>e2e_repro</code>)</li>
+<li>[x] Security model documented (<code>security-2.10.md</code> + <code>security-3.0.md</code>; audit 0 critical/high)</li>
+<li>[x] FFI stable (<code>e2e_ffi</code> + <code>e2e_bindgen</code>)</li>
+<li>[x] Android AArch64 stable (target utama, CI ini)</li>
+<li>[x] Linux AArch64 stable (triple guard <code>e2e_cross</code>)</li>
+<li>[x] Linux x86_64 stable (triple guard <code>e2e_cross</code>)</li>
+<li>[x] WebAssembly target stable (<code>wasm32</code> compile-only, <code>e2e_cross</code>)</li>
+<li>[x] LSP stable (<code>e2e_lsp</code>)</li>
+<li>[x] Formatter stable (<code>e2e_tooling</code> + fmt idempoten)</li>
+<li>[x] Debugging tooling usable (DWARF + <code>e2e_debug</code>)</li>
+<li>[x] Profiling tooling available (<code>nusa bench</code>/<code>--stats</code> + <code>e2e_prof</code>)</li>
+<li>[x] Fuzzing infrastructure available (<code>fuzz_gen.py</code> + <code>e2e_verify</code>)</li>
+<li>[x] Regression tests extensive (87-test ctest + korpus 87 file)</li>
+<li>[x] Real-world applications tested (<code>realworld/</code> 6 proyek + <code>e2e_realworld</code>)</li>
+<li>[x] Performance benchmarks available (<code>bench/suite.sh</code> + <code>perf-3.0.md</code>)</li>
+<li>[x] Security audit completed (<code>security-3.0.md</code>, S1 diperbaiki)</li>
+<li>[x] Migration tooling/documentation available (<code>nusa migrate</code> + <code>migration-3.0.md</code>)</li>
+<li>[x] Documentation complete (website 254+ halaman, no-drift)</li>
+</ul>
+<h2 id="3-diketahui-bukan-blocker-rfc-pasca-3-0">3. Diketahui (bukan blocker; RFC pasca-3.0) <a href="#3-diketahui-bukan-blocker-rfc-pasca-3-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Flake beban paralel sesekali (rerun = hijau).</li>
+<li>3 pemakai channel-tanpa-tag + 2 paket native (lihat <code>migration-3.0.md</code>).</li>
+<li>Temuan F1–F6 (<code>realworld-3.0.md</code>), S2–S3 (<code>security-3.0.md</code>).</li>
+<li>Evolusi bahasa wajib via RFC (master §48).</li>
+</ul>
+<h2 id="4-conformance">4. Conformance <a href="#4-conformance" aria-label="taut">#</a></h2>
+<p><code>e2e_release.sh</code> (baner final + DoD artefak + tooling +</p>
+<p>build-all + spot-run + IR <code>@main</code> + bersih) + full suite</p>
+<p><strong>87/87 hijau</strong> (1939 dtk, retry pasca-regen; run pertama</p>
+<p>86/87 — satu-satunya gagal <code>e2e_ecosystem</code> karena site-drift</p>
+<p>wajar pra-regen, hijau 23/23 pasca-regen) + website no-drift.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

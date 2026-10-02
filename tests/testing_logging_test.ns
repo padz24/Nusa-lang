@@ -1,0 +1,16 @@
+// Sample `nusa test` target: testing+logging stdlib (self-hosted:
+// the assertions below use the testing module on known-true facts).
+import testing;
+import logging;
+fn main() {
+    test_true(1 == 1, "sanity");
+    test_false(1 == 2, "sanity-ne");
+    test_eq_i64(42, 40 + 2, "arith");
+    test_eq_str("hi", str_concat("h", "i"), "concat");
+    test_eq_bool(true, 1 < 2, "cmp");
+    log_debug("d");
+    log_info("i");
+    log_warn("w");
+    log_error("e");
+    print("ALL TESTING LOGGING OK");
+}

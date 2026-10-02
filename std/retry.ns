@@ -1,0 +1,39 @@
+// Retry policies (pure Nusa; `sleep_ms` builtin, tanpa import).
+//
+// `op` mengembalikan i64; `is_err` memutuskan retry (mis. kode
+// negatif = gagal). Tidur base*factor^k antar-coba (tanpa jitter —
+// threading rand-state di pemanggil bila perlu). Kembalikan hasil
+// TERAKHIR (sukses: diam; pemanggil yang log).
+// Kebijakan retry: attempts total, base_ms awal, pengali.
+struct RetryPolicy {
+    attempts: i64;
+    base_ms: i64;
+    factor: i64;
+}
+// Default: 3x, 50ms, x2.
+fn retry_default() -> RetryPolicy {
+    return RetryPolicy {
+        attempts: 3, base_ms: 50, factor: 2
+    };
+}
+// Coba hingga sukses/semua-habis; hasil terakhir.
+fn retry_with(p: RetryPolicy, op: fn() -> i64, is_err: fn(i64) -> bool) -> i64 {
+    let r: i64 = op();
+    if is_err(r) == false {
+        return r;
+    }
+    let wait: i64 = p.base_ms;
+    let k: i64 = 1;
+    while k < p.attempts {
+        if wait > 0 {
+            sleep_ms(wait);
+        }
+        r = op();
+        if is_err(r) == false {
+            return r;
+        }
+        wait = wait * p.factor;
+        k = k + 1;
+    }
+    return r;
+}

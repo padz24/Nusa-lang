@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>migration-3.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="migration-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 2.x → 3.0 (Phase 83: COMPATIBILITY AUDIT) # Kesimpu">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/migration-3.0.html">
+<meta property="og:title" content="migration-3.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="migration-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 2.x → 3.0 (Phase 83: COMPATIBILITY AUDIT) # Kesimpu">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="migration-3.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="migration-3.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "migration-3.0.md", "category": "docs", "version": "3.0.0", "content": "migration-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 2.x → 3.0 (Phase 83: COMPATIBILITY AUDIT) # Kesimpulan dulu: NOL migrasi bahasa diperlukan. Spec 3.0 final adalah ratifikasi freeze 2.x — nol sintaks/semantik baru, nol breaking change. Satu-satunya p", "code_example": "", "keywords": "migration-3.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/migration-3.0.html">migration-3.0.md</a></p><article><h1>migration-3.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="migrasi-2-x-3-0-phase-83-compatibility-audit">Migrasi 2.x → 3.0 (Phase 83: COMPATIBILITY AUDIT) <a href="#migrasi-2-x-3-0-phase-83-compatibility-audit" aria-label="taut">#</a></h1>
+<p>Kesimpulan dulu: <strong>NOL migrasi bahasa diperlukan.</strong> Spec 3.0</p>
+<p>final adalah ratifikasi freeze 2.x — nol sintaks/semantik</p>
+<p>baru, nol breaking change. Satu-satunya pekerjaan migrasi</p>
+<p>adalah audit klasifikasi + dependensi platform. Tool:</p>
+<p><code>nusa migrate [PATH]</code> (§5).</p>
+<h2 id="1-kategori-definisi-operasional-nusa-migrate">1. Kategori (definisi operasional <code>nusa migrate</code>) <a href="#1-kategori-definisi-operasional-nusa-migrate" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Kategori</th><th>Arti</th><th>Exit</th></tr></thead><tbody>
+<tr><td>compatible</td><td><code>check</code> hijau (program), atau gagal tepat <code>no &#x27;fn main&#x27; found</code> (library)</td><td>0</td></tr>
+<tr><td>deprecated</td><td>compatible + memakai permukaan legacy yang masih diterima (builtin channel tanpa-tag, §2)</td><td>0</td></tr>
+<tr><td>requires migration</td><td><code>check</code> gagal + sumber mengandung idiom 1.x (§3)</td><td>1</td></tr>
+<tr><td>broken</td><td><code>check</code> gagal tanpa idiom 1.x (bug proyek, bukan bahasa)</td><td>1</td></tr>
+<tr><td>unsupported</td><td>di paket <code>native = true</code> (butuh toolchain C platform, §4)</td><td>0*</td></tr>
+</tbody></table>
+<p><code>*</code> unsupported tak memblokir exit (bukan isu bahasa), tapi</p>
+<p>tercetak eksplisit di ringkasan — penyebaran binernya butuh</p>
+<p>verifikasi per-platform (§4).</p>
+<p>Preseden: file gagal <code>check</code> karena idiom 1.x diklasifikasi</p>
+<p>requires migration (BUKAN broken) agar saran perbaikannya</p>
+<p>tepat (tabel §3, cermin <code>docs/migration-2.0.md</code> B1/B2).</p>
+<h2 id="2-deprecated-masih-diterima-ganti-bila-sempat">2. Deprecated (masih diterima, ganti bila sempat) <a href="#2-deprecated-masih-diterima-ganti-bila-sempat" aria-label="taut">#</a></h2>
+<p>Builtin channel tanpa-tag (v1.9.0) digantikan varian bertag</p>
+<p>2.0 (<code>chan_new_bool/send_bool/recv_bool</code>,</p>
+<p><code>chan_new_str/send_str/recv_str</code>). <code>chan_len</code> (v2.7.0) TAK</p>
+<p>termasuk (tanpa varian bertag — bukan legacy).</p>
+<table><thead><tr><th>File</th><th>Pemakaian legacy</th></tr></thead><tbody>
+<tr><td><code>std/thread.ns</code></td><td><code>chan_new/recv/send</code> tanpa-tag</td></tr>
+<tr><td><code>std/tasks.ns</code></td><td><code>chan_send/chan_new</code> tanpa-tag (<code>chan_len</code> OK)</td></tr>
+<tr><td><code>examples/concurrency.ns</code></td><td><code>chan_send</code> tanpa-tag</td></tr>
+</tbody></table>
+<p>Catatan: dua di antaranya adalah stdlib itu sendiri (pemakai</p>
+<p>internal permukaan legacy — migrasi internal dijadwalkan</p>
+<p>pasca-3.0, tanpa mengubah API publik).</p>
+<h2 id="3-requires-migration-idiom-1-x-yang-ditolak-3-0">3. Requires migration (idiom 1.x yang ditolak 3.0) <a href="#3-requires-migration-idiom-1-x-yang-ditolak-3-0" aria-label="taut">#</a></h2>
+<table><thead><tr><th>1.x/2.x-lama (ditolak)</th><th>3.0</th></tr></thead><tbody>
+<tr><td><code>none(d)</code> / <code>ok(v, d)</code> / <code>err(e, d)</code> (dummy-arg)</td><td><code>Option&lt;T&gt;.None()</code> / <code>Result&lt;T, E&gt;.Ok(v)</code> / <code>.Err(e)</code></td></tr>
+<tr><td><code>o.value</code>, <code>o.has_value</code>, <code>r.is_ok</code> (akses field)</td><td><code>match</code> / <code>is_some</code> / <code>is_ok(r)</code> / <code>?</code> / kombinator</td></tr>
+<tr><td><code>struct Option</code> / <code>struct Result</code> sendiri</td><td>ganti ke enum natif (atau ganti nama)</td></tr>
+<tr><td><code>async</code>/<code>await</code>/<code>macro</code> sebagai identifier</td><td>ganti nama (reserved tanpa sintaks)</td></tr>
+</tbody></table>
+<p>Hasil audit korpus repo: <strong>0 file</strong> (semua idiom di atas</p>
+<p>nol pemakaian — pola mirip yang terdeteksi seperti</p>
+<p><code>m.errors</code>/<code>is_none(</code> adalah false positive, diverifikasi</p>
+<p>manual).</p>
+<h2 id="4-unsupported-dependensi-platform">4. Unsupported (dependensi platform) <a href="#4-unsupported-dependensi-platform" aria-label="taut">#</a></h2>
+<table><thead><tr><th>File</th><th>Sebab</th></tr></thead><tbody>
+<tr><td><code>packages/tls/tls.ns</code></td><td>paket <code>native = true</code> (butuh OpenSSL toolchain)</td></tr>
+<tr><td><code>packages/sqlite/sqlite.ns</code></td><td>paket <code>native = true</code> (butuh SQLite toolchain)</td></tr>
+</tbody></table>
+<p>Keduanya library yang <code>check</code>-bersih; kategorinya berasal dari</p>
+<p>manifest, bukan dari bahasa. Panduan: pin versi via lock,</p>
+<p><code>nusa verify</code> pasca-install, dan uji biner per target</p>
+<p>(<code>--target</code>) sebelum rilis.</p>
+<h2 id="5-tooling-nusa-migrate-path">5. Tooling: <code>nusa migrate [PATH]</code> <a href="#5-tooling-nusa-migrate-path" aria-label="taut">#</a></h2>
+<ul>
+<li>Argumen: file <code>.ns</code> tunggal atau direktori (default <code>.</code>).</li>
+</ul>
+<p>  Walk direktori rekursif, terurut, deterministik; melewati</p>
+<p>  <code>build/ website/ target/ dist/ .nusa-cache/ .git/</code>.</p>
+<ul>
+<li>Per file: jalankan pipeline <code>check</code> sungguhan (bukan</li>
+</ul>
+<p>  heuristik buta) + pindai marker idiom-1.x/legacy pada</p>
+<p>  sumber yang sudah dibersihkan dari komentar-<code>//</code> dan</p>
+<p>  literal-string + deteksi manifest <code>native = true</code> ke atas</p>
+<p>  (maks 4 level).</p>
+<ul>
+<li>Output stdout stabil per baris `&lt;path&gt;: &lt;kategori&gt;</li>
+</ul>
+<p>  (&lt;program|library|check-failed)&gt;<code>; baris akhir </code>migrate: &lt;C&gt;</p>
+<p>  compatible, &lt;D&gt; deprecated, &lt;R&gt; requires migration, &lt;B&gt;</p>
+<p>  broken, &lt;U&gt; unsupported (N files)`.</p>
+<ul>
+<li>Exit 1 bila R &gt; 0 atau B &gt; 0; selain itu 0. NOL file</li>
+</ul>
+<p>  ditulis/dimodifikasi (read-only; tanpa codegen).</p>
+<ul>
+<li>Keterbatasan jujur: pembeda requires-migration vs broken</li>
+</ul>
+<p>  adalah heuristik marker — kasus gagal-check yang mengandung</p>
+<p>  kata mirip-idiom di nama field sendiri bisa terklasifikasi</p>
+<p>  requires migration; pesan error <code>check</code> asli tetap acuan.</p>
+<h2 id="6-hasil-audit-korpus-repo-diukur-87-file-6-proyek-phase-85">6. Hasil audit korpus repo (diukur, 87 file; +6 proyek Phase 85) <a href="#6-hasil-audit-korpus-repo-diukur-87-file-6-proyek-phase-85" aria-label="taut">#</a></h2>
+<ul>
+<li>compatible: <strong>82</strong> (51 program + 31 library).</li>
+<li>deprecated: <strong>3</strong> (§2).</li>
+<li>requires migration: <strong>0</strong>.</li>
+<li>broken: <strong>0</strong>.</li>
+<li>unsupported: <strong>2</strong> (§4).</li>
+<li>Total: 87 (ambang <code>e2e_compat</code> tetap: 46+ ok / 35+ lib;</li>
+</ul>
+<p>  kategorisasi ini memecahnya lebih rinci).</p>
+<p>Conformance: <code>compiler/tests/e2e_migrate.sh</code> (audit repo +</p>
+<p>fixture 5 kategori + idempotensi read-only).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

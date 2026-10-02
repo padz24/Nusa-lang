@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground — Nusa Docs 3.0.0</title>
+<meta name="description" content="Playground v3.0.0 Rantai: Browser → Playground API → Compiler Service → Sandbox → Output. Server memakai ulang nusa playground / nusa sandbox yang ada">
+<link rel="canonical" href="https://nusa-lang.org/docs/playground/">
+<meta property="og:title" content="Playground — Nusa Docs 3.0.0">
+<meta property="og:description" content="Playground v3.0.0 Rantai: Browser → Playground API → Compiler Service → Sandbox → Output. Server memakai ulang nusa playground / nusa sandbox yang ada">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Playground">
+<meta name="nusa:category" content="playground">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="playground, sandbox, try, run">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Playground", "category": "playground", "version": "3.0.0", "content": "Playground v3.0.0 Rantai: Browser → Playground API → Compiler Service → Sandbox → Output. Server memakai ulang nusa playground / nusa sandbox yang ada (tanpa engine baru). Contoh: hello chan_len fn main() { print(\"Hello, Nusa!\"); } Run (via lokal 127.0.0.1:8321) share-link Status: idle Output muncu", "code_example": "fn main() {\n    print(\"Hello, Nusa!\");\n}\n", "keywords": "playground, sandbox, try, run"}</script>
+</head>
+<body class="kind-playground">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/" aria-current="page">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><article><h1>Playground</h1><span class="badge historic">v3.0.0</span> 
+<p>Rantai: Browser → Playground API → Compiler Service → Sandbox → Output.
+Server memakai ulang <code>nusa playground</code>/<code>nusa sandbox</code> yang ada (tanpa engine baru).</p>
+<p><label>Contoh: <select id="pg-sample">
+<option value='fn main() { print("Hello, Nusa!"); }'>hello</option>
+<option value='fn main() { let c = chan_new(); chan_send(c, 41); print(chan_len(c)); print(chan_recv(c)); chan_free(c); }'>chan_len</option>
+</select></label></p>
+<p><textarea id="pg-code" rows="10" cols="60">fn main() {
+    print("Hello, Nusa!");
+}</textarea></p>
+<p><button class="btn" id="pg-run">Run (via lokal 127.0.0.1:8321)</button> <a id="pg-share" href="#">share-link</a></p>
+<p><b>Status:</b> <span id="pg-status">idle</span></p>
+<pre><samp id="pg-out" class="out">Output muncul di sini.</samp></pre>
+<div class="warn"><h2>Batasan jujur</h2><ul>
+<li>Loopback-only 127.0.0.1, sekuensial, tanpa auth — JANGAN expose publik tanpa reverse-proxy + auth + rate-limit.</li>
+<li>Memori via polling VmRSS (RLIMIT_AS merusak startup Bionic); tanpa namespace; NPROC tak dipakai.</li>
+<li>Jaringan TIDAK diblokir; <code>import</code> lokal nonaktif di mode playground.</li>
+<li>Limit: timeout 10 dtk, memori 256 MB, output 64 KB, body ≤ 256 KB.</li>
+<li>Verdict: ok | build-fail | timeout | mem-limit | output-limit | signal.</li>
+</ul></div>
+<h2>Jalankan lokal</h2>
+<pre data-lang="bash"><code class="lang-bash">nusa playground --port 8321   # 127.0.0.1 only
+nusa sandbox prog.ns --timeout 10 --memory-mb 256 --output-kb 64</code></pre></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

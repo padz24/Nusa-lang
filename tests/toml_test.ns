@@ -1,0 +1,14 @@
+// Sample `nusa test` target: toml stdlib.
+import toml;
+fn main() {
+    let d = "# comment\ntitle = \"Hello\"\ncount = 7\non = true\n\n[db]\nhost = \"x\"\nport = 5432\n";
+    assert(str_eq(toml_get_string(d, "", "title"), "Hello"));
+    assert(toml_get_int(d, "", "count") == 7);
+    assert(toml_get_bool(d, "", "on"));
+    assert(toml_get_bool(d, "", "count") == false);
+    assert(str_eq(toml_get_string(d, "db", "host"), "x"));
+    assert(toml_get_int(d, "db", "port") == 5432);
+    assert(str_eq(toml_get_string(d, "", "host"), ""));
+    assert(str_eq(toml_get_string(d, "db", "title"), ""));
+    assert(toml_get_int(d, "", "missing") == 0);
+}

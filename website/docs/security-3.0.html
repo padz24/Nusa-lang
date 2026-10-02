@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>security-3.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="security-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Audit — Phase 87 (beta 3.0.0) # Mandat: audit 9 are">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/security-3.0.html">
+<meta property="og:title" content="security-3.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="security-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Audit — Phase 87 (beta 3.0.0) # Mandat: audit 9 are">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="security-3.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="security-3.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "security-3.0.md", "category": "docs", "version": "3.0.0", "content": "security-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Audit — Phase 87 (beta 3.0.0) # Mandat: audit 9 area terhadap 6 kelas; perbaiki semua critical/high sebelum rilis. Hasil: 0 critical, 0 high — 1 medium DIPERBAIKI (S1); sisanya bersih/info. Rilis tak", "code_example": "", "keywords": "security-3.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/security-3.0.html">security-3.0.md</a></p><article><h1>security-3.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="security-audit-phase-87-beta-3-0-0">Security Audit — Phase 87 (beta 3.0.0) <a href="#security-audit-phase-87-beta-3-0-0" aria-label="taut">#</a></h1>
+<p>Mandat: audit 9 area terhadap 6 kelas; perbaiki semua</p>
+<p>critical/high sebelum rilis. Hasil: <strong>0 critical, 0 high</strong> —</p>
+<p>1 medium DIPERBAIKI (S1); sisanya bersih/info. Rilis tak</p>
+<p>terblokir dari sisi keamanan.</p>
+<h2 id="1-matriks-area-kelas-ringkas">1. Matriks area × kelas (ringkas) <a href="#1-matriks-area-kelas-ringkas" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Area</th><th>memory</th><th>traversal</th><th>confusion</th><th>tampering</th><th>unsafe-exec</th><th>crash</th></tr></thead><tbody>
+<tr><td>compiler</td><td>OK¹</td><td>OK²</td><td>—</td><td>—</td><td>—</td><td>OK³</td></tr>
+<tr><td>runtime</td><td>OK⁴</td><td>—</td><td>—</td><td>—</td><td>OK⁵</td><td>OK³</td></tr>
+<tr><td>package manager</td><td>—</td><td>OK⁶</td><td>OK⁷</td><td>OK⁸</td><td>OK⁹</td><td>OK³</td></tr>
+<tr><td>registry</td><td>—</td><td>OK⁶</td><td>OK⁷</td><td>OK⁸</td><td>—</td><td>—</td></tr>
+<tr><td>FFI</td><td>—</td><td>—</td><td>—</td><td>—</td><td>OK¹⁰</td><td>—</td></tr>
+<tr><td>unsafe</td><td>N/A¹¹</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td></tr>
+<tr><td>build system</td><td>—</td><td>—</td><td>—</td><td>—</td><td>OK⁹</td><td>—</td></tr>
+<tr><td>networking</td><td>—</td><td>—</td><td>—</td><td>—</td><td>OK¹²</td><td>—</td></tr>
+<tr><td>dependency resolution</td><td>—</td><td>—</td><td>OK⁷</td><td>OK⁸</td><td>—</td><td>—</td></tr>
+</tbody></table>
+<p>¹ malloc codegen semua <code>emitOomCheck</code>; runtime malloc semua</p>
+<p>cek-NULL (chan/crypto/net/sync/thread) → sentinel.</p>
+<p>² <code>import ../..</code> resolve/tertolak bersih, tanpa crash</p>
+<p>(probe); output build hanya ke <code>-o</code>/samping-sumber (by design).</p>
+<p>³ Baterai adversarial: UTF-8-invalid, NUL, BOM, bigint,</p>
+<p>string-100KB, file-kosong, direktori, output-tak-tulis,</p>
+<p>import-cycle/chain-100, ident-200KB, baris-5MB, header-sampah</p>
+<p>(bindgen) — semua rc∈{0,1}, 0 sinyal.</p>
+<p>⁴ Loopback-only (<code>INADDR_LOOPBACK</code> di <code>rt_net.c</code>); recv cap</p>
+<p>1 MiB; buf NULL→string-kosong.</p>
+<p>⁵ Sandbox rlimits + verdict (e2e_playground 9/9); S1 di bawah.</p>
+<p>⁶ Tarball <code>../</code> ditolak pre-extract + cache dibersihkan</p>
+<p>(<code>e2e_sec</code>); GNU tar mensterilkan saat create — craft via</p>
+<p>python (terbukti).</p>
+<p>⁷ Dual path+version ditolak parse (&quot;exactly one&quot;); name</p>
+<p>mismatch ditolak; cache per-registry (<code>regId</code> hash).</p>
+<p>⁸ Checksum <code>verify</code> gagal pasca-tamper + sembuh via update</p>
+<p>(<code>e2e_eco2</code>, hermetik Phase 80).</p>
+<p>⁹ clang/tar/run/link via <code>shellQuote</code>/<code>shellQ</code> benar;</p>
+<p>dibuktikan nama-file <code>a&#x27;b;touch PWNED;</code> tanpa eksekusi.</p>
+<p>¹⁰ <code>extern</code>/[link] tanpa <code>native=true</code> ditolak + ringkasan</p>
+<p>(<code>e2e_sec</code>); shim paket strcpy-ke-malloc tercatat aman.</p>
+<p>¹¹ Bahasa TAK punya blok <code>unsafe</code> (lexer: nol keyword) —</p>
+<p>area N/A by design; batas native = capability manifest.</p>
+<p>¹² TLS verifikasi peer+hostname selalu-aktif (paket</p>
+<p>referensi); <code>rpc_call</code> host-eksplisit pemanggil.</p>
+<h2 id="2-temuan">2. Temuan <a href="#2-temuan" aria-label="taut">#</a></h2>
+<ul>
+<li>S1 (medium, DIPERBAIKI): <code>--memory-mb 0</code> fail-open</li>
+</ul>
+<p>  (unlimited) di <code>sandbox</code>+<code>playground</code>, sementara timeout-0</p>
+<p>  fail-closed — inkonsisten. Perbaikan: tolak <code>&lt;= 0</code></p>
+<p>  (2 baris <code>main.cpp</code>); regresi <code>sec-limits*</code> di <code>e2e_sec</code></p>
+<p>  (suite 5→9 kasus). NOL e2e lama memakai 0.</p>
+<ul>
+<li>S2 (info): byte UTF-8-invalid di dalam string literal</li>
+</ul>
+<p>  diterima check (lenien; perkakas lokal; output</p>
+<p>  byte-apa-adanya). Bukan vuln memori (buffer panjang</p>
+<p>  eksplisit).</p>
+<ul>
+<li>S3 (info): byte NUL di string diterima check; perilaku</li>
+</ul>
+<p>  cetak = UB terdokumentasi (Appendix A spec-3.0).</p>
+<h2 id="3-conformance">3. Conformance <a href="#3-conformance" aria-label="taut">#</a></h2>
+<p><code>e2e_sec.sh</code> 9/9 + <code>e2e_hardening.sh</code> + fuzz 0-crash</p>
+<p>(seed 71/1/7/1337/99999/424242/30084) + full suite hijau.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

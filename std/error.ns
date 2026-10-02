@@ -1,0 +1,10 @@
+// Error standar (Phase 24, v1.5.0): pembungkus pesan + konvensi E
+// untuk `Result<T, E>` (lihat result.ns).
+struct Error {
+    message: string;
+}
+fn error(message: string) -> Error {
+    return Error {
+        message: message
+    };
+}

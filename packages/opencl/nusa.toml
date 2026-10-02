@@ -1,0 +1,13 @@
+[package]
+name = "opencl"
+version = "0.1.0"
+description = "OpenCL query via FFI — paket referensi ekosistem (bukan stdlib)"
+
+[dependencies]
+
+[link]
+files = ["shim.o"]
+libraries = ["dl"]
+
+[capabilities]
+native = true

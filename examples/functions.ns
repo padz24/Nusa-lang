@@ -1,0 +1,10 @@
+// Contoh v0.5.0: functions (program milestone MASTER PROMPT).
+// Diharapkan mencetak:
+// 30
+fn add(a: i64, b: i64) -> i64 {
+    return a + b;
+}
+fn main() {
+    let result = add(10, 20);
+    print(result);
+}

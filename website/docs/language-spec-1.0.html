@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>language-spec-1.0.md — Nusa Docs 1.0.0</title>
+<meta name="description" content="language-spec-1.0.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 1.0 # Status: normative (me">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/language-spec-1.0.html">
+<meta property="og:title" content="language-spec-1.0.md — Nusa Docs 1.0.0">
+<meta property="og:description" content="language-spec-1.0.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 1.0 # Status: normative (me">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="language-spec-1.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="1.0.0">
+<meta name="nusa:keywords" content="language-spec-1.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "language-spec-1.0.md", "category": "docs", "version": "1.0.0", "content": "language-spec-1.0.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 1.0 # Status: normative (mengikat implementasi, bukan sebaliknya). Describes: compiler Nusa 1.20.0 (LLVM 21.1.8, AArch64 Android). Detail per topik dirujuk ke docs/*.md ; bila", "code_example": "", "keywords": "language-spec-1.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/language-spec-1.0.html">language-spec-1.0.md</a></p><article><h1>language-spec-1.0.md</h1><p><span class="badge historic">sumber v1.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-language-specification-1-0">Nusa Language Specification 1.0 <a href="#nusa-language-specification-1-0" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: <strong>normative</strong> (mengikat implementasi, bukan sebaliknya).</li>
+<li>Describes: compiler Nusa <strong>1.20.0</strong> (LLVM 21.1.8, AArch64 Android).</li>
+<li>Detail per topik dirujuk ke <code>docs/*.md</code>; bila bertentangan,</li>
+</ul>
+<p>  dokumen ini menang.</p>
+<ul>
+<li>Konvensi: &quot;MUST&quot; = wajib, &quot;MUST NOT&quot; = dilarang, &quot;undefined&quot; =</li>
+</ul>
+<p>  perilaku tak terdefinisi (lihat Appendix A).</p>
+<h2 id="1-lexical-grammar">1. Lexical grammar <a href="#1-lexical-grammar" aria-label="taut">#</a></h2>
+<ul>
+<li>Encoding sumber MUST UTF-8. Byte non-ASCII di luar string/komentar</li>
+</ul>
+<p>  MUST ditolak lexer.</p>
+<ul>
+<li>Whitespace: spasi, tab, CR, LF (pemisah tanpa makna).</li>
+<li>Komentar: <code>//</code> sampai akhir baris; <code>///</code> = dokumentasi API</li>
+</ul>
+<p>  (tidak memengaruhi semantik).</p>
+<ul>
+<li>Keywords (reserved, MUST NOT dipakai sebagai identifier):</li>
+</ul>
+<p>  `fn let return if else while true false i64 bool string void struct</p>
+<p>  import type trait impl for self match enum extern`.</p>
+<ul>
+<li>Identifier: <code>[A-Za-z_][A-Za-z0-9_]*</code> di luar keywords.</li>
+<li>Integer: <code>[0-9]+</code> desimal, nilai MUST dalam <code>i64</code></li>
+</ul>
+<p>  (<code>-9223372036854775808..9223372036854775807</code>); overflow atau</p>
+<p>  ekor-alpha (<code>123abc</code>) MUST ditolak.</p>
+<ul>
+<li>String: <code>&quot;…&quot;</code> dengan escapes <code>\&quot; \\ \n \t \r \0</code>; newline mentah</li>
+</ul>
+<p>  atau EOF sebelum penutup MUST ditolak.</p>
+<ul>
+<li>Operator: <code>+ - * / = == != &lt; &gt; &lt;= &gt;= -&gt; =&gt; ? |</code> (<code>-&gt;</code> greedy;</li>
+</ul>
+<p>  <code>!</code> tunggal MUST ditolak dengan saran <code>!=</code>).</p>
+<ul>
+<li>Simbol: <code>( ) { } [ ] : , ; .</code></li>
+<li>Setiap token membawa <code>file:line:column</code>.</li>
+<li>Tests: e2e_frontend.sh, e2e_hardening.sh.</li>
+</ul>
+<h2 id="2-syntax">2. Syntax <a href="#2-syntax" aria-label="taut">#</a></h2>
+<pre data-lang="ebnf"><code class="lang-ebnf">Program    := (Import | TypeAlias | TraitDecl | ImplBlock |
+               StructDecl | EnumDecl | FuncDecl | ExternDecl)*
+Import     := &quot;import&quot; Ident [&quot;;&quot;]
+TypeAlias  := &quot;type&quot; Ident &quot;=&quot; Type [&quot;;&quot;]
+TraitDecl  := &quot;trait&quot; Ident &quot;{&quot; (FuncSig &quot;;&quot;)* &quot;}&quot;
+ImplBlock  := &quot;impl&quot; Ident &quot;for&quot; Type &quot;{&quot; FuncDecl* &quot;}&quot;
+StructDecl := &quot;struct&quot; Ident [&quot;&lt;&quot; Ident (&quot;,&quot; Ident)* &quot;&gt;&quot;]
+              &quot;{&quot; (Ident &quot;:&quot; Type [&quot;;&quot;])* &quot;}&quot;
+EnumDecl   := &quot;enum&quot; Ident [&quot;&lt;&quot; Ident (&quot;,&quot; Ident)* &quot;&gt;&quot;]
+              &quot;{&quot; Variant (&quot;,&quot; Variant)* [&quot;,&quot;] &quot;}&quot;
+Variant    := Ident [&quot;(&quot; [Type (&quot;,&quot; Type)*] &quot;)&quot;]
+FuncDecl   := &quot;fn&quot; Ident [&quot;&lt;&quot; Ident (&quot;,&quot; Ident)* &quot;&gt;&quot;]
+              &quot;(&quot; [Param (&quot;,&quot; Param)*] &quot;)&quot; [&quot;-&gt;&quot; Type] Block
+ExternDecl := &quot;extern&quot; &quot;fn&quot; Ident &quot;(&quot; [Param (&quot;,&quot; Param)*] &quot;)&quot;
+              [&quot;-&gt;&quot; Type] &quot;;&quot;
+Param      := Ident &quot;:&quot; Type
+Block      := &quot;{&quot; Stmt* &quot;}&quot;
+Stmt       := LetStmt | AssignStmt | PrintStmt | ReturnStmt | ExprStmt
+            | IfStmt | WhileStmt | MatchStmt
+Type       := &quot;i64&quot; | &quot;bool&quot; | &quot;string&quot; | &quot;void&quot; | &quot;[&quot; Type &quot;]&quot;
+            | Ident [&quot;&lt;&quot; Type (&quot;,&quot; Type)* &quot;&gt;&quot;]
+            | &quot;fn&quot; &quot;(&quot; [Type (&quot;,&quot; Type)*] &quot;)&quot; [&quot;-&gt;&quot; Type]</code></pre>
+<ul>
+<li><code>fn main()</code> (tanpa parameter, return <code>void</code>) MUST ada tepat satu</li>
+</ul>
+<p>  per program gabungan.</p>
+<ul>
+<li><code>;</code> opsional di akhir statement/item.</li>
+<li><code>return</code> MUST terakhir di block-nya; konstruksi <code>P { f: v }</code></li>
+</ul>
+<p>  dibedakan dari block via lookahead (<code>{</code> diikuti <code>}</code>/<code>field :</code>).</p>
+<ul>
+<li>Tests: e2e_types.sh, e2e_functions.sh, e2e_control.sh,</li>
+</ul>
+<p>  e2e_struct_module.sh.</p>
+<h2 id="3-ast-semantics">3. AST semantics <a href="#3-ast-semantics" aria-label="taut">#</a></h2>
+<p>Pemetaan normatif sintaks → makna (nama node informatif):</p>
+<ul>
+<li><code>LetStmt</code> = binding baru se-scope; <code>AssignStmt</code> = tulis slot</li>
+</ul>
+<p>  terdekat yang sudah ada (MUST ada, tipe sama).</p>
+<ul>
+<li><code>IfStmt</code>/<code>WhileStmt</code> = cabang/loop dengan kondisi <code>bool</code>.</li>
+<li><code>MatchStmt</code> = desugar ke <code>let</code> scrutinee + rantai <code>if</code>/<code>else</code></li>
+</ul>
+<p>  (urutan arm = urutan sumber; guard <code>if</code> di-inline per arm).</p>
+<ul>
+<li><code>Call</code> = panggilan langsung (arity + tipe dicek) atau tak langsung</li>
+</ul>
+<p>  via value bertipe-<code>fn</code>/closure-pair.</p>
+<ul>
+<li><code>Lambda</code> = lift ke fungsi hidden + pasangan heap</li>
+</ul>
+<p>  <code>{trampoline, env}</code>; capture SELALU by-value.</p>
+<ul>
+<li><code>EnumDecl</code> = struct hidden <code>{tag, slot...}</code> + konstruktor</li>
+</ul>
+<p>  qualified <code>E.V(...)</code> (bukan first-class value).</p>
+<ul>
+<li><code>ImplBlock</code> = rewrite <code>recv.m(args)</code> → fungsi mangled statis.</li>
+<li>Tests: e2e_match.sh, e2e_enums.sh, e2e_closures.sh, e2e_traits.sh.</li>
+</ul>
+<h2 id="4-type-system">4. Type system <a href="#4-type-system" aria-label="taut">#</a></h2>
+<ul>
+<li>Statis, tanpa coercion. Nominal untuk struct/enum, struktural</li>
+</ul>
+<p>  untuk sisanya.</p>
+<ul>
+<li><code>let x: T = e</code> menuntut <code>typeof(e) == T</code>; tanpa anotasi</li>
+</ul>
+<p>  menurunkan dari inisialisasi. Nilai <code>void</code> MUST NOT disimpan,</p>
+<p>  dicetak, atau dibandingkan.</p>
+<ul>
+<li>Numerik <code>+ - * /</code> dan <code>&lt; &gt; &lt;= &gt;=</code>: operand <code>i64</code>. <code>==</code>/<code>!=</code>:</li>
+</ul>
+<p>  sisi sama, non-<code>string</code>/<code>void</code>/array/struct. Unary <code>-</code>/<code>+</code>: <code>i64</code>.</p>
+<ul>
+<li>Alias <code>type X = T;</code> transparan (identik <code>T</code>); namespace bersama</li>
+</ul>
+<p>  struct; siklus/rantai &gt; 100 MUST ditolak (tepat satu error).</p>
+<ul>
+<li>Tipe fungsi <code>fn(T) -&gt; T</code>: value observables.</li>
+<li><code>Option&lt;T&gt;</code>/<code>Result&lt;T, E&gt;</code> = struct generik biasa + operator</li>
+</ul>
+<p>  <code>expr?</code> (operan dan return fungsi MUST <code>Result</code> yang sama).</p>
+<ul>
+<li>Panggilan: arity + tipe argumen dicek; return dicek terhadap tipe</li>
+</ul>
+<p>  (all-paths untuk non-<code>void</code>; cabang <code>while</code> tak dihitung).</p>
+<ul>
+<li>Tests: e2e_types.sh, e2e_alias.sh, e2e_fn.sh, e2e_error.sh.</li>
+</ul>
+<h2 id="5-memory-model">5. Memory model <a href="#5-memory-model" aria-label="taut">#</a></h2>
+<ul>
+<li>Owned values di stack + heap string program-lifetime; TANPA</li>
+</ul>
+<p>  GC, pinjaman, atau reference counting (normatif penuh:</p>
+<p>  <code>docs/memory-model.md</code>).</p>
+<ul>
+<li>Variabel = slot stack per scope (shadowing antar-scope; tiap Block</li>
+</ul>
+<p>  scope baru). Alokasi string heap (<code>input</code>, <code>str_concat</code>,</p>
+<p>  <code>file_read</code>) bocor by-design hingga roadmap GC.</p>
+<ul>
+<li>Tidak ada referensi user-level dan tidak ada tipe pointer yang</li>
+</ul>
+<p>  dapat ditulis (<code>ptr</code> bukan tipe sumber — handle runtime seperti</p>
+<p>  argv-teks, thread/mutex/channel/atomic, dan pointer C terekspos</p>
+<p>  sebagai <code>i64</code> opak atau <code>string</code>). Tidak ada <code>free</code> manual kecuali</p>
+<p>  handle concurrency (<code>mutex_free</code>, <code>chan_free</code>, <code>atomic_free</code>).</p>
+<ul>
+<li>Tests: e2e_memory.sh.</li>
+</ul>
+<h2 id="6-evaluation-rules">6. Evaluation rules <a href="#6-evaluation-rules" aria-label="taut">#</a></h2>
+<ul>
+<li>Eager, urutan kiri-ke-kanan; statement sekuensial.</li>
+<li>Integer: two&#x27;s-complement wrapping, KECUALI pembagi nol (statis:</li>
+</ul>
+<p>  compile error; dinamis: <code>runtime error: division by zero</code>, exit 1).</p>
+<ul>
+<li>Boolean untuk kontrol; TANPA short-circuit (<code>&amp;&amp;</code>/<code>||</code> tidak ada).</li>
+<li>String: pointer NUL-terminated buram; operasi di luar builtin</li>
+</ul>
+<p>  tidak ada.</p>
+<ul>
+<li>Array: <code>[N x T]</code> statis; index di-bounds-check (gagal → exit 1);</li>
+</ul>
+<p>  copy semantik nilai.</p>
+<ul>
+<li>Struct/enum: copy agregat; field via offset statis.</li>
+<li>Panggilan: konvensi C AArch64 via LLVM; rekursi didukung.</li>
+<li><code>main</code> mengembalikan 0. Abort runtime (assert/OOB/div-0) → exit 1.</li>
+<li>Tests: e2e_variables.sh, e2e_arrays.sh, e2e_control.sh.</li>
+</ul>
+<h2 id="7-modules-and-packages">7. Modules and packages <a href="#7-modules-and-packages" aria-label="taut">#</a></h2>
+<ul>
+<li>Satu file = satu modul. <code>import m;</code> memuat <code>&lt;dir&gt;/m.ns</code></li>
+</ul>
+<p>  (transitif). Merge nama PUBLIK; konflik = error duplikat.</p>
+<ul>
+<li>Nama <code>_</code>-awalan = privat modul. Siklus MUST ditolak</li>
+</ul>
+<p>  (<code>circular import detected</code>); rantai &gt; 100 MUST ditolak.</p>
+<ul>
+<li>Paket (<code>nusa.toml</code>): path-deps transitif, lock + SHA-256, build</li>
+</ul>
+<p>  reproduksibel; registry file-backed (publish/search/install,</p>
+<p>  resolver persis/caret, cache terverifikasi).</p>
+<ul>
+<li>Tests: e2e_struct_module.sh, e2e_pkg.sh, e2e_registry.sh.</li>
+</ul>
+<h2 id="8-generics">8. Generics <a href="#8-generics" aria-label="taut">#</a></h2>
+<ul>
+<li>Fungsi <code>fn f&lt;T&gt;(x: T) -&gt; T</code> dan struct <code>struct P&lt;T&gt; { … }</code>.</li>
+<li>Inferensi tipe di call-site (tanpa turbofish); monomorphisasi per</li>
+</ul>
+<p>  kombinasi argumen; template dibuang sebelum codegen.</p>
+<ul>
+<li>Rekursi tipe-sama berhenti (cache instance); cap kedalaman 64.</li>
+<li>Struct: konstruksi inferensi atau eksplisit <code>Point&lt;i64&gt; { … }</code>;</li>
+</ul>
+<p>  by-value di param/return.</p>
+<ul>
+<li>DILARANG: metode/impl generik, argumen tipe eksplisit di call,</li>
+</ul>
+<p>  fungsi generik sebagai value.</p>
+<ul>
+<li>Tests: e2e_generics.sh, e2e_structs_gen.sh.</li>
+</ul>
+<h2 id="9-traits">9. Traits <a href="#9-traits" aria-label="taut">#</a></h2>
+<ul>
+<li><code>trait T { fn m(self, …); }</code> (tanpa body; <code>self</code> telanjang</li>
+</ul>
+<p>  pertama) + <code>impl T for P { … }</code> (target: struct termasuk</p>
+<p>  generik-konkret, primitif; array/fn/void DILARANG).</p>
+<ul>
+<li>Dispatch SELALU statis (rewrite ke <code>Trait_method_Type</code>); bounds</li>
+</ul>
+<p>  <code>T: Trait</code> (+ ganda <code>+</code>) dicek saat instansiasi konkret.</p>
+<ul>
+<li>Koherensi: satu impl per (trait, tipe) program-wide.</li>
+<li>DILARANG: supertrait, body default, <code>Self</code>, associated function,</li>
+</ul>
+<p>  dynamic dispatch.</p>
+<ul>
+<li>Tests: e2e_traits.sh.</li>
+</ul>
+<h2 id="10-pattern-matching">10. Pattern matching <a href="#10-pattern-matching" aria-label="taut">#</a></h2>
+<ul>
+<li>Statement-only: <code>match e { pola [if g] =&gt; { … }, }</code>.</li>
+<li>Pola: literal int/bool/string (negatif OK), <code>_</code>, bind, struct,</li>
+</ul>
+<p>  varian (<code>Some(v)</code>/<code>None</code>/<code>Ok(v)</code>/<code>Err(e)</code>/varian enum).</p>
+<ul>
+<li>Exhaustiveness WAJIB: <code>bool</code> dan pasangan varian tertutup tanpa</li>
+</ul>
+<p>  wildcard; himpunan literal butuh <code>_</code>. Pola unreachable/invalid</p>
+<p>  MUST ditolak.</p>
+<ul>
+<li>DILARANG: or-pattern, range-pattern, exhaustiveness int/string</li>
+</ul>
+<p>  umum tanpa <code>_</code>.</p>
+<ul>
+<li>Tests: e2e_match.sh, e2e_enums.sh.</li>
+</ul>
+<h2 id="11-concurrency">11. Concurrency <a href="#11-concurrency" aria-label="taut">#</a></h2>
+<ul>
+<li>Primitif (builtin): <code>thread_spawn</code> (<code>fn() -&gt; i64</code> ketat)/</li>
+</ul>
+<p>  <code>thread_join</code>, <code>mutex_new/lock/unlock/try_lock/free</code>,</p>
+<p>  <code>chan_new/send/recv/free</code> (<strong><code>i64</code> saja</strong>, FIFO tak-terbatas),</p>
+<p>  <code>atomic_new/get/set/add/free</code> (seq-cst), <code>sleep_ms</code>.</p>
+<ul>
+<li>Runtime pthread; <code>-pthread</code> selalu di-link.</li>
+<li>TIDAK ADA deteksi deadlock/data-race statis; penjadwalan dan</li>
+</ul>
+<p>  urutan interleave = undefined (program MUST sinkronisasi</p>
+<p>  eksplisit). Tanpa select/close/scoped-threads/<code>async</code>.</p>
+<ul>
+<li>Tests: e2e_concurrency.sh.</li>
+</ul>
+<h2 id="12-foreign-function-interface">12. Foreign function interface <a href="#12-foreign-function-interface" aria-label="taut">#</a></h2>
+<ul>
+<li><code>extern fn name(params) -&gt; T;</code> (tanpa body): deklarasi fungsi C,</li>
+</ul>
+<p>  ABI C. Param: <code>i64</code>/<code>string</code>/<code>bool</code>; return: <code>i64</code>/<code>bool</code>/<code>void</code>.</p>
+<p>  <code>bool</code> = <code>i32</code> di ABI. Tanpa pointer umum/struct-by-value/</p>
+<p>  callback/variadik/string-return.</p>
+<ul>
+<li>Link: <code>nusa build --link/--link-dir</code> + manifest <code>[link]</code>.</li>
+</ul>
+<p>  Pustaka asing DIPERCAYA PENUH (keamanan = pin sumber).</p>
+<ul>
+<li>Tests: e2e_ffi.sh.</li>
+</ul>
+<h2 id="13-standard-library">13. Standard library <a href="#13-standard-library" aria-label="taut">#</a></h2>
+<ul>
+<li>Builtin global (tanpa import): <code>print</code>, <code>input</code>, <code>assert</code>,</li>
+</ul>
+<p>  <code>str_len</code>, <code>str_concat</code>, <code>str_char_at</code>, <code>str_slice</code>, <code>int_to_str</code>,</p>
+<p>  <code>parse_int</code>, <code>parse_int_valid</code>, <code>file_read/write/exists</code>,</p>
+<p>  <code>array_sum/min/max</code>, <code>len</code>, <code>time_now_ms/s</code>, <code>random_u64</code>,</p>
+<p>  <code>process_exit/env/cwd/argc/argv</code>, <code>tcp_connect/send/recv/close</code>,</p>
+<p>  primitif concurrency (§11).</p>
+<ul>
+<li>Modul <code>std/</code> (di-<code>import</code>; kanonis <code>import std.x</code>):</li>
+</ul>
+<p>  `io math string collections fs system error option result time</p>
+<p>  random process path thread sync net`.</p>
+<ul>
+<li>Android-spesifik terisolasi di layer runtime C</li>
+</ul>
+<p>  (<code>runtime/nusa_rt.c</code>); API murni-Nusa diutamakan.</p>
+<ul>
+<li>Tests: e2e_stdlib.sh, e2e_stdlib2.sh.</li>
+</ul>
+<h2 id="14-diagnostics-conformance">14. Diagnostics conformance <a href="#14-diagnostics-conformance" aria-label="taut">#</a></h2>
+<ul>
+<li>Setiap error: <code>file:line:col: error:</code> + pesan + snippet/caret +</li>
+</ul>
+<p>  opsional <code>help:</code>. Seluruhnya bahasa Inggris.</p>
+<ul>
+<li>Recovery top-level + cap 25 error per tahap; compiler MUST exit</li>
+</ul>
+<p>  != 0 tanpa sinyal pada input apapun yang ditolak; hang DILARANG.</p>
+<ul>
+<li>Tests: e2e_diagnostics.sh, e2e_hardening.sh.</li>
+</ul>
+<h2 id="15-document-split-and-conformance">15. Document split and conformance <a href="#15-document-split-and-conformance" aria-label="taut">#</a></h2>
+<p>Pemisahan normatif (mandat Phase 40):</p>
+<ul>
+<li><strong>Language Specification</strong> = dokumen ini (<code>docs/language-spec-1.0.md</code>):</li>
+</ul>
+<p>   satu-satunya sumber kebenaran bahasa. Implementasi alternatif</p>
+<p>   yang memenuhi dokumen ini = Nusa yang valid.</p>
+<ul>
+<li><strong>Compiler Implementation</strong> = <code>docs/compiler.md</code> (pipeline,</li>
+</ul>
+<p>   LLVM 21.1.8, strategi codegen, batas rekursi 500, cap rantai):</p>
+<p>   pilihan implementasi, BUKAN definisi bahasa.</p>
+<ul>
+<li><strong>Standard Library Specification</strong> = <code>docs/standard-library.md</code></li>
+</ul>
+<p>   (+ §13 di atas untuk daftar normatif): kontrak API; <code>runtime/</code></p>
+<p>   = detail platform.</p>
+<p>Kesesuaian dikunci <code>compiler/tests/e2e_spec.sh</code>: 13 topik §1–§13</p>
+<p>WAJIB ada; setiap topik menunjuk file uji pengunci (<code>Tests:</code>) yang</p>
+<p>WAJIB ada di tree; contoh normatif spot-check dieksekusi.</p>
+<h2 id="appendix-a-undefined-behavior-non-ekshaustif">Appendix A. Undefined behavior (non-ekshaustif) <a href="#appendix-a-undefined-behavior-non-ekshaustif" aria-label="taut">#</a></h2>
+<ul>
+<li>Mengandalkan apa pun di luar §1–§14 (mis. GC, <code>&amp;&amp;</code>, float,</li>
+</ul>
+<p>  <code>break</code>, <code>+=</code>, metode generik, supertrait, <code>async</code>).</p>
+<ul>
+<li>Isi NUL (<code>\0</code>) di dalam nilai string; literal ≥ 2^63.</li>
+<li>Urutan interleave thread; nilai PRNG; waktu eksekusi.</li>
+<li>Output <code>nusa lex</code> untuk input invalid (bentuk baris stabil,</li>
+</ul>
+<p>  kanal/status tidak).</p>
+<ul>
+<li>Artefak <code>.ll</code>/<code>.s</code> (representasi antara, bukan kontrak bahasa).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

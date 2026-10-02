@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ffi-bindgen-2.17.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="ffi-bindgen-2.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bindgen — Design (Phase 66, target 2.17.0) # Status: aud">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/ffi-bindgen-2.17.html">
+<meta property="og:title" content="ffi-bindgen-2.17.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="ffi-bindgen-2.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bindgen — Design (Phase 66, target 2.17.0) # Status: aud">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="ffi-bindgen-2.17.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ffi-bindgen-2.17, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "ffi-bindgen-2.17.md", "category": "docs", "version": "3.0.0", "content": "ffi-bindgen-2.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bindgen — Design (Phase 66, target 2.17.0) # Status: audit → Implementation (milestone 1: nusa bindgen subset C). Tanpa perubahan checker/codegen (output = apa yang checker terima hari ini). C++ interop te", "code_example": "", "keywords": "ffi-bindgen-2.17, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/ffi-bindgen-2.17.html">ffi-bindgen-2.17.md</a></p><article><h1>ffi-bindgen-2.17.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="bindgen-design-phase-66-target-2-17-0">Bindgen — Design (Phase 66, target 2.17.0) <a href="#bindgen-design-phase-66-target-2-17-0" aria-label="taut">#</a></h1>
+<p>Status: audit → Implementation (milestone 1: <code>nusa bindgen</code></p>
+<p>subset C). Tanpa perubahan checker/codegen (output = apa yang</p>
+<p>checker terima hari ini). C++ interop tetap ditolak (mangling).</p>
+<h2 id="1-cakupan-subset-jujur">1. Cakupan subset (jujur) <a href="#1-cakupan-subset-jujur" aria-label="taut">#</a></h2>
+<p>Masuk: prototipe fungsi file-scope (<code>ret name(params);</code>),</p>
+<p>tipe integer C (<code>int/long/long long/short/char</code> + <code>signed</code>/</p>
+<p><code>unsigned</code>, multi-word <code>unsigned long long</code>), <code>_Bool</code>/<code>bool</code>,</p>
+<p><code>char*</code>/<code>const char*</code> (param saja), <code>void</code> return/<code>(void)</code>,</p>
+<p><code>extern &quot;C&quot;</code> wrapper, tabel typedef builtin (<code>size_t</code>,</p>
+<p><code>ssize_t</code>, <code>int8/16/32/64_t</code>, <code>uint8/16/32/64_t</code>,</p>
+<p><code>intptr_t/uintptr_t</code>), <code>()</code> kosong = nol param (asumsi</p>
+<p>terdokumentasi), definisi <code>static inline</code> (dilewati anggun),</p>
+<p>komentar + baris <code>#</code> dilewati.</p>
+<p>Keluar (skip + peringatan ke stderr, BUKAN fatal): float/double,</p>
+<p>pointer umum, struct/union/enum-by-value, variadik, typedef</p>
+<p>kustom, makro fungsi, atribut <code>__attribute__</code> (ditoleransi bila</p>
+<p>menempel deklarasi? TIDAK — skip bila mengaburkan; lihat §3).</p>
+<p>Pemetaan = tabel <code>docs/ffi.md</code> (int→i64 dst.; LP64 PCS;</p>
+<p>string-return DITOLAK cermin checker). Nama param hilang →</p>
+<p><code>p0..</code>; <code>void</code> return → tanpa <code>-&gt; T</code>.</p>
+<h2 id="2-cli-semantik-hasil">2. CLI &amp; semantik hasil <a href="#2-cli-semantik-hasil" aria-label="taut">#</a></h2>
+<p><code>nusa bindgen &lt;header.h&gt; [-o out.ns]</code> (default stdout).</p>
+<p>rc 0 bila ≥1 fungsi teremisikan (peringatan tak menggagalkan);</p>
+<p>rc 1 bila nol (bukan header yang dikenali) atau file tak terbaca.</p>
+<p>Output lolos <code>nusa fmt --check</code> + <code>nusa check</code> (dengan stub</p>
+<p>program? file binding TANPA main — check butuh main; e2e</p>
+<p>memvalidasi via program pengimpor... modul: binding file</p>
+<p>di-<code>import</code> program. Catatan: <code>extern</code> di modul impor — loader</p>
+<p>merge, didukung? e2e membuktikan).</p>
+<h2 id="3-ditunda">3. DITUNDA <a href="#3-ditunda" aria-label="taut">#</a></h2>
+<p>Struct/enum/union layout, macro konstanta, <code>static inline</code></p>
+<p>(isu ODR — skip), C++ (mangling/namespaces/classes),</p>
+<p><code>--allowlist/--denylist</code> filter, multi-header sekaligus.</p>
+<h2 id="4-acceptance-criteria">4. Acceptance criteria <a href="#4-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li>Header sampel (libc subset + header sintetik tepi) → output</li>
+</ul>
+<p>  eksak golden; ujung-ke-ujung: binding <code>answer()/twice()</code> custom</p>
+<p>  .c → build+run 42 (cermin e2e_ffi v2).</p>
+<ul>
+<li><code>e2e_bindgen.sh</code> hijau + suite hijau; bench identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

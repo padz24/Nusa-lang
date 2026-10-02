@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>runtime-2.6.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="runtime-2.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Runtime 2.0 — Design (Phase 55, target 2.6.0) # Status: audit">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/runtime-2.6.html">
+<meta property="og:title" content="runtime-2.6.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="runtime-2.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Runtime 2.0 — Design (Phase 55, target 2.6.0) # Status: audit">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="runtime-2.6.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="runtime-2.6, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "runtime-2.6.md", "category": "docs", "version": "3.0.0", "content": "runtime-2.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Runtime 2.0 — Design (Phase 55, target 2.6.0) # Status: audit selesai → Implementation (milestone 1: modularisasi tanpa perubahan perilaku). Spec 2.0 tak berubah; tanpa RFC. 1. Audit batasan keras (mengapa buka", "code_example": "", "keywords": "runtime-2.6, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/runtime-2.6.html">runtime-2.6.md</a></p><article><h1>runtime-2.6.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="runtime-2-0-design-phase-55-target-2-6-0">Runtime 2.0 — Design (Phase 55, target 2.6.0) <a href="#runtime-2-0-design-phase-55-target-2-6-0" aria-label="taut">#</a></h1>
+<p>Status: audit selesai → Implementation (milestone 1: modularisasi</p>
+<p>tanpa perubahan perilaku). Spec 2.0 tak berubah; tanpa RFC.</p>
+<h2 id="1-audit-batasan-keras-mengapa-bukan-split-biasa">1. Audit batasan keras (mengapa bukan split biasa) <a href="#1-audit-batasan-keras-mengapa-bukan-split-biasa" aria-label="taut">#</a></h2>
+<ul>
+<li>Driver me-link <strong>satu</strong> sumber fallback <code>runtime/nusa_rt.c</code></li>
+</ul>
+<p>  langsung via clang (<code>findRuntimeFile</code>), dan .deb mengirim file</p>
+<p>  itu (<code>packaging/deb.sh</code>). Menghapus/mengganti nama file =</p>
+<p>  merusak instalasi + fallback. Solusi: <code>nusa_rt.c</code> tetap ada</p>
+<p>  sebagai <strong>agregator satu translation unit</strong> (<code>#include</code></p>
+<p>  bagian-bagian, urutan dependensi) — objek hasil identik,</p>
+<p>  fallback dan .deb tetap jalan (deb mengirim direktori).</p>
+<ul>
+<li>Objek precompiled <code>build/nusa_rt.o</code> tetap satu file (driver</li>
+</ul>
+<p>  tak diubah sama sekali).</p>
+<ul>
+<li>Audit platform: NOL Android-spesifik di runtime hari ini</li>
+</ul>
+<p>  (<code>__ANDROID__</code>/bionic/<code>linux/*</code> = nihil; hanya POSIX +</p>
+<p>  <code>/dev/urandom</code> + <code>rand()</code> fallback). Platform layer milestone</p>
+<p>  ini = kodifikasi batas (bukan evakuasi kode).</p>
+<h2 id="2-target-mandat-master">2. Target (mandat master) <a href="#2-target-mandat-master" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">Nusa Runtime
+  ├── Memory .... (milik codegen: alloca/malloc+OOM-check; tetap)
+  ├── Threads ... rt_thread.c (spawn/join/sleep)
+  ├── Sync ...... rt_sync.c (mutex/atomic) + rt_chan.c (channel)
+  ├── Time/Rand . rt_time.c (clock/urandom)
+  ├── Net ....... rt_net.c (tcp client/server loopback)
+  ├── Shared .... rt_handle.c (registry Phase 54)
+  └── Platform .. rt_platform.h (deteksi + kontrak, §3)</code></pre>
+<p>I/O file &amp; proses tetap emisi libc langsung di codegen (tidak</p>
+<p>pindah — di luar mandat; dipetakan di sini agar eksplisit).</p>
+<h2 id="3-platform-layer-runtime-rt-platform-h">3. Platform layer (<code>runtime/rt_platform.h</code>) <a href="#3-platform-layer-runtime-rt-platform-h" aria-label="taut">#</a></h2>
+<ul>
+<li>Makro <code>NUSA_PLATFORM_ANDROID</code> (<code>__ANDROID__</code>), <code>NUSA_PLATFORM_LINUX</code>,</li>
+</ul>
+<p>  <code>NUSA_OS_NAME</code> string; static-assert LP64.</p>
+<ul>
+<li>Kontrak: kode platform-spesifik masa depan (WASM/embedded)</li>
+</ul>
+<p>  HANYA boleh hidup di balik header ini; subsystem tidak boleh</p>
+<p>  <code>#ifdef __ANDROID__</code> sendiri (dikunci <code>e2e_runtime.sh</code> via grep).</p>
+<h2 id="4-milestone-1-satu-satunya-perubahan-fase-ini">4. Milestone 1 (SATU-SATUNYA perubahan fase ini) <a href="#4-milestone-1-satu-satunya-perubahan-fase-ini" aria-label="taut">#</a></h2>
+<p>Pindah verbatim per subsistem (nol logika): thread, sync, chan,</p>
+<p>handle, time, net + agregator + platform.h. CMake <code>DEPENDS</code></p>
+<p>diperluas; <code>deb.sh</code> kirim direktori <code>runtime/</code>.</p>
+<p>DITUNDA: pemisahan I/O-Proses ke runtime (butuh desain emisi</p>
+<p>codegen), platform kedua (Linux x86_64 build farm), refcount</p>
+<p>handle (tercatat di mem-2.5.md).</p>
+<h2 id="5-acceptance-criteria">5. Acceptance criteria <a href="#5-acceptance-criteria" aria-label="taut">#</a></h2>
+<ul>
+<li><code>nm nusa_rt.o</code> memuat simbol yang sama persis sebelum/sesudah.</li>
+<li>Jalur fallback (tanpa <code>nusa_rt.o</code>) build+run OK.</li>
+<li><code>e2e_runtime.sh</code> hijau + seluruh suite hijau + bench identik.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

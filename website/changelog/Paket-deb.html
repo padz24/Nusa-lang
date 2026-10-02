@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog Paket deb — Nusa Docs 3.0.0</title>
+<meta name="description" content="Paket deb v3.0.0 Release notes # — 2026-09-09 (install global Termux + halaman unduhan) packaging/deb.sh membangun nusa_&amp;lt;ver&amp;gt;-1_aarch64.deb (lay">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/Paket-deb.html">
+<meta property="og:title" content="Changelog Paket deb — Nusa Docs 3.0.0">
+<meta property="og:description" content="Paket deb v3.0.0 Release notes # — 2026-09-09 (install global Termux + halaman unduhan) packaging/deb.sh membangun nusa_&amp;lt;ver&amp;gt;-1_aarch64.deb (lay">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog Paket deb">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="changelog, 3.0.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog Paket deb", "category": "changelog", "version": "3.0.0", "content": "Paket deb v3.0.0 Release notes # — 2026-09-09 (install global Termux + halaman unduhan) packaging/deb.sh membangun nusa_&lt;ver&gt;-1_aarch64.deb (layout $PREFIX : bin/nusa + nusa_rt.o , runtime/ , std/ , share/doc ; Depends: clang ) dan halaman website/downloads.html memilih versi stabil via dropd", "code_example": "", "keywords": "changelog, 3.0.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/Paket-deb.html">Paket deb</a></p><article><h1>Paket deb</h1><span class="badge historic">v3.0.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-09 (install global Termux + halaman unduhan)</p>
+<p><code>packaging/deb.sh</code> membangun <code>nusa_&lt;ver&gt;-1_aarch64.deb</code> (layout</p>
+<p><code>$PREFIX</code>: <code>bin/nusa</code> + <code>nusa_rt.o</code>, <code>runtime/</code>, <code>std/</code>,</p>
+<p><code>share/doc</code>; <code>Depends: clang</code>) dan halaman <code>website/downloads.html</code></p>
+<p>memilih versi stabil via dropdown tanpa-JS (daftar dari berkas</p>
+<p>yang ada + sha256, riwayat menaut catatan rilis).</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>packaging/deb.sh</code> (<code>--version/--build-dir/--output/--prefix</code>);</li>
+</ul>
+<p>  berkas rilis <code>website/downloads/nusa_2.0.0-1_aarch64.deb</code>.</p>
+<ul>
+<li><code>e2e_deb.sh</code> (5 kasus: build/meta/layout/run-terisolasi/halaman);</li>
+</ul>
+<p>  CSS <code>details.pick</code>; tautan Unduh di navigasi.</p>
+<h3 id="batasan">Batasan <a href="#batasan" aria-label="taut">#</a></h3>
+<ul>
+<li>aarch64 saja (paket menolak asumsi lain via peringatan arsitektur);</li>
+</ul>
+<p>  instalasi butuh <code>apt</code> (resolusi <code>clang</code>); hosting rilis = file</p>
+<p>  di repo (tanpa registry biner eksternal).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

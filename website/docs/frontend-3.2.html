@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>frontend-3.2.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="frontend-3.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Frontend 2.0 — Milestone 1: Akurasi Diagnostik (Pha">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/frontend-3.2.html">
+<meta property="og:title" content="frontend-3.2.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="frontend-3.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Frontend 2.0 — Milestone 1: Akurasi Diagnostik (Pha">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="frontend-3.2.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="frontend-3.2, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "frontend-3.2.md", "category": "docs", "version": "3.0.0", "content": "frontend-3.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Frontend 2.0 — Milestone 1: Akurasi Diagnostik (Phase 101) # Status: slice implementasi. Mandat master Phase 101 (lexer, parser, AST, HIR, semantic, type checker; target 3.2.0). NOL perubahan semantik", "code_example": "", "keywords": "frontend-3.2, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/frontend-3.2.html">frontend-3.2.md</a></p><article><h1>frontend-3.2.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="compiler-frontend-2-0-milestone-1-akurasi-diagnostik-phase-101">Compiler Frontend 2.0 — Milestone 1: Akurasi Diagnostik (Phase 101) <a href="#compiler-frontend-2-0-milestone-1-akurasi-diagnostik-phase-101" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi. Mandat master Phase 101 (lexer, parser,</p>
+<p>AST, HIR, semantic, type checker; target 3.2.0). NOL perubahan</p>
+<p>semantik bahasa; NOL rewrite (aturan: tanpa design review).</p>
+<h2 id="1-inspeksi-bukti-pemilihan-milestone">1. Inspeksi → bukti (pemilihan milestone) <a href="#1-inspeksi-bukti-pemilihan-milestone" aria-label="taut">#</a></h2>
+<ul>
+<li><code>--stats</code> (Phase 65): <code>selfhost/parse.ns</code> frontend 166ms dari</li>
+</ul>
+<p>  total 4842ms (3.4%); <code>hello.ns</code> 32ms dari 2121ms. clang &gt;90%.</p>
+<p>  → Micro-opt frontend DITOLAK (bukti, bukan asumsi; cermin</p>
+<p>  keputusan Phase 34).</p>
+<ul>
+<li>Recovery: probe manual 2 error parse lintas-fungsi → keduanya</li>
+</ul>
+<p>  dilaporkan (<code>synchronize</code> blok/trait/top-level bekerja).</p>
+<ul>
+<li>Fuzz: <code>e2e_verify</code> seed-101 ×60 program → 72/72 hijau</li>
+</ul>
+<p>  (0 crash/hang/mismatch).</p>
+<ul>
+<li>Adversarial: paren-2000 (guard depth), EOF tak-tutup, <code>&lt;&lt;&lt;&lt;</code>×500</li>
+</ul>
+<p>  → semua error bersih rc=1, tanpa hang.</p>
+<ul>
+<li>Temuan arsitektur: lapisan HIR tak ada (hanya AST → MIR → LLVM);</li>
+</ul>
+<p>  klaim &quot;Nusa HIR&quot; di asumsi master 4.0 overclaim — ranah Phase 102</p>
+<p>  (NUSA IR 2.0), dicatat bukan dikerjakan.</p>
+<ul>
+<li>Celah nyata: 17 string user-facing berstempel versi basi</li>
+</ul>
+<p>  (<code>... not supported in v0.7.0</code>, <code>v0.6.0 supports ...</code>,</p>
+<p>  <code>unavailable in v2.11</code>, <code>... in v1</code>) — menyesatkan pasca-3.0.</p>
+<p>  → Milestone 1 = sapu akurasi diagnostik (terukur: grep → 0).</p>
+<h2 id="2-perubahan">2. Perubahan <a href="#2-perubahan" aria-label="taut">#</a></h2>
+<ul>
+<li><code>compiler/semantic/TypeChecker.cpp</code> (15 situs): buang suffix</li>
+</ul>
+<p>  <code> in vX.Y.Z</code> / <code> in v1</code> dari pesan + hint error (prefix</p>
+<p>  dipertahankan — seluruh e2e/unit mencocokkan prefix).</p>
+<ul>
+<li><code>compiler/parser/Parser.cpp</code>: hint <code>expected statement</code></li>
+</ul>
+<p>  <code>v0.6.0 supports ...</code> → contoh bentuk aktual</p>
+<p>  (let/print/return/if/while/match/assign/call).</p>
+<ul>
+<li><code>compiler/pkg/Pkg.cpp</code>: <code>nusa audit</code> → `signatures: unavailable</li>
+</ul>
+<p>  (checksums only)`.</p>
+<ul>
+<li>Regresi baru: <code>testStmtHintListsCurrentForms</code></li>
+</ul>
+<p>  (<code>compiler/tests/test_parser.cpp</code>) — kunci pesan + daftar</p>
+<p>  bentuk + anti-regresi stempel versi.</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit: <code>test_parser</code> + <code>test_typecheck</code> + <code>test_pkg</code> hijau.</li>
+<li>E2E pesan-berat: alias 11/11, fn 14/14, traits 18/18, eco2 13/13,</li>
+</ul>
+<p>  diagnostics 5/5, error 9/9, hardening 37/37, tooling PASS.</p>
+<ul>
+<li><code>e2e_release</code> 6/6 pasca-perubahan; program <code>.ns</code> + IR <code>@main</code> OK.</li>
+<li>Bench: tak relevan (NOL jalur performa tersentuh).</li>
+</ul>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>Quirk <code>a &lt; (b)</code> → <code>a &lt;(b)</code> (Phase 100); reflow struct</li>
+</ul>
+<p>  <code>selfhost/parse.ns</code>; tulis-ulang spasi string <code>string2_test.ns</code></p>
+<p>  — tetap terdaftar, bukan slice ini.</p>
+<ul>
+<li>HIR, incremental parsing, memory-opt frontend: butuh design</li>
+</ul>
+<p>  review (Phase 102+).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

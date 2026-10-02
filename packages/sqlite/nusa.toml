@@ -1,0 +1,13 @@
+[package]
+name = "sqlite"
+version = "0.1.0"
+description = "SQLite via FFI — paket referensi ekosistem (bukan stdlib)"
+
+[dependencies]
+
+[link]
+files = ["shim.o"]
+libraries = ["sqlite3"]
+
+[capabilities]
+native = true

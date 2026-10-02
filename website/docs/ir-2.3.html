@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ir-2.3.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="ir-2.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR — Design (Phase 52, target 2.3.0) # Status: Proposed → Imp">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/ir-2.3.html">
+<meta property="og:title" content="ir-2.3.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="ir-2.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR — Design (Phase 52, target 2.3.0) # Status: Proposed → Imp">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="ir-2.3.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ir-2.3, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "ir-2.3.md", "category": "docs", "version": "3.0.0", "content": "ir-2.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR — Design (Phase 52, target 2.3.0) # Status: Proposed → Implementation (milestone 1: fondasi MIR). Pipeline belum di-rewire (codegen tetap AST → LLVM; nol perilaku). 1. Mengapa (mandat master) # Tidak semua l", "code_example": "", "keywords": "ir-2.3, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/ir-2.3.html">ir-2.3.md</a></p><article><h1>ir-2.3.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-ir-design-phase-52-target-2-3-0">Nusa IR — Design (Phase 52, target 2.3.0) <a href="#nusa-ir-design-phase-52-target-2-3-0" aria-label="taut">#</a></h1>
+<p>Status: Proposed → Implementation (milestone 1: fondasi MIR).</p>
+<p>Pipeline belum di-rewire (codegen tetap AST → LLVM; nol perilaku).</p>
+<h2 id="1-mengapa-mandat-master">1. Mengapa (mandat master) <a href="#1-mengapa-mandat-master" aria-label="taut">#</a></h2>
+<p>Tidak semua lowering/semantik boleh bergantung langsung pada LLVM:</p>
+<p>optimisasi Nusa, analisis, dan verifikasi butuh representasi internal</p>
+<p>yang stabil, kecil, dan bebas header LLVM.</p>
+<pre data-lang="text"><code class="lang-text">Nusa Source → AST → HIR → Nusa MIR → LLVM IR → LLVM 21.1.8 → Target</code></pre>
+<p>HIR (desugar tingkat tinggi: match/enum/closure/trait-rewrite) =</p>
+<p>milestone berikut. Phase 52 milestone 1 = <strong>MIR fondasi</strong>:</p>
+<p>model data + builder + verifier + printer teks.</p>
+<h2 id="2-model-mir-mencerminkan-kebutuhan-codegen-saat-ini">2. Model MIR (mencerminkan kebutuhan codegen saat ini) <a href="#2-model-mir-mencerminkan-kebutuhan-codegen-saat-ini" aria-label="taut">#</a></h2>
+<p>Codegen hari ini mengenal nilai Int/Bool/String/Void/Array/Struct/</p>
+<p>Func, alloca di entry, GEP+call, cabang then/else/merge dan</p>
+<p>loop cond/body/after. MIR memodelkan concepts yang sama secara</p>
+<p>eksplisit:</p>
+<ul>
+<li>Typed values: <code>%id : type</code> (SSA-seperti) + konstanta.</li>
+</ul>
+<p>  <code>MirType = I64 | Bool | Str | Void | Ptr | Func</code>.</p>
+<ul>
+<li>Function calls: <code>Call</code> (callee global/builtin + argumen).</li>
+<li>Memory operations: <code>Alloc</code> (slot bernama), <code>Load</code>, <code>Store</code>.</li>
+<li>Branches &amp; basic blocks: <code>Branch</code>, <code>CondBranch</code>, <code>Return</code>,</li>
+</ul>
+<p>  <code>Unreachable</code>; tiap block tepat satu terminator di akhir.</p>
+<ul>
+<li>Control flow: graf block + entry; if/while lowering = pola</li>
+</ul>
+<p>  cond → then/else/merge yang sudah dipakai codegen.</p>
+<ul>
+<li>Optimization passes (Phase 53): disiapkan via struktur data</li>
+</ul>
+<p>  yang dapat diinspeksi/ditulis ulang (instr list per block);</p>
+<p>  milestone ini BELUM berisi pass.</p>
+<h2 id="3-batas-lapisan-melanjutkan-phase-51">3. Batas lapisan (melanjutkan Phase 51) <a href="#3-batas-lapisan-melanjutkan-phase-51" aria-label="taut">#</a></h2>
+<ul>
+<li><code>compiler/mir/</code> hanya boleh include header standar C++.</li>
+</ul>
+<p>  Dilarang include ast/semantic/codegen/LLVM (dikunci <code>e2e_mir.sh</code>).</p>
+<ul>
+<li>Namespace <code>nusa::mir</code>. Tanpa dependensi ke pipeline existing →</li>
+</ul>
+<p>  risiko nol terhadap program <code>.ns</code> yang ada.</p>
+<h2 id="4-acceptance-criteria-milestone-1">4. Acceptance criteria milestone 1 <a href="#4-acceptance-criteria-milestone-1" aria-label="taut">#</a></h2>
+<ul>
+<li><code>MirBuilder</code> dapat membangun fungsi dengan cabang + loop +</li>
+</ul>
+<p>  call + alloc/load/store; <code>verify()</code> menerima.</p>
+<ul>
+<li><code>verify()</code> menolak: block tanpa terminator, terminator di tengah,</li>
+</ul>
+<p>  operand tak-terdefinisi, target cabang tak-ada, call ke fungsi</p>
+<p>  tak-dideklarasikan (kecuali nama builtin allowlist).</p>
+<ul>
+<li><code>dump()</code> deterministik (golden test).</li>
+<li>Unit <code>test_mir</code> + <code>e2e_mir.sh</code> hijau; seluruh suite hijau;</li>
+</ul>
+<p>  benchmark identik baseline 2.2.0.</p>
+<h2 id="5-keputusan-implementasi-temuan-selama-milestone">5. Keputusan implementasi (temuan selama milestone) <a href="#5-keputusan-implementasi-temuan-selama-milestone" aria-label="taut">#</a></h2>
+<ul>
+<li>Referensi <code>MirFunction</code>/<code>BasicBlock</code> stabil via <code>std::deque</code></li>
+</ul>
+<p>  (aman dipegang lintas <code>addBlock</code>/<code>newFunction</code> susulan).</p>
+<ul>
+<li>Counter id nilai hidup di <code>MirFunction.nextValueId</code> (bukan vector</li>
+</ul>
+<p>  paralel di builder) + lazy-init dari isi — builder baru di atas</p>
+<p>  modul tak-kosong tetap benar. ASan menemukan OOB pada desain</p>
+<p>  lama; dikunci regresi <code>testFreshBuilder</code>; ASan+UBSan bersih.</p>
+<ul>
+<li>Verifier menerima allowlist nama builtin (bukan include</li>
+</ul>
+<p>  <code>frontend/</code>) agar <code>mir/</code> tetap tanpa dependensi compiler/*.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

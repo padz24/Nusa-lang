@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.30.1 — Nusa Docs 2.30.1</title>
+<meta name="description" content="2.30.1 v2.30.1 Release notes # — 2026-09-12 (Phase 80: STABILITY RELEASE) Freeze fitur bahasa (master Phase 80). Nol sintaks/semantik baru; nol peruba">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.30.1.html">
+<meta property="og:title" content="Changelog 2.30.1 — Nusa Docs 2.30.1">
+<meta property="og:description" content="2.30.1 v2.30.1 Release notes # — 2026-09-12 (Phase 80: STABILITY RELEASE) Freeze fitur bahasa (master Phase 80). Nol sintaks/semantik baru; nol peruba">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.30.1">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.30.1">
+<meta name="nusa:keywords" content="changelog, 2.30.1, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.30.1", "category": "changelog", "version": "2.30.1", "content": "2.30.1 v2.30.1 Release notes # — 2026-09-12 (Phase 80: STABILITY RELEASE) Freeze fitur bahasa (master Phase 80). Nol sintaks/semantik baru; nol perubahan parser/checker/codegen. Penomoran: master menarget &quot;2.5.0&quot; ganda (stale) — rilis ini patch monoton. Stabilitas # Cache registry hermeti", "code_example": "", "keywords": "changelog, 2.30.1, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.30.1.html">2.30.1</a></p><article><h1>2.30.1</h1><span class="badge stable">v2.30.1</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-12 (Phase 80: STABILITY RELEASE)</p>
+<p>Freeze fitur bahasa (master Phase 80). Nol sintaks/semantik</p>
+<p>baru; nol perubahan parser/checker/codegen. Penomoran: master</p>
+<p>menarget &quot;2.5.0&quot; ganda (stale) — rilis ini patch monoton.</p>
+<h3 id="stabilitas">Stabilitas <a href="#stabilitas" aria-label="taut">#</a></h3>
+<ul>
+<li>Cache registry hermetik per-suite (<code>HOME=$TMPDIR/home</code> di</li>
+</ul>
+<p>  eco2/registry/sec — flake paralel tamper-verify).</p>
+<ul>
+<li><code>e2e_compat.sh</code> (baru): check 81 file (46 ok + 35 lib</li>
+</ul>
+<p>  tanpa-main terkunci) + build subset.</p>
+<ul>
+<li>Fuzz seed-2: TEMUAN — generator non-terminasi (diperbaiki</li>
+</ul>
+<p>  2 lapis: frozen + oracle rc=124); 6 seed hijau.</p>
+<h3 id="keamanan-performa-kompatibilitas-docs">Keamanan / performa / kompatibilitas / docs <a href="#keamanan-performa-kompatibilitas-docs" aria-label="taut">#</a></h3>
+<ul>
+<li>Audit runtime: tanpa strcpy/strcat/sprintf/gets; extern</li>
+</ul>
+<p>  return-string tetap ditolak; hardening/sec hijau.</p>
+<ul>
+<li>Baseline: bench 2.06 s / 6776 B / 0.17 s; biner 1522248 B;</li>
+</ul>
+<p>  parse.ns build 3.7 s.</p>
+<ul>
+<li><code>standard-library.md</code> v2.30.1; catatan freeze; check-links;</li>
+</ul>
+<p>  website regen.</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Full <code>ctest -j2</code> 79/79 hijau; <code>.ns</code> + IR OK; <code>.ns.ll</code> bersih.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.30.1</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

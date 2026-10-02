@@ -1,0 +1,16 @@
+// Sample `nusa test` target: files + control flow.
+import fs;
+fn main() {
+    assert(file_write("roundtrip.txt", "abc"));
+    assert(file_exists("roundtrip.txt"));
+    assert(file_size("roundtrip.txt") == 3);
+    assert(str_len(file_read("roundtrip.txt")) == 3);
+    assert(file_size("definitely-not-here.ns") == 0);
+    let total: i64 = 0;
+    let i: i64 = 1;
+    while i <= 10 {
+        total = total + i;
+        i = i + 1;
+    }
+    assert(total == 55);
+}

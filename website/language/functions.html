@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Functions — Nusa Docs 3.0.0</title>
+<meta name="description" content="Functions v3.0.0 Overview Fungsi top-level fn dengan param bertipe dan return eksplisit. Semua jalur harus return bila return type bukan void. Syntax ">
+<link rel="canonical" href="https://nusa-lang.org/docs/language/functions.html">
+<meta property="og:title" content="Functions — Nusa Docs 3.0.0">
+<meta property="og:description" content="Functions v3.0.0 Overview Fungsi top-level fn dengan param bertipe dan return eksplisit. Semua jalur harus return bila return type bukan void. Syntax ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Functions">
+<meta name="nusa:category" content="language">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="fn, functions, return, param, recursion">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Functions", "category": "language", "version": "3.0.0", "content": "Functions v3.0.0 Overview Fungsi top-level fn dengan param bertipe dan return eksplisit. Semua jalur harus return bila return type bukan void. Syntax fn add(a: i64, b: i64) -&gt; i64 { return a + b; } Example fn add(a: i64, b: i64) -&gt; i64 { return a + b; } fn main() { print(add(10, 20)); } Outpu", "code_example": "fn add(a: i64, b: i64) -> i64 {\n    return a + b;\n}\nfn main() {\n    print(add(10, 20));\n}\n", "keywords": "fn, functions, return, param, recursion"}</script>
+</head>
+<body class="kind-language">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/" aria-current="page">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../language/">Indeks</a></li><li><a href="../language/syntax.html">Syntax</a></li><li><a href="../language/variables.html">Variables</a></li><li><a href="../language/functions.html" aria-current="page">Functions</a></li><li><a href="../language/types.html">Types</a></li><li><a href="../language/structs.html">Struct</a></li><li><a href="../language/enums.html">Enum</a></li><li><a href="../language/generics.html">Generics</a></li><li><a href="../language/traits.html">Traits</a></li><li><a href="../language/pattern-matching.html">Pattern Matching</a></li><li><a href="../language/error-handling.html">Error Handling</a></li><li><a href="../language/concurrency.html">Concurrency</a></li><li><a href="../language/modules.html">Modules</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../language/">Language</a> / <a href="../language/functions.html">Functions</a></p><article><h1>Functions</h1><span class="badge historic">v3.0.0</span> <h2>Overview</h2><p>Fungsi top-level fn dengan param bertipe dan return eksplisit. Semua jalur harus return bila return type bukan void.</p><h2>Syntax</h2><pre data-lang="nusa"><code class="lang-nusa">fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}</code></pre><h2>Example</h2><pre data-lang="nusa"><code class="lang-nusa">fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}
+fn main() {
+    print(add(10, 20));
+}
+</code></pre><details><summary>Output</summary><samp class="out">30</samp></details><p><a class="btn sec" href="../playground/?code=fn%20add%28a%3A%20i64%2C%20b%3A%20i64%29%20-%3E%20i64%20%7B%0A%20%20%20%20return%20a%20%2B%20b%3B%0A%7D%0Afn%20main%28%29%20%7B%0A%20%20%20%20print%28add%2810%2C%2020%29%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Rules</h2><ul><li>return all-paths ditegakkan checker.</li><li>Bare return; di tengah main legal (2.0).</li><li>Referensi fn meluruh menjadi closure pair saat dioper.</li></ul><h2>Compiler behavior</h2><p>Mangled name untuk instansiasi generik dan method trait (Trait_method_Type). Panggilan tak langsung via trampolin (ptr env, ...).</p><div class="warn"><h2>Limitations</h2><ul><li>Hanya fungsi top-level (tanpa nested fn; gunakan lambda).</li><li>Tanpa default-arg/variadik.</li></ul></div><h2>Related topics</h2><ul><li><a href="../language/types.html">language/types</a></li><li><a href="../language/generics.html">language/generics</a></li></ul><h2>Spec &amp; Tests</h2><p>Spec: <code>docs/language-spec-2.0.md §6 + docs/functions.md</code> · Uji pengunci: <code>examples/functions.ns + tutorials/03-functions</code></p></article><div class="prevnext"><a href="../language/variables.html">← Variables</a><a href="../language/types.html">Types →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

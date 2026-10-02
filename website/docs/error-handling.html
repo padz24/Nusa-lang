@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>error-handling.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="error-handling.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Error Handling Nusa — v2.0 (Phase 45/B1) # Tanpa exception">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/error-handling.html">
+<meta property="og:title" content="error-handling.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="error-handling.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Error Handling Nusa — v2.0 (Phase 45/B1) # Tanpa exception">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="error-handling.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="error-handling, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "error-handling.md", "category": "docs", "version": "3.0.0", "content": "error-handling.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Error Handling Nusa — v2.0 (Phase 45/B1) # Tanpa exception: error adalah NILAI ( Option / Result sebagai enum natif), diperiksa dengan match / if , dikombinasikan dengan fungsi, dipropagasikan dengan ? . BRE", "code_example": "", "keywords": "error-handling, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/error-handling.html">error-handling.md</a></p><article><h1>error-handling.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="error-handling-nusa-v2-0-phase-45-b1">Error Handling Nusa — v2.0 (Phase 45/B1) <a href="#error-handling-nusa-v2-0-phase-45-b1" aria-label="taut">#</a></h1>
+<p>Tanpa exception: error adalah NILAI (<code>Option</code>/<code>Result</code> sebagai enum</p>
+<p>natif), diperiksa dengan <code>match</code>/<code>if</code>, dikombinasikan dengan fungsi,</p>
+<p>dipropagasikan dengan <code>?</code>.</p>
+<blockquote><p>BREAKING 2.0: <code>Option</code>/<code>Result</code> dulu encoding struct (dummy —</p></blockquote>
+<blockquote><p><code>none(0)</code>, <code>ok(5, &quot;&quot;)</code>, field <code>.value</code>/<code>.has_value</code>/<code>.is_ok</code>).</p></blockquote>
+<blockquote><p>Kini enum natif. Migrasi: <code>docs/migration-2.0.md</code>.</p></blockquote>
+<h2 id="option-dan-result-enum-natif">Option dan Result (enum natif) <a href="#option-dan-result-enum-natif" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">import option;
+import result;
+import error;
+
+let o = parse_int_opt(&quot;41&quot;);      // Option&lt;i64&gt;: Some(41)
+let n = parse_int_opt(&quot;xx&quot;);      // None
+print(opt_unwrap_or(n, 0));       // 0
+
+fn parse_age(s: string) -&gt; Result&lt;i64, string&gt; {
+    let o = parse_int_opt(s);
+    if is_none(o) {
+        return Result&lt;i64, string&gt;.Err(str_concat(&quot;bad age: &quot;, s));
+    }
+    match o {
+        Some(v) =&gt; { return Result&lt;i64, string&gt;.Ok(v); },
+        None =&gt; { return Result&lt;i64, string&gt;.Err(&quot;unreachable&quot;); },
+    }
+    return Result&lt;i64, string&gt;.Err(&quot;unreachable&quot;);
+}</code></pre>
+<ul>
+<li><code>enum Option&lt;T&gt; { Some(T), None }</code>: <code>some(v)</code>, <code>is_some</code>, <code>is_none</code>,</li>
+</ul>
+<p>  <code>opt_unwrap_or</code>, <code>opt_map</code> (tanpa dummy).</p>
+<ul>
+<li><code>enum Result&lt;T, E&gt; { Ok(T), Err(E) }</code>: <code>is_ok</code>, <code>is_err</code>,</li>
+</ul>
+<p>  <code>res_unwrap_or</code>, <code>res_map</code>, <code>res_map_err</code> (tanpa dummy).</p>
+<ul>
+<li>Konstruksi <code>None</code>/varian: tipe eksplisit wajib —</li>
+</ul>
+<p>  <code>Option&lt;i64&gt;.None()</code>, <code>Result&lt;i64, string&gt;.Ok(v)</code> (cermin konstruksi</p>
+<p>  struct generik <code>Point&lt;i64&gt; { … }</code>; <code>none()</code> tanpa argumen tak bisa</p>
+<p>  diinferensi — konsisten dengan literal <code>[]</code> yang butuh anotasi).</p>
+<ul>
+<li>Namespace flat: <code>import</code> menggabung nama; <code>opt_map</code>/<code>res_map</code> dan</li>
+</ul>
+<p>  <code>opt_unwrap_or</code>/<code>res_unwrap_or</code> berprefix karena Nusa tanpa</p>
+<p>  overloading (dua <code>map</code> akan duplikat). Metode (<code>o.map</code>) tak bisa</p>
+<p>  generik di v1.3.0 — karenanya kombinator berupa fungsi bebas.</p>
+<h2 id="propagasi">Propagasi <code>?</code> <a href="#propagasi" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">fn get_age(s: string) -&gt; Result&lt;i64, string&gt; {
+    let n = parse_age(s)?;   // Err → return awal; Ok → unwrap
+    return Result&lt;i64, string&gt;.Ok(n + 1);
+}</code></pre>
+<ul>
+<li><code>expr?</code> di posisi nilai/statement; menempel (<code>f()?</code>, <code>x?</code>).</li>
+<li>Aturan: operan <code>Result&lt;T, E&gt;</code>; fungsi pembungkus HARUS me-return</li>
+</ul>
+<p>  <code>Result</code> yang SAMA persis (E sama — tanpa konversi). <code>?</code> di <code>main</code></p>
+<p>  (void), di <code>Option</code>, dan E-beda ditolak dengan pesan jelas.</p>
+<ul>
+<li>Implementasi: uji tag varian Ok + unwrap slot (tanpa overhead</li>
+</ul>
+<p>  dibanding tulisan tangan).</p>
+<h2 id="error-standar-dan-api-fallible">Error standar dan API fallible <a href="#error-standar-dan-api-fallible" aria-label="taut">#</a></h2>
+<ul>
+<li><code>struct Error { message: string; }</code> + <code>fn error(m: string) -&gt; Error</code></li>
+</ul>
+<p>  (di <code>std/error.ns</code>): konvensi E untuk <code>Result&lt;T, Error&gt;</code>.</p>
+<ul>
+<li><code>parse_int_valid(s) -&gt; bool</code> (builtin, konsisten <code>strtoll</code>):</li>
+</ul>
+<p>  <code>true</code> bila seluruh input numerik (<code>&quot;  -7 &quot;</code> OK; <code>&quot;&quot;</code>/<code>&quot;12x&quot;</code> tidak).</p>
+<p>  <code>parse_int</code> lama dipertahankan (kompatibilitas: 0 untuk invalid).</p>
+<ul>
+<li><code>parse_int_opt(s) -&gt; Option&lt;i64&gt;</code>, <code>file_read_opt(p)</code> (di std,</li>
+</ul>
+<p>  murni Nusa di atas builtin): pengganti aman.</p>
+<ul>
+<li><code>file_read</code>/<code>parse_int</code> lama TIDAK diubah (backward compatibility).</li>
+</ul>
+<h2 id="matching-dan-batasan">Matching dan batasan <a href="#matching-dan-batasan" aria-label="taut">#</a></h2>
+<ul>
+<li>Matching idiomatis = <code>match</code> atas varian: <code>Some(v)</code>/<code>None</code> untuk</li>
+</ul>
+<p>  Option, <code>Ok(v)</code>/<code>Err(e)</code> untuk Result — exhaustiveness varian</p>
+<p>  ditegakkan (lihat <code>docs/pattern-matching.md</code>). Alternatif</p>
+<p>  (<code>if</code> atas predikat <code>is_some</code>/<code>is_ok</code>) tetap valid; akses field</p>
+<p>  langsung (<code>.value</code>, <code>.has_value</code>, <code>.is_ok</code>) DITOLAK untuk enum</p>
+<p>  (tempa manual tak didukung — gunakan match/kombinator).</p>
+<ul>
+<li><code>res_map_err</code> memanggil <code>f</code> hanya di jalur Err (tanpa efek</li>
+</ul>
+<p>  samping semu).</p>
+<ul>
+<li>Tanpa exception/try-catch/panic; tanpa konversi error otomatis</li>
+</ul>
+<p>  (<code>From</code>); tanpa <code>?</code> untuk <code>Option</code>.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

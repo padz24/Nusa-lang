@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>control-flow.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="control-flow.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Control Flow Nusa — v1.0.0 # fn main() { let x: i64 = 10; if">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/control-flow.html">
+<meta property="og:title" content="control-flow.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="control-flow.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Control Flow Nusa — v1.0.0 # fn main() { let x: i64 = 10; if">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="control-flow.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="control-flow, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "control-flow.md", "category": "docs", "version": "3.0.0", "content": "control-flow.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Control Flow Nusa — v1.0.0 # fn main() { let x: i64 = 10; if x &gt; 5 { print(x); } else { print(0); } let n: i64 = 3; while n &gt; 0 { print(n); n = n - 1; } } // 10, 3, 2, 1 if / else # IfStmt := &quot;if&qu", "code_example": "", "keywords": "control-flow, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/control-flow.html">control-flow.md</a></p><article><h1>control-flow.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="control-flow-nusa-v1-0-0">Control Flow Nusa — v1.0.0 <a href="#control-flow-nusa-v1-0-0" aria-label="taut">#</a></h1>
+<pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let x: i64 = 10;
+
+    if x &gt; 5 {
+        print(x);
+    } else {
+        print(0);
+    }
+
+    let n: i64 = 3;
+    while n &gt; 0 {
+        print(n);
+        n = n - 1;
+    }
+}
+// 10, 3, 2, 1</code></pre>
+<h2 id="if-else"><code>if</code> / <code>else</code> <a href="#if-else" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">IfStmt := &quot;if&quot; Expr Block [&quot;else&quot; (Block | IfStmt)]</code></pre>
+<ul>
+<li>Kondisi wajib <code>bool</code> (<code>if 1</code> → error).</li>
+<li>Tanpa parens di kondisi (gaya Rust). <code>else if</code> menempel:</li>
+</ul>
+<p>  <code>if a { } else if b { } else { }</code> (dangling-else ke <code>if</code> terdekat).</p>
+<ul>
+<li>Backend: block <code>then</code>/<code>else</code>/<code>merge</code> + <code>CondBr</code>.</li>
+</ul>
+<h2 id="while"><code>while</code> <a href="#while" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">WhileStmt := &quot;while&quot; Expr Block</code></pre>
+<ul>
+<li>Kondisi <code>bool</code>, dicek tiap iterasi; <code>while false</code> melewati body.</li>
+<li>Backend: block <code>loop.cond</code>/<code>loop.body</code>/<code>loop.after</code>.</li>
+<li>Semua alloca di entry — tidak ada pertumbuhan stack per iterasi.</li>
+</ul>
+<h2 id="assignment">Assignment <a href="#assignment" aria-label="taut">#</a></h2>
+<p><code>n = n - 1;</code> — menimpa variabel yang <strong>sudah ada</strong> (tak mendeclare),</p>
+<p>tipe harus sama. Inilah cara loop membuat progres. Shadowing-aware</p>
+<p>(menimpa slot terdekat).</p>
+<h2 id="return-di-dalam-cabang">Return di dalam cabang <a href="#return-di-dalam-cabang" aria-label="taut">#</a></h2>
+<p><code>return</code> boleh di cabang <code>if</code>/<code>else</code>/<code>while</code>; aturan all-paths</p>
+<p>(<code>docs/functions.md</code>) digeneralisasi: block selalu-return bila diakhiri</p>
+<p><code>return</code> bernilai, atau <code>if</code>+<code>else</code> yang kedua cabangnya selalu-return.</p>
+<p><code>while</code> tak pernah dihitung (bisa nol iterasi — konservatif):</p>
+<p><code>while true { return 1; }</code> saja tak cukup untuk fungsi non-<code>void</code>.</p>
+<h2 id="batasan-stabil-v1-0-0-match-sejak-v1-6-0">Batasan (stabil v1.0.0; <code>match</code> sejak v1.6.0) <a href="#batasan-stabil-v1-0-0-match-sejak-v1-6-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa <code>break</code>/<code>continue</code>, tanpa <code>+=</code>.</li>
+<li>Statement <code>match</code> tersedia sejak v1.6.0 (Phase 25) — lihat</li>
+</ul>
+<p>  <code>docs/pattern-matching.md</code> (literal/bind/struct/guard/Option/Result,</p>
+<p>  exhaustiveness wajib). Tanpa <code>switch</code> gaya-C.</p>
+<ul>
+<li>Kondisi non-<code>bool</code> ditolak (tanpa truthiness implisit).</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

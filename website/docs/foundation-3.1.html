@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>foundation-3.1.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="foundation-3.1.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.1 Foundation — Audit (Phase 100) # Status: audit sl">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/foundation-3.1.html">
+<meta property="og:title" content="foundation-3.1.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="foundation-3.1.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.1 Foundation — Audit (Phase 100) # Status: audit sl">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="foundation-3.1.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="foundation-3.1, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "foundation-3.1.md", "category": "docs", "version": "3.0.0", "content": "foundation-3.1.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.1 Foundation — Audit (Phase 100) # Status: audit slice. Mandat master Phase 100: stability, compatibility, performance atas 10 area (compiler, runtime, stdlib, package manager, registry, LSP, debugger", "code_example": "", "keywords": "foundation-3.1, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/foundation-3.1.html">foundation-3.1.md</a></p><article><h1>foundation-3.1.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-3-1-foundation-audit-phase-100">Nusa 3.1 Foundation — Audit (Phase 100) <a href="#nusa-3-1-foundation-audit-phase-100" aria-label="taut">#</a></h1>
+<p>Status: audit slice. Mandat master Phase 100: stability, compatibility,</p>
+<p>performance atas 10 area (compiler, runtime, stdlib, package manager,</p>
+<p>registry, LSP, debugger, formatter, FFI, cross compilation). NOL</p>
+<p>perubahan semantik bahasa (freeze 3.0 dipertahankan; spec 3.0 normatif</p>
+<p>tak tersentuh). Satu BUGFIX formatter (diizinkan: non-semantik,</p>
+<p>output program byte-identik).</p>
+<h2 id="1-baseline-lingkungan-ci-ini">1. Baseline lingkungan (CI ini) <a href="#1-baseline-lingkungan-ci-ini" aria-label="taut">#</a></h2>
+<ul>
+<li><code>llvm-config --version</code> = 21.1.8; <code>clang</code> = 21.1.8</li>
+</ul>
+<p>  (target aarch64-unknown-linux-android24); <code>uname -m</code> = aarch64.</p>
+<ul>
+<li><code>nusa --version</code> = <code>3.0.0 (LLVM 21.1.8, AArch64 Android/Termux)</code>.</li>
+<li><code>ctest -N</code> (build/) = 87 test; <code>e2e_release</code> 6/6 hijau pra-perubahan.</li>
+<li>Bench <code>bench/suite.sh</code> (Termux AArch64, satu run; varian perangkat):</li>
+</ul>
+<table><thead><tr><th>metrik</th><th>nilai</th></tr></thead><tbody>
+<tr><td>compile hello / nusa10 / perf2000 / parse</td><td>5.41 / 2.33 / 11.03 / 4.35 dtk</td></tr>
+<tr><td>size hello / parse</td><td>5816 / 96576 B</td></tr>
+<tr><td>incr cold / warm</td><td>2.93 / 0.55 dtk (≈5.3×)</td></tr>
+<tr><td>startup hello</td><td>86.5 ms</td></tr>
+<tr><td>run fib/loopsum/strcat/matchdispatch/closureapply (median)</td><td>101.9 / 149.2 / 201.5 / 110.4 / 230.1 ms</td></tr>
+<tr><td>pkg tree / build</td><td>0.88 / 3.23 dtk</td></tr>
+<tr><td>LSP initialize</td><td>403.8 ms</td></tr>
+<tr><td>biner compiler</td><td>1624136 B</td></tr>
+</tbody></table>
+<p>Angka acuan perangkat-spesifik (bukan klaim perbandingan).</p>
+<h2 id="2-temuan-fmt-1-bug-nyata-diperbaiki-di-slice-ini">2. Temuan FMT-1 (BUG NYATA, DIPERBAIKI di slice ini) <a href="#2-temuan-fmt-1-bug-nyata-diperbaiki-di-slice-ini" aria-label="taut">#</a></h2>
+<p>Cabang <code>LParen</code> formatter (<code>compiler/fmt/Formatter.cpp</code>) selalu</p>
+<p>menghapus spasi sebelum <code>(</code> (aturan untuk call <code>f(</code>), sehingga</p>
+<p>grouping sesudah operator menempel: <code>a - (a / b) * b</code> → `a -(a / b)</p>
+<ul>
+<li>b<code>; </code>= (a)<code> → </code>=(a)<code>; </code>b * (a + 1)<code> → </code>b *(a + 1)`. Idempoten</li>
+</ul>
+<p>(stabil setelah 1x format) dan semantik program identik, tetapi</p>
+<p>gaya salah + inkonsisten dengan <code>[</code> literal (<code>= [1]</code> dilindungi</p>
+<p>sejak v1.1.0). Korban di korpus: <code>selfhost/lex.ns</code> (3 baris</p>
+<p><code>col +(…)</code>), <code>std/math.ns</code> (3 baris) — keduanya diformat dengan</p>
+<p>binary-buggy dan ter-commit apa adanya.</p>
+<p>Perbaikan: <code>(</code> grouping sesudah <code>+ - * / = , : return</code> beri spasi</p>
+<p>(cermin <code>[</code>); call (<code>f(</code>), unary (<code>-(a)</code>, dibedakan via konteks</p>
+<p>token sebelum operator), dan operator perbandingan/panah</p>
+<p>(<code>&lt; &gt; &lt;= &gt;= == != -&gt;</code>, status quo 3.0.0) tetap menempel.</p>
+<p>Pengecualian perbandingan disengaja: <code>&gt;</code> ambigu dengan penutup</p>
+<p>generik berjarak (<code>fn f &lt; T: Show &gt;(v)</code> di</p>
+<p><code>tutorials/04-generics-traits/main.ns</code>, tak dikenali pemindai</p>
+<p><code>genericBrackets</code> karena isi <code>:</code>) — memberi spasi merusak</p>
+<p><code>e2e_ecosystem</code> (terbukti saat verifikasi, lalu dipersempit).</p>
+<p>Quirk warisan <code>a &lt; (b)</code> → <code>a &lt;(b)</code> dipertahankan, bukan regresi.</p>
+<p>Regresi: unit baru <code>testParenGroupingSpacing</code> di</p>
+<p><code>compiler/tests/test_fmt.cpp</code> (aritmetika + <code>=</code> + unary + call</p>
+<p>generik); kanonisasi ulang <code>selfhost/lex.ns</code> + <code>std/math.ns</code></p>
+<p>(hanya diff spacing).</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li><code>test_fmt</code> 18/18 (17 lama + 1 baru).</li>
+<li><code>e2e_selfhost</code> 5/5, <code>e2e_parse</code> 5/5, <code>e2e_bootstrap</code> 10/10,</li>
+</ul>
+<p>  <code>e2e_tooling</code> PASS, <code>e2e_stdlib</code> PASS, <code>e2e_stdlib3</code> 9/9,</p>
+<p>  <code>e2e_release</code> 6/6, <code>e2e_realworld</code> 7/7, <code>e2e_ecosystem</code> 23/23.</p>
+<ul>
+<li><code>fmt --check</code> korpus: 87 file, drift 7 → 5 (2 diperbaiki slice</li>
+</ul>
+<p>  ini; sisanya §4).</p>
+<ul>
+<li>Program <code>.ns</code> + IR <code>@main</code> OK (spot <code>hello.ns</code> via <code>e2e_release</code>).</li>
+</ul>
+<h2 id="4-ditunda-jujur-bukan-blocker-calon-slice-rfc-berikut">4. Ditunda jujur (bukan blocker; calon slice/RFC berikut) <a href="#4-ditunda-jujur-bukan-blocker-calon-slice-rfc-berikut" aria-label="taut">#</a></h2>
+<ul>
+<li><code>selfhost/parse.ns</code>: reflow struct-literal multi-baris (perilaku</li>
+</ul>
+<p>  formatter pra-3.0, di luar pola <code>OP (</code>; tak disentuh).</p>
+<ul>
+<li><code>std/csv.ns</code>: satu baris kosong; <code>std/logging.ns</code>: indentasi</li>
+</ul>
+<p>  komentar <code>//</code> — kosmetik pra-3.0.</p>
+<ul>
+<li><code>tests/string2_test.ns</code>: formatter menulis ulang spasi di dalam</li>
+</ul>
+<p>  string literal (<code>&quot;  hi&quot;</code> → <code>&quot; hi</code>) — perlu investigasi khusus</p>
+<p>  (potensi mutasi konten string); SENGAJA tak dikanonisasi.</p>
+<ul>
+<li><code>tutorials/04-generics-traits/main.ns</code>: generik berjarak</li>
+</ul>
+<p>  <code>f &lt; T: Show &gt;</code> tak terdeteksi (isi <code>:</code>) — quirk pra-3.0.</p>
+<ul>
+<li>Temuan F1–F6 (<code>docs/realworld-3.0.md</code>), S2–S3</li>
+</ul>
+<p>  (<code>docs/security-3.0.md</code>): tetap calon RFC pasca-3.0.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

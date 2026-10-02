@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>syntax.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="syntax.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Sintaks Nusa — v2.0.0 # Spesifikasi sintaks yang didukung penuh (t">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/syntax.html">
+<meta property="og:title" content="syntax.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="syntax.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Sintaks Nusa — v2.0.0 # Spesifikasi sintaks yang didukung penuh (t">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="syntax.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="syntax, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "syntax.md", "category": "docs", "version": "3.0.0", "content": "syntax.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Sintaks Nusa — v2.0.0 # Spesifikasi sintaks yang didukung penuh (terkompilasi menjadi native executable), kecuali dinyatakan lain. Program &amp; modul # // project/main.ns import math; fn main() { print(add(2, 3));", "code_example": "", "keywords": "syntax, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/syntax.html">syntax.md</a></p><article><h1>syntax.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="sintaks-nusa-v2-0-0">Sintaks Nusa — v2.0.0 <a href="#sintaks-nusa-v2-0-0" aria-label="taut">#</a></h1>
+<p>Spesifikasi sintaks yang <strong>didukung penuh</strong> (terkompilasi menjadi</p>
+<p>native executable), kecuali dinyatakan lain.</p>
+<h2 id="program-modul">Program &amp; modul <a href="#program-modul" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">// project/main.ns
+import math;
+
+fn main() {
+    print(add(2, 3));
+}</code></pre>
+<pre data-lang="nusa"><code class="lang-nusa">// project/math.ns
+fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}</code></pre>
+<ul>
+<li>Item top-level bebas campur: <code>import</code>, <code>type</code>, <code>trait</code>, <code>impl</code>,</li>
+</ul>
+<p>  <code>struct</code>, <code>enum</code>, <code>fn</code>, <code>extern fn</code> (generik — lihat <code>types.md</code>,</p>
+<p>  <code>traits.md</code>; enum — <code>enums.md</code>; extern — <code>ffi.md</code>).</p>
+<ul>
+<li><code>import math;</code> memuat <code>&lt;dir&gt;/math.ns</code> (transitif; resolusi penuh</li>
+</ul>
+<p>  di <code>docs/modules.md</code>). Dependensi antar-paket via <code>nusa.toml</code></p>
+<p>  (lihat <code>docs/pkg.md</code>).</p>
+<ul>
+<li>Tiap modul namespace sendiri; import menggabung nama PUBLIK.</li>
+</ul>
+<p>  Konflik (nama sama) → error duplikat.</p>
+<ul>
+<li>Visibilitas dasar: nama <code>_</code>-awalan module-private (<code>_helper</code> beda</li>
+</ul>
+<p>  file → error); sisanya publik.</p>
+<ul>
+<li>Circular import → <code>circular import detected: a -&gt; b -&gt; a</code>.</li>
+<li><code>fn main()</code> wajib ada (di salah satu modul) sebagai entry point.</li>
+</ul>
+<p>  Urutan deklarasi bebas; rekursi bisa dikompilasi.</p>
+<h2 id="struct">Struct <a href="#struct" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">struct Person {
+    name: string;
+    age: i64;
+}
+
+fn main() {
+    let person = Person {
+        name: &quot;Nusa&quot;,
+        age: 1
+    };
+    print(person.age);
+}</code></pre>
+<ul>
+<li>Field bertipe (<code>;</code> opsional); urutan inisialisasi bebas; semua field</li>
+</ul>
+<p>  wajib diisi; nested struct bisa (<code>a.b.c</code>).</p>
+<ul>
+<li>Akses <code>p.field</code> menghasilkan tipe field (bisa dihitung: <code>p.age + 1</code>).</li>
+<li>Batasan v0.8.0 yang tersisa: tanpa field array, tanpa <code>==</code>/print</li>
+</ul>
+<p>  struct, tanpa indexed assignment (konsisten v0.7.0). Param/return</p>
+<p>  struct by-value didukung sejak v1.2.0 (lihat <code>docs/structs.md</code>).</p>
+<h2 id="fungsi">Fungsi <a href="#fungsi" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">FuncDecl := &quot;fn&quot; Ident &quot;(&quot; [Param (&quot;,&quot; Param)*] &quot;)&quot; [&quot;-&gt;&quot; Type] Block
+Param    := Ident &quot;:&quot; Type</code></pre>
+<ul>
+<li>Anotasi parameter wajib; <code>-&gt; T</code> absen = <code>void</code>.</li>
+<li><code>main</code>: tanpa parameter; return void (absen/<code>-&gt; void</code>).</li>
+<li>Nama reserved: <code>print</code>, <code>len</code>, <code>puts</code>, <code>printf</code>, <code>exit</code>.</li>
+<li>Local scope leksikal (v0.6.0): tiap Block scope baru; shadowing</li>
+</ul>
+<p>  antar-scope diizinkan, duplikat se-scope ditolak.</p>
+<ul>
+<li><code>return</code>: harus terakhir di block-nya; fungsi non-void harus selalu</li>
+</ul>
+<p>  me-return di semua path (<code>if</code>+<code>else</code> dihitung; <code>while</code> tidak).</p>
+<ul>
+<li><code>extern fn name(params) -&gt; T;</code> (v1.13.0, tanpa body): deklarasi</li>
+</ul>
+<p>  fungsi C; signature terbatas (lihat <code>docs/ffi.md</code>).</p>
+<h2 id="statement">Statement <a href="#statement" aria-label="taut">#</a></h2>
+<table><thead><tr><th>Statement</th><th>Contoh</th><th>Eksekusi</th></tr></thead><tbody>
+<tr><td><code>let</code></td><td><code>let x = 10 + 20 * 3;</code> atau <code>let age: i64 = 15;</code></td><td>✅</td></tr>
+<tr><td><code>print</code></td><td><code>print(result);</code> / <code>print(&quot;Hi&quot;);</code></td><td>✅ string, integer, boolean</td></tr>
+<tr><td><code>return</code></td><td><code>return a + b;</code> / <code>return;</code></td><td>✅ (aturan di atas)</td></tr>
+<tr><td>call</td><td><code>greet(&quot;Nusa&quot;);</code></td><td>✅ (nilai dibuang)</td></tr>
+<tr><td><code>if</code>/<code>else</code></td><td><code>if x &gt; 5 { } else { }</code>, <code>else if</code></td><td>✅ (kondisi <code>bool</code>)</td></tr>
+<tr><td><code>while</code></td><td><code>while n &gt; 0 { }</code></td><td>✅ (kondisi <code>bool</code>)</td></tr>
+<tr><td>assign</td><td><code>n = n - 1;</code></td><td>✅ (harus ada, tipe sama)</td></tr>
+<tr><td><code>match</code></td><td><code>match x { 1 =&gt; { }, _ =&gt; { }, }</code></td><td>✅ v1.6.0 (<code>docs/pattern-matching.md</code>)</td></tr>
+<tr><td><code>enum</code></td><td><code>enum Color { Red, Green(i64) }</code></td><td>✅ v1.7.0 (<code>docs/enums.md</code>)</td></tr>
+<tr><td>lambda</td><td>`\</td><td>x: i64\</td><td>x + 1<code>, </code>\</td><td>x\</td><td>{ return x; }`</td><td>✅ v1.8.0 (<code>docs/closures.md</code>)</td></tr>
+</tbody></table>
+<p><code>;</code> opsional (diwarisi v0.1.0). Variabel harus dideklarasikan sebelum</p>
+<p>dipakai (<code>undefined variable</code> jika tidak).</p>
+<h2 id="ekspresi-precedence">Ekspresi &amp; precedence <a href="#ekspresi-precedence" aria-label="taut">#</a></h2>
+<p>Dari terendah ke tertinggi:</p>
+<table><thead><tr><th>Level</th><th>Operator</th><th>Asosiatif</th></tr></thead><tbody>
+<tr><td>equality</td><td><code>==</code> <code>!=</code></td><td>kiri</td></tr>
+<tr><td>comparison</td><td><code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td><td>kiri</td></tr>
+<tr><td>term</td><td><code>+</code> <code>-</code> (biner)</td><td>kiri</td></tr>
+<tr><td>factor</td><td><code>*</code> <code>/</code></td><td>kiri</td></tr>
+<tr><td>unary</td><td><code>-x</code> <code>+x</code></td><td>kanan</td></tr>
+<tr><td>primary</td><td>literal, call, struct-lit, variabel, <code>(...)</code></td><td>—</td></tr>
+<tr><td>postfix</td><td><code>[i]</code> index, <code>.f</code> field (berantai)</td><td>kiri</td></tr>
+</tbody></table>
+<p>Panggilan: <code>name(arg, ...)</code> — arity &amp; tipe dicek</p>
+<p>(<code>wrong number of arguments</code>, <code>mismatched argument type</code>).</p>
+<p><code>main</code> tak bisa dipanggil. Konstruksi <code>P { f: v }</code> dibedakan dari</p>
+<p>block via lookahead (<code>{</code> diikuti <code>}</code>/<code>field :</code>, else milik <code>if</code>).</p>
+<p>Contoh:</p>
+<pre data-lang="nusa"><code class="lang-nusa">let x = 10 + 20 * 3;   // (+ 10 (* 20 3))  → 70, bukan 90
+let y = (10 + 20) * 3; // (* (+ 10 20) 3)  → 90
+let b = 1 + 2 * 3 == 7; // (== (+ 1 (* 2 3)) 7)
+let z = -x * 2;        // (* (- x) 2)</code></pre>
+<h2 id="tipe-v0-4-0-array-v0-7-0-struct-v0-8-0-alias-v1-2-0">Tipe (v0.4.0 + array v0.7.0 + struct v0.8.0 + alias v1.2.0) <a href="#tipe-v0-4-0-array-v0-7-0-struct-v0-8-0-alias-v1-2-0" aria-label="taut">#</a></h2>
+<p>Tipe dasar: <code>i64</code>, <code>bool</code>, <code>string</code>, <code>void</code> (reserved keywords),</p>
+<p>plus array <code>[T]</code> (elemen homogen; ukuran bukan bagian tipe)</p>
+<p>plus tipe bernama struct (<code>Person</code>, dikenali bila dideklarasikan —</p>
+<p>jika tidak → <code>unknown type</code>)</p>
+<p>plus alias tipe (<code>type Nums = [i64];</code> — transparan, berlaku persis</p>
+<p>seperti targetnya; forward reference OK; siklus/rantai dalam ditolak)</p>
+<p>plus tipe fungsi (<code>fn(i64) -&gt; i64</code> — hanya di posisi tipe; value-nya</p>
+<p>nama fn top-level atau lambda/closure, lihat <code>docs/closures.md</code>)</p>
+<p>plus aplikasi struct generik (<code>Point&lt;i64&gt;</code> — lihat <code>types.md</code>).</p>
+<p><code>void</code> tidak boleh menjadi tipe variabel atau nilai <code>print</code>.</p>
+<pre data-lang="nusa"><code class="lang-nusa">let age: i64 = 15;        // anotasi: inisialisasi harus i64
+let active: bool = true;  // anotasi: inisialisasi harus bool
+let name: string = &quot;Nusa&quot;;
+let inferred = 10 + 5;    // tanpa anotasi → disimpulkan i64</code></pre>
+<p>Aturan:</p>
+<ul>
+<li>Anotasi vs inisialisasi harus sama: <code>let x: i64 = &quot;hello&quot;;</code> ditolak</li>
+</ul>
+<p>  (<code>mismatched types ... declared as &#x27;i64&#x27; but initializer has type &#x27;string&#x27;</code>).</p>
+<ul>
+<li>Aritmetika <code>+ - * /</code> dan perbandingan <code>&lt; &gt; &lt;= &gt;=</code>: operand <code>i64</code>.</li>
+<li>Equality <code>==</code> <code>!=</code>: kedua sisi bertipe sama (non-string, non-void).</li>
+<li>Unary <code>-</code>/<code>+</code>: operand <code>i64</code>.</li>
+<li><code>fn main</code> bertipe <code>fn() -&gt; void</code>; fungsi lain <code>fn(params) -&gt; ret</code></li>
+</ul>
+<p>  sesuai deklarasi (generik: <code>fn f&lt;T&gt;(x: T) -&gt; T</code>, lihat <code>docs/types.md</code>).</p>
+<h2 id="array-v0-7-0">Array (v0.7.0) <a href="#array-v0-7-0" aria-label="taut">#</a></h2>
+<pre data-lang="nusa"><code class="lang-nusa">let numbers: [i64] = [1, 2, 3, 4];  // literal homogen
+print(numbers[0]);                   // indexing → 1
+print(len(numbers));                 // builtin len() → 4
+let total = numbers[0] + numbers[3]; // elemen dipakai seperti nilai biasa</code></pre>
+<p>Aturan:</p>
+<ul>
+<li>Elemen sejenis, non-void, non-array; <code>[]</code> ditolak (tulis isinya).</li>
+<li>Index harus <code>i64</code>; di luar <code>[0, len)</code> → `runtime error: index out of</li>
+</ul>
+<p>  bounds` + exit(1) (bounds check selalu aktif).</p>
+<ul>
+<li><code>len()</code> butuh tepat 1 argumen array (<code>len</code> reserved, bukan variabel).</li>
+<li>Array fixed-size dari literal: tanpa <code>push</code>, tanpa <code>a[0] = x</code>,</li>
+</ul>
+<p>  tanpa nested, tanpa param/return array, tanpa <code>==</code>/print array.</p>
+<ul>
+<li>Copy utuh bisa: <code>let b = a;</code> / <code>b = a;</code> (element-wise via agregat).</li>
+</ul>
+<h2 id="fungsi-sebagai-nilai">Fungsi sebagai nilai <a href="#fungsi-sebagai-nilai" aria-label="taut">#</a></h2>
+<p>Function value didukung: nama fn top-level sebagai value (`let op =</p>
+<p>add;<code>) + lambda/closure (</code>|x| x + 1`, capture by-value). Detail:</p>
+<p><code>docs/types.md</code> (tipe <code>fn</code>), <code>docs/closures.md</code> (lambda). Nama</p>
+<p>fungsi hidup di namespace terpisah dari variabel untuk posisi</p>
+<p>panggilan langsung.</p>
+<h2 id="literal-identifier">Literal &amp; identifier <a href="#literal-identifier" aria-label="taut">#</a></h2>
+<ul>
+<li>Integer desimal 64-bit: <code>0</code>, <code>42</code>, <code>9223372036854775807</code> (→ <code>i64</code>).</li>
+</ul>
+<p>  Overflow (<code>...808</code>) dan <code>123abc</code> ditolak lexer.</p>
+<ul>
+<li>String <code>&quot;...&quot;</code> dengan escapes <code>\&quot; \\ \n \t \r \0</code> (→ <code>string</code>).</li>
+<li>Boolean <code>true</code> / <code>false</code> (→ <code>bool</code>).</li>
+<li>Identifier: huruf/<code>_</code> diawali, diikuti alnum/<code>_</code> (<code>x</code>, <code>result</code>, …).</li>
+</ul>
+<p>  Nama tipe (<code>i64</code>, <code>bool</code>, <code>string</code>, <code>void</code>) reserved, tak bisa menjadi</p>
+<p>  nama variabel.</p>
+<h2 id="token-lengkap-lexer">Token lengkap (lexer) <a href="#token-lengkap-lexer" aria-label="taut">#</a></h2>
+<p>Keywords: <code>fn let return if else while true false i64 bool string void struct import type trait impl for self match enum extern async await macro</code> (<code>async</code>/<code>await</code> reserved v2.0 untuk RFC-0004; <code>macro</code> reserved v2.20.0, Phase 69; tanpa sintaks)</p>
+<p>Operator: <code>+ - * / = == != &lt; &gt; &lt;= &gt;= -&gt; =&gt; ? |</code> (<code>-&gt;</code> untuk return type;</p>
+<p><code>?</code> postfix propagasi <code>Result</code>;</p>
+<p><code>-</code> diikuti <code>&gt;</code> selalu arrow — kombinasi Minus+Gt tak pernah valid).</p>
+<p>Simbol: <code>( ) { } [ ] : , ; .</code> (<code>.</code> untuk field access).</p>
+<p>Komentar <code>//</code> sampai akhir baris (ditangkap lexer untuk <code>fmt</code>/<code>doc</code>);</p>
+<p><code>///</code> menandai dokumentasi API. Setiap token membawa</p>
+<p><code>file:line:column</code>.</p>
+<h2 id="builtin-stdlib-v0-9-5">Builtin &amp; stdlib (v0.9.5) <a href="#builtin-stdlib-v0-9-5" aria-label="taut">#</a></h2>
+<p>Tanpa sintaks baru: <code>input()</code>, <code>assert(b)</code>, <code>str_len</code>, <code>str_concat</code>,</p>
+<p><code>parse_int</code>, <code>file_read/write/exists</code>, <code>array_sum/min/max</code>, <code>len()</code></p>
+<p>adalah panggilan biasa (global, reserved). Modul <code>std/</code> di-<code>import</code></p>
+<p>biasa — lihat <code>docs/standard-library.md</code>.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

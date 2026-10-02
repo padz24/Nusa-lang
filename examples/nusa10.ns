@@ -1,0 +1,27 @@
+// Program uji Nusa 1.0 (verbatim dari MASTER PROMPT).
+// Harus melalui Lexer → Parser → AST → Semantic → TypeCheck →
+// LLVM IR → LLVM 21.1.8 → AArch64 Android → Executable,
+// dan mencetak:
+// Result is greater than 20
+// 30
+// Nusa
+struct Person {
+    name: string;
+    age: i64;
+}
+fn add(a: i64, b: i64) -> i64 {
+    return a + b;
+}
+fn main() {
+    let person = Person {
+        name: "Nusa", age: 1
+    };
+    let a: i64 = 10;
+    let b: i64 = 20;
+    let result = add(a, b);
+    if result > 20 {
+        print("Result is greater than 20");
+    }
+    print(result);
+    print(person.name);
+}

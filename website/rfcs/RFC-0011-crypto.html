@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC-0011-crypto — Nusa Docs 3.0.0</title>
+<meta name="description" content="RFC-0011-crypto Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0011: Cryptography Builtins (slice 1) # Status: Proposed P">
+<link rel="canonical" href="https://nusa-lang.org/docs/rfcs/RFC-0011-crypto.html">
+<meta property="og:title" content="RFC-0011-crypto — Nusa Docs 3.0.0">
+<meta property="og:description" content="RFC-0011-crypto Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0011: Cryptography Builtins (slice 1) # Status: Proposed P">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="RFC-0011-crypto">
+<meta name="nusa:category" content="rfcs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="rfc, rfc-0011-crypto, proposed">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "RFC-0011-crypto", "category": "rfcs", "version": "3.0.0", "content": "RFC-0011-crypto Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0011: Cryptography Builtins (slice 1) # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-11 Menggantikan: — Digantikan oleh: — Summary # Dua builtin global untuk fondasi kriptografi (mandat Phase 76, gat", "code_example": "", "keywords": "rfc, rfc-0011-crypto, proposed"}</script>
+</head>
+<body class="kind-rfcs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/" aria-current="page">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../rfcs/">Indeks</a></li><li><a href="../rfcs/RFC-0001-generics.html">RFC-0001-generics</a></li><li><a href="../rfcs/RFC-0002-traits.html">RFC-0002-traits</a></li><li><a href="../rfcs/RFC-0003-ownership.html">RFC-0003-ownership</a></li><li><a href="../rfcs/RFC-0004-async.html">RFC-0004-async</a></li><li><a href="../rfcs/RFC-0005-nusa-2.0.html">RFC-0005-nusa-2.0</a></li><li><a href="../rfcs/RFC-0006-channels.html">RFC-0006-channels</a></li><li><a href="../rfcs/RFC-0007-gc.html">RFC-0007-gc</a></li><li><a href="../rfcs/RFC-0008-ffi.html">RFC-0008-ffi</a></li><li><a href="../rfcs/RFC-0009-comptime.html">RFC-0009-comptime</a></li><li><a href="../rfcs/RFC-0010-verification.html">RFC-0010-verification</a></li><li><a href="../rfcs/RFC-0011-crypto.html" aria-current="page">RFC-0011-crypto</a></li><li><a href="../rfcs/RFC-0012-macros.html">RFC-0012-macros</a></li><li><a href="../rfcs/RFC-0013-vectors.html">RFC-0013-vectors</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../rfcs/">RFCs</a> / <a href="../rfcs/RFC-0011-crypto.html">RFC-0011-crypto</a></p><article><h1>RFC-0011-crypto</h1><p><span class="badge proposed">Proposed</span></p><div class="warn"><p>Badge Proposed: implementasi DILARANG sebelum status Accepted.</p></div><h1 id="rfc-0011-cryptography-builtins-slice-1">RFC-0011: Cryptography Builtins (slice 1) <a href="#rfc-0011-cryptography-builtins-slice-1" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: Proposed</li>
+<li>Penulis: Nusa team</li>
+<li>Tanggal: 2026-09-11</li>
+<li>Menggantikan: —</li>
+<li>Digantikan oleh: —</li>
+</ul>
+<h2 id="summary">Summary <a href="#summary" aria-label="taut">#</a></h2>
+<p>Dua builtin global untuk fondasi kriptografi (mandat Phase 76,</p>
+<p>gate kualitas &quot;hanya jika dapat dijamin&quot;): <code>sha256_hex(s)</code> dan</p>
+<p><code>crypto_rand_hex(n)</code>. Tanpa algoritma baru: SHA-256 = FIPS 180-4</p>
+<p>tak termodifikasi; entropi = <code>/dev/urandom</code> OS (gagal eksplisit,</p>
+<p>tanpa fallback diam-diam).</p>
+<h2 id="motivation">Motivation <a href="#motivation" aria-label="taut">#</a></h2>
+<p>Yang sakit hari ini: hashing dan randomness kripto tak mungkin</p>
+<p>murni-Nusa (tanpa builtin <code>ord</code>/bitwise — tercatat di</p>
+<p><code>docs/stdlib-2.26.md</code> dan <code>random.ns</code> &quot;NOT cryptographic&quot;).</p>
+<p><code>random_u64</code> membaca <code>/dev/urandom</code> tetapi reduksi-nya di Nusa</p>
+<p>(LCG, bias modulo) sehingga tak layak kunci.</p>
+<h2 id="design">Design <a href="#design" aria-label="taut">#</a></h2>
+<ul>
+<li><code>sha256_hex(s: string) -&gt; string</code>: hex lowercase digest</li>
+</ul>
+<p>  32 byte atas byte string (NUL mustahil di string Nusa —</p>
+<p>  konsisten dgn batas lexer). Implementasi C di runtime</p>
+<p>  (FIPS 180-4 verbatim, single-purpose); vektor NIST dikunci</p>
+<p>  di unit + e2e (+ cross-check implementasi independen).</p>
+<ul>
+<li><code>crypto_rand_hex(n: i64) -&gt; string</code>: <code>2*n</code> hex dari</li>
+</ul>
+<p>  <code>/dev/urandom</code>; GAGAL EKSPLISIT (<code>&quot;&quot;</code>) bila sumber tak</p>
+<p>  terbaca; <code>n &lt;= 0</code> → <code>&quot;&quot;</code>. Tanpa fallback <code>rand()</code></p>
+<p>  (berbeda dari <code>random_u64</code> — disengaja untuk kripto).</p>
+<ul>
+<li>Lapisan std (<code>crypto.ns</code>, murni Nusa): <code>crypto_key_hex</code></li>
+</ul>
+<p>  (fail-closed: panjang salah → die), <code>crypto_compare</code></p>
+<p>  (tanpa early-exit; beda panjang → false + bocor panjang</p>
+<p>  didokumentasikan), <code>sha256_file</code> (komposisi).</p>
+<h2 id="alternatives">Alternatives <a href="#alternatives" aria-label="taut">#</a></h2>
+<ul>
+<li>Link libcrypto (OpenSSL ada di host): DITOLAK — dependensi</li>
+</ul>
+<p>  eksternal baru untuk semua biner (melanggar &quot;portabel&quot;;</p>
+<p>  rapuh untuk cross-compilation).</p>
+<ul>
+<li>Hash di codegen via LLVM <code>SHA256.h</code>: DITOLAK — hanya untuk</li>
+</ul>
+<p>  string konstan kompilasi; string dinamis butuh runtime.</p>
+<ul>
+<li>Hash murni-Nusa: DITOLAK — butuh <code>ord</code>/bitwise (RFC lain).</li>
+<li>Base64/AES/HMAC: DITUNDA (butuh <code>ord</code>; bukan slice ini).</li>
+</ul>
+<h2 id="compatibility">Compatibility <a href="#compatibility" aria-label="taut">#</a></h2>
+<p>Aditif: 2 builtin + 1 file runtime + 1 modul std. Tanpa</p>
+<p>perubahan sintaks/IR/ABI. Klaim audit: TIDAK mengklaim</p>
+<p>&quot;teraudit&quot; — provenance + vektor + batas ditulis eksplisit.</p>
+<h2 id="tests">Tests <a href="#tests" aria-label="taut">#</a></h2>
+<ul>
+<li><code>test_builtins</code>: vektor NIST (kosong/abc/448-bit/2-blok)</li>
+</ul>
+<p>  + rand (panjang, heks, gagal-eksplisit via n≤0).</p>
+<ul>
+<li><code>e2e_crypto.sh</code>: vektor run, cross-check implementasi</li>
+</ul>
+<p>  independen (bila ada), keygen (panjang + unik + fail-closed),</p>
+<p>  compare, file hash, misuse bertipe.</p>
+<h2 id="specification">Specification <a href="#specification" aria-label="taut">#</a></h2>
+<p>Spec bahasa: +2 builtin global (non-breaking).</p>
+<p><code>docs/standard-library.md</code> + <code>docs/crypto-2.27.md</code>.</p>
+<h2 id="discussion">Discussion <a href="#discussion" aria-label="taut">#</a></h2>
+<ul>
+<li>2026-09-11: gate kualitas LULUS untuk hashing (FIPS</li>
+</ul>
+<p>  verbatim + vektor) dan randomness (OS entropy, fail-explicit);</p>
+<p>  GAGAL untuk klaim &quot;teraudit&quot; (dinyatakan apa adanya).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

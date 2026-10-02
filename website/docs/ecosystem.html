@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ecosystem.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="ecosystem.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Ekosistem Nusa (Phase 43) # Inventaris resmi komponen ekosistem">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/ecosystem.html">
+<meta property="og:title" content="ecosystem.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="ecosystem.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Ekosistem Nusa (Phase 43) # Inventaris resmi komponen ekosistem">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="ecosystem.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ecosystem, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "ecosystem.md", "category": "docs", "version": "3.0.0", "content": "ecosystem.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Ekosistem Nusa (Phase 43) # Inventaris resmi komponen ekosistem (mandat master §28) — apa yang ada di repo, di mana, dan statusnya (12/12 ✅ sejak Phase 43 lanjutan; riwayat penundaan website dicatat di CHANGELOG)", "code_example": "", "keywords": "ecosystem, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/ecosystem.html">ecosystem.md</a></p><article><h1>ecosystem.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="ekosistem-nusa-phase-43">Ekosistem Nusa (Phase 43) <a href="#ekosistem-nusa-phase-43" aria-label="taut">#</a></h1>
+<p>Inventaris resmi komponen ekosistem (mandat master §28) — apa yang</p>
+<p>ada di repo, di mana, dan statusnya (12/12 ✅ sejak Phase 43</p>
+<p>lanjutan; riwayat penundaan website dicatat di CHANGELOG).</p>
+<table><thead><tr><th>Komponen master</th><th>Status</th><th>Lokasi</th></tr></thead><tbody>
+<tr><td>Compiler</td><td>✅ 2.0.0</td><td><code>compiler/</code>, <code>build/nusa</code></td></tr>
+<tr><td>Standard Library</td><td>✅ builtin + 16 modul</td><td><code>std/</code>, <code>docs/standard-library.md</code></td></tr>
+<tr><td>Package Registry</td><td>✅ file-backed</td><td><code>docs/pkg.md</code>, <code>nusa search/install/publish</code></td></tr>
+<tr><td>Language Server</td><td>✅ 7 fitur</td><td><code>docs/lsp.md</code>, <code>nusa lsp</code></td></tr>
+<tr><td>Formatter</td><td>✅</td><td><code>nusa fmt</code>, <code>docs/</code></td></tr>
+<tr><td>Documentation</td><td>✅ 30+ dokumen + spec 2.0</td><td><code>docs/</code></td></tr>
+<tr><td>Examples</td><td>✅ v1.0 + 7 contoh 2.0</td><td><code>examples/</code> (+ <code>website/examples.html</code>)</td></tr>
+<tr><td>Tutorials</td><td>✅ jalur 01–08</td><td><code>tutorials/</code> (+ <code>website/tutorials.html</code>)</td></tr>
+<tr><td>RFC repository</td><td>✅ proses + 8 RFC</td><td><code>rfcs/</code></td></tr>
+<tr><td>Playground</td><td>✅ sandbox + HTTP loopback</td><td><code>docs/playground.md</code></td></tr>
+<tr><td>Project templates</td><td>✅ 4 template</td><td><code>nusa new</code>, §Template di bawah</td></tr>
+<tr><td>Website</td><td>✅ statis offline-first</td><td><code>website/</code> (§Website di bawah)</td></tr>
+</tbody></table>
+<h2 id="template-nusa-new">Template (<code>nusa new</code>) <a href="#template-nusa-new" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">nusa new &lt;template&gt; [name] [--dir DIR]   # name default = template
+nusa new --list</code></pre>
+<table><thead><tr><th>Template</th><th>Isi</th><th>Verifikasi</th></tr></thead><tbody>
+<tr><td>hello-world</td><td>main.ns + nusa.toml + README</td><td>run → <code>Hello, &lt;name&gt;!</code></td></tr>
+<tr><td>cli-app</td><td>main.ns (argv/usage) + nusa.toml + README</td><td>run ± arg</td></tr>
+<tr><td>library</td><td>calc.ns + calc_test.ns + nusa.toml + README</td><td><code>nusa test</code></td></tr>
+<tr><td>server</td><td>handler.ns + main.ns + server_test.ns + nusa.toml + README</td><td>serve-once + <code>nusa test</code></td></tr>
+</tbody></table>
+<p>Template server = serve-once loopback nyata (<code>tcp_listen</code>/</p>
+<p><code>tcp_accept</code> sejak 2.0): handler murni teruji + accept satu</p>
+<p>koneksi lalu keluar (loop abadi menunggu executor RFC-0004).</p>
+<p>Semua file scaffold lolos <code>nusa fmt --check</code> (nol baris kosong,</p>
+<p>konvensi repo).</p>
+<p>Direktori target tak-kosong DITOLAK (anti-menimpa); nama mengikuti</p>
+<p>aturan paket (<code>[A-Za-z_][A-Za-z0-9_]*</code>); <code>compiler =</code> minimum diisi</p>
+<p>versi compiler yang men-scaffold.</p>
+<h2 id="website-statis-offline-first">Website (statis, offline-first) <a href="#website-statis-offline-first" aria-label="taut">#</a></h2>
+<p><code>website/</code> = situs statis resmi (HTML + satu CSS, tanpa JavaScript</p>
+<p>eksternal, tanpa CDN, tanpa tracking, tanpa build step): <code>index.html</code></p>
+<p>(beranda + quickstart), <code>ecosystem.html</code> (cermin tabel di atas),</p>
+<p><code>tutorials.html</code> (index jalur 01–08), <code>examples.html</code> (index contoh</p>
+<p>runnable), <code>README.md</code> (cara preview + publish).</p>
+<pre data-lang="bash"><code class="lang-bash">python3 -m http.server 8000   # dari root repo
+# buka http://127.0.0.1:8000/website/</code></pre>
+<p>Tautan <code>../docs|tutorials|examples|rfcs/</code> relatif — bekerja saat</p>
+<p>di-serve dari root maupun saat folder-folder itu ikut dipublish.</p>
+<p>Konvensi penerbitan: <code>docs/foo.md</code> → <code>docs/foo.html</code> (render Markdown</p>
+<p>→ HTML dengan nama yang sama; <code>.md</code> tetap sumber kebenaran).</p>
+<p>Kontrak offline (tanpa referensi http/https/CDN) dikunci</p>
+<p><code>e2e_ecosystem.sh</code>.</p>
+<h2 id="tutorials-tutorials-01-08">Tutorials (<code>tutorials/01–08</code>) <a href="#tutorials-tutorials-01-08" aria-label="taut">#</a></h2>
+<p>Jalur belajar berurutan, tiap modul <code>README.md</code> + <code>main.ns</code> runnable</p>
+<p>(<code>nusa run</code> + <code>nusa fmt --check</code> dikunci <code>e2e_ecosystem.sh</code>):</p>
+<p>01 hello, 02 variables, 03 functions/struct, 04 generics+traits,</p>
+<p>05 match+enum, 06 error handling (Option/Result 2.0 + <code>?</code>),</p>
+<p>07 closures+concurrency, 08 package project (<code>nusa pkg</code>/<code>new</code>/<code>test</code>).</p>
+<h2 id="examples-2-0-examples">Examples 2.0 (<code>examples/</code>) <a href="#examples-2-0-examples" aria-label="taut">#</a></h2>
+<p>Basis v1.0 dipertahankan; tambahan runnable: <code>generics.ns</code></p>
+<p>(generic fn+struct), <code>traits.ns</code> (trait/impl), <code>match.ns</code> (match),</p>
+<p><code>enums.ns</code> (enum payload + generic), <code>closures.ns</code> (lambda),</p>
+<p><code>error_option_result.ns</code> (Option/Result enum + <code>?</code>),</p>
+<p><code>concurrency.ns</code> (thread + channel i64).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

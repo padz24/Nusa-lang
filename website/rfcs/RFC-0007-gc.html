@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC-0007-gc — Nusa Docs 3.0.0</title>
+<meta name="description" content="RFC-0007-gc Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0007: Garbage collection # Status: Proposed Penulis: Nusa team">
+<link rel="canonical" href="https://nusa-lang.org/docs/rfcs/RFC-0007-gc.html">
+<meta property="og:title" content="RFC-0007-gc — Nusa Docs 3.0.0">
+<meta property="og:description" content="RFC-0007-gc Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0007: Garbage collection # Status: Proposed Penulis: Nusa team">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="RFC-0007-gc">
+<meta name="nusa:category" content="rfcs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="rfc, rfc-0007-gc, proposed">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "RFC-0007-gc", "category": "rfcs", "version": "3.0.0", "content": "RFC-0007-gc Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0007: Garbage collection # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # Mengganti heap string program-lifetime (RFC-0003) dengan koleksi otomatis. RFC ini", "code_example": "", "keywords": "rfc, rfc-0007-gc, proposed"}</script>
+</head>
+<body class="kind-rfcs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/" aria-current="page">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../rfcs/">Indeks</a></li><li><a href="../rfcs/RFC-0001-generics.html">RFC-0001-generics</a></li><li><a href="../rfcs/RFC-0002-traits.html">RFC-0002-traits</a></li><li><a href="../rfcs/RFC-0003-ownership.html">RFC-0003-ownership</a></li><li><a href="../rfcs/RFC-0004-async.html">RFC-0004-async</a></li><li><a href="../rfcs/RFC-0005-nusa-2.0.html">RFC-0005-nusa-2.0</a></li><li><a href="../rfcs/RFC-0006-channels.html">RFC-0006-channels</a></li><li><a href="../rfcs/RFC-0007-gc.html" aria-current="page">RFC-0007-gc</a></li><li><a href="../rfcs/RFC-0008-ffi.html">RFC-0008-ffi</a></li><li><a href="../rfcs/RFC-0009-comptime.html">RFC-0009-comptime</a></li><li><a href="../rfcs/RFC-0010-verification.html">RFC-0010-verification</a></li><li><a href="../rfcs/RFC-0011-crypto.html">RFC-0011-crypto</a></li><li><a href="../rfcs/RFC-0012-macros.html">RFC-0012-macros</a></li><li><a href="../rfcs/RFC-0013-vectors.html">RFC-0013-vectors</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../rfcs/">RFCs</a> / <a href="../rfcs/RFC-0007-gc.html">RFC-0007-gc</a></p><article><h1>RFC-0007-gc</h1><p><span class="badge proposed">Proposed</span></p><div class="warn"><p>Badge Proposed: implementasi DILARANG sebelum status Accepted.</p></div><h1 id="rfc-0007-garbage-collection">RFC-0007: Garbage collection <a href="#rfc-0007-garbage-collection" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: Proposed</li>
+<li>Penulis: Nusa team</li>
+<li>Tanggal: 2026-09-08</li>
+<li>Menggantikan: —</li>
+<li>Digantikan oleh: —</li>
+</ul>
+<h2 id="summary">Summary <a href="#summary" aria-label="taut">#</a></h2>
+<p>Mengganti heap string program-lifetime (RFC-0003) dengan koleksi</p>
+<p>otomatis. RFC ini BELUM disetujui; 2.0 MEMPERTAHANKAN model</p>
+<p>tanpa-GC sebagai kontrak. Implementasi dilarang sebelum Accepted.</p>
+<h2 id="motivation">Motivation <a href="#motivation" aria-label="taut">#</a></h2>
+<p>Loop alokasi tumbuh per iterasi + string bocor by-design membatasi</p>
+<p>program long-running (server template serve-once hari ini justru</p>
+<p>menghindari masalah ini). Klaim &quot;aman memori&quot; Nusa tak lengkap</p>
+<p>tanpa jawaban alokasi tak-terbatas.</p>
+<h2 id="design">Design <a href="#design" aria-label="taut">#</a></h2>
+<p>Sketsa (terbuka direvisi):</p>
+<ul>
+<li>Kandidat A — RC presisi + break-cycle eksplisit: cocok model</li>
+</ul>
+<p>  owned (setiap owner jelas), biaya sinkronisasi antar-thread</p>
+<p>  (atomic counts), SIKLUS bocor (didokumentasikan, bukan ditutup).</p>
+<ul>
+<li>Kandidat B — konservatif (Boehm-style): tanpa anotasi compiler,</li>
+</ul>
+<p>  tetapi false-retention + interaksi closure-pair buram tak</p>
+<p>  terkarakterisasi; perlu spike pengukuran dulu.</p>
+<ul>
+<li>Kandidat C — arena per-request + owned global: server/request</li>
+</ul>
+<p>  pola dibebaskan massal; general-purpose tetap bocor.</p>
+<ul>
+<li>Wajib sebelum Accepted: (1) prototype + bench (throughput,</li>
+</ul>
+<p>  footprint, pause); (2) interaksi FFI (pointer keluar Nusa =</p>
+<p>  root? pin?); (3) interaksi thread (stop-the-world vs lokal);</p>
+<p>  (4) kapan destruktor berjalan (tak ada Drop hari ini).</p>
+<h2 id="alternatives">Alternatives <a href="#alternatives" aria-label="taut">#</a></h2>
+<ul>
+<li>Tetap tanpa-GC selamanya: opsi sah bila bench menunjukkan biaya</li>
+</ul>
+<p>  &gt; nilai (diputuskan via data, bukan ideologi).</p>
+<ul>
+<li>Borrow-checker (RFC-0003 menolak): membuka ulang penolakan =</li>
+</ul>
+<p>  butuh justifikasi baru yang kuat.</p>
+<h2 id="compatibility">Compatibility <a href="#compatibility" aria-label="taut">#</a></h2>
+<p>APAPUN pilihannya: tanpa perubahan sintaks yang terlihat</p>
+<p>(diutamakan); program 1.x/2.0 berjalan identik (hanya footprint).</p>
+<h2 id="tests">Tests <a href="#tests" aria-label="taut">#</a></h2>
+<p>Rencana: uji soak (alokasi-loop konstan-memori), uji thread +</p>
+<p>GC, uji FFI-pin, bench perbandingan ketiga kandidat.</p>
+<h2 id="specification">Specification <a href="#specification" aria-label="taut">#</a></h2>
+<p>Bila diterima: spec §5 ditulis ulang + <code>docs/memory-model.md</code></p>
+<p>revisi mayor.</p>
+<h2 id="discussion">Discussion <a href="#discussion" aria-label="taut">#</a></h2>
+<ul>
+<li>2026-09-08: dibuka sebagai Proposed; SENGAJA di luar 2.0 —</li>
+</ul>
+<p>  klaim GC tanpa root-tracking teruji = tidak bertanggung jawab.</p>
+<p>  Data bench kandidat adalah acceptance criteria RFC ini.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

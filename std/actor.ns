@@ -1,0 +1,59 @@
+/// Actor model library-level (Phase 117, v3.18.0): state terisolasi +
+/// mailbox FIFO + perilaku fungsional, murni di atas
+/// thread/channel/mutex (tanpa sintaks `actor`, tanpa RFC).
+/// Protokol: tiap request = 3 kiriman (op, arg, reply) yang
+/// DIKUNCI mutex mailbox (anti-interleave antar-klien); handler
+/// `fn(op, arg, reply, state) -> state-baru` MENJAWAB SENDIRI via
+/// `chan_send(reply, nilai)`.
+///
+/// Batas jujur (lihat docs/actors-3.18.md): aktor hidup selama
+/// proses (tanpa stop), tanpa selective-receive, self-call
+/// sinkron = deadlock, handler wajib menjawab tiap request.
+struct ActorRef {
+    mb: i64;
+    lock: i64;
+}
+/// Loop aktor: terima (op, arg, reply) -> state = h(...), selamanya.
+/// Top-level (tanpa capture) agar `thread_spawn` langsung pakai.
+fn actor_loop(mb: i64, h: fn(i64, i64, i64, i64) -> i64, st: i64) -> i64 {
+    while true {
+        let op = chan_recv(mb);
+        let arg = chan_recv(mb);
+        let reply = chan_recv(mb);
+        st = h(op, arg, reply, st);
+    }
+    return 0;
+}
+/// Spawn aktor: mailbox + mutex baru, thread loop, kembalikan handle.
+/// `h` = perilaku; `init` = state awal.
+fn actor_spawn(h: fn(i64, i64, i64, i64) -> i64, init: i64) -> ActorRef {
+    let mb = chan_new();
+    let lk = mutex_new();
+    thread_spawn(|| actor_loop(mb, h, init));
+    return ActorRef {
+        mb: mb, lock: lk
+    };
+}
+/// Panggil sinkron: kirim (op, arg, reply-chan) atomik, tunggu jawaban.
+fn actor_call(a: ActorRef, op: i64, arg: i64) -> i64 {
+    let rep = chan_new();
+    mutex_lock(a.lock);
+    chan_send(a.mb, op);
+    chan_send(a.mb, arg);
+    chan_send(a.mb, rep);
+    mutex_unlock(a.lock);
+    let out = chan_recv(rep);
+    chan_free(rep);
+    return out;
+}
+/// Kirim tanpa-tunggu-jawaban (reply-chan dibuat tapi tak dibaca;
+/// bocor program-lifetime by-design). Handler TETAP wajib menjawab
+/// (protokol seragam — jawaban yang tak dibaca dibuang channel).
+fn actor_cast(a: ActorRef, op: i64, arg: i64) {
+    let rep = chan_new();
+    mutex_lock(a.lock);
+    chan_send(a.mb, op);
+    chan_send(a.mb, arg);
+    chan_send(a.mb, rep);
+    mutex_unlock(a.lock);
+}

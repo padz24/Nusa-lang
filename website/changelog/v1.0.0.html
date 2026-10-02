@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 1.0.0 — Nusa Docs 1.0.0</title>
+<meta name="description" content="1.0.0 v1.0.0 Release notes # — Stable Nusa (2026-09-05) Rilis stabil sesuai MASTER PROMPT. Bukan versi fitur: verifikasi menyeluruh bahwa seluruh pipe">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v1.0.0.html">
+<meta property="og:title" content="Changelog 1.0.0 — Nusa Docs 1.0.0">
+<meta property="og:description" content="1.0.0 v1.0.0 Release notes # — Stable Nusa (2026-09-05) Rilis stabil sesuai MASTER PROMPT. Bukan versi fitur: verifikasi menyeluruh bahwa seluruh pipe">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 1.0.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="1.0.0">
+<meta name="nusa:keywords" content="changelog, 1.0.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 1.0.0", "category": "changelog", "version": "1.0.0", "content": "1.0.0 v1.0.0 Release notes # — Stable Nusa (2026-09-05) Rilis stabil sesuai MASTER PROMPT. Bukan versi fitur: verifikasi menyeluruh bahwa seluruh pipeline, bahasa, tooling, stdlib, diagnostics, dan dokumentasi memenuhi Definition of Done 12/12. Ditambahkan # Diagnostics span: length di SemanticErro", "code_example": "", "keywords": "changelog, 1.0.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v1.0.0.html">1.0.0</a></p><article><h1>1.0.0</h1><span class="badge historic">v1.0.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Stable Nusa (2026-09-05)</p>
+<p>Rilis stabil sesuai MASTER PROMPT. Bukan versi fitur: verifikasi</p>
+<p>menyeluruh bahwa seluruh pipeline, bahasa, tooling, stdlib,</p>
+<p>diagnostics, dan dokumentasi memenuhi Definition of Done 12/12.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Diagnostics span: <code>length</code> di <code>SemanticError</code>/<code>ParseError</code>/</li>
+</ul>
+<p>  <code>ModuleError</code>, dirender caret beruntun + layout blank-line persis</p>
+<p>  contoh master (<code>^^^^^^</code> untuk identifier). Diisi di situs</p>
+<p>  identifier-presisi (variabel/fungsi/struct/field/call).</p>
+<ul>
+<li>Dokumentasi wajib 1.0: <code>types.md</code>, <code>functions.md</code>, <code>control-flow.md</code>,</li>
+</ul>
+<p>  <code>arrays.md</code>, <code>structs.md</code>, <code>modules.md</code>; <code>stdlib.md</code> →</p>
+<p>  <code>standard-library.md</code>; spesifikasi dasar <code>spec.md</code> (leksikal, grammar,</p>
+<p>  tipe, semantik runtime, modul, diagnostics, batasan normatif).</p>
+<ul>
+<li>Program uji 1.0 verbatim (<code>examples/nusa10.ns</code>) + <code>e2e_final</code></li>
+</ul>
+<p>  (build+run+output eksak + IR + format diagnostics + 8 CLI).</p>
+<h3 id="diverifikasi-definition-of-done-12-12">Diverifikasi (Definition of Done 12/12) <a href="#diverifikasi-definition-of-done-12-12" aria-label="taut">#</a></h3>
+<ul>
+<li>[x] clean build berhasil (0 warning, 0 error)</li>
+<li>[x] semua unit tests lulus</li>
+<li>[x] semua integration tests lulus (20/20 ctest)</li>
+<li>[x] contoh program berhasil dikompilasi (program 1.0 + semua examples)</li>
+<li>[x] executable AArch64 dijalankan di Termux (<code>file</code> + run)</li>
+<li>[x] LLVM IR terverifikasi (<code>verifyModule</code> + inspeksi <code>@main</code>/<code>@add</code>/<code>%Person</code>)</li>
+<li>[x] compiler tidak crash pada malformed input (<code>e2e_hardening</code>)</li>
+<li>[x] diagnostics bekerja (format = contoh master, e2e_final)</li>
+<li>[x] dokumentasi tersedia (10 file wajib + spec + README)</li>
+<li>[x] CLI bekerja (8/8 perintah, e2e_final)</li>
+<li>[x] standard library dasar bekerja (<code>nusa test tests/</code> hijau)</li>
+<li>[x] regression tests tersedia (unit 9 + e2e 11 file)</li>
+</ul>
+<h3 id="batasan-final-sesuai-master-roadmap-1-x-2-x">Batasan final (sesuai master — roadmap 1.x/2.x) <a href="#batasan-final-sesuai-master-roadmap-1-x-2-x" aria-label="taut">#</a></h3>
+<ul>
+<li>Tanpa generics, traits, advanced pattern matching,</li>
+</ul>
+<p>  ownership/borrowing, garbage collector, async/await, concurrency,</p>
+<p>  macros, FFI kompleks, package manager, self-hosting,</p>
+<p>  cross-platform toolchain.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">1.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

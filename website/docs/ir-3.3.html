@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ir-3.3.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="ir-3.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR 2.0 — Milestone 1: Analisis Control-Flow MIR (Phase 102) #">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/ir-3.3.html">
+<meta property="og:title" content="ir-3.3.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="ir-3.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR 2.0 — Milestone 1: Analisis Control-Flow MIR (Phase 102) #">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="ir-3.3.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="ir-3.3, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "ir-3.3.md", "category": "docs", "version": "3.0.0", "content": "ir-3.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR 2.0 — Milestone 1: Analisis Control-Flow MIR (Phase 102) # Status: slice implementasi. Mandat master Phase 102 (AST → HIR → MIR → Optimized MIR → LLVM IR + SSA/CFG/data-flow/lifetime/escape/ alias + verifier", "code_example": "", "keywords": "ir-3.3, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/ir-3.3.html">ir-3.3.md</a></p><article><h1>ir-3.3.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-ir-2-0-milestone-1-analisis-control-flow-mir-phase-102">Nusa IR 2.0 — Milestone 1: Analisis Control-Flow MIR (Phase 102) <a href="#nusa-ir-2-0-milestone-1-analisis-control-flow-mir-phase-102" aria-label="taut">#</a></h1>
+<p>Status: slice implementasi. Mandat master Phase 102 (AST → HIR →</p>
+<p>MIR → Optimized MIR → LLVM IR + SSA/CFG/data-flow/lifetime/escape/</p>
+<p>alias + verifier + contoh <code>nusa internal-ir-check</code>). NOL rewrite,</p>
+<p>NOL rewire pipeline (aturan: tanpa design review).</p>
+<h2 id="1-cakupan-milestone-disengaja-sempit">1. Cakupan milestone (disengaja sempit) <a href="#1-cakupan-milestone-disengaja-sempit" aria-label="taut">#</a></h2>
+<ul>
+<li>Verifier MIR (Phase 52) hanya properti lokal: terminator,</li>
+</ul>
+<p>  def-use, target-ada, arity/tipe call, return. TAK ADA konsep</p>
+<p>  penerus/pendahulu/terjangkau — block mati lolos diam-diam,</p>
+<p>  padahal DCE (Phase 53) buta-block.</p>
+<ul>
+<li>Dipilih: infrastruktur CFG + eliminasi block tak-terjangkau.</li>
+</ul>
+<p>  Bukan: HIR, SSA penuh, data-flow/lifetime/escape/alias,</p>
+<p>  lowering AST→MIR, rewire pipeline (butuh design review).</p>
+<h2 id="2-perubahan">2. Perubahan <a href="#2-perubahan" aria-label="taut">#</a></h2>
+<ul>
+<li>Baru <code>compiler/mir/Cfg.{h,cpp}</code> (<code>nusa::mir</code>, std-only,</li>
+</ul>
+<p>  deterministik): <code>successors</code>, <code>predecessors</code>, <code>reachable</code></p>
+<p>  (BFS dari entry; entry hilang → kosong — verifier yang</p>
+<p>  melapor), <code>rpo</code> (DFS iteratif; tanpa rekursi).</p>
+<ul>
+<li><code>compiler/mir/Opt.{h,cpp}</code>: <code>eliminateUnreachableBlocks</code></li>
+</ul>
+<p>  (partisi sekali jalan; entry-hilang → diam; aman: block</p>
+<p>  terbuang tak dirujuk block hidup mana pun menurut definisi),</p>
+<p>  field <code>OptStats::blocksRemoved</code>, dipanggil sekali di awal</p>
+<p>  <code>optimizeFunction</code> (sebelum loop fold+DCE).</p>
+<ul>
+<li><code>CMakeLists.txt</code>: <code>Cfg.cpp</code> ke lib; <code>e2e_opt.sh</code>: <code>Cfg.cpp</code></li>
+</ul>
+<p>  ke kompilasi bench standalone (temuan saat verifikasi —</p>
+<p>  link error tanpa itu).</p>
+<ul>
+<li>Regresi: <code>testCfg</code> (diamond + self-loop hidup + dead),</li>
+</ul>
+<p>  <code>testEliminateUnreachableBlocks</code> (buang 2 block, verify</p>
+<p>  pasca-bersih, idempoten, entry-hilang diam).</p>
+<h2 id="3-diverifikasi">3. Diverifikasi <a href="#3-diverifikasi" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit <code>test_mir</code> 13/13 (11 lama tak tersentuh angkanya +</li>
+</ul>
+<p>  2 baru); <code>e2e_mir</code> 2/2; <code>e2e_opt</code> 4/4 (bench sintetik 3x:</p>
+<p>  6002 → 2 instruksi, ~20ms — identik baseline 2.4.0 karena</p>
+<p>  workload satu-block; verify pra/pasca ok).</p>
+<ul>
+<li>Pipeline <code>.ns</code> tak tersentuh (MIR belum rewire — by design);</li>
+</ul>
+<p>  program <code>.ns</code> + IR <code>@main</code> OK.</p>
+<ul>
+<li><code>nusa internal-ir-check file.ns</code> DITUNDA jujur: butuh lowering</li>
+</ul>
+<p>  AST→MIR (dua jalur codegen divergen tanpa design review =</p>
+<p>  dilarang aturan). CLI datang bersama lowering (Phase 103+).</p>
+<h2 id="4-ditunda-jujur">4. Ditunda jujur <a href="#4-ditunda-jujur" aria-label="taut">#</a></h2>
+<ul>
+<li>HIR, SSA, data-flow/lifetime/escape/alias analysis.</li>
+<li>Pengetatan verifier atas reachable (LLVM sendiri mengizinkan</li>
+</ul>
+<p>  block mati — verifikasi strict ditolak mengikuti preseden itu).</p>
+<ul>
+<li>Lowering + rewire + CLI <code>internal-ir-check</code>.</li>
+</ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

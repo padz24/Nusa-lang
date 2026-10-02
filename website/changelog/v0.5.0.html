@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 0.5.0 — Nusa Docs 0.5.0</title>
+<meta name="description" content="0.5.0 v0.5.0 Release notes # — Functions (2026-09-05) Milestone functions sesuai MASTER PROMPT: deklarasi berparameter, return type, return statement,">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v0.5.0.html">
+<meta property="og:title" content="Changelog 0.5.0 — Nusa Docs 0.5.0">
+<meta property="og:description" content="0.5.0 v0.5.0 Release notes # — Functions (2026-09-05) Milestone functions sesuai MASTER PROMPT: deklarasi berparameter, return type, return statement,">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 0.5.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="0.5.0">
+<meta name="nusa:keywords" content="changelog, 0.5.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 0.5.0", "category": "changelog", "version": "0.5.0", "content": "0.5.0 v0.5.0 Release notes # — Functions (2026-09-05) Milestone functions sesuai MASTER PROMPT: deklarasi berparameter, return type, return statement, calls, local scope, validasi argumen — dengan LLVM function dan call yang benar. Ditambahkan # Lexer: token -&gt; (greedy; Minus + Gt berdampingan t", "code_example": "", "keywords": "changelog, 0.5.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v0.5.0.html">0.5.0</a></p><article><h1>0.5.0</h1><span class="badge historic">v0.5.0</span> <h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— Functions (2026-09-05)</p>
+<p>Milestone functions sesuai MASTER PROMPT: deklarasi berparameter,</p>
+<p>return type, return statement, calls, local scope, validasi argumen —</p>
+<p>dengan LLVM function dan <code>call</code> yang benar.</p>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li>Lexer: token <code>-&gt;</code> (greedy; <code>Minus</code>+<code>Gt</code> berdampingan tak pernah valid).</li>
+<li>AST multi-fungsi: <code>Program.functions</code>, <code>Param</code>, <code>retType</code> (default void),</li>
+</ul>
+<p>  <code>ReturnStmt</code>, <code>Call</code>, <code>ExprStmt</code> (call-statement fungsi void);</p>
+<p>  dump <code>(program (fn add(a: i64, b: i64) -&gt; i64 …))</code>, <code>(call f …)</code>,</p>
+<p>  <code>(return …)</code>, <code>(do …)</code>.</p>
+<ul>
+<li>Parser: <code>fn name(params) [-&gt; Type] block</code>, param <code>name: Type</code> (anotasi</li>
+</ul>
+<p>  wajib), <code>return [expr]</code>, call di primary (lookahead <code>Ident (</code>),</p>
+<p>  call-statement; <code>main</code> tanpa parameter &amp; return void dipertahankan.</p>
+<ul>
+<li>Semantic: namespace fungsi vs nilai; <code>main</code> wajib &amp; tak callable;</li>
+</ul>
+<p>  reserved <code>print</code>/<code>puts</code>/<code>printf</code>; local scope per fungsi (param + <code>let</code>);</p>
+<p>  <code>undefined/duplikat function</code>, <code>duplicate parameter</code>; two-pass</p>
+<p>  (forward reference OK).</p>
+<ul>
+<li>TypeChecker: signatures two-pass (rekursi OK), arity + tipe argumen,</li>
+</ul>
+<p>  return cocok (<code>mismatched return type</code>), missing/bare return,</p>
+<p>  unreachable sesudah <code>return</code> (aturan straight-line v0.5.0), param</p>
+<p>  <code>void</code> ditolak.</p>
+<ul>
+<li>Codegen: two-pass declare→define; <code>define i64 @add(i64 %a, i64 %b)</code>,</li>
+</ul>
+<p>  <code>call</code>, param alloca+store, <code>ret</code>/<code>ret void</code>/<code>unreachable</code> defensif;</p>
+<p>  <code>main</code> tetap <code>i32 @main</code> return 0; <code>verifyModule</code> wajib.</p>
+<ul>
+<li>Contoh <code>examples/functions.ns</code> → <code>30</code>.</li>
+<li>Tests: lexer +1 (Arrow), parser +8 &amp; dump direvisi, semantic +8,</li>
+</ul>
+<p>  typecheck +11, codegen +3 (<code>define/call/ret</code> + forward + bool/str/void),</p>
+<p>  <code>e2e_functions</code> baru (9 kasus: milestone, multi, forward, build-only</p>
+<p>  rekursi, arity, tipe argumen, undefined fn, missing return).</p>
+<h3 id="diperbaiki-temuan-selama-milestone">Diperbaiki (temuan selama milestone) <a href="#diperbaiki-temuan-selama-milestone" aria-label="taut">#</a></h3>
+<ul>
+<li><code>ExprStmt</code> ditambahkan: void-call sebagai statement (<code>greet(&quot;Nusa&quot;);</code>)</li>
+</ul>
+<p>  adalah kebutuhan nyata yang terlewat dari desain awal; tanpanya fungsi</p>
+<p>  void tak terpanggil. Semua <code>std::get&lt;ReturnStmt&gt;</code> final di</p>
+<p>  semantic/checker/codegen diganti cabang eksplisit (anti</p>
+<p>  <code>bad_variant_access</code>).</p>
+<h3 id="diverifikasi">Diverifikasi <a href="#diverifikasi" aria-label="taut">#</a></h3>
+<ul>
+<li>Clean build: 0 warning, 0 error. <code>ctest</code>: <strong>10/10 passed</strong>.</li>
+<li>Program milestone verbatim → AArch64 executable → <code>30</code>; IR:</li>
+</ul>
+<p>  <code>define i64 @add(i64 %a, i64 %b)</code>, <code>call i64 @add(i64 10, i64 20)</code>,</p>
+<p>  <code>ret i64</code> — sesuai tuntutan master.</p>
+<h3 id="batasan-yang-diketahui">Batasan yang diketahui <a href="#batasan-yang-diketahui" aria-label="taut">#</a></h3>
+<ul>
+<li>Fungsi top-level saja; <code>return</code> harus terakhir; tanpa closures/generics;</li>
+</ul>
+<p>  control flow = v0.6.0.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">0.5.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

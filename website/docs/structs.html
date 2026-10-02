@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>structs.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="structs.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Struct Nusa — v2.0.0 # struct Person { name: string; age: i64; } ">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/structs.html">
+<meta property="og:title" content="structs.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="structs.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Struct Nusa — v2.0.0 # struct Person { name: string; age: i64; } ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="structs.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="structs, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "structs.md", "category": "docs", "version": "3.0.0", "content": "structs.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Struct Nusa — v2.0.0 # struct Person { name: string; age: i64; } fn main() { let person = Person { name: &quot;Nusa&quot;, age: 1 }; print(person.age); // 1 } Deklarasi # StructDecl := &quot;struct&quot; Ident [&qu", "code_example": "", "keywords": "structs, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/structs.html">structs.md</a></p><article><h1>structs.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="struct-nusa-v2-0-0">Struct Nusa — v2.0.0 <a href="#struct-nusa-v2-0-0" aria-label="taut">#</a></h1>
+<pre data-lang="nusa"><code class="lang-nusa">struct Person {
+    name: string;
+    age: i64;
+}
+
+fn main() {
+    let person = Person {
+        name: &quot;Nusa&quot;,
+        age: 1
+    };
+    print(person.age); // 1
+}</code></pre>
+<h2 id="deklarasi">Deklarasi <a href="#deklarasi" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">StructDecl := &quot;struct&quot; Ident [&quot;&lt;&quot; Ident (&quot;,&quot; Ident)* &quot;&gt;&quot;] &quot;{&quot; (FieldDecl [&quot;;&quot;])* &quot;}&quot;
+FieldDecl  := Ident &quot;:&quot; Type</code></pre>
+<ul>
+<li>Field bertipe; <code>;</code> opsional; struct kosong diizinkan.</li>
+<li>Duplikat nama struct/field ditolak. Nama reserved</li>
+</ul>
+<p>  (<code>print</code>/<code>len</code>/<code>exit</code>/…) tak bisa dipakai.</p>
+<ul>
+<li>Field <code>void</code> atau array ditolak (array butuh ukuran statis yang tak</li>
+</ul>
+<p>  ada di tipe). Nested struct (<code>inner: Inner</code>) bisa.</p>
+<h2 id="konstruksi">Konstruksi <a href="#konstruksi" aria-label="taut">#</a></h2>
+<pre data-lang="text"><code class="lang-text">StructLit := Ident [&quot;&lt;&quot; Type (&quot;,&quot; Type)* &quot;&gt;&quot;] &quot;{&quot; [FieldInit (&quot;,&quot; FieldInit)*] &quot;}&quot;</code></pre>
+<ul>
+<li>Urutan inisialisasi bebas; <strong>semua field wajib diisi</strong> (missing →</li>
+</ul>
+<p>  error; unknown/duplikat → error dengan daftar field sebagai hint).</p>
+<ul>
+<li>Tipe tiap nilai harus sama dengan tipe field (<code>mismatched field type</code>).</li>
+<li>Tipe hasil = tipe struct bernama.</li>
+</ul>
+<h2 id="akses-field">Akses field <a href="#akses-field" aria-label="taut">#</a></h2>
+<ul>
+<li><code>person.age</code> (berantai: <code>a.b.c</code>, campur index: <code>a.b[0]</code>).</li>
+<li>Menghasilkan tipe field — bisa langsung dihitung (<code>p.age + 1</code>).</li>
+<li>Field tak dikenal → error + daftar field. Akses di non-struct</li>
+</ul>
+<p>  (<code>x.y</code> dengan <code>x: i64</code>) ditolak jelas.</p>
+<ul>
+<li>Backend: named LLVM type (<code>%Person = type { ptr, i64 }</code>), StructGEP +</li>
+</ul>
+<p>  load (skalar) / pointer (nested). Nilai struct = pointer (tanpa load);</p>
+<p>  copy via agregat.</p>
+<h2 id="namespace">Namespace <a href="#namespace" aria-label="taut">#</a></h2>
+<p>Struct hidup di namespace terpisah dari fungsi (ala Rust):</p>
+<p><code>struct Foo</code> + <code>fn Foo</code> boleh koeksis; pemakaian dibedakan posisi</p>
+<p>(<code>{</code> vs <code>(</code>). Ambiguitas <code>if c {</code> vs literal dipecahkan lookahead.</p>
+<h2 id="batasan-stabil-v2-0-0-by-value-sejak-v1-2-0">Batasan (stabil v2.0.0; by-value sejak v1.2.0) <a href="#batasan-stabil-v2-0-0-by-value-sejak-v1-2-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Tanpa field array, <code>==</code>/print struct.</li>
+<li>Param/return struct by-value didukung sejak v1.2.0 (records).</li>
+<li>Struct generik: lihat <code>types.md</code>.</li>
+<li>Field selalu publik (visibilitas <code>_</code> hanya untuk fungsi/struct).</li>
+<li>Tanpa inherent methods/method generik; perilaku polimorfik via</li>
+</ul>
+<p>  <code>impl Trait for Struct</code> (lihat <code>docs/traits.md</code>). Tanpa tuple.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

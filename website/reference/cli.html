@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLI Reference — Nusa Docs 3.0.0</title>
+<meta name="description" content="CLI Reference v3.0.0 22+ subperintah nusa v3.0.0. Sumber: nusa --help verbatim. Nusa programming language v3.0.0 — Stable Usage: nusa --version Print ">
+<link rel="canonical" href="https://nusa-lang.org/docs/reference/cli.html">
+<meta property="og:title" content="CLI Reference — Nusa Docs 3.0.0">
+<meta property="og:description" content="CLI Reference v3.0.0 22+ subperintah nusa v3.0.0. Sumber: nusa --help verbatim. Nusa programming language v3.0.0 — Stable Usage: nusa --version Print ">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="CLI Reference">
+<meta name="nusa:category" content="reference">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="cli, nusa, build, run, pkg, playground">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "CLI Reference", "category": "reference", "version": "3.0.0", "content": "CLI Reference v3.0.0 22+ subperintah nusa v3.0.0. Sumber: nusa --help verbatim. Nusa programming language v3.0.0 — Stable Usage: nusa --version Print version nusa --help Print this help nusa build &lt;file.ns&gt; [-o &lt;output&gt;] Compile to native executable [--profile &lt;dev|debug|release&gt;]", "code_example": "", "keywords": "cli, nusa, build, run, pkg, playground"}</script>
+</head>
+<body class="kind-reference">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/" aria-current="page">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../reference/cli.html" aria-current="page">CLI</a></li><li><a href="../reference/fmt.html">Formatter</a></li><li><a href="../reference/docgen.html">Docgen</a></li><li><a href="../reference/diagnostics.html">Diagnostics</a></li></ul></aside>
+<main id="main"><article><h1>CLI Reference</h1><span class="badge historic">v3.0.0</span> <p>22+ subperintah <code>nusa</code> v3.0.0. Sumber: <code>nusa --help</code> verbatim.</p><pre data-lang="bash"><code class="lang-bash">Nusa programming language v3.0.0 — Stable
+
+Usage:
+  nusa --version          Print version
+  nusa --help             Print this help
+  nusa build &lt;file.ns&gt; [-o &lt;output&gt;]   Compile to native executable
+    [--profile &lt;dev|debug|release&gt;] [--link &lt;lib|file&gt;]... [--link-dir &lt;dir&gt;]...
+    [--target &lt;t&gt;] [--sysroot &lt;dir&gt;] [--emit-ir|--emit-asm|-c]  Cross
+    [-O0|-O1|-O2|-O3|-Os|-Oz]  LLVM optimization (default O0)
+    [--fresh]  Ignore incremental cache
+    [-g|--debug]  DWARF debug info
+    [--stats]  Print compile-time breakdown (frontend/codegen/clang)
+    [--pgo-generate]  PGO: build instrumented binary
+    [--pgo-use &lt;profdata&gt;]  PGO: optimized build from profile
+  nusa run &lt;file.ns&gt; [args...]  Build and run (args via process_argv)
+  nusa bench &lt;file.ns&gt; [-n N] [-- args...]  Benchmark N runs (time + maxRSS)
+  nusa check &lt;file.ns&gt;   Validate without compiling
+  nusa trace run &lt;file.ns&gt; [args...]  Run with TRACE_ID injection
+  nusa trace check &lt;trace.log&gt;  Validate nusa-trace log
+  nusa repl                     Interactive read-eval-print loop
+  nusa migrate [PATH]    Audit 2.x code for 3.0 (compatible/
+                         deprecated/requires migration/broken/
+                         unsupported; default: .)
+  nusa clean [DIR]         Remove generated artifacts (*.ns.ll,
+                                  .nusa-cache/, target/, dist/)
+  nusa test [PATH...]    Run `*_test.ns` files (default: .)
+  nusa fmt [--check] &lt;file.ns&gt;...      Format source files
+  nusa doc &lt;file.ns&gt; [-o &lt;out&gt;] [--format markdown|json]  API docs/metadata
+  nusa lsp                         Language server (LSP over stdio)
+  nusa lex &lt;file.ns&gt;              Dump lexer tokens (debug)
+  nusa ast &lt;file.ns&gt;              Dump parser AST (debug)
+  nusa bindgen &lt;header.h&gt; [-o out.ns]  Generate extern fn bindings (C subset)
+  nusa headers &lt;file.ns&gt; [-o out.h]  Generate C header from Nusa API (ABI-honest subset)
+  nusa bootstrap [lex.ns] [-o DIR]  Stage 0-&gt;1-&gt;2 + repro check
+    [--as lex|ast]  Stage-0 reference kind (default lex)
+    [--rebuild DIR]  Stage 3: rebuild + compare (bootstrap full)
+  nusa sandbox &lt;file.ns&gt; [--timeout S] [--memory-mb M] [--output-kb K]
+                                  Run untrusted code under limits
+  nusa playground [--port P] [--timeout S] [--memory-mb M]
+                                  Local HTTP playground (127.0.0.1 only)
+  nusa plugin run &lt;file.ns&gt; [--manifest m.json] [--timeout S]
+                                  [--memory-mb M] [--output-kb K]
+                                  Sandboxed JSON plugin (stdin request)
+  nusa new &lt;template&gt; [name] [--dir DIR]  Scaffold a project
+  nusa new --list                 List project templates
+  nusa pkg &lt;init|add|remove|update|build|publish|search|install|tree|verify|outdated|audit|sbom&gt;  Package manager
+  nusa search &lt;query&gt; [--registry DIR]  Search registry
+  nusa install &lt;name&gt;[@req] [--registry DIR]  Add+update from registry
+  nusa publish [--registry DIR]  Publish current package
+  nusa tree                        Dependency graph
+  nusa verify [--registry DIR]     Re-verify lock checksums
+  nusa outdated [--registry DIR]   Newer registry versions
+  nusa audit                       Capability + checksum report
+  nusa sbom                        JSON supply-chain inventory (nusa-sbom/1)
+
+Examples:
+  nusa build examples/hello.ns
+  ./hello
+  nusa run examples/hello.ns
+  nusa check examples/hello.ns
+  nusa test tests/
+  nusa fmt --check examples/hello.ns
+  nusa pkg init myapp</code></pre><h2>Catatan pemakaian</h2><ul><li><code>build/run</code>: <code>--fresh</code> abaikan cache; <code>--stats</code> rincian ms; <code>-g</code> DWARF; <code>-O0..3/s/z</code>.</li><li><code>playground/sandbox</code>: hanya loopback + limit (lihat <a href="../playground/">Playground</a>).</li><li><code>pkg</code>: butuh <code>native = true</code> untuk <code>extern fn</code>/<code>[link]</code>.</li></ul></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

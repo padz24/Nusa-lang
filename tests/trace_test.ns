@@ -1,0 +1,16 @@
+// Trace test (Phase 119): span/event/ID tanpa I/O acuan.
+// Dijalankan via `nusa test tests/` (exit 0 = PASS).
+import trace;
+fn main() {
+    let a = new_request_id();
+    let b = new_request_id();
+    assert(str_eq(a, "") == false);
+    assert(str_eq(a, b) == false);
+    let t = trace_begin("op");
+    assert(str_eq(t.op, "op"));
+    assert(str_eq(t.id, "") == false);
+    trace_event("e", "ok", "n");
+    let ms = trace_end(t);
+    assert(ms >= 0);
+    assert(str_eq(trace_escape("a\"b\\c"), "a\\\"b\\\\c"));
+}

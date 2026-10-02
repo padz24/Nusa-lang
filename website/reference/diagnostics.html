@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnostics — Nusa Docs 3.0.0</title>
+<meta name="description" content="Diagnostics Catalog v3.0.0 Format: file:line:col + snippet + caret span + help: . Cari pesan verbatim via Search (mode error-message). Pesan Arti &amp;amp">
+<link rel="canonical" href="https://nusa-lang.org/docs/reference/diagnostics.html">
+<meta property="og:title" content="Diagnostics — Nusa Docs 3.0.0">
+<meta property="og:description" content="Diagnostics Catalog v3.0.0 Format: file:line:col + snippet + caret span + help: . Cari pesan verbatim via Search (mode error-message). Pesan Arti &amp;amp">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Diagnostics">
+<meta name="nusa:category" content="reference">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="error, diagnostics, runtime error, help">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Diagnostics", "category": "reference", "version": "3.0.0", "content": "Diagnostics Catalog v3.0.0 Format: file:line:col + snippet + caret span + help: . Cari pesan verbatim via Search (mode error-message). Pesan Arti &amp; aksi Tahap Checked &lt;file&gt;: no errors nusa check sukses; file valid tanpa kompilasi. nusa check file:line:col + snippet + caret + help: Format", "code_example": "", "keywords": "error, diagnostics, runtime error, help"}</script>
+</head>
+<body class="kind-reference">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/" aria-current="page">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../reference/cli.html">CLI</a></li><li><a href="../reference/fmt.html">Formatter</a></li><li><a href="../reference/docgen.html">Docgen</a></li><li><a href="../reference/diagnostics.html" aria-current="page">Diagnostics</a></li></ul></aside>
+<main id="main"><article><h1>Diagnostics Catalog</h1><span class="badge historic">v3.0.0</span> <p>Format: <code>file:line:col</code> + snippet + caret span + <code>help:</code>. Cari pesan verbatim via <a href="../search/">Search</a> (mode error-message).</p><table><thead><tr><th>Pesan</th><th>Arti &amp; aksi</th><th>Tahap</th></tr></thead><tbody><tr><td><code>Checked &lt;file&gt;: no errors</code></td><td>nusa check sukses; file valid tanpa kompilasi.</td><td>nusa check</td></tr><tr><td><code>file:line:col + snippet + caret + help:</code></td><td>Format semua error kompilasi; contoh persis = format master.</td><td>semua tahap</td></tr><tr><td><code>too deeply nested</code></td><td>Nesting &gt; 500 ditolak; sederhanakan ekspresi/blok.</td><td>parser</td></tr><tr><td><code>import chain too deep / rantai import &gt; 100</code></td><td>Rantai import siklik/terlalu dalam; rapikan modul.</td><td>module loader</td></tr><tr><td><code>runtime error: invalid handle in &lt;op&gt;</code></td><td>Handle thread/chan/mutex/atomic basi/ganda/nol (fail-fast 2.5.0).</td><td>runtime</td></tr><tr><td><code>does not implement trait</code></td><td>Bound T: Trait gagal saat instansiasi konkret.</td><td>typechecker</td></tr><tr><td><code>unknown/ambiguous method + daftar</code></td><td>Method call tak dikenal/ambigu; pilih receiver yang tepat.</td><td>typechecker</td></tr><tr><td><code>circular type alias (A -&gt; B -&gt; A)</code></td><td>Alias tipe melingkar; putus siklusnya.</td><td>typechecker</td></tr><tr><td><code>duplicate type / duplicate impl</code></td><td>Nama tipe/implementasi ganda program-wide.</td><td>semantic</td></tr><tr><td><code>pre-emptive error link-cross-tanpa-sysroot</code></td><td>Link cross butuh --sysroot pengguna.</td><td>driver</td></tr><tr><td><code>extern sig rejected + alasan per-jenis</code></td><td>Hanya primitif i64/string/bool param &amp; i64/bool/void return.</td><td>checker</td></tr><tr><td><code>lock basi / pin compiler beda</code></td><td>Jalankan pkg update (menyembuhkan); lock pra-2.12 basi sekali.</td><td>pkg</td></tr><tr><td><code>native = true required</code></td><td>pkg build menolak extern fn/[link] tanpa capability native.</td><td>pkg</td></tr></tbody></table></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

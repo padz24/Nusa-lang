@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog 2.0.0 — Nusa Docs 2.0.0</title>
+<meta name="description" content="2.0.0 v2.0.0 Terdampak: language/error-handling , docs/migration-2.0 Release notes # — 2026-09-08 (Phase 45: Nusa 2.0) Rilis mayor: sum-type natif (B1">
+<link rel="canonical" href="https://nusa-lang.org/docs/changelog/v2.0.0.html">
+<meta property="og:title" content="Changelog 2.0.0 — Nusa Docs 2.0.0">
+<meta property="og:description" content="2.0.0 v2.0.0 Terdampak: language/error-handling , docs/migration-2.0 Release notes # — 2026-09-08 (Phase 45: Nusa 2.0) Rilis mayor: sum-type natif (B1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="Changelog 2.0.0">
+<meta name="nusa:category" content="changelog">
+<meta name="nusa:version" content="2.0.0">
+<meta name="nusa:keywords" content="changelog, 2.0.0, release">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "Changelog 2.0.0", "category": "changelog", "version": "2.0.0", "content": "2.0.0 v2.0.0 Terdampak: language/error-handling , docs/migration-2.0 Release notes # — 2026-09-08 (Phase 45: Nusa 2.0) Rilis mayor: sum-type natif (B1, BREAKING), channel bertag + TCP server (ekspansif-terkirim), satu bug diperbaiki, spec 2.0 + panduan migrasi. GC/FFI-callback/async SENGAJA di luar", "code_example": "", "keywords": "changelog, 2.0.0, release"}</script>
+</head>
+<body class="kind-changelog">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/" aria-current="page">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../changelog/">Changelog</a> / <a href="../changelog/v2.0.0.html">2.0.0</a></p><article><h1>2.0.0</h1><span class="badge stable">v2.0.0</span> <p>Terdampak: <a href="../language/error-handling.html">language/error-handling</a>, <a href="../docs/migration-2.0.html">docs/migration-2.0</a></p><h2 id="release-notes">Release notes <a href="#release-notes" aria-label="taut">#</a></h2>
+<p>— 2026-09-08 (Phase 45: Nusa 2.0)</p>
+<p>Rilis mayor: sum-type natif (B1, BREAKING), channel bertag +</p>
+<p>TCP server (ekspansif-terkirim), satu bug diperbaiki, spec 2.0 +</p>
+<p>panduan migrasi. GC/FFI-callback/async SENGAJA di luar 2.0</p>
+<p>(RFC-0007/0008/0004 Proposed dengan desain + acceptance criteria).</p>
+<h3 id="breaking-migrasi-docs-migration-2-0-md">Breaking (migrasi: docs/migration-2.0.md) <a href="#breaking-migrasi-docs-migration-2-0-md" aria-label="taut">#</a></h3>
+<ul>
+<li><code>Option</code>/<code>Result</code>: encoding struct + dummy DIHAPUS →</li>
+</ul>
+<p>  <code>enum Option&lt;T&gt; { Some(T), None }</code> / `enum Result&lt;T, E&gt; { Ok(T),</p>
+<p>  Err(E) }<code> di std. </code>none(d)<code>/</code>ok(v,d)<code>/</code>err(d,e)` → ctor</p>
+<p>  qualified (<code>Option&lt;i64&gt;.None()</code>); <code>opt_map</code>/<code>res_map</code>/</p>
+<p>  <code>res_map_err</code> tanpa dummy; field <code>.value</code>/<code>.has_value</code>/<code>.is_ok</code>/</p>
+<p>  <code>.error</code> ditolak (gunakan match/kombinator); struct</p>
+<p>  <code>Option</code>/<code>Result</code> pengguna + pola variannya ditolak dengan hint.</p>
+<ul>
+<li>Keyword <code>async</code>/<code>await</code> di-reserved (nol pemakaian di korpus).</li>
+</ul>
+<h3 id="ditambahkan">Ditambahkan <a href="#ditambahkan" aria-label="taut">#</a></h3>
+<ul>
+<li><code>?</code> atas enum <code>Result</code> (uji tag + unwrap slot; struct-mirip</li>
+</ul>
+<p>  tetap didukung); exhaustiveness varian untuk Option/Result natif.</p>
+<ul>
+<li>Channel bertag (RFC-0006): <code>chan_new_bool/send_bool/recv_bool</code>,</li>
+</ul>
+<p>  <code>chan_new_str/send_str/recv_str</code> (tag runtime, mismatch = exit 1).</p>
+<ul>
+<li>TCP server loopback: <code>tcp_listen</code>/<code>tcp_accept</code> + <code>std.net</code></li>
+</ul>
+<p>  <code>listen_on</code>/<code>accept_one</code>; template <code>server</code> kini serve-once nyata.</p>
+<ul>
+<li>Bare <code>return;</code> di tengah <code>main</code> legal (bug IR diperbaiki).</li>
+<li>Substitusi tparam ke posisi-tipe ekspresi body generik</li>
+</ul>
+<p>  (<code>Option&lt;U&gt;.Some(…)</code>; dulu <code>unknown type</code>) + recheck</p>
+<p>  StructLit rewrite mengembalikan tipe applied (dulu</p>
+<p>  <code>named(mangled)</code>; latent sejak Phase 26).</p>
+<ul>
+<li><code>docs/language-spec-2.0.md</code> (normatif; 1.0 disimpan),</li>
+</ul>
+<p>  <code>docs/migration-2.0.md</code>; RFC-0005 Accepted; RFC-0006 Implemented;</p>
+<p>  RFC-0007/0008 Proposed.</p>
+<ul>
+<li>Uji: unit typecheck (migrasi + <code>testMatchOptionStructRejects</code>),</li>
+</ul>
+<p>  builtins (tagged channels, listen/accept), lexer (async);</p>
+<p>  <code>e2e_spec2.sh</code> (6: B1 dua arah); e2e_error/match/closures/</p>
+<p>  concurrency/stdlib2/new dimigrasi/ditambah.</p>
+<ul>
+<li>Audit pasca-rilis: manifest scaffold invalid (<code>compiler =</code></li>
+</ul>
+<p>  kehilangan kutip — off-by-one replace, kini diuji via</p>
+<p>  <code>pkg build</code> di e2e_new) + 5 file template tak-lolos fmt</p>
+<p>  (kini nol-baris-kosong + dikunci e2e_new).</p>
+<h3 id="batasan-2-0-kontrak-bukan-utang">Batasan 2.0 (kontrak, bukan utang) <a href="#batasan-2-0-kontrak-bukan-utang" aria-label="taut">#</a></h3>
+<ul>
+<li>Tanpa GC (heap program-lifetime dipertahankan); tanpa FFI</li>
+</ul>
+<p>  struct/callback; tanpa async; channel tanpa select/close;</p>
+<p>  registry lokal; playground sekuensial; DWARF skalar; LSP satu-file.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge stable">2.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

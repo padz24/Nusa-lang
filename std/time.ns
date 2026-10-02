@@ -1,0 +1,17 @@
+// Layer: platform (builtins: time_now_ms, time_now_s).
+// Wall-clock helpers (CLOCK_REALTIME). For short spans (benchmarks)
+// clock adjustments can skew results; keep spans small.
+fn now_ms() -> i64 {
+    return time_now_ms();
+}
+fn now_s() -> i64 {
+    return time_now_s();
+}
+// Milliseconds elapsed since `t0` (see now_ms).
+fn elapsed_ms(t0: i64) -> i64 {
+    return time_now_ms() - t0;
+}
+// Seconds elapsed since `t0` (see now_s).
+fn elapsed_s(t0: i64) -> i64 {
+    return time_now_s() - t0;
+}

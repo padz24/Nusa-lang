@@ -1,0 +1,15 @@
+// Sample `nusa test` target: string extras (3.0).
+import string;
+fn main() {
+    assert(str_starts_with("hello", "he"));
+    assert(str_starts_with("hello", "") == true);
+    assert(str_starts_with("hi", "hello") == false);
+    assert(str_ends_with("hello", "lo"));
+    assert(str_ends_with("hello", "he") == false);
+    assert(str_eq(str_trim("  hi\t\r\n"), "hi"));
+    assert(str_eq(str_trim_left("  x"), "x"));
+    assert(str_eq(str_trim_right("x  "), "x"));
+    assert(str_eq(str_trim(""), ""));
+    assert(str_eq(str_to_ascii_lower("HeLLo, NUSA!"), "hello, nusa!"));
+    assert(str_eq(str_to_ascii_upper("HeLLo, NUSA!"), "HELLO, NUSA!"));
+}

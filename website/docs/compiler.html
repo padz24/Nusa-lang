@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>compiler.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="compiler.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Nusa — Design &amp;amp; Implementation (aktual v2.0.0) # Ph">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/compiler.html">
+<meta property="og:title" content="compiler.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="compiler.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Nusa — Design &amp;amp; Implementation (aktual v2.0.0) # Ph">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="compiler.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="compiler, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "compiler.md", "category": "docs", "version": "3.0.0", "content": "compiler.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Nusa — Design &amp; Implementation (aktual v2.0.0) # Phase 40: dokumen ini = Compiler Implementation (pilihan implementasi, bukan definisi bahasa). Definisi bahasa normatif: docs/language-spec-2.0.md ( do", "code_example": "", "keywords": "compiler, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/compiler.html">compiler.md</a></p><article><h1>compiler.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="compiler-nusa-design-implementation-aktual-v2-0-0">Compiler Nusa — Design &amp; Implementation (aktual v2.0.0) <a href="#compiler-nusa-design-implementation-aktual-v2-0-0" aria-label="taut">#</a></h1>
+<blockquote><p>Phase 40: dokumen ini = <strong>Compiler Implementation</strong> (pilihan</p></blockquote>
+<blockquote><p>implementasi, bukan definisi bahasa). Definisi bahasa normatif:</p></blockquote>
+<blockquote><p><code>docs/language-spec-2.0.md</code> (<code>docs/language-spec-1.0.md</code></p></blockquote>
+<blockquote><p>diabadikan sebagai riwayat 1.20.0). Catatan berversi v0.x di bawah</p></blockquote>
+<blockquote><p>= arkeologi keputusan (perilaku saat ini mengikuti spec 2.0).</p></blockquote>
+<p>Pipeline:</p>
+<pre data-lang="text"><code class="lang-text">main.ns (+math.ns) → Load → Lex → Parser → AST → Semantic → TypeCheck → Codegen (LLVM 21.1.8) → .ll → clang → executable</code></pre>
+<p>Phase 51 (2.2.0): registry builtin (<code>isBuiltin</code>) tinggal di</p>
+<p>lapisan Frontend baru (<code>compiler/frontend/Builtin.{h,cpp}</code>),</p>
+<p>dipakai bersama semantic + codegen. Backend tidak include</p>
+<p><code>semantic/Semantic.h</code>/<code>TypeChecker.h</code> (dikunci <code>e2e_arch.sh</code>).</p>
+<p>Peta + utang layer tercatat di <code>docs/architecture-2.2.md</code></p>
+<p>(Pkg→Driver, <code>sha256Hex</code>, LSP→semantic, <code>Scopes.h</code> = follow-up).</p>
+<p>Phase 52 (2.3.0): fondasi IR internal di <code>compiler/mir/Mir.{h,cpp}</code></p>
+<p>(<code>nusa::mir</code>: typed values, instruksi, basic blocks, builder,</p>
+<p>verifier, dump teks) — murni C++ standar, pipeline belum di-rewire.</p>
+<p>Desain: <code>docs/ir-2.3.md</code>; conformance: <code>e2e_mir.sh</code>.</p>
+<p>Phase 53 (2.4.0): pass optimisasi di <code>compiler/mir/Opt.{h,cpp}</code></p>
+<p>(ConstFold + DCE + fixpoint manager; aturan aman di <code>docs/opt-2.4.md</code>,</p>
+<p>benchmark <code>bench/mir_opt_main.cpp</code> via <code>e2e_opt.sh</code>). LLVM tetap</p>
+<p>optimizer utama; pipeline <code>.ns</code> belum di-rewire.</p>
+<p>Phase 55 (2.6.0): runtime modular di <code>runtime/rt_*.c</code> + <code>rt_platform.h</code></p>
+<p>(<code>nusa_rt.c</code> = agregator satu TU; driver tak berubah). Desain:</p>
+<p><code>docs/runtime-2.6.md</code>; conformance: <code>e2e_runtime.sh</code>.</p>
+<p>Phase 56 (2.7.0): <code>chan_len</code> (observability antre) + stress suite</p>
+<p><code>e2e_stress.sh</code>; desain: <code>docs/concurrency-2.7.md</code>.</p>
+<p>Phase 57 (2.8.0): fondasi async sebagai library (<code>std/tasks.ns</code>:</p>
+<p>Future + cancellation kooperatif; tanpa sintaks baru) +</p>
+<p><code>e2e_async.sh</code>; desain: <code>docs/async-2.8.md</code>. Sampingan: formatter</p>
+<p>kini mempertahankan komentar dokumentasi <code>///</code> (regresi dikunci</p>
+<p><code>testDocCommentsKept</code>).</p>
+<p>Phase 58 (2.9.0): HTTP/1.x primitives murni Nusa (<code>std/http.ns</code></p>
+<p>di atas TCP loopback; tanpa builtin/compiler baru) +</p>
+<p><code>e2e_http.sh</code>; desain: <code>docs/net-2.9.md</code>.</p>
+<p>Phase 59 (2.10.0): model keamanan paket — <code>[capabilities]</code></p>
+<p>manifest + enforcement <code>native</code> di <code>pkg build</code> (pindai AST) +</p>
+<p>traversal guard install; desain: <code>docs/security-2.10.md</code>;</p>
+<p>conformance: <code>e2e_sec.sh</code>.</p>
+<p>Phase 60 (2.11.0): inspeksi ekosistem read-only — <code>tree</code>,</p>
+<p><code>verify</code>, <code>outdated</code>, <code>audit</code> (top-level + <code>pkg</code>); desain:</p>
+<p><code>docs/ecosystem-2.11.md</code>; conformance: <code>e2e_eco2.sh</code>.</p>
+<p>Phase 61 (2.12.0): reproducible builds — tarball publish</p>
+<p>byte-deterministik + pin compiler <code>[meta]</code> di lock; jaminan:</p>
+<p><code>docs/repro-2.12.md</code>; conformance: <code>e2e_repro.sh</code>.</p>
+<p>Phase 62 (2.13.0): build system — <code>nusa clean</code> + <code>--profile</code></p>
+<p>dev/debug/release (build + pkg build; eksplisit menang);</p>
+<p>desain: <code>docs/build-2.13.md</code>; conformance: <code>e2e_buildsys.sh</code>.</p>
+<p>Phase 63 (2.14.0): LSP <code>textDocument/references</code> (himpunan ≡</p>
+<p>rename; <code>includeDeclaration</code> dihormati); harness <code>e2e_lsp.py</code>.</p>
+<p>Phase 64 (2.15.0): DWARF composite (struct/array) + formal</p>
+<p>params; desain: <code>docs/debugging-2.15.md</code>; conformance: kasus</p>
+<p>baru <code>e2e_debug.sh</code>.</p>
+<p>Phase 65 (2.16.0): observability — <code>nusa bench</code> (N run +</p>
+<p>maxRSS) + <code>build --stats</code> (rincian compile); desain:</p>
+<p><code>docs/perf-2.16.md</code>; conformance: <code>e2e_prof.sh</code>.</p>
+<p>Phase 66 (2.17.0): <code>nusa bindgen</code> (header C subset → `extern</p>
+<p>fn`; tanpa perubahan checker/codegen); desain:</p>
+<p><code>docs/ffi-bindgen-2.17.md</code>; conformance: <code>e2e_bindgen.sh</code>.</p>
+<p>Phase 67 (2.18.0): target <code>wasm32</code> bare-metal compile-only</p>
+<p>(subset portabel; guard link/run existing); desain:</p>
+<p><code>docs/wasm-2.18.md</code>; conformance: kasus baru <code>e2e_cross.sh</code>.</p>
+<p>Phase 68 (2.19.0): link minimal — runtime dilewati bila tak</p>
+<p>dirujuk + gc-sections; desain: <code>docs/min-2.19.md</code>;</p>
+<p>conformance: <code>e2e_min.sh</code>.</p>
+<p>Phase 69 (2.20.0): macro system — evaluasi (belum dibutuhkan)</p>
+<p>+ reservasi keyword <code>macro</code>; desain: <code>docs/macro-2.20.md</code>.</p>
+<p>Phase 70 (2.21.0): compile-time <code>const</code> (eval + substitusi</p>
+<p>desugar di checker; RFC-0009 Proposed); desain:</p>
+<p><code>docs/comptime-2.21.md</code>; conformance: <code>e2e_const.sh</code>.</p>
+<p>Phase 71 (2.22.0): fondasi verifikasi — invarian per tahap</p>
+<p>(RFC-0010 Proposed); desain: <code>docs/verification-2.22.md</code>;</p>
+<p>unit <code>test_verify</code> (5 properti) + <code>fuzz_gen.py</code> berseed +</p>
+<p>conformance: <code>e2e_verify.sh</code>.</p>
+<p>Phase 72 (2.23.0): self-host parser+AST — <code>selfhost/parse.ns</code></p>
+<p>fused lexer+parser, oracle <code>nusa ast</code>, diferensial 43 file;</p>
+<p>desain: <code>docs/selfhost-2.23.md</code>; conformance: <code>e2e_parse.sh</code>.</p>
+<p>Phase 73 (2.24.0): bootstrap 2.0 — rantai multi-komponen</p>
+<p>(lex + parse via <code>--as lex|ast</code>, artefak <code>&lt;base&gt;_stage1</code>);</p>
+<p>desain: <code>docs/bootstrap-2.24.md</code>; conformance: <code>e2e_bootstrap.sh</code>.</p>
+<p>Phase 74 (2.25.0): bootstrap full 4-stage — Stage 3 rebuild</p>
+<p>(<code>--rebuild</code>, D3 == D2) + dokumentasi proses lengkap;</p>
+<p>desain: <code>docs/bootstrap-full-2.25.md</code>;</p>
+<p>conformance: <code>e2e_bootstrap.sh</code> (10 kasus).</p>
+<p>Phase 75 (2.26.0): stdlib 3.0 — modul baru core/testing/</p>
+<p>logging/encoding + string/io/fs; konvensi konsistensi;</p>
+<p>desain: <code>docs/stdlib-2.26.md</code>;</p>
+<p>conformance: <code>e2e_stdlib3.sh</code> + <code>nusa test</code>.</p>
+<p>Phase 76 (2.27.0): cryptography foundation — builtin</p>
+<p><code>sha256_hex</code>/<code>crypto_rand_hex</code> (RFC-0011 Proposed) +</p>
+<p><code>std/crypto.ns</code>; desain: <code>docs/crypto-2.27.md</code>;</p>
+<p>conformance: <code>e2e_crypto.sh</code>.</p>
+<p>Phase 77 (2.28.0): data tooling — <code>std/csv+json+toml</code> +</p>
+<p>paket referensi <code>packages/sqlite/</code> (pola shim FFI);</p>
+<p>desain: <code>docs/data-2.28.md</code>;</p>
+<p>conformance: <code>e2e_data.sh</code> + <code>nusa test</code>.</p>
+<p>Phase 78 (2.29.0): server foundation — <code>std/config+metrics</code> +</p>
+<p>paket referensi <code>packages/tls/</code> (shim OpenSSL terverifikasi);</p>
+<p>desain: <code>docs/server-2.29.md</code>;</p>
+<p>conformance: <code>e2e_server.sh</code> + <code>nusa test</code>.</p>
+<p>Phase 79 (2.30.0): distributed foundation — `std/rpc+discovery+</p>
+<p>timeout+retry` (concurrency stabil 13/13); desain:</p>
+<p><code>docs/dist-2.30.md</code>; conformance: <code>e2e_dist.sh</code> + <code>nusa test</code>.</p>
+<p>Phase 80 (2.30.1): STABILITY RELEASE — freeze fitur bahasa;</p>
+<p>harness hermetik, e2e_compat, fuzz seed-2 (temuan generator),</p>
+<p>baseline performa, audit keamanan; desain:</p>
+<p><code>docs/stability-2.30.md</code>; conformance: suite penuh hijau.</p>
+<p>Phase 81 (3.0-candidate): LANGUAGE FREEZE — 6 area dikunci,</p>
+<p>NOL perubahan bahasa; kandidat: `docs/language-spec-3.0-</p>
+<p>candidate.md<code>; desain: </code>docs/freeze-3.0.md`; conformance:</p>
+<p><code>e2e_freeze.sh</code> + spec2 + compat.</p>
+<p>Phase 82 (3.0-final): SPECIFICATION — <code>docs/language-spec-3.0.md</code></p>
+<p>normatif (19 topik, independen implementasi); NOL perubahan</p>
+<p>bahasa (ratifikasi); conformance: <code>e2e_spec3.sh</code>.</p>
+<p>Phase 83 (3.0-audit): COMPATIBILITY AUDIT — korpus 76/3/0/0/2;</p>
+<p>CLI <code>nusa migrate [PATH]</code> (Driver::runMigrate, read-only);</p>
+<p>guide: <code>docs/migration-3.0.md</code>; conformance: <code>e2e_migrate.sh</code>.</p>
+<p>Phase 84 (3.0.0-beta): BETA RELEASE — freeze 4 area (semantik,</p>
+<p>arsitektur, API stdlib, format paket); NOL perubahan bahasa;</p>
+<p>label <code>3.0.0-beta</code> (deb tetap <code>3.0.0-1</code>); record:</p>
+<p><code>docs/release-3.0-beta.md</code>; gate: <code>e2e_beta.sh</code>.</p>
+<p>Phase 85 (3.0-realworld): REAL-WORLD VALIDATION — 6 proyek</p>
+<p><code>realworld/</code> + <code>e2e_realworld.sh</code>; bugfix F4 <code>file_exists</code></p>
+<p>satu-baris + regresi; temuan F1–F6 di <code>docs/realworld-3.0.md</code>.</p>
+<p>Phase 86 (3.0-perf): PERFORMANCE VALIDATION — suite resmi</p>
+<p><code>bench/suite.sh</code> (8 dimensi, 35 metrik) + <code>docs/perf-3.0.md</code>;</p>
+<p>gate: <code>e2e_perf.sh</code>; NOL klaim tanpa angka.</p>
+<p>Phase 87 (3.0-security): SECURITY AUDIT — 9 area × 6 kelas:</p>
+<p>0 critical/high; fix S1 (<code>--memory-mb 0</code> fail-open → tolak)</p>
+<p>+ regresi; record: <code>docs/security-3.0.md</code>; <code>e2e_sec</code> 5→9.</p>
+<p>Phase 88 (3.0.0-rc.1): RELEASE CANDIDATE — label <code>3.0.0-rc.1</code></p>
+<p>(deb tetap <code>3.0.0-1</code>); NOL perubahan bahasa/arsitektur/API/format</p>
+<p>(beku sejak beta); record: <code>docs/release-3.0-rc.1.md</code>;</p>
+<p>gate: <code>e2e_rc.sh</code> (<code>e2e_beta</code> dipertahankan sebagai regresi).</p>
+<p>Phase 89 (3.0.0): FINAL RELEASE — hapus suffix (<code>3.0.0</code>,</p>
+<p>help <code>Stable</code>); NOL perubahan bahasa/arsitektur/API/format;</p>
+<p>record: <code>docs/release-3.0.md</code>; gate: <code>e2e_release.sh</code></p>
+<p>(<code>e2e_beta</code>/<code>e2e_rc</code> dipertahankan sebagai regresi).</p>
+<p>v0.9.0 adalah milestone <strong>standard library &amp; tooling</strong>: 11 builtin</p>
+<p>runtime (emisi libc langsung), modul <code>std/</code> murni-Nusa, dan CLI</p>
+<p><code>check</code>/<code>test</code>/<code>fmt</code>/<code>doc</code>.</p>
+<p>v0.9.5 adalah <strong>hardening</strong> tanpa fitur besar: guard rekursi (parser +</p>
+<p>3 walker, batas 500), div-by-zero statis + runtime, malloc/ftell guards,</p>
+<p>import-chain cap, matriks 9 negative + korpus malformed. Detail di</p>
+<p>§Hardening di bawah.</p>
+<p>v0.7.0 menambahkan <strong>array</strong>: literal homogen, tipe <code>[T]</code>, indexing</p>
+<p>dengan runtime bounds check, dan builtin <code>len()</code> — dengan alloca</p>
+<p>statis <code>[N x T]</code> dan copy agregat. Tanpa generic collections.</p>
+<h2 id="lexer-compiler-lexer">Lexer (<code>compiler/lexer/</code>) <a href="#lexer-compiler-lexer" aria-label="taut">#</a></h2>
+<ul>
+<li>Hand-written, sekali jalan, melacak <code>line/column</code> di setiap token.</li>
+<li>Keywords: <code>fn let return if else while true false</code> + keywords tipe</li>
+</ul>
+<p>  <code>i64 bool string void</code> (reserved, v0.4.0; pemetaan di</p>
+<p>  <code>lexIdentOrKeyword</code>) + <code>struct import</code> (v0.8.0) + <code>type</code> (v1.2.0) +</p>
+<p>  <code>trait impl for self</code> (v1.3.0) + <code>match</code> (v1.6.0) + <code>enum</code> (v1.7.0) +</p>
+<p>  <code>extern</code> (v1.13.0) + <code>async await</code> (reserved v2.0 untuk RFC-0004;</p>
+<p>  tanpa sintaks) + <code>macro</code> (reserved v2.20.0, Phase 69; tanpa</p>
+<p>  sintaks). <code>main</code>/<code>print</code> tetap identifier biasa yang</p>
+<p>  dimaknai di parser — disengaja agar error-nya jelas.</p>
+<ul>
+<li><code>IntLit</code>: digit desimal dengan cek overflow i64 manual</li>
+</ul>
+<p>  (<code>value &gt; (INT64_MAX - digit)/10</code> → error). <code>123abc</code> menempel</p>
+<p>  langsung → <code>invalid integer literal</code>. Tanda minus TIDAK di-lex</p>
+<p>  sebagai bagian angka (ditangani parser sebagai unary op).</p>
+<ul>
+<li>Operator dua karakter: <code>==</code>, <code>!=</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>-&gt;</code> (greedy),</li>
+</ul>
+<p>  <code>=&gt;</code> (match arm), <code>|</code> (lambda). <code>!</code> sendirian → `unexpected</p>
+<p>  character &#x27;!&#x27; (did you mean &#x27;!=&#x27;?)<code>; </code>?` postfix (propagasi</p>
+<p>  <code>Result</code>, sejak v1.5.0).</p>
+<ul>
+<li>Simbol: <code>( ) { } [ ] : , ;</code> (<code>[</code> <code>]</code> <code>:</code> dicadangkan untuk</li>
+</ul>
+<p>  array/type annotation v0.4.0/v0.7.0).</p>
+<ul>
+<li>String: <code>&quot;...&quot;</code> dengan escapes <code>\&quot; \\ \n \t \r \0</code>; newline mentah</li>
+</ul>
+<p>  atau EOF sebelum quote penutup → <code>unterminated string literal</code>.</p>
+<ul>
+<li>Melewati whitespace + <code>//</code> komentar (<code>/</code> vs <code>//</code> dibedakan via</li>
+</ul>
+<p>  lookahead sebelum lexing <code>Slash</code>).</p>
+<h2 id="parser-ast-compiler-parser-compiler-ast">Parser + AST (<code>compiler/parser/</code>, <code>compiler/ast/</code>) <a href="#parser-ast-compiler-parser-compiler-ast" aria-label="taut">#</a></h2>
+<p>Grammar v0.2.0 (foto historis — grammar berlaku: <code>docs/syntax.md</code>):</p>
+<pre data-lang="text"><code class="lang-text">Program    := FuncDecl+
+FuncDecl   := &quot;fn&quot; Ident &quot;(&quot; [Param (&quot;,&quot; Param)*] &quot;)&quot; [&quot;-&gt;&quot; Type] Block
+Param      := Ident &quot;:&quot; Type
+Block      := &quot;{&quot; Stmt* &quot;}&quot;
+Stmt       := LetStmt | PrintStmt | ReturnStmt | ExprStmt
+LetStmt    := &quot;let&quot; Ident [&quot;:&quot; Type] &quot;=&quot; Expr [&quot;;&quot;]
+PrintStmt  := &quot;print&quot; &quot;(&quot; Expr &quot;)&quot; [&quot;;&quot;]
+ReturnStmt := &quot;return&quot; [Expr] [&quot;;&quot;]
+ExprStmt   := Call [&quot;;&quot;]
+Type       := &quot;i64&quot; | &quot;bool&quot; | &quot;string&quot; | &quot;void&quot;
+Expr      := equality
+equality   := comparison ((&quot;==&quot; | &quot;!=&quot;) comparison)*
+comparison := term ((&quot;&lt;&quot; | &quot;&gt;&quot; | &quot;&lt;=&quot; | &quot;&gt;=&quot;) term)*
+term       := factor ((&quot;+&quot; | &quot;-&quot;) factor)*
+factor     := unary ((&quot;*&quot; | &quot;/&quot;) unary)*
+unary      := (&quot;-&quot; | &quot;+&quot;) unary | primary
+primary    := IntLit | StringLit | &quot;true&quot; | &quot;false&quot; | Call | Ident
+            | &quot;(&quot; Expr &quot;)&quot;
+Call       := Ident &quot;(&quot; [Expr (&quot;,&quot; Expr)*] &quot;)&quot;</code></pre>
+<ul>
+<li>Precedence climbing memastikan <code>10 + 20 * 3</code> → <code>(+ 10 (* 20 3))</code>.</li>
+<li>AST memakai <code>std::variant</code> + <code>unique_ptr</code> (move-only). Konsekuensi:</li>
+</ul>
+<p>  <code>Parser::parse()</code> harus <code>return std::move(result_)</code> — me-return</p>
+<p>  *member* tidak mendapat implicit-move (hanya local yang dapat),</p>
+<p>  sehingga fallback copy gagal compile. Pelajaran v0.2.0, didokumentasikan</p>
+<p>  di CHANGELOG.</p>
+<ul>
+<li><code>AST::dump()</code> menghasilkan s-expr (<code>(let x (+ 10 (* 20 3)))</code>) untuk</li>
+</ul>
+<p>  test &amp; debugging.</p>
+<ul>
+<li>Keyword tahap lanjut ditolak dengan hint versi: <code>if</code>/<code>while</code> → v0.6.0.</li>
+</ul>
+<p>  Error recovery <code>synchronize()</code> (lompat ke <code>;</code>/<code>}</code>).</p>
+<ul>
+<li><code>;</code> tetap opsional (kompatibel v0.1.0).</li>
+<li>Lookahead satu token (<code>Ident (</code>) membedakan call vs variable.</li>
+<li><code>-&gt;</code> greedy di lexer (<code>Minus</code>+<code>Gt</code> berdampingan tak pernah valid).</li>
+</ul>
+<h2 id="diagnostics-compiler-diagnostics">Diagnostics (<code>compiler/diagnostics/</code>) <a href="#diagnostics-compiler-diagnostics" aria-label="taut">#</a></h2>
+<ul>
+<li>Format = contoh master: <code>file:line:col: error: msg</code>, baris kosong,</li>
+</ul>
+<p>  snippet (indent 4), caret <strong>beruntun</strong> selebar span, baris kosong,</p>
+<p>  <code>help:</code> opsional. Span (<code>length</code>, default 1, dijepit ke sisa baris)</p>
+<p>  diisi di situs identifier-presisi (variabel/fungsi/struct/field/call).</p>
+<ul>
+<li>Lexer errors sudah berformat penuh (verbatim); parser errors via engine</li>
+</ul>
+<p>  (<code>sourceLines</code> untuk snippet). <code>SemanticError</code>/<code>ParseError</code>/</p>
+<p>  <code>ModuleError</code> membawa <code>length</code> menembus driver multi-file.</p>
+<h2 id="semantic-compiler-semantic">Semantic (<code>compiler/semantic/</code>) <a href="#semantic-compiler-semantic" aria-label="taut">#</a></h2>
+<ul>
+<li><code>SymbolTable</code>: <code>unordered_map</code> nama → <code>{declLoc}</code>; <code>declare()</code> menolak</li>
+</ul>
+<p>  ganda beserta lokasi deklarasi sebelumnya untuk hint.</p>
+<ul>
+<li>Two namespaces: fungsi (top-level, two-pass agar forward reference bisa)</li>
+</ul>
+<p>  dan nilai (local scope baru per fungsi: parameter + <code>let</code>).</p>
+<ul>
+<li><code>main</code> wajib tepat satu &amp; tak callable; reserved</li>
+</ul>
+<p>  <code>print</code>/<code>len</code>/<code>puts</code>/<code>printf</code>/<code>exit</code>.</p>
+<ul>
+<li><code>undefined variable &#x27;x&#x27;</code> / <code>undefined function &#x27;foo&#x27;</code> + help —</li>
+</ul>
+<p>  bukan crash. Semua error dikumpulkan.</p>
+<ul>
+<li>v0.8.0: namespace struct + tabel definisi; literal dicek</li>
+</ul>
+<p>  (unknown/duplikat/missing field + privacy <code>_</code> antar-file);</p>
+<p>  field-access diteruskan ke checker (butuh tipe).</p>
+<h2 id="types-compiler-types">Types (<code>compiler/types/</code>) <a href="#types-compiler-types" aria-label="taut">#</a></h2>
+<ul>
+<li><code>Type</code>: value type (copyable) — `I64 | Bool | String | Void | Func |</li>
+</ul>
+<p>  Array | Struct | Param | Error<code>. Komponen (</code>params<code>/</code>ret<code>/</code>elem`) via</p>
+<p>  <code>shared_ptr</code>; <code>Struct</code> via nama (<code>sname</code>); <code>Param</code> = parameter tipe</p>
+<p>  generik <code>T</code> (rigid selama inferensi; tak pernah mencapai codegen —</p>
+<p>  instance selalu konkret, template dibuang checker); <code>Error</code> untuk</p>
+<p>  pemulihan tanpa error beruntun. Ukuran array BUKAN bagian tipe.</p>
+<p>  Generik = monomorphisasi di checker (lihat <code>docs/types.md</code>).</p>
+<ul>
+<li><code>name()</code>: <code>&quot;i64&quot;</code> / <code>&quot;fn() -&gt; void&quot;</code> / …; <code>operator==</code> struktural.</li>
+<li><code>LetStmt::declaredType</code> (<code>std::optional&lt;Type&gt;</code>); dump menampilkan</li>
+</ul>
+<p>  <code>(let age: i64 15)</code> bila beranotasi.</p>
+<h2 id="type-checking-compiler-semantic-typechecker">Type checking (<code>compiler/semantic/TypeChecker</code>) <a href="#type-checking-compiler-semantic-typechecker" aria-label="taut">#</a></h2>
+<ul>
+<li>Tahap sendiri setelah semantic (pipeline master): anotasi vs</li>
+</ul>
+<p>  inisialisasi harus sama (<code>let x: i64 = &quot;hello&quot;</code> → <code>mismatched types</code>);</p>
+<p>  tanpa anotasi → inferensi dari inisialisasi untuk pemakaian berikut.</p>
+<ul>
+<li>Aturan ekspresi: aritmetika/perbandingan butuh <code>i64</code>; equality butuh</li>
+</ul>
+<p>  sisi sama (non-string, non-void); unary butuh <code>i64</code>; <code>print(void)</code></p>
+<p>  dan variabel <code>void</code> ditolak. Operand <code>Error</code> menekan error beruntun.</p>
+<ul>
+<li>v0.5.0: signatures two-pass (rekursi OK); arity + tipe argumen;</li>
+</ul>
+<p>  return cocok dengan return type; missing/bare return; unreachable</p>
+<p>  sesudah <code>return</code>; param <code>void</code> ditolak; <code>main : fn() -&gt; void</code> ditegaskan.</p>
+<ul>
+<li>v0.7.0: literal homogen (non-void non-array sejenis; <code>[]</code> ditolak);</li>
+</ul>
+<p>  index butuh base array + idx <code>i64</code>; <code>len()</code> 1 arg array → i64;</p>
+<p>  print/<code>==</code>/param/return array ditolak; <code>[void]</code> ditolak.</p>
+<ul>
+<li>v0.8.0: tabel struct (dup field, resolve tipe incl. unknown, tolak</li>
+</ul>
+<p>  field void/array); literal vs deklarasi (tipe per field); akses field</p>
+<p>  → tipe field (unknown → daftar field sebagai hint); tolak field</p>
+<p>  bertipe void di <code>let x = voidFn()</code> (bug laten v0.5.0, ditutup di sini);</p>
+<p>  tolak print/<code>==</code> struct (param/return struct by-value didukung</p>
+<p>  sejak v1.2.0, Phase 21d).</p>
+<ul>
+<li>Error memakai <code>SemanticError</code> (snippet/caret konsisten); semua</li>
+</ul>
+<p>  dikumpulkan, bukan berhenti di pertama.</p>
+<h2 id="codegen-compiler-codegen-llvm-21-1-8">Codegen (<code>compiler/codegen/</code>, LLVM 21.1.8) <a href="#codegen-compiler-codegen-llvm-21-1-8" aria-label="taut">#</a></h2>
+<ul>
+<li>API modern (<code>LLVMContext</code>, <code>Module</code>, <code>IRBuilder</code>, opaque <code>ptr</code>),</li>
+</ul>
+<p>  <strong>wajib</strong> <code>llvm::verifyModule</code> sebelum emit.</p>
+<ul>
+<li>Representasi: integer→<code>i64</code> (literal via <code>ConstantInt</code>), boolean→<code>i1</code>,</li>
+</ul>
+<p>  string→<code>ptr</code> (global private constant + GEP).</p>
+<ul>
+<li>Variabel: <code>alloca</code> di entry block + <code>store</code> saat <code>let</code>, <code>load</code> saat</li>
+</ul>
+<p>  dipakai; peta nama → <code>{slot, kind}</code> di codegen (terpisah dari</p>
+<p>  symbol table semantic — pemisahan front-end/back-end).</p>
+<ul>
+<li>Aritmetika bertanda: <code>add/sub/mul/sdiv</code>; perbandingan bertanda</li>
+</ul>
+<p>  <code>icmp slt/sgt/sle/sge</code>; equality <code>eq/ne</code> (int–int, bool–bool);</p>
+<p>  unary minus <code>CreateNeg</code>. LLVM constant-folding melipat ekspresi</p>
+<p>  literal (wajar; test memakai variabel agar instruksi terlihat).</p>
+<ul>
+<li><code>print</code>: string→<code>puts</code>, integer→<code>printf(&quot;%lld\n&quot;)</code> (deklarasi vararg</li>
+</ul>
+<p>  <code>i32 (ptr, ...)</code>), boolean→<code>select</code> antara global <code>&quot;true&quot;</code>/<code>&quot;false&quot;</code></p>
+<p>  + <code>puts</code>. Format string dibuat lazily sekali per module.</p>
+<ul>
+<li>Validasi ringan di setiap lookup/call (arity, tipe argumen LLVM) —</li>
+</ul>
+<p>  penjaga IR valid, BUKAN type checker (itu ranah TypeChecker).</p>
+<p>  Pertahanan anti-crash: tahap sebelumnya seharusnya sudah menolak</p>
+<p>  lebih dulu dengan diagnostic lebih baik.</p>
+<ul>
+<li>v0.5.0: two-pass declare→define; <code>main</code> → <code>i32 @main</code> return 0;</li>
+</ul>
+<p>  parameter via alloca+store; <code>return</code> → <code>ret</code>/<code>ret void</code>;</p>
+<p>  call → LLVM <code>call</code> dengan kind dari signature.</p>
+<ul>
+<li>v0.7.0: array = alloca <code>[N x T]</code> entry (nilai = pointer, tanpa load);</li>
+</ul>
+<p>  indexing = GEP + bounds check (<code>oob.fail</code> → puts + <code>exit(1)</code>); copy</p>
+<p>  agregat load/store; <code>len()</code> = konstanta; <code>void @exit(i32)</code> dideklarasikan.</p>
+<ul>
+<li>v0.8.0: struct = named LLVM type (<code>%Person = type { ptr, i64 }</code>,</li>
+</ul>
+<p>  two-phase agar forward-ref); nilai struct = pointer (tanpa load);</p>
+<p>  konstruksi = alloca + store per field (urutan deklarasi; nested via</p>
+<p>  copy agregat); akses = StructGEP + load (skalar) / pointer (nested);</p>
+<p>  <code>let</code>/<code>assign</code> struct via <code>storeGenValue</code> terpadu.</p>
+<ul>
+<li>v0.6.0: <code>genBlock</code> (scope + pelacakan terminator); <code>genIf</code> =</li>
+</ul>
+<p>  CondBr ke then/else(/merge) + merge; <code>genWhile</code> = br cond →</p>
+<p>  CondBr body/after → br cond; <code>return</code> di cabang → <code>ret</code> di block itu;</p>
+<p>  merge non-void yang tak terjangkau → <code>unreachable</code> (bukan IR invalid);</p>
+<p>  SEMUA alloca (termasuk block dalam) di entry — tidak ada pertumbuhan</p>
+<p>  stack per iterasi + dominansi untuk semua use.</p>
+<ul>
+<li>Emit <code>.ll</code> tekstual, lalu Driver memanggil <code>clang</code> untuk object + link</li>
+</ul>
+<p>  native (AArch64 Android/Bionic ABI).</p>
+<h2 id="driver-compiler-driver">Driver (<code>compiler/driver/</code>) <a href="#driver-compiler-driver" aria-label="taut">#</a></h2>
+<ul>
+<li><code>Driver::runBuild</code>: entry <code>.ns</code> → <strong>ModuleLoader</strong> (load+lex+parse</li>
+</ul>
+<p>  transitif) → semantic → typecheck → codegen → tulis <code>&lt;input&gt;.ns.ll</code></p>
+<p>  → <code>popen(&quot;clang ...&quot;)</code> → <code>&lt;output&gt;</code>.</p>
+<ul>
+<li><code>Driver::runRun</code>: build ke <code>&lt;input&gt;.run.out</code> temporer → <code>system()</code> →</li>
+</ul>
+<p>  hapus file temporer (dengan prefix <code>./</code> untuk path relatif +</p>
+<p>  <code>WEXITSTATUS</code>, pelajaran v0.1.0).</p>
+<ul>
+<li><code>main.cpp</code>: parsing argumen tanpa library eksternal</li>
+</ul>
+<p>  (<code>--version/--help/build/run/check/test/fmt/doc</code>, <code>lsp</code>, <code>lex</code>,</p>
+<p>  <code>bootstrap</code>, <code>sandbox</code>, <code>playground</code>, <code>new</code>, <code>pkg</code>/<code>search</code>/</p>
+<p>  <code>install</code>/<code>publish</code>, <code>-o</code>, <code>--check</code>, dan flag backend <code>-O*</code>/</p>
+<p>  <code>--target</code>/<code>--emit-ir</code>/<code>--emit-asm</code>/<code>-c</code>/<code>-g</code>/<code>--fresh</code>/link).</p>
+<ul>
+<li><code>checkStages</code> bersama untuk <code>check</code>/<code>build</code>/<code>test</code>; <code>check</code> berhenti</li>
+</ul>
+<p>  setelah typecheck (<code>Checked X: no errors</code>).</p>
+<h2 id="builtins-runtime-isbuiltin-55-nama-tumbuh-per-fase">Builtins runtime (<code>isBuiltin</code>; 55 nama, tumbuh per fase) <a href="#builtins-runtime-isbuiltin-55-nama-tumbuh-per-fase" aria-label="taut">#</a></h2>
+<ul>
+<li>Daftar tunggal di <code>compiler/frontend/Builtin.cpp</code> (sejak 2.2.0):</li>
+</ul>
+<p>  <code>len</code> (v0.7.0) + 12 klasik</p>
+<p>  v0.9.0 (<code>input</code>, <code>assert</code>, <code>str_len</code>, <code>str_concat</code>, <code>parse_int</code>,</p>
+<p>  <code>file_read</code>, <code>file_write</code>, <code>file_exists</code>, <code>array_sum/min/max</code>) +</p>
+<p>  <code>str_eq</code> (v1.6.0, match string) + <code>parse_int_valid</code> (v1.5.0) +</p>
+<p>  concurrency v1.9.0 (<code>thread_spawn/join</code>, `mutex_new/lock/unlock/</p>
+<p>  try_lock/free<code>, </code>chan_new/send/recv/free<code>, </code>atomic_new/get/set/</p>
+<p>  add/free<code>, </code>sleep_ms<code>) + channel bertag 2.0 (</code>chan_new_bool/</p>
+<p>  send_bool/recv_bool<code>, </code>chan_new_str/send_str/recv_str`) + v1.10.0</p>
+<p>  (<code>str_char_at/slice</code>, <code>time_now_ms/s</code>, <code>random_u64</code>,</p>
+<p>  <code>process_exit/env/cwd/argc/argv</code>, <code>tcp_connect/send/recv/close</code>) +</p>
+<p>  <code>int_to_str</code> (v1.19.0) + <code>tcp_listen/accept</code> (2.0) +</p>
+<p>  <code>chan_len</code> (v2.7.0, observability antre). Reserved +</p>
+<p>  exempt di semantic; arity/tipe di <code>checkBuiltin</code>; emisi di</p>
+<p>  <code>genBuiltinCall</code> (libc langsung:</p>
+<p>  <code>getline</code>, <code>strlen</code>, <code>malloc</code>/<code>memcpy</code>, <code>strtoll</code>, <code>fopen</code>/<code>fread</code>/</p>
+<p>  <code>fwrite</code>/<code>fseek</code>/<code>ftell</code>/<code>rewind</code>/<code>fclose</code>, loop inline,</p>
+<p>  pthread/channel/atomic/TCP di <code>runtime/nusa_rt.c</code>).</p>
+<ul>
+<li>Loop <code>array_*</code> inline di call-site (panjang statis dikenal) — tanpa</li>
+</ul>
+<p>  masalah ABI; <code>len()</code> tetap konstanta. String heap bocor sengaja</p>
+<p>  (program-lifetime; GC = RFC-0007 Proposed).</p>
+<h2 id="tooling-compiler-fmt-compiler-doc-testing-cpp-baru-v0-9-0">Tooling (<code>compiler/fmt</code>, <code>compiler/doc</code>, <code>Testing.cpp</code>, baru v0.9.0) <a href="#tooling-compiler-fmt-compiler-doc-testing-cpp-baru-v0-9-0" aria-label="taut">#</a></h2>
+<ul>
+<li><code>fmt</code>: normalisasi token-stream (4 spasi, aturan terdokumentasi di</li>
+</ul>
+<p>  header); unary <code>-/+</code> via konteks token-sebelumnya; string di-escape</p>
+<p>  ulang; komentar <code>//</code>/<code>///</code> dipertahankan (own-line/trailing);</p>
+<p>  deterministik + idempoten (diuji); <code>--check</code> untuk CI.</p>
+<p>  Phase 50 (2.1.0): lambda sesudah <code>(</code>/<code>[</code> menempel tanpa spasi</p>
+<p>  (<code>apply(|x| …)</code>, bukan <code>apply( |x| …)</code>); regresi dikunci</p>
+<p>  <code>testLambdaAfterParen</code> + <code>e2e_stability.sh</code>.</p>
+<ul>
+<li><code>doc</code>: signature dari AST + blok <code>///</code> menempel (+ intro modul bila</li>
+</ul>
+<p>  dipisah baris kosong); Markdown ke stdout/<code>-o</code>.</p>
+<ul>
+<li><code>test</code>: kumpulkan <code>*_test.ns</code> (file/dir, default <code>.</code>); build + jalankan</li>
+</ul>
+<p>  tiap file via fork+alarm 10 dtk (anti-gantung); stdout/stderr/stdin</p>
+<p>  anak dialihkan (deterministik); PASS = exit 0; ringkasan + rc.</p>
+<p>  Pelajaran: <code>fflush</code> sebelum <code>fork</code> (buffer ganda).</p>
+<ul>
+<li>Komentar lexer: <code>Lexer::comments()</code> (<code>line/text/doc</code>); parser tak</li>
+</ul>
+<p>  tersentuh (komentar bukan token).</p>
+<h2 id="module-loader-compiler-driver-modules-baru-v0-8-0">Module loader (<code>compiler/driver/Modules</code>, baru v0.8.0) <a href="#module-loader-compiler-driver-modules-baru-v0-8-0" aria-label="taut">#</a></h2>
+<ul>
+<li><code>import math;</code> → kandidat berprioritas (v0.9.0): direktori pengimpor →</li>
+</ul>
+<p>  <code>$NUSA_PATH</code> (<code>:</code>-separated) → <code>&lt;exe&gt;/../std</code> (via <code>/proc/self/exe</code>).</p>
+<p>  Lokal menang (bisa override std); <code>import string;</code> valid.</p>
+<ul>
+<li>DFS rekursif + visited (dedupe diam-diam) + stack rantai untuk</li>
+</ul>
+<p>  <code>circular import detected</code>.</p>
+<ul>
+<li>Identitas absolut-ternormalisasi (<code>std::filesystem</code>, <code>error_code</code></li>
+</ul>
+<p>  karena build <code>-fno-exceptions</code>); tampil relatif-bila-bisa.</p>
+<ul>
+<li>Tiap file di-lex/parse dengan identitasnya → diagnostic tepat file</li>
+</ul>
+<p>  (engine per file di driver); error modul-tengah tak menghentikan</p>
+<p>  modul lain (semua error sekaligus).</p>
+<ul>
+<li>Merge deps-dulu (urutan tak memengaruhi hasil — semua tahap two-pass);</li>
+</ul>
+<p>  <code>imports</code> dikonsumsi (program gabungan bersih).</p>
+<ul>
+<li>v0.9.5: rantai &gt; 100 modul ditolak bersih (<code>import chain too deep</code>).</li>
+</ul>
+<h2 id="hardening-baru-v0-9-5">Hardening (baru v0.9.5) <a href="#hardening-baru-v0-9-5" aria-label="taut">#</a></h2>
+<p>Aturan main: compiler tak boleh crash (sinyal) atau hang pada input</p>
+<p>apapun; kegagalan selalu exit != 0 dengan diagnostic (<code>e2e_hardening</code>).</p>
+<ul>
+<li>Rekursi dibatasi 500 di 4 titik (naksir stack overflow): <code>parseExpr</code>,</li>
+</ul>
+<p>  <code>parseUnary</code>, <code>parseBlock</code>, <code>parseType</code> (RAII <code>DepthGuard</code> parser) +</p>
+<p>  <code>checkExpr</code> ×3 (semantic/checker/codegen, inc/dec manual — body</p>
+<p>  straight-line terverifikasi). Rantai biner iteratif parser lolos guard</p>
+<p>  parser tetapi tertangkap guard walker. AST ≤ 500 → hilir aman.</p>
+<ul>
+<li>Division-by-zero: literal → compile error; dinamis → block <code>div.zero</code></li>
+</ul>
+<p>  (pesan + exit 1). Sebelumnya diam-diam garbage (LLVM fold ke undef).</p>
+<ul>
+<li><code>malloc</code> null → <code>oom.fail</code> (pesan + exit 1) di <code>str_concat</code>/<code>file_read</code>;</li>
+</ul>
+<p>  <code>ftell</code> negatif → jalur kosong + <code>fclose</code> (tanpa fd leak).</p>
+<ul>
+<li><code>verifyModule</code> wajib sebelum emit (backstop IR invalid).</li>
+<li>Korpus: 12 malformed (NUL/0xFF/terpotong/kosong/dalam) + CLI edges.</li>
+<li>Performa: 4000 statement build &amp; run benar (waktu tercatat di e2e).</li>
+</ul>
+<h2 id="tests-compiler-tests-hitungan-di-bawah-foto-era-v1-0-0-v1-1-0">Tests (<code>compiler/tests/</code>; hitungan di bawah = foto era v1.0.0–v1.1.0, <a href="#tests-compiler-tests-hitungan-di-bawah-foto-era-v1-0-0-v1-1-0" aria-label="taut">#</a></h2>
+<p>suite kini 50 test via <code>ctest</code> — lihat CHANGELOG per fase)</p>
+<ul>
+<li><code>test_lexer</code> (16 cek): + <code>struct</code>/<code>import</code>/<code>.</code>.</li>
+<li><code>test_parser</code> (49 cek): + struct decl/lit/field/import dumps,</li>
+</ul>
+<p>  field-chain/index-mix, error field/brace/dot; regresi ambiguitas</p>
+<p>  <code>if c {</code>; <code>testBadTypeFails</code> → <code>testNamedTypeParses</code> (tipe bernama</p>
+<p>  valid di grammar).</p>
+<ul>
+<li><code>test_typecheck</code> (54 cek): + field cocok/salah/unknown, akses di</li>
+</ul>
+<p>  skalar, unknown type, print/<code>==</code>/param struct, nested struct.</p>
+<ul>
+<li><code>test_codegen</code> (19 cek): + <code>%Person</code> type/alloca, nested struct IR.</li>
+<li><code>test_semantic</code> (31 cek): + struct OK/undefined/duplikat,</li>
+</ul>
+<p>  unknown/missing/duplikat field.</p>
+<ul>
+<li><code>test_builtins</code> (baru, 3 grup): typing valid + 10 arity/tipe + reserved.</li>
+<li><code>test_fmt</code> (baru, 7 cek): golden basic/control/struct, komentar,</li>
+</ul>
+<p>  unary, escape, idempotensi, lex-error.</p>
+<ul>
+<li><code>test_doc</code> (baru, 4 cek): fn/struct/intro/error.</li>
+<li><code>e2e_hello.sh</code>: <code>nusa build</code> → <code>./hello</code> == <code>Hello, Nusa!</code>,</li>
+</ul>
+<p>  <code>nusa run</code> sama, cek <code>.ll</code>, negative test malformed gagal rapi.</p>
+<ul>
+<li><code>e2e_frontend.sh</code>: <code>expr.ns</code> build+run sukses; <code>let x = 10 + ;</code> →</li>
+</ul>
+<p>  <code>expected expression</code>; <code>let x == 3</code> → <code>expected &#x27;=&#x27;</code>;</p>
+<p>  <code>return 1;</code> di main → error void-function (typecheck).</p>
+<ul>
+<li><code>e2e_variables.sh</code> (baru): NILAI eksekusi — milestone <code>30</code>,</li>
+</ul>
+<p>  <code>arithmetic.ns</code> (<code>30/70/true</code>), mixed</p>
+<p>  (<code>70/-5/4/2/false/true/Nusa</code>), undefined + duplicate gagal rapi.</p>
+<ul>
+<li><code>e2e_types.sh</code> (baru, v0.4.0): <code>types.ns</code> (<code>15/true/Nusa/30</code>),</li>
+</ul>
+<p>  <code>let x: i64 = &quot;hello&quot;</code> → <code>mismatched types</code>, inferensi regression,</p>
+<p>  <code>1 + true</code> dan <code>void</code> ditolak.</p>
+<ul>
+<li><code>e2e_functions.sh</code> (baru, v0.5.0, 9 kasus): milestone <code>30</code>, multi</li>
+</ul>
+<p>  (<code>10/false/true/Nusa</code>), forward <code>3</code>, build-only rekursi, arity,</p>
+<p>  tipe argumen, undefined function, missing return.</p>
+<ul>
+<li><code>e2e_control.sh</code> (baru, v0.6.0, 9 kasus + timeout): milestone</li>
+</ul>
+<p>  (<code>10/3/2/1</code> + cek label IR), else, nested-if/else-if (<code>3/2/1</code>),</p>
+<p>  sum 1..10 (<code>55</code>), nested loops (<code>11..33</code>), while-false, assignment</p>
+<p>  mismatch/undefined, kondisi non-bool.</p>
+<ul>
+<li><code>e2e_arrays.sh</code> (v0.7.0, 11 kasus): milestone, string regression,</li>
+</ul>
+<p>  dinamis, copy, OOB ±, 6 penolakan statis.</p>
+<ul>
+<li><code>e2e_struct_module.sh</code> (baru, v0.8.0, 10 kasus): person (<code>Nusa/1</code> +</li>
+</ul>
+<p>  cek <code>%Person</code>), modul (<code>6/Ada</code>), nested (<code>7/1</code>), lintas-modul struct,</p>
+<p>  privacy, circular, import hilang, dup struct, tipe field, param struct.</p>
+<ul>
+<li><code>e2e_stdlib.sh</code> (baru, v0.9.0, 5 kasus): builtins runtime, input via</li>
+</ul>
+<p>  pipe, file roundtrip, modul std via exe-resolve, assert-gagal.</p>
+<ul>
+<li><code>e2e_tooling.sh</code> (baru, v0.9.0, 4 grup): check ±, test</li>
+</ul>
+<p>  (pass/fail/timeout/build-error/kosong), fmt (format/idempoten/--check),</p>
+<p>  doc (stdout/-o/error).</p>
+<ul>
+<li><code>e2e_hardening.sh</code> (baru, v0.9.5, 30+ kasus): matriks 9 negative,</li>
+</ul>
+<p>  nesting/korpus/rantai/div-0/CLI-edges, regression, performa.</p>
+<ul>
+<li><code>e2e_final.sh</code> (baru, v1.0.0): program uji verbatim (build+run+output</li>
+</ul>
+<p>  eksak + IR + AArch64), format diagnostics = contoh master, 8/8 CLI.</p>
+<ul>
+<li><code>e2e_diagnostics.sh</code> (baru, v1.1.0, 5 kasus): recovery multi-error</li>
+</ul>
+<p>  top-level, error cap file sampah, hint Inggris, guard sumber</p>
+<p>  (tanpa literal <code>contoh:</code>).</p>
+<h2 id="catatan-v1-1-0-diagnostics-recovery-tanpa-perubahan-bahasa">Catatan v1.1.0 (diagnostics &amp; recovery, tanpa perubahan bahasa) <a href="#catatan-v1-1-0-diagnostics-recovery-tanpa-perubahan-bahasa" aria-label="taut">#</a></h2>
+<ul>
+<li>Recovery parser: <code>parse()</code> melanjutkan ke item berikutnya via</li>
+</ul>
+<p>   <code>synchronizeTopLevel()</code> (batas <code>import</code>/<code>struct</code>/<code>fn</code>/Eof) dengan</p>
+<p>   pengaman progres; <code>parseBlock</code> sudah recovery per-statement.</p>
+<ul>
+<li>Error cap: <code>Lexer::kMaxErrors</code> = <code>Parser::kMaxErrors</code> = 25; error</li>
+</ul>
+<p>   ke-26 adalah ringkasan &quot;too many errors, stopping&quot;, sisanya dibuang.</p>
+<ul>
+<li>Token <code>Unknown</code> dibuang di konstruktor parser (sudah dilaporkan</li>
+</ul>
+<p>   lexer) — tanpa error duplikat.</p>
+<ul>
+<li>Diagnostics user-facing Inggris penuh; format <code>file:line:col:</code>,</li>
+</ul>
+<p>   <code>help:</code>, snippet/caret/span tak berubah.</p>
+<ul>
+<li>Formatter: <code>[</code> literal array memakai spasi (<code>= [</code>, <code>: [</code>, <code>, [</code>,</li>
+</ul>
+<p>   <code>return [</code>), <code>[</code> indexing menempel.</p>
+<ul>
+<li>Baseline performa (<code>bench/bench.sh</code>): hello ~1.2–1.7 dtk / 5704 B,</li>
+</ul>
+<p>   nusa10 ~1.3 dtk / 6104 B, perf2000 ~7.3 dtk / 45712 B, compiler</p>
+<p>   449640 B, suite 21 test 120.71 dtk.</p>
+<h2 id="keputusan-yang-disengaja-dan-kenapa">Keputusan yang disengaja (dan kenapa) <a href="#keputusan-yang-disengaja-dan-kenapa" aria-label="taut">#</a></h2>
+<ul>
+<li>Semantic sebagai tahap sendiri (bukan terlipat di codegen):</li>
+</ul>
+<p>   arsitektur MASTER PROMPT (<code>semantic/</code>) + diagnostic lebih baik</p>
+<p>   (snippet/caret) + codegen berasumsi input valid.</p>
+<ul>
+<li>Assignment (<code>x = ...;</code>) ditambahkan di v0.6.0 — klausul &quot;jika</li>
+</ul>
+<p>   diperlukan&quot; v0.3.0 terpicu oleh loop (tanpa mutasi, <code>while</code> tak bisa</p>
+<p>   progres). Menimpa slot terdekat (shadowing-aware); tipe harus sama.</p>
+<ul>
+<li>Shadowing antar-scope diizinkan (seperti Rust); duplikat se-scope</li>
+</ul>
+<p>   tetap error. Seragam di semantic/checker/codegen via <code>Scopes&lt;T&gt;</code>.</p>
+<ul>
+<li>Import = merge nama publik (bukan <code>::</code>): master hanya menunjukkan</li>
+</ul>
+<p>   <code>import math;</code> tanpa sintaks kualifikasi; merge + deteksi konflik</p>
+<p>   adalah interpretasi minimal yang koheren. <code>::</code> bila dibutuhkan (1.x).</p>
+<ul>
+<li>Ambiguitas <code>if c {</code> vs literal dipecahkan lookahead 2-token</li>
+</ul>
+<p>   (<code>}</code>/<code>field :</code>), bukan backtracking — tanpa mengubah grammar.</p>
+<ul>
+<li>Variabel string didukung walau tipe <code>string</code> resmi v0.4.0: hampir gratis</li>
+</ul>
+<p>   (ptr) dan membuat <code>let s = &quot;Nusa&quot;; print(s);</code> konsisten.</p>
+<ul>
+<li><code>sdiv</code> bertanda + trap pembagi-nol didokumentasikan sebagai batasan,</li>
+</ul>
+<p>   bukan di-crash-kan secara artifisial.</p>
+<ul>
+<li>Tanpa gtest: Termux tidak selalu punya gtest; CHECK-macro + ctest cukup</li>
+</ul>
+<p>   (pelajaran v0.1.0: JANGAN pakai <code>assert()</code> untuk call berefek —</p>
+<p>   no-op di Release).</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

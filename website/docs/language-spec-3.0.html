@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>language-spec-3.0.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="language-spec-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 3.0 # Status: normative (me">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/language-spec-3.0.html">
+<meta property="og:title" content="language-spec-3.0.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="language-spec-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 3.0 # Status: normative (me">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="language-spec-3.0.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="language-spec-3.0, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "language-spec-3.0.md", "category": "docs", "version": "3.0.0", "content": "language-spec-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 3.0 # Status: normative (mengikat implementasi, bukan sebaliknya). Meratifikasi dan menggantikan docs/language-spec-2.0.md (disimpan sebagai riwayat; bila ada klaim bertentanga", "code_example": "", "keywords": "language-spec-3.0, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/language-spec-3.0.html">language-spec-3.0.md</a></p><article><h1>language-spec-3.0.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="nusa-language-specification-3-0">Nusa Language Specification 3.0 <a href="#nusa-language-specification-3-0" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: <strong>normative</strong> (mengikat implementasi, bukan sebaliknya).</li>
+</ul>
+<p>  Meratifikasi dan menggantikan <code>docs/language-spec-2.0.md</code></p>
+<p>  (disimpan sebagai riwayat; bila ada klaim bertentangan antara</p>
+<p>  dokumen riwayat dan dokumen ini, dokumen ini menang).</p>
+<ul>
+<li>Lampiran freeze Phase 81 (<code>docs/language-spec-3.0-candidate.md</code>)</li>
+</ul>
+<p>  dinyatakan selesai dan historis.</p>
+<ul>
+<li>NOL perubahan sintaks/semantik dari 2.0: dokumen ini</li>
+</ul>
+<p>  merumuskan ulang kontrak yang sama secara independen dari</p>
+<p>  detail implementasi compiler (lihat §20).</p>
+<ul>
+<li>Konvensi: &quot;MUST&quot; = wajib, &quot;MUST NOT&quot; = dilarang,</li>
+</ul>
+<p>  &quot;undefined&quot; = perilaku tak terdefinisi (lihat Appendix A).</p>
+<ul>
+<li>Detail tutorial per topik dirujuk ke <code>docs/*.md</code>; bila</li>
+</ul>
+<p>  bertentangan, dokumen ini menang.</p>
+<h2 id="1-lexical-grammar">1. Lexical grammar <a href="#1-lexical-grammar" aria-label="taut">#</a></h2>
+<ul>
+<li>Encoding sumber MUST UTF-8. Byte non-ASCII di luar</li>
+</ul>
+<p>  string/komentar MUST ditolak.</p>
+<ul>
+<li>Whitespace: spasi, tab, CR, LF (pemisah tanpa makna).</li>
+<li>Komentar: <code>//</code> sampai akhir baris; <code>///</code> = dokumentasi API</li>
+</ul>
+<p>  (tidak memengaruhi semantik).</p>
+<ul>
+<li>Keywords (reserved, MUST NOT dipakai sebagai identifier):</li>
+</ul>
+<p>  `fn let return if else while true false i64 bool string void</p>
+<p>  struct import type trait impl for self match enum extern const`</p>
+<p>  ditambah kata reserved <code>async await macro</code>: ketiganya TAK</p>
+<p>  memiliki sintaks — setiap pemakaian MUST ditolak (§11, §16).</p>
+<ul>
+<li>Identifier: <code>[A-Za-z_][A-Za-z0-9_]*</code> di luar keywords.</li>
+<li>Integer: <code>[0-9]+</code> desimal; nilai literal MUST dalam <code>i64</code>;</li>
+</ul>
+<p>  overflow atau ekor-alpha (<code>123abc</code>) MUST ditolak.</p>
+<ul>
+<li>String: <code>&quot;…&quot;</code> dengan escapes <code>\&quot; \\ \n \t \r \0</code>; newline</li>
+</ul>
+<p>  mentah atau EOF sebelum penutup MUST ditolak.</p>
+<ul>
+<li>Operator/simbol: <code>+ - * / = == != &lt; &gt; &lt;= &gt;= -&gt; =&gt; ? |</code></li>
+</ul>
+<p>  (<code>-&gt;</code> greedy; <code>!</code> tunggal ditolak dengan saran <code>!=</code>).</p>
+<h2 id="2-syntax">2. Syntax <a href="#2-syntax" aria-label="taut">#</a></h2>
+<ul>
+<li>Unit kompilasi = himpunan file sumber; tiap file = urutan</li>
+</ul>
+<p>  item top-level: <code>import</code>, alias tipe (<code>type</code>), deklarasi</p>
+<p>  trait, blok <code>impl</code>, deklarasi struct, deklarasi enum,</p>
+<p>  deklarasi fungsi, deklarasi <code>extern</code>, deklarasi <code>const</code>.</p>
+<ul>
+<li>Program runnable MUST mendefinisikan tepat satu</li>
+</ul>
+<p>  <code>fn main()</code> tanpa parameter; file tanpa <code>main</code> adalah</p>
+<p>  library (§12).</p>
+<ul>
+<li>Fungsi: <code>fn</code> nama [params generik] <code>(params)</code> [<code>-&gt;</code> tipe]</li>
+</ul>
+<p>  blok. Parameter dan tipe kembalian eksplisit; <code>return</code></p>
+<p>  mengembalikan nilai ke pemanggil.</p>
+<ul>
+<li><code>let</code> mendeklarasikan variabel dengan tipe eksplisit;</li>
+</ul>
+<p>  <code>const</code> mendeklarasikan konstanta bertipe dengan inisialisasi</p>
+<p>  ekspresi-konstan (§15).</p>
+<ul>
+<li>Pernyataan: deklarasi, assignment, <code>if</code>/<code>else</code>, <code>while</code>,</li>
+</ul>
+<p>  <code>match</code> (§7), <code>return</code>, pemanggilan. NOL <code>break</code>, <code>continue</code>,</p>
+<p>  <code>+=</code> atau operator gabungan lain — pemakaiannya MUST ditolak.</p>
+<ul>
+<li>Grammar rinci: <code>docs/syntax.md</code>.</li>
+</ul>
+<h2 id="3-types">3. Types <a href="#3-types" aria-label="taut">#</a></h2>
+<ul>
+<li>Tipe primitif: <code>i64</code> (bulat 64-bit, §19), <code>bool</code></li>
+</ul>
+<p>  (<code>true</code>/<code>false</code>), <code>string</code> (teks UTF-8, §8), <code>void</code></p>
+<p>  (tipe kembalian tanpa nilai).</p>
+<ul>
+<li>Tipe komposit: struct bernama, enum (§6), dan instantiasi</li>
+</ul>
+<p>  generik (§4). Alias via <code>type Nama = Tipe</code>.</p>
+<ul>
+<li>NOL tipe null/nil, NOL float, NOL unsigned, NOL tipe</li>
+</ul>
+<p>  platform-spesifik: setiap tipe berperilaku identik di semua</p>
+<p>  platform (§19).</p>
+<ul>
+<li><code>Option&lt;T&gt;</code>/<code>Result&lt;T, E&gt;</code> adalah enum natif (§6); fungsi</li>
+</ul>
+<p>  bantunya berasal dari modul standard library dan WAJIB</p>
+<p>  diimpor eksplisit sebelum dipakai.</p>
+<ul>
+<li>Ketidakcocokan tipe MUST ditolak sebelum eksekusi dengan</li>
+</ul>
+<p>  diagnostik §17.</p>
+<h2 id="4-generics">4. Generics <a href="#4-generics" aria-label="taut">#</a></h2>
+<ul>
+<li>Fungsi, struct, dan enum MAY diparameterisasi daftar</li>
+</ul>
+<p>  parameter tipe (<code>&lt;T, …&gt;</code>); tiap penggunaan dengan argumen</p>
+<p>  tipe konkret berperilaku identik dengan salinan item yang</p>
+<p>  ditulis manual untuk tipe tersebut.</p>
+<ul>
+<li>Argumen tipe disimpulkan atau ditulis eksplisit; ambiguitas</li>
+</ul>
+<p>  MUST ditolak, bukan ditebak.</p>
+<ul>
+<li>DILARANG: metode generik, <code>impl</code> generik, tipe <code>Self</code>,</li>
+</ul>
+<p>  associated function — pemakaiannya MUST ditolak.</p>
+<h2 id="5-traits">5. Traits <a href="#5-traits" aria-label="taut">#</a></h2>
+<ul>
+<li><code>trait</code> mendeklarasikan himpunan signature metode;</li>
+</ul>
+<p>  <code>impl Trait for Tipe</code> menyediakan implementasinya.</p>
+<p>  Pemanggilan metode didispatch ke implementasi tipe penerima.</p>
+<ul>
+<li>DILARANG: supertrait, body default, <code>Self</code> — pemakaiannya</li>
+</ul>
+<p>  MUST ditolak.</p>
+<ul>
+<li>Detail: <code>docs/traits.md</code>.</li>
+</ul>
+<h2 id="6-enums">6. Enums <a href="#6-enums" aria-label="taut">#</a></h2>
+<ul>
+<li><code>enum</code> mendeklarasikan varian bernama, masing-masing dengan</li>
+</ul>
+<p>  nol atau lebih payload bertipe; enum MAY generik (§4).</p>
+<ul>
+<li>Nilai enum dibangun via konstruktor varian eksplisit</li>
+</ul>
+<p>  (<code>Varian(payload)</code>); inspeksi nilai HANYA via <code>match</code> (§7)</p>
+<p>  — akses field/tag langsung MUST ditolak.</p>
+<ul>
+<li><code>Option&lt;T&gt;</code> = <code>Some(T) | None</code>; <code>Result&lt;T, E&gt;</code> =</li>
+</ul>
+<p>  <code>Ok(T) | Err(E)</code>.</p>
+<h2 id="7-pattern-matching">7. Pattern matching <a href="#7-pattern-matching" aria-label="taut">#</a></h2>
+<ul>
+<li><code>match</code> adalah STATEMENT atas nilai subject yang dievaluasi</li>
+</ul>
+<p>  tepat sekali; arm pertama yang cocok menang, sisanya tak</p>
+<p>  dieksekusi.</p>
+<ul>
+<li>Pola: literal int/bool/string (kesetaraan nilai; string</li>
+</ul>
+<p>  dibanding isi), wildcard <code>_</code>, binding <code>n</code>, pola struct</p>
+<p>  (<code>Titik { x: 0, y }</code>), pola varian (<code>Some(v)</code>, <code>Ok(v)</code>),</p>
+<p>  dan guard <code>pola if kondisi-bool</code>.</p>
+<ul>
+<li><code>match</code> atas enum MUST eksaustif (mencakup semua varian</li>
+</ul>
+<p>  atau wildcard); ketidak-eksaustifan MUST ditolak. Arm</p>
+<p>  ber-guard tak menyumbang eksaustifan.</p>
+<ul>
+<li>Operator <code>?</code> pada <code>Result</code> = return-dini <code>Err</code> ke pemanggil.</li>
+<li>Detail: <code>docs/pattern-matching.md</code>.</li>
+</ul>
+<h2 id="8-memory-model">8. Memory model <a href="#8-memory-model" aria-label="taut">#</a></h2>
+<ul>
+<li>Setiap nilai dimiliki tepat satu pemilik pada satu waktu;</li>
+</ul>
+<p>  assignment, pengiriman argumen, dan return MEMINDAHKAN</p>
+<p>  kepemilikan (§9).</p>
+<ul>
+<li>NOL garbage collector. Memori yang tak lagi terjangkau</li>
+</ul>
+<p>  dan tak dibebaskan = bocor-by-design dan TIDAK PERNAH</p>
+<p>  direklamasi (kontrak, bukan bug).</p>
+<ul>
+<li>Nilai <code>string</code> immutable; operasi string tersedia via</li>
+</ul>
+<p>  standard library. Byte NUL (<code>\0</code>) di dalam nilai string =</p>
+<p>  undefined (Appendix A).</p>
+<ul>
+<li>Detail: <code>docs/memory-model.md</code>.</li>
+</ul>
+<h2 id="9-ownership">9. Ownership <a href="#9-ownership" aria-label="taut">#</a></h2>
+<ul>
+<li>Move semantics: setelah nilai dipindah, variabel sumber</li>
+</ul>
+<p>  MUST NOT dipakai lagi — pemakaian setelah-move MUST</p>
+<p>  ditolak sebelum eksekusi.</p>
+<ul>
+<li>NOL borrow checker eksplisit, NOL lifetime annotation:</li>
+</ul>
+<p>  aturan ini ditegakkan murni lewat analisis use-after-move.</p>
+<ul>
+<li>Fungsi <code>extern</code> yang mendeklarasikan tipe kembalian string</li>
+</ul>
+<p>  MUST ditolak (kepemilikan lintas batas tak terdefinisi).</p>
+<h2 id="10-concurrency">10. Concurrency <a href="#10-concurrency" aria-label="taut">#</a></h2>
+<ul>
+<li>Primitif konkurensi = thread/task BLOCKING via standard</li>
+</ul>
+<p>  library (<code>std/thread.ns</code>, <code>std/tasks.ns</code>); NOL eksekusi</p>
+<p>  async (§11).</p>
+<ul>
+<li>Urutan interleave thread = undefined; program yang</li>
+</ul>
+<p>  outputnya bergantung pada penjadwalan adalah</p>
+<p>  non-deterministik (BUKAN undefined behavior — output yang</p>
+<p>  teramati MUST tetap berasal dari eksekusi valid).</p>
+<ul>
+<li>Timeout/retry/discovery = pola library di atas primitif</li>
+</ul>
+<p>  blocking, BUKAN primitif bahasa.</p>
+<ul>
+<li>Detail: <code>docs/concurrency.md</code>.</li>
+</ul>
+<h2 id="11-async">11. Async <a href="#11-async" aria-label="taut">#</a></h2>
+<ul>
+<li>NOL eksekusi asinkron di bahasa ini. Kata <code>async</code>/<code>await</code></li>
+</ul>
+<p>  adalah reserved tanpa sintaks: setiap pemakaian MUST</p>
+<p>  ditolak sebelum eksekusi.</p>
+<ul>
+<li>Kebutuhan async (server, timeout, retry) dipenuhi pola</li>
+</ul>
+<p>  blocking + thread/task (§10) dan paket ecosystem.</p>
+<ul>
+<li>Mengandalkan eksekutor/future/event-loop = undefined.</li>
+</ul>
+<h2 id="12-modules">12. Modules <a href="#12-modules" aria-label="taut">#</a></h2>
+<ul>
+<li>Modul = file sumber. <code>import nama;</code> membuat item publik</li>
+</ul>
+<p>  file <code>nama.ns</code> yang resolvable tersedia; import yang tak</p>
+<p>  resolvable MUST ditolak.</p>
+<ul>
+<li>File tanpa <code>fn main</code> = library: <code>check</code> langsung atasnya</li>
+</ul>
+<p>  MUST gagal TEPAT dengan <code>no &#x27;fn main&#x27; found</code> (terkunci</p>
+<p>  <code>e2e_compat.sh</code>).</p>
+<ul>
+<li>Siklus import MUST ditolak.</li>
+<li>Detail: <code>docs/modules.md</code>.</li>
+</ul>
+<h2 id="13-packages">13. Packages <a href="#13-packages" aria-label="taut">#</a></h2>
+<ul>
+<li>Paket = direktori bermanifest dengan metadata (nama,</li>
+</ul>
+<p>  versi, dependensi). Perintah paket yang observable:</p>
+<p>  <code>pkg init</code>, <code>pkg publish</code>, install, <code>pkg update</code>,</p>
+<p>  <code>verify</code>, <code>outdated</code>, <code>audit</code>, <code>tree</code>.</p>
+<ul>
+<li>Instalasi paket terverifikasi checksum: paket yang</li>
+</ul>
+<p>  dimodifikasi setelah publikasi MUST gagal <code>verify</code> dengan</p>
+<p>  baris <code>FAIL &lt;nama-paket&gt;</code>.</p>
+<ul>
+<li>Perbandingan versi monoton untuk deteksi <code>outdated</code>.</li>
+<li>Registry bersifat file-backed dan lokal; NOL akses network</li>
+</ul>
+<p>  implisit.</p>
+<ul>
+<li>Detail: <code>docs/pkg.md</code>, <code>docs/ecosystem.md</code>.</li>
+</ul>
+<h2 id="14-foreign-function-interface">14. Foreign function interface <a href="#14-foreign-function-interface" aria-label="taut">#</a></h2>
+<ul>
+<li>Blok <code>extern</code> mendeklarasikan fungsi asing berlinkage-C</li>
+</ul>
+<p>  dengan tipe parameter/kembalian yang didukung</p>
+<p>  (<code>i64</code>/<code>bool</code>/string-masuk/void); ketidakcocokan linkage</p>
+<p>  MUST ditolak.</p>
+<ul>
+<li>Tipe kembalian string DILARANG (§9).</li>
+<li>Fungsi asing yang membutuhkan kapabilitas native WAJIB</li>
+</ul>
+<p>  dideklarasikan di paket bermanifest <code>native=true</code>, jika</p>
+<p>  tidak <code>pkg build</code> MUST menolaknya (terkunci <code>e2e_sec.sh</code>).</p>
+<ul>
+<li>Tarball paket yang memuat path <code>../</code> MUST ditolak bersih</li>
+</ul>
+<p>  tanpa file tertanam di luar direktori paket.</p>
+<ul>
+<li>Detail: <code>docs/ffi.md</code>.</li>
+</ul>
+<h2 id="15-compile-time-execution">15. Compile-time execution <a href="#15-compile-time-execution" aria-label="taut">#</a></h2>
+<ul>
+<li>NOL eksekusi fungsi sewenang-wenang saat kompilasi.</li>
+</ul>
+<p>  <code>const Nama: Tipe = &lt;ekspresi-konstan&gt;;</code> adalah satu-satunya</p>
+<p>  evaluasi statically: inisialisasi MUST ekspresi konstan</p>
+<p>  (literal dan operator atas konstanta); selain itu MUST</p>
+<p>  ditolak.</p>
+<ul>
+<li>NOL macro-expansion-time function call, NOL build-script</li>
+</ul>
+<p>  dalam bahasa ini.</p>
+<h2 id="16-macros">16. Macros <a href="#16-macros" aria-label="taut">#</a></h2>
+<ul>
+<li>NOL fasilitas macro. Kata <code>macro</code> adalah reserved tanpa</li>
+</ul>
+<p>  sintaks: setiap pemakaian MUST ditolak sebelum eksekusi.</p>
+<ul>
+<li>Pengusul macro WAJIB melalui proses RFC; sampai</li>
+</ul>
+<p>  diratifikasi, kode yang menyerupai definisi/pemanggilan</p>
+<p>  macro MUST ditolak.</p>
+<h2 id="17-error-handling">17. Error handling <a href="#17-error-handling" aria-label="taut">#</a></h2>
+<ul>
+<li>Gaya penanganan: enum <code>Result</code>/<code>Option</code> + operator <code>?</code></li>
+</ul>
+<p>  (§6–§7); NOL exception, NOL stack unwinding.</p>
+<ul>
+<li>Setiap diagnostik kompilasi: <code>file:line:col: error:</code> +</li>
+</ul>
+<p>  pesan + snippet/caret + opsional <code>help:</code>, seluruhnya bahasa</p>
+<p>  Inggris. Recovery per top-level dengan batas 25 error per</p>
+<p>  tahap; compiler MUST keluar != 0 tanpa sinyal pada input</p>
+<p>  apapun yang ditolak; hang DILARANG.</p>
+<ul>
+<li>Kesalahan runtime yang terdeteksi (mis. pembagi-nol</li>
+</ul>
+<p>  bernilai-variabel) MUST menghentikan program dengan pesan</p>
+<p>  <code>runtime error: …</code>, bukan melanjutkan dengan nilai fiktif.</p>
+<ul>
+<li>Detail: <code>docs/error-handling.md</code>.</li>
+</ul>
+<h2 id="18-runtime-semantics">18. Runtime semantics <a href="#18-runtime-semantics" aria-label="taut">#</a></h2>
+<ul>
+<li>Eksekusi bermula di <code>fn main</code>; pernyataan dieksekusi</li>
+</ul>
+<p>  berurutan; pemanggilan mengeksekusi body kalengan dengan</p>
+<p>  argumen yang sudah dinilai. Urutan penilaian subekspresi</p>
+<p>  dalam satu ekspresi = unspecified — program MUST NOT</p>
+<p>  bergantung padanya.</p>
+<ul>
+<li>Aritmetika <code>i64</code> = two&#x27;s complement 64-bit WRAPPING</li>
+</ul>
+<p>  (overflow melilit, teramati). Pembagian/modulo dengan</p>
+<p>  pembagi-nol: ditolak saat kompilasi bila konstan,</p>
+<p>  <code>runtime error</code> bila variabel.</p>
+<ul>
+<li>Output teramati program = byte yang ditulis ke stdout;</li>
+</ul>
+<p>  program sukses keluar dengan kode 0.</p>
+<ul>
+<li>Program yang terdefinisi (tanpa undefined Appendix A dan</li>
+</ul>
+<p>  tanpa nondeterminisme §10) MUST menghasilkan output</p>
+<p>  identik pada setiap eksekusi.</p>
+<h2 id="19-platform-semantics">19. Platform semantics <a href="#19-platform-semantics" aria-label="taut">#</a></h2>
+<ul>
+<li>Semantik bahasa TAK bersyarat platform: program</li>
+</ul>
+<p>  terdefinisi berperilaku identik di semua target yang</p>
+<p>  didukung. Lebar integer tetap 64-bit di semua platform.</p>
+<ul>
+<li>Perbedaan antar-platform TERBATAS pada lapisan di luar</li>
+</ul>
+<p>  bahasa: ketersediaan perintah sistem, path, dan kapabilitas</p>
+<p>  native paket — semuanya dilaporkan via error biasa, bukan</p>
+<p>  perubahan makna program.</p>
+<ul>
+<li>Representasi antara hasil kompilasi (file objek/artefak)</li>
+</ul>
+<p>  BUKAN kontrak bahasa dan MUST NOT diandalkan program.</p>
+<h2 id="20-conformance">20. Conformance <a href="#20-conformance" aria-label="taut">#</a></h2>
+<ul>
+<li>Kesesuaian implementasi dikunci uji yang WAJIB hijau:</li>
+</ul>
+<p>  <code>compiler/tests/e2e_spec3.sh</code> (dokumen ini),</p>
+<p>  <code>compiler/tests/e2e_spec2.sh</code> (riwayat 2.0),</p>
+<p>  <code>compiler/tests/e2e_compat.sh</code> (87 file korpus),</p>
+<p>  <code>compiler/tests/e2e_freeze.sh</code> (freeze 6 area).</p>
+<ul>
+<li>Pembagian dokumen: definisi bahasa = dokumen ini</li>
+</ul>
+<p>  (<code>docs/language-spec-3.0.md</code>); implementasi compiler =</p>
+<p>  <code>docs/compiler.md</code>; spesifikasi standard library =</p>
+<p>  <code>docs/standard-library.md</code>.</p>
+<ul>
+<li>Setiap bagian §1–§19 menunjuk dokumen rinci dan/atau file</li>
+</ul>
+<p>  uji pengunci (<code>Tests:</code>); pointer yang dangling = gagal</p>
+<p>  conformance.</p>
+<ul>
+<li>Aturan independensi (§21): revisi dokumen ini MUST NOT</li>
+</ul>
+<p>  memperkenalkan istilah/artefak detail implementasi.</p>
+<h2 id="21-aturan-independensi-implementasi-mengikat-revisi">21. Aturan independensi implementasi (mengikat revisi) <a href="#21-aturan-independensi-implementasi-mengikat-revisi" aria-label="taut">#</a></h2>
+<ul>
+<li>Dokumen ini MUST NOT menyebut: versi/merk backend atau</li>
+</ul>
+<p>  toolchain, nama file sumber compiler, representasi antara</p>
+<p>  (termasuk teks/nama simbolnya), pipeline internal, atau</p>
+<p>  API internal compiler.</p>
+<ul>
+<li>Perilaku WAJIB dirumuskan hanya via permukaan observable:</li>
+</ul>
+<p>  teks sumber diterima/ditolak, kode keluar, byte stdout/</p>
+<p>  stderr, dan file yang dinyatakan sebagai output perintah.</p>
+<ul>
+<li>Daftar istilah terlarang (non-ekshaustif) ditegakkan</li>
+</ul>
+<p>  <code>e2e_spec3.sh</code>: <code>llvm</code>, <code>clang</code>, <code>verifyModule</code>,</p>
+<p>  <code>codegen</code>, <code>typechecker</code>, <code>parser.cpp</code>, <code>lexer.cpp</code>,</p>
+<p>  ekstensi artefak antara, dan contoh simbol internal.</p>
+<h2 id="appendix-a-undefined-behavior-non-ekshaustif">Appendix A. Undefined behavior (non-ekshaustif) <a href="#appendix-a-undefined-behavior-non-ekshaustif" aria-label="taut">#</a></h2>
+<ul>
+<li>Mengandalkan apa pun di luar §1–§19 (mis. GC, <code>&amp;&amp;</code>,</li>
+</ul>
+<p>  float, <code>break</code>, <code>+=</code>, metode generik, supertrait, <code>async</code>,</p>
+<p>  macro, eksekusi-comptime, borrow checker).</p>
+<ul>
+<li>Isi NUL di dalam nilai string; literal ≥ 2^63.</li>
+<li>Urutan interleave thread; nilai PRNG; waktu eksekusi.</li>
+<li>Kapan memori bocor-by-design direklamasi (tidak pernah).</li>
+<li>Representasi antara hasil kompilasi; format baris output</li>
+</ul>
+<p>  perintah introspeksi leksikal untuk input invalid.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

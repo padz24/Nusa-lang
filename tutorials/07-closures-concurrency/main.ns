@@ -1,0 +1,20 @@
+fn apply(f: fn(i64) -> i64, x: i64) -> i64 {
+    return f(x);
+}
+fn work() -> i64 {
+    return 40 + 2;
+}
+fn main() {
+    let add = |a: i64, b: i64| a + b;
+    print(add(1, 2));
+    print(apply(|x: i64| x * 2, 21));
+    let k = 10;
+    let f = |x: i64| x + k;
+    print(f(5));
+    let h = thread_spawn(work);
+    print(thread_join(h));
+    let total = atomic_new(0);
+    atomic_add(total, 1);
+    print(atomic_get(total));
+    atomic_free(total);
+}

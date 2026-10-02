@@ -1,0 +1,4513 @@
+[
+ {
+  "category": "ai",
+  "id": "ai",
+  "keywords": [
+   "ai",
+   "dataset",
+   "retrieval",
+   "nusa-helper",
+   "llm"
+  ],
+  "signature": "",
+  "snippet": "AI Documentation Layer v3.0.0 Setiap halaman mengekspos JSON-LD + &lt;meta name=\"nusa:*\"&gt; + skema 6 field (title/category/version/content/code_example/keywords). Dump massal: dataset.json . Evaluasi: eval.json (50 should-answer + 50 should-refuse). Kontrak dataset { &quot;title&quot;: &quot;chan",
+  "title": "AI Documentation",
+  "url": "ai/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "release",
+   "version"
+  ],
+  "signature": "",
+  "snippet": "Changelog Digenerate otomatis dari CHANGELOG.md saat build. Bahasa stabil: 3.0.0 . Filter: all 2.x 1.x Feature timeline Unreleased: 3.2-diff — — Phase 126: DIFFERENTIAL TESTING (milestone 1) Unreleased: 3.2-verify — — Phase 125: COMPILER VERIFICATION (milestone 1) Unreleased: 3.2-latency — — Phase",
+  "title": "Changelog",
+  "url": "changelog/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.0 design v3.0.0 Release notes # — 2026-09-08 (Phase 44: NUSA 2.0 design) Review desain pra-2.0 TANPA code (mandat master): evaluasi 15 area di docs/nusa-2.0-design.md + RFC payung RFC-0005 (Proposed). Temuan utama: satu bug terkonfirmasi (bare-return di main, dengan repro), dua kandidat breaking",
+  "title": "Changelog 2.0 design",
+  "url": "changelog/2-0-design.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Docs sync v3.0.0 Release notes # — 2026-09-09 (sinkronisasi docs/ ke 2.0.0, tanpa perubahan compiler) Audit 33 dokumen docs/ (referensi silang + implementasi): klaim usang diperbarui, kontradiksi diperbaiki. Versi tetap 2.0.0. Diperbaiki # types.md , functions.md , structs.md , syntax.md : &quot;ta",
+  "title": "Changelog Docs sync",
+  "url": "changelog/Docs-sync.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Ecosystem v3.0.0 Release notes # — 2026-09-09 (Phase 43 lanjutan: website + tutorials + examples 2.0) Melengkapi tiga komponen §28 master yang tertinggal: website statis, tutorial dedikasi, dan contoh runnable era 2.0. Tanpa perubahan compiler (versi tetap 2.0.0). Ditambahkan # website/ : index.htm",
+  "title": "Changelog Ecosystem",
+  "url": "changelog/Ecosystem.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Paket deb v3.0.0 Release notes # — 2026-09-09 (install global Termux + halaman unduhan) packaging/deb.sh membangun nusa_&lt;ver&gt;-1_aarch64.deb (layout $PREFIX : bin/nusa + nusa_rt.o , runtime/ , std/ , share/doc ; Depends: clang ) dan halaman website/downloads.html memilih versi stabil via dropd",
+  "title": "Changelog Paket deb",
+  "url": "changelog/Paket-deb.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Playground v3.0.0 Release notes # — 2026-09-08 (Phase 42: nusa playground) Menjalankan program tak-terpercaya secara aman: nusa sandbox (verdict mesin) + nusa playground (HTTP loopback → sandbox) sesuai arsitektur master (Browser → Playground → Compiler Service → Sandbox → Program). Ditambahkan # c",
+  "title": "Changelog Playground",
+  "url": "changelog/Playground.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "RFC system v3.0.0 Release notes # — 2026-09-08 (Phase 41: RFC process) Perubahan bahasa besar kini wajib melalui RFC ( rfcs/README.md ): Proposed → Design → Prototype → Implementation → Tests → Specification. Template + uji konsistensi mesin ( e2e_rfc.sh ). Ditambahkan # rfcs/ : README proses (alur",
+  "title": "Changelog RFC system",
+  "url": "changelog/RFC-system.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Spec 1.0 v3.0.0 Release notes # — 2026-09-08 (Phase 40: formal language specification) Spesifikasi bahasa resmi pertama ( docs/language-spec-1.0.md , normatif atas compiler 1.20.0): lexical grammar, syntax EBNF, AST semantics, type system, memory model, evaluation rules, modules, generics, traits,",
+  "title": "Changelog Spec 1.0",
+  "url": "changelog/Spec-1-0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Templates v3.0.0 Release notes # — 2026-09-08 (Phase 43: ecosystem) nusa new + 4 template tertanam (hello-world/cli-app/library/ server) yang semuanya build+run/test hijau, dan docs/ecosystem.md (inventaris komponen §28 master + status website). Tanpa perubahan versi (tetap 1.20.0). Ditambahkan # c",
+  "title": "Changelog Templates",
+  "url": "changelog/Templates.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.0-audit v3.0.0 Release notes # — Phase 83: COMPATIBILITY AUDIT Audit korpus 2.x: 76 compatible, 3 deprecated (channel tanpa-tag), 0 requires migration, 0 broken, 2 unsupported (paket native tls/sqlite) — 81 file. NOL migrasi bahasa. Baru: nusa migrate [PATH] (audit read-only 5 kategor",
+  "title": "Changelog Unreleased: 3.0-audit",
+  "url": "changelog/Unreleased-3-0-audit.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.0-candidate v3.0.0 Release notes # — Phase 81: LANGUAGE FREEZE Freeze 6 area (sintaks, tipe, memori, modul, error, konkurensi); NOL sintaks/semantik baru; versi compiler tetap 2.30.1 (final 3.0 di Phase 82+, beta di 84). Baru: docs/language-spec-3.0-candidate.md (lampiran freeze atas",
+  "title": "Changelog Unreleased: 3.0-candidate",
+  "url": "changelog/Unreleased-3-0-candidate.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.0-final v3.0.0 Release notes # — Phase 82: NUSA 3.0 SPECIFICATION Spesifikasi final docs/language-spec-3.0.md (normatif, 19 topik mandated, independen implementasi §21); NOL perubahan sintaks/semantik (ratifikasi freeze 2.30.1). Baru: e2e_spec3.sh (7 kasus: markers/sections-19/split/",
+  "title": "Changelog Unreleased: 3.0-final",
+  "url": "changelog/Unreleased-3-0-final.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.0-perf v3.0.0 Release notes # — Phase 86: PERFORMANCE VALIDATION Suite benchmark resmi ( bash bench/suite.sh ): 8 dimensi (compile/incremental/size/startup/runtime/memory/pkg/LSP). NOL perubahan bahasa/arsitektur (freeze); NOL klaim tanpa angka (§4 docs/perf-3.0.md ). Baru: bench/suit",
+  "title": "Changelog Unreleased: 3.0-perf",
+  "url": "changelog/Unreleased-3-0-perf.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.0-realworld v3.0.0 Release notes # — Phase 85: REAL-WORLD VALIDATION Enam proyek nyata murni-Nusa ( realworld/ ): wc, todohttp, kvstore, nsvet, nstok, csvsum. NOL perubahan bahasa (freeze); satu BUGFIX compiler (diizinkan): file_exists basi (F4). Bugfix F4: slot fe.res tak-diinit → fi",
+  "title": "Changelog Unreleased: 3.0-realworld",
+  "url": "changelog/Unreleased-3-0-realworld.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.0-security v3.0.0 Release notes # — Phase 87: SECURITY AUDIT Audit 9 area × 6 kelas: 0 critical, 0 high; 1 medium diperbaiki (S1); 2 info. Rilis tak terblokir. Fix S1: --memory-mb 0 fail-open → ditolak ( sandbox + playground ); regresi sec-limits* ( e2e_sec 5→9). Baru: docs/security-3",
+  "title": "Changelog Unreleased: 3.0-security",
+  "url": "changelog/Unreleased-3-0-security.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.1-foundation v3.0.0 Release notes # — Phase 100: NUSA 3.1 FOUNDATION (audit) Audit 10 area (compiler/runtime/stdlib/pkg/registry/LSP/debugger/ formatter/FFI/cross). Freeze 3.0 dipertahankan: NOL semantik baru; satu BUGFIX formatter non-semantik. Versi tetap 3.0.0. Bugfix FMT-1: ( grou",
+  "title": "Changelog Unreleased: 3.1-foundation",
+  "url": "changelog/Unreleased-3-1-foundation.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-abi v3.0.0 Release notes # — Phase 109: ABI &amp; BINARY INTERFACE (milestone 1) Spesifikasi ABI atas codegen 3.0.0 (NOL perubahan codegen). Baru docs/abi-3.10.md : CC default, primitif (bool=i1, string=ptr), struct non-packed, enum {tag:i64,slot}, closure {ptr,ptr}+trampolin, mangl",
+  "title": "Changelog Unreleased: 3.2-abi",
+  "url": "changelog/Unreleased-3-2-abi.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-actor v3.0.0 Release notes # — Phase 117: ACTOR/MESSAGE-PASSING (milestone 1) Pustaka murni-Nusa (tanpa sintaks, tanpa RFC). Sintaks actor butuh RFC (bukan slice ini). std/actor.ns : ActorRef{mb,lock} + spawn/call/cast , handler fungsional menjawab-sendiri; triple atomik via mutex.",
+  "title": "Changelog Unreleased: 3.2-actor",
+  "url": "changelog/Unreleased-3-2-actor.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-chain v3.0.0 Release notes # — Phase 114: SUPPLY-CHAIN SECURITY (milestone 1) Preseden terlihat + build beku. Tanpa kripto baru. Audit: registry pertama menang (by-design); pin mengunci sumber pasca-update; jendela = resolusi segar + fetch-diam build. Warning shadowing multi-registr",
+  "title": "Changelog Unreleased: 3.2-chain",
+  "url": "changelog/Unreleased-3-2-chain.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-concurrency v3.0.0 Release notes # — Phase 116: SAFE CONCURRENCY MODEL (milestone 1) Model share-nothing + handle; TUTUP TOCTOU double-join konkuren (double-free + 0 diam-diam → klaim atomik, kalah fail-fast). runtime/rt_thread.c : claim-first cermin *_free ; NOL ABI. Model + vonis",
+  "title": "Changelog Unreleased: 3.2-concurrency",
+  "url": "changelog/Unreleased-3-2-concurrency.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-diff v3.0.0 Release notes # — Phase 126: DIFFERENTIAL TESTING (milestone 1) Matriks 5×10 + TEMUAN bug cache (ditutup). e2e_diff 5/5 (default/O0-Oz/-g/profil; stdout+exit identik). Bug: Fresh basi lintas-output se-dir → Fingerprint::out . Diverifikasi: diff + incr + verify + release",
+  "title": "Changelog Unreleased: 3.2-diff",
+  "url": "changelog/Unreleased-3-2-diff.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-dist v3.0.0 Release notes # — Phase 118: DISTRIBUTED PROGRAMMING (milestone 1) Backpressure (sisanya sudah ada sejak 2.28–2.30). chan_new_bounded + chan_try_send (runtime/checker/codegen/ LSP); cap≤0 fail-fast; OOM cermin drop. Temuan: grup void codegen tanpa-guard → guard eksplisit",
+  "title": "Changelog Unreleased: 3.2-dist",
+  "url": "changelog/Unreleased-3-2-dist.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-disttool v3.0.0 Release notes # — Phase 119: DISTRIBUTED TOOLING (milestone 1) Tracing v1 ( inspect = follow-up desain). std/trace.ns : request ID (env/propagasi atau bangkitan), span/event JSON sebaris; nusa trace run (injeksi ID) + nusa trace check (validator bentuk + ringkasan).",
+  "title": "Changelog Unreleased: 3.2-disttool",
+  "url": "changelog/Unreleased-3-2-disttool.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-ffi v3.0.0 Release notes # — Phase 110: NATIVE INTEROPERABILITY 3.0 (milestone 1) nusa headers : Nusa → C (kebalikan bindgen). C++ tetap di luar (subsystem terpisah, tanpa komitmen). Subset jujur-ABI (i64/string/void + struct/enum datar); bool/closure/generik/metode ditolak eksplisi",
+  "title": "Changelog Unreleased: 3.2-ffi",
+  "url": "changelog/Unreleased-3-2-ffi.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-frontend v3.0.0 Release notes # — Phase 101: COMPILER FRONTEND 2.0 (milestone 1) Akurasi diagnostik. NOL semantik; NOL rewrite. Bukti pemilihan: frontend ≤8% build ( --stats ; clang &gt;90%) → micro-opt ditolak; recovery/fuzz-101 (72/72)/adversarial bersih; HIR tak ada (ranah Phase",
+  "title": "Changelog Unreleased: 3.2-frontend",
+  "url": "changelog/Unreleased-3-2-frontend.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-gpu v3.0.0 Release notes # — Phase 120: GPU/ACCELERATOR (milestone 1) Eksplorasi + seam vendor-netral (terbukti di perangkat: 1/1/GPU). Fakta env + batas FFI (tanpa pointer) → desain seam paket. packages/opencl/ : query angka (platform/device/kelas) via dlopen; wrapper + manifest +",
+  "title": "Changelog Unreleased: 3.2-gpu",
+  "url": "changelog/Unreleased-3-2-gpu.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-ir v3.0.0 Release notes # — Phase 102: NUSA IR 2.0 (milestone 1) Analisis control-flow MIR. NOL rewire pipeline; NOL HIR/SSA penuh (butuh design review). Semantik .ns tak berubah. Baru compiler/mir/Cfg.{h,cpp} : successors/predecessors/ reachable/rpo (std-only, deterministik, tanpa",
+  "title": "Changelog Unreleased: 3.2-ir",
+  "url": "changelog/Unreleased-3-2-ir.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-jit v3.0.0 Release notes # — Phase 105: JIT/AOT ARCHITECTURE (milestone 1) Arsitektur eksekusi, bukan subsystem. AOT tetap satu-satunya jalur (NOL perilaku). LLVM/Termux terbukti mampu ORC LLJIT in-process. Pagar kapabilitas test_orc (ctest): modul JIT + simbol proses. docs/executio",
+  "title": "Changelog Unreleased: 3.2-jit",
+  "url": "changelog/Unreleased-3-2-jit.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-latency v3.0.0 Release notes # — Phase 124: REAL-TIME/LOW-LATENCY (milestone 1) Profil ukur + aturan (tanpa flag; tanpa klaim hard real-time). Vonis: lunak-terdokumentasi YA, hard TIDAK (butuh bukti formal). bench/latency.sh (jitter ping-pong; acuan 90/100/119/29ms) + aturan 5 profi",
+  "title": "Changelog Unreleased: 3.2-latency",
+  "url": "changelog/Unreleased-3-2-latency.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-memory v3.0.0 Release notes # — Phase 115: MEMORY MODEL 3.0 (milestone 1) Audit 8 area. NOL semantik; disiplin alokasi bersih (temuan kode nihil) — nilai = matriks + residual + kunci. docs/memory-3.16.md : stack/heap/ownership/borrow/refs/ concurrency/FFI/OOM + register ABA/rekursi/",
+  "title": "Changelog Unreleased: 3.2-memory",
+  "url": "changelog/Unreleased-3-2-memory.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-metapro v3.0.0 Release notes # — Phase 107: ADVANCED METAPROGRAMMING (milestone 1) RFC makro deklaratif (aturan: fitur bahasa via RFC dulu). TANPA implementasi; ambang Phase 69 tetap berlaku. Baru rfcs/RFC-0012-macros.md (Proposed): sintaks pattern→template, argumen = fragmen terpar",
+  "title": "Changelog Unreleased: 3.2-metapro",
+  "url": "changelog/Unreleased-3-2-metapro.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-min v3.0.0 Release notes # — Phase 123: EMBEDDED/FREESTANDING (milestone 1) Seam alokator weak (bukan freestanding penuh — tercatat). nusa_alloc / nusa_free (default malloc/free; timpa via --link ); 5 situs codegen dialihkan; deteksi minimal + ukuran utuh (hello 5816 B). Terbukti: p",
+  "title": "Changelog Unreleased: 3.2-min",
+  "url": "changelog/Unreleased-3-2-min.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-opt v3.0.0 Release notes # — Phase 103: ADVANCED OPTIMIZER (milestone 1) Inlining MIR. NOL rewire; LLVM tetap optimizer utama. Propagasi konstanta sudah ada (fold per-fungsi); devirtualisasi N/A. Opt::inlineSmallCalls : callee satu-block (≤32 instr, bukan caller, arity/void cocok) d",
+  "title": "Changelog Unreleased: 3.2-opt",
+  "url": "changelog/Unreleased-3-2-opt.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-parallel v3.0.0 Release notes # — Phase 121: PARALLEL COMPUTING (milestone 1) Loop paralel level-pustaka (tanpa sintaks; SIMD = Phase 122). std/parallel.ns : par_map_sum (block statik, deterministik). Regresi: tests/parallel_test.ns + e2e_parallel 3/3. Diverifikasi: concurrency/stre",
+  "title": "Changelog Unreleased: 3.2-parallel",
+  "url": "changelog/Unreleased-3-2-parallel.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-pgo v3.0.0 Release notes # — Phase 104: PROFILE-GUIDED OPTIMIZATION (milestone 1) Alur PGO via clang (LLVM tetap optimizer). Deviasi tercatat: --profile milik Phase 62 → namespace --pgo-* . build --pgo-generate ( -fprofile-generate ) + `build --pgo-use=&lt;profdata&gt; ( -fprofile-u",
+  "title": "Changelog Unreleased: 3.2-pgo",
+  "url": "changelog/Unreleased-3-2-pgo.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-plugin v3.0.0 Release notes # — Phase 112: PLUGIN SYSTEM (milestone 1) Kontrak nusa-plugin/1 tersandbox-proses (WASM = migrasi). nusa plugin run (manifest opsional + gate op pra-eksekusi + batas sandbox); runSandboxedInput (stdin); parser JSON subset. Regresi: test_plugin 4/4 + e2e_",
+  "title": "Changelog Unreleased: 3.2-plugin",
+  "url": "changelog/Unreleased-3-2-plugin.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-reflect v3.0.0 Release notes # — Phase 108: REFLECTION &amp; INTROSPECTION (milestone 1) Evaluasi + metadata tooling. Runtime reflection TIDAK dibangun (beralasan); typeof level-bahasa ditunda ke RFC. nusa doc --format json : metadata mesin (fungsi/struct/alias/ const/enum/trait/ext",
+  "title": "Changelog Unreleased: 3.2-reflect",
+  "url": "changelog/Unreleased-3-2-reflect.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-repl v3.0.0 Release notes # — Phase 106: NUSA REPL (milestone 1) nusa repl : AOT-loop (transkrip sesi → runBuild → eksekusi). Infrastruktur sama; tanpa bahasa kedua; tanpa JIT. Konvensi: ; / { / } = statement; ekspresi → print(...) ; :help / :reset / :quit ; gagal tak meracuni sesi;",
+  "title": "Changelog Unreleased: 3.2-repl",
+  "url": "changelog/Unreleased-3-2-repl.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-simd v3.0.0 Release notes # — Phase 122: SIMD/VECTOR TYPES (milestone 1) RFC tipe vektor (aturan: fitur bahasa via RFC dulu). TANPA implementasi; autovek LLVM terbukti nol (bukan janji). Baru rfcs/RFC-0013-vectors.md (Proposed): vector&lt;i64,N&gt; slice-1, elementwise, index fail-f",
+  "title": "Changelog Unreleased: 3.2-simd",
+  "url": "changelog/Unreleased-3-2-simd.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-supply v3.0.0 Release notes # — Phase 113: SECURITY-FIRST PACKAGE ECOSYSTEM (milestone 1) SBOM tanpa kriptografi baru. Signatures butuh primitif asimetris teraudit (ditunda beralasan); publishers/vuln butuh feed (Phase 114). nusa sbom (+ pkg sbom ): nusa-sbom/1 dari manifest+lock (c",
+  "title": "Changelog Unreleased: 3.2-supply",
+  "url": "changelog/Unreleased-3-2-supply.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-verify v3.0.0 Release notes # — Phase 125: COMPILER VERIFICATION (milestone 1) Properti metamorfik fmt-menjaga-AST (model-check/proof ditolak beralasan). Properti MENANGKAP bug string-mutasi (diperbaiki). e2e_fmtprop 3/3 (det + korpus 94 + fuzz 25) + regresi unit. Cleanup formatter",
+  "title": "Changelog Unreleased: 3.2-verify",
+  "url": "changelog/Unreleased-3-2-verify.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Unreleased: 3.2-wasi v3.0.0 Release notes # — Phase 111: WASI/SANDBOXED EXECUTION (milestone 1) Model kapabilitas eksplisit (link/exec wasm penuh butuh sysroot + engine yang belum ada di CI — tercatat + kriteria terima). Gate: link wasm32* memakai 10 kapabilitas runtime → tolak bernama (±sysroot);",
+  "title": "Changelog Unreleased: 3.2-wasi",
+  "url": "changelog/Unreleased-3-2-wasi.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "Website v3.0.0 Release notes # — 2026-09-09 (halaman per-dokumen + redesain visual) Setiap dokumen kini halaman HTML sendiri (53 halaman via website/gen.py , tetap offline-first tanpa dependensi) + redesain (terminal fosfor, ledger, responsif). Beranda index.html mirror README.md root (judul, penul",
+  "title": "Changelog Website",
+  "url": "changelog/Website.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.1.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.1.0 v0.1.0 Release notes # — Hello Nusa (2026-09-05) Milestone pertama sesuai MASTER PROMPT. Scope: compiler minimal yang benar-benar berjalan di Android AArch64 / Termux + LLVM 21.1.8. Ditambahkan # Project CMake ( cmake -S . -B build , target nusa ). Lexer: fn , identifier, string literal + esc",
+  "title": "Changelog 0.1.0",
+  "url": "changelog/v0.1.0.html",
+  "version": "0.1.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.2.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.2.0 v0.2.0 Release notes # — Lexer &amp; Parser (2026-09-05) Milestone front-end sesuai MASTER PROMPT. Scope: lexer penuh + parser dengan operator precedence yang benar. Codegen sengaja tetap subset v0.1.0 (eksekusi let /ekspresi = v0.3.0). Ditambahkan # Lexer penuh: keywords fn let return if els",
+  "title": "Changelog 0.2.0",
+  "url": "changelog/v0.2.0.html",
+  "version": "0.2.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.3.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.3.0 v0.3.0 Release notes # — Variables &amp; Expressions (2026-09-05) Milestone eksekusi sesuai MASTER PROMPT: let , variabel, integer, boolean, binary/unary expressions, dan symbol table — semuanya menjadi native executable. Type system penuh = v0.4.0. Ditambahkan # Semantic analysis ( compiler/",
+  "title": "Changelog 0.3.0",
+  "url": "changelog/v0.3.0.html",
+  "version": "0.3.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.4.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.4.0 v0.4.0 Release notes # — Static Type System (2026-09-05) Milestone type system sesuai MASTER PROMPT: anotasi, tipe dasar, type checking, kompatibilitas, inferensi sederhana, function type checking. Tanpa generics / advanced types. Ditambahkan # Modul compiler/types/ : Type (value, copyable) —",
+  "title": "Changelog 0.4.0",
+  "url": "changelog/v0.4.0.html",
+  "version": "0.4.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.5.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.5.0 v0.5.0 Release notes # — Functions (2026-09-05) Milestone functions sesuai MASTER PROMPT: deklarasi berparameter, return type, return statement, calls, local scope, validasi argumen — dengan LLVM function dan call yang benar. Ditambahkan # Lexer: token -&gt; (greedy; Minus + Gt berdampingan t",
+  "title": "Changelog 0.5.0",
+  "url": "changelog/v0.5.0.html",
+  "version": "0.5.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.6.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.6.0 v0.6.0 Release notes # — Control Flow (2026-09-05) Milestone control flow sesuai MASTER PROMPT: if / else , while , nested if, nested loops — dengan LLVM basic blocks yang benar (entry/then/else/merge, loop.cond/body/after). Ditambahkan # Parser: if Expr Block [else Block | else if …] , while",
+  "title": "Changelog 0.6.0",
+  "url": "changelog/v0.6.0.html",
+  "version": "0.6.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.7.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.7.0 v0.7.0 Release notes # — String &amp; Array (2026-09-05) Milestone string &amp; array sesuai MASTER PROMPT: literal, indexing, length, bounds checking — minimal, tanpa generic collections. Ditambahkan # Tipe [T] ( TypeKind::Array + elem; ukuran BUKAN bagian tipe). AST: ArrayLit (array …) , In",
+  "title": "Changelog 0.7.0",
+  "url": "changelog/v0.7.0.html",
+  "version": "0.7.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.8.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.8.0 v0.8.0 Release notes # — Struct &amp; Module (2026-09-05) Milestone struct &amp; module sesuai MASTER PROMPT: deklarasi struct, konstruksi literal, akses field (termasuk nested), named LLVM types, plus module loader — import multi-file dengan namespace merge, visibilitas dasar, dan deteksi ci",
+  "title": "Changelog 0.8.0",
+  "url": "changelog/v0.8.0.html",
+  "version": "0.8.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.9.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.9.0 v0.9.0 Release notes # — Standard Library &amp; Tooling (2026-09-05) Milestone stdlib &amp; tooling sesuai MASTER PROMPT: mulai std/ (io/math/string/collections/fs/system), 11 builtin runtime, dan CLI check / test / fmt / doc + formatter sederhana + dokumentasi API. Minimal tetapi nyata dan t",
+  "title": "Changelog 0.9.0",
+  "url": "changelog/v0.9.0.html",
+  "version": "0.9.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "0.9.5",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "0.9.5 v0.9.5 Release notes # — Hardening (2026-09-05) Bukan versi fitur: stabilitas compiler, error handling, regression testing, verifikasi LLVM, memory safety, diagnostics. Semua behavior penting kini terkunci test; compiler tak boleh crash pada malformed input. Ditambahkan # Guard rekursi anti-s",
+  "title": "Changelog 0.9.5",
+  "url": "changelog/v0.9.5.html",
+  "version": "0.9.5"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.0.0 v1.0.0 Release notes # — Stable Nusa (2026-09-05) Rilis stabil sesuai MASTER PROMPT. Bukan versi fitur: verifikasi menyeluruh bahwa seluruh pipeline, bahasa, tooling, stdlib, diagnostics, dan dokumentasi memenuhi Definition of Done 12/12. Ditambahkan # Diagnostics span: length di SemanticErro",
+  "title": "Changelog 1.0.0",
+  "url": "changelog/v1.0.0.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.1.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.1.0 v1.1.0 Release notes # — Diagnostics &amp; Recovery (2026-09-06) Fase 20 (pasca-1.0.0): stabilitas compiler, diagnostics, error recovery, locations, messages, formatter, test infra, dan pengukuran performa compiler. Tanpa perubahan bahasa (spec v1.0.0 tetap berlaku). Ditambahkan # Error recov",
+  "title": "Changelog 1.1.0",
+  "url": "changelog/v1.1.0.html",
+  "version": "1.1.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.10.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.10.0 v1.10.0 Release notes # — 2026-09-07 (Phase 29: standard library 2.0) Modul std baru (kanonis import std.x ), builtin string/waktu/ acak/proses/net, dan argumen CLI ( process_argc/argv + penerusan nusa run ). Ditambahkan # Builtin: str_char_at/slice (clamp, inline), time_now_ms/s , random_u6",
+  "title": "Changelog 1.10.0",
+  "url": "changelog/v1.10.0.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.11.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.11.0 v1.11.0 Release notes # — 2026-09-07 (Phase 30: package manager) Manajer paket sumber-lokal: `nusa pkg init/add/remove/update/build/publish , manifest nusa.toml` (subset TOML), resolver path-deps transitif, lock + SHA-256, build reproduksibel. Ditambahkan # compiler/pkg/ : parser TOML-subset",
+  "title": "Changelog 1.11.0",
+  "url": "changelog/v1.11.0.html",
+  "version": "1.11.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.12.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.12.0 v1.12.0 Release notes # — 2026-09-07 (Phase 31: package registry) Registry file-backed (tanpa server): index + tarball per direktori, nusa search/install/publish , resolver versi (persis/caret) dengan cache terverifikasi, keamanan dua-lapis checksum. Ditambahkan # Layout registry ( index/&lt",
+  "title": "Changelog 1.12.0",
+  "url": "changelog/v1.12.0.html",
+  "version": "1.12.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.13.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.13.0 v1.13.0 Release notes # — 2026-09-07 (Phase 32: C interoperability) FFI terbatas: deklarasi extern fn , ABI C untuk primitif (bool = int), dan integrasi linker ( --link , manifest [link] ). Ditambahkan # Lexer extern ; AST FunctionDecl.isExtern ; parser extern fn ...; (tanpa body; tanpa cek",
+  "title": "Changelog 1.13.0",
+  "url": "changelog/v1.13.0.html",
+  "version": "1.13.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.14.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.14.0 v1.14.0 Release notes # — 2026-09-07 (Phase 33: cross compilation) Target Linux AArch64/x86-64 via clang --target (compile-only tanpa sysroot; link butuh --sysroot ), mode emisi IR/asm/objek, dan matriks target terdokumentasi. Host Android tak tersentuh. Ditambahkan # Codegen::setTargetTripl",
+  "title": "Changelog 1.14.0",
+  "url": "changelog/v1.14.0.html",
+  "version": "1.14.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.15.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.15.0 v1.15.0 Release notes # — 2026-09-07 (Phase 34: compiler optimization) Optimasi berbasis benchmark: runtime precompiled (−36% waktu build), flag -O , harness bench + docs/perf.md . Tanpa micro-opt frontend (bukti: clang &gt;85% build). Ditambahkan # Target CMake nusa_runtime ( build/nusa_rt.",
+  "title": "Changelog 1.15.0",
+  "url": "changelog/v1.15.0.html",
+  "version": "1.15.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.16.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.16.0 v1.16.0 Release notes # — 2026-09-07 (Phase 35: incremental compilation) Build hangat 7x lebih cepat: fingerprint sumber+flag dan cache artefak berbasis hash IR — clang dilewati bila IR identik. Ditambahkan # compiler/incr/ : dependency graph, fingerprint ( &lt;outdir&gt;/.nusa-cache/fingerp",
+  "title": "Changelog 1.16.0",
+  "url": "changelog/v1.16.0.html",
+  "version": "1.16.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.17.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.17.0 v1.17.0 Release notes # — 2026-09-07 (Phase 36: language server) Server LSP via stdio ( nusa lsp ): diagnostics, completion, hover, goto-definition, symbols, formatting, rename — di atas pipeline yang sudah ada (lexer/parser-recovery/semantic/fmt). Ditambahkan # compiler/lsp/ : JSON minimal",
+  "title": "Changelog 1.17.0",
+  "url": "changelog/v1.17.0.html",
+  "version": "1.17.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.18.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.18.0 v1.18.0 Release notes # — 2026-09-07 (Phase 37: debugger support) DWARF via LLVM DIBuilder di balik -g : compile-unit, subprogram, line table per statement, dan variabel lokal skalar — terverifikasi llvm-dwarfdump (lldb/gdb tak tersedia di CI ini). Ditambahkan # Codegen::setDebug + `diBeginF",
+  "title": "Changelog 1.18.0",
+  "url": "changelog/v1.18.0.html",
+  "version": "1.18.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.19.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.19.0 v1.19.0 Release notes # — 2026-09-07 (Phase 38: self-hosting) Bootstrap langkah 1: lexer Nusa ( selfhost/lex.ns ) dibuktikan ekuivalen dengan lexer C++ via differential test 33 file + perintah debug nusa lex dan builtin int_to_str pendukungnya. Ditambahkan # nusa lex FILE : dump kind|lexeme|",
+  "title": "Changelog 1.19.0",
+  "url": "changelog/v1.19.0.html",
+  "version": "1.19.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.20.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.20.0 v1.20.0 Release notes # — 2026-09-08 (Phase 39: bootstrap compiler) Rantai bootstrap terdokumentasi + terverifikasi mesin: Stage 0 (C++) mengkompilasi lexer Nusa menjadi biner native (Stage 1) yang output-nya byte-identik dengan lexer C++ (Stage 2 = Stage 0) dan deterministik — via perintah",
+  "title": "Changelog 1.20.0",
+  "url": "changelog/v1.20.0.html",
+  "version": "1.20.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.5.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.5.0 v1.5.0 Release notes # — 2026-09-07 (Phase 21–24: type system, traits, memori, error) Rilis kumulatif pasca-1.1.0: mencakup target Phase 21 (1.2.0), 22 (1.3.0), 23 (1.4.0), dan 24 (1.5.0) dalam satu rilis. Phase 24: error handling # Ditambahkan # Option&lt;T&gt; / Result&lt;T, E&gt; / Error d",
+  "title": "Changelog 1.5.0",
+  "url": "changelog/v1.5.0.html",
+  "version": "1.5.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.6.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.6.0 v1.6.0 Release notes # — 2026-09-07 (Phase 25: pattern matching) Statement match dengan desugar ke let + rantai if / else biasa (tanpa codegen baru): literal int/bool/string, _ , bind, struct, guard if , dan varian std Some(v) / None / Ok(v) / Err(e) untuk Option/Result. Exhaustiveness wajib",
+  "title": "Changelog 1.6.0",
+  "url": "changelog/v1.6.0.html",
+  "version": "1.6.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.7.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.7.0 v1.7.0 Release notes # — 2026-09-07 (Phase 26: enums &amp; algebraic data types) Enum dengan payload posisional, konstruktor qualified E.V(...) , pola varian + exhaustiveness, dan generic enums — semuanya via desugar hidden struct ( tag + slot payload), tanpa codegen baru kecuali toleransi fi",
+  "title": "Changelog 1.7.0",
+  "url": "changelog/v1.7.0.html",
+  "version": "1.7.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.8.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.8.0 v1.8.0 Release notes # — 2026-09-07 (Phase 27: closures &amp; functional features) Lambda |params| body dengan capture by-value, lifting ke fungsi hidden + struct env, dan panggilan tak langsung seragam via trampolin (ptr env, ...) — kompatibel model memori (heap program-lifetime). Ditambahka",
+  "title": "Changelog 1.8.0",
+  "url": "changelog/v1.8.0.html",
+  "version": "1.8.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "1.9.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "1.9.0 v1.9.0 Release notes # — 2026-09-07 (Phase 28: concurrency) Threads (pthread) + channel i64 + mutex + atomik + sleep sebagai builtin, didukung runtime C yang di-link otomatis driver ( clang prog.ll runtime/nusa_rt.c -o prog -pthread ). Ditambahkan # runtime/nusa_rt.c : thread spawn/join (entr",
+  "title": "Changelog 1.9.0",
+  "url": "changelog/v1.9.0.html",
+  "version": "1.9.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.0.0 v2.0.0 Terdampak: language/error-handling , docs/migration-2.0 Release notes # — 2026-09-08 (Phase 45: Nusa 2.0) Rilis mayor: sum-type natif (B1, BREAKING), channel bertag + TCP server (ekspansif-terkirim), satu bug diperbaiki, spec 2.0 + panduan migrasi. GC/FFI-callback/async SENGAJA di luar",
+  "title": "Changelog 2.0.0",
+  "url": "changelog/v2.0.0.html",
+  "version": "2.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.1.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.1.0 v2.1.0 Release notes # — 2026-09-10 (Phase 50: NUSA 2.1 STABILITY) Fokus: stability, correctness, compatibility. Tanpa perubahan semantik bahasa (spec 2.0 tetap normatif). Baseline 51/51 ctest 2.0.0 terverifikasi hijau sebelum perubahan; benchmark bench/bench.sh identik (hello ~1.4 dtk/20032",
+  "title": "Changelog 2.1.0",
+  "url": "changelog/v2.1.0.html",
+  "version": "2.1.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.10.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.10.0 v2.10.0 Release notes # — 2026-09-10 (Phase 59: SECURITY MODEL, milestone 1) Audit keamanan + deklarasi capability + 2 enforcement. nusa audit/tree/outdated/verify tetap milik Phase 60. Audit (temuan) # Tanpa eksekusi saat install (tanpa build script/hook — hanya tar+clang); deps = sumber. F",
+  "title": "Changelog 2.10.0",
+  "url": "changelog/v2.10.0.html",
+  "version": "2.10.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.11.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.11.0 v2.11.0 Release notes # — 2026-09-10 (Phase 60: PACKAGE ECOSYSTEM 2.0) Empat perintah inspeksi read-only (top-level + pkg ). Signing ditunda (butuh infra kunci); mirrors/offline/repro = mekanisme ada + didokumentasikan. Spec tak berubah. Ditambahkan # tree : graf dependensi (rekursi path ama",
+  "title": "Changelog 2.11.0",
+  "url": "changelog/v2.11.0.html",
+  "version": "2.11.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.12.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.12.0 v2.12.0 Release notes # — 2026-09-10 (Phase 61: REPRODUCIBLE BUILDS, milestone 1) Tarball byte-deterministik + pin compiler di lock + jaminan terdokumentasi. Spec tak berubah. Ditambahkan # Publish deterministik: `tar --sort=name --mtime=&#x27;@0&#x27; --owner=0 --group=0 --numeric-owner + g",
+  "title": "Changelog 2.12.0",
+  "url": "changelog/v2.12.0.html",
+  "version": "2.12.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.13.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.13.0 v2.13.0 Release notes # — 2026-09-10 (Phase 62: BUILD SYSTEM 2.0, milestone 1) clean + --profile (build + pkg build). Spec tak berubah. Ditambahkan # nusa clean [DIR] : hapus *.ns.ll + .nusa-cache/ (rekursif), target/ + dist/ (top-level); idempoten; sumber tak tersentuh. --profile dev|debug|",
+  "title": "Changelog 2.13.0",
+  "url": "changelog/v2.13.0.html",
+  "version": "2.13.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.14.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.14.0 v2.14.0 Release notes # — 2026-09-10 (Phase 63: NUSA LSP 2.0, milestone 1) textDocument/references di atas mesin scope-walk yang sama dengan rename (himpunan identik). Spec tak berubah. Ditambahkan # Server: capability referencesProvider + handler ( context.includeDeclaration dihormati, defa",
+  "title": "Changelog 2.14.0",
+  "url": "changelog/v2.14.0.html",
+  "version": "2.14.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.15.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.15.0 v2.15.0 Release notes # — 2026-09-10 (Phase 64: DEBUGGER 2.0, milestone 1 — DWARF) Composite DWARF + formal params (tanpa engine interaktif/DAP: butuh kontrol-proses, proyek tersendiri). Spec tak berubah. Ditambahkan # DW_TAG_structure_type + member + offset (layout LP64, nested, cache, guar",
+  "title": "Changelog 2.15.0",
+  "url": "changelog/v2.15.0.html",
+  "version": "2.15.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.16.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.16.0 v2.16.0 Release notes # — 2026-09-10 (Phase 65: PROFILER &amp; OBSERVABILITY, milestone 1) bench + build --stats (angka resmi tetap bench/ + docs/perf.md ). Spec tak berubah. Ditambahkan # nusa bench &lt;file.ns&gt; [-n N] [-- args] : build --fresh sekali + N run via fork+wait4 (waktu dindin",
+  "title": "Changelog 2.16.0",
+  "url": "changelog/v2.16.0.html",
+  "version": "2.16.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.17.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.17.0 v2.17.0 Terdampak: compiler/ffi Release notes # — 2026-09-10 (Phase 66: C INTEROP 2.0, milestone 1 — bindgen) Generator binding header C subset (tanpa perubahan checker/ codegen; C++ tetap ditolak). Spec tak berubah. Ditambahkan # nusa bindgen &lt;header.h&gt; [-o out.ns] ( compiler/bindgen/",
+  "title": "Changelog 2.17.0",
+  "url": "changelog/v2.17.0.html",
+  "version": "2.17.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.18.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.18.0 v2.18.0 Terdampak: compiler/targets Release notes # — 2026-09-10 (Phase 67: WASM TARGET, milestone 1) Alias wasm32 compile-only (tanpa sysroot/WASI/runtime port). Spec tak berubah. Ditambahkan # Target wasm32 → wasm32-unknown-unknown (alias + triple persis; pesan error diperbarui). Link/run",
+  "title": "Changelog 2.18.0",
+  "url": "changelog/v2.18.0.html",
+  "version": "2.18.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.19.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.19.0 v2.19.0 Release notes # — 2026-09-11 (Phase 68: MOBILE/EMBEDDED, milestone 1 — minimal) Biner kecil via link minimal (perilaku program tetap). Spec tak berubah. Ditambahkan # Runtime dilewati TOTAL bila IR tak merujuk simbol fungsi runtime (`@nusa_thread_|mutex_|chan_|atomic_|sleep_|time_| r",
+  "title": "Changelog 2.19.0",
+  "url": "changelog/v2.19.0.html",
+  "version": "2.19.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.2.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.2.0 v2.2.0 Release notes # — 2026-09-10 (Phase 51: COMPILER ARCHITECTURE 2.0, milestone 1) Tanpa rewrite total. Satu milestone bertahap: putus kopling Backend → Semantic Layer. Semantik bahasa tidak berubah (spec 2.0 tetap normatif; tanpa RFC — bukan language-level). Diubah (refactoring murni, no",
+  "title": "Changelog 2.2.0",
+  "url": "changelog/v2.2.0.html",
+  "version": "2.2.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.20.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.20.0 v2.20.0 Release notes # — 2026-09-11 (Phase 69: MACRO SYSTEM, milestone 1 — evaluasi) Evaluasi kebutuhan + reservasi keyword (mandat kondisional: belum dibutuhkan — fungsi/generik/trait/builtin cukup). Spec +1 reserved word (nol pemakaian korpus). Ditambahkan # Keyword macro reserved ( Token",
+  "title": "Changelog 2.20.0",
+  "url": "changelog/v2.20.0.html",
+  "version": "2.20.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.21.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.21.0 v2.21.0 Release notes # — 2026-09-11 (Phase 70: COMPILE-TIME, milestone 1 — const) Item const top-level (RFC-0009 Proposed + prototipe slice-1). Spec 2.0 aditif (item + keyword + semantik const-eval). Ditambahkan # Sintaks const NAME [: T] = &lt;expr&gt;; (literal i64/bool/string, unary/arit",
+  "title": "Changelog 2.21.0",
+  "url": "changelog/v2.21.0.html",
+  "version": "2.21.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.22.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.22.0 v2.22.0 Release notes # — 2026-09-11 (Phase 71: VERIFICATION, milestone 1 — fondasi) Invarian pipeline tertulis + dikunci mesin (RFC-0010 Proposed). Nol perubahan bahasa/IR/ABI (murni aditif). Ditambahkan # docs/verification-2.22.md : kontrak I-LEX/I-PARSE/I-FMT/ I-CHECK/I-MIR/I-IR/I-RUN (to",
+  "title": "Changelog 2.22.0",
+  "url": "changelog/v2.22.0.html",
+  "version": "2.22.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.23.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.23.0 v2.23.0 Release notes # — 2026-09-11 (Phase 72: SELF-HOSTING, milestone 2 — parser+AST) Parser Nusa memparse Nusa (langkah bootstrap 2). Nol perubahan bahasa/IR/ABI (murni aditif). Ditambahkan # selfhost/parse.ns (fused lexer+parser; struct-threading + rekursi; guard anti-hang): dump AST byt",
+  "title": "Changelog 2.23.0",
+  "url": "changelog/v2.23.0.html",
+  "version": "2.23.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.24.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.24.0 v2.24.0 Release notes # — 2026-09-11 (Phase 73: BOOTSTRAP 2.0 — rantai multi-komponen) Frontend Nusa masuk rantai bootstrap (master Phase 73). Nol perubahan bahasa/IR/ABI (C++ tetap bootstrap layer + oracle). Ditambahkan # nusa bootstrap [file.ns] [--as lex|ast] [-o DIR] : kind referensi Sta",
+  "title": "Changelog 2.24.0",
+  "url": "changelog/v2.24.0.html",
+  "version": "2.24.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.25.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.25.0 v2.25.0 Release notes # — 2026-09-11 (Phase 74: SELF-HOSTING FULL — bootstrap 4-stage) Rantai bootstrap lengkap + validasi Stage N == Stage N+1 (master Phase 74, &quot;sebisa mungkin&quot;). Nol perubahan bahasa/IR/ABI. Ditambahkan # nusa bootstrap ... [--rebuild DIR] : Stage 3 (fresh-rebuil",
+  "title": "Changelog 2.25.0",
+  "url": "changelog/v2.25.0.html",
+  "version": "2.25.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.26.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.26.0 v2.26.0 Release notes # — 2026-09-11 (Phase 75: STDLIB 3.0 — matang) Konsisten, terdokumentasi, teruji, portabel (master Phase 75). Murni-Nusa; nol perubahan bahasa/IR/ABI. Ditambahkan # std/core.ns : sign/abs_diff/ceil_div/mod_euclid/div_euclid/ powmod/ilog2/is_pow2/sum_to. std/testing.ns :",
+  "title": "Changelog 2.26.0",
+  "url": "changelog/v2.26.0.html",
+  "version": "2.26.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.27.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.27.0 v2.27.0 Release notes # — 2026-09-11 (Phase 76: CRYPTOGRAPHY — fondasi) Primitif kripto jika kualitas dijamin (master Phase 76 lulus bersyarat). Tanpa algoritma baru; tanpa klaim &quot;teraudit&quot;. Ditambahkan # Builtin sha256_hex(s) (FIPS 180-4 verbatim di runtime/rt_crypto.c ; vektor NI",
+  "title": "Changelog 2.27.0",
+  "url": "changelog/v2.27.0.html",
+  "version": "2.27.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.28.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.28.0 v2.28.0 Release notes # — 2026-09-11 (Phase 77: DATA TOOLING — serialisasi + sqlite) Tanpa engine di stdlib (mandat). Murni-Nusa + paket referensi; nol perubahan bahasa/IR/ABI. Ditambahkan # std/csv.ns : baris/field index-getter (quote, &quot;&quot; , CRLF). std/json.ns : getter skalar objek",
+  "title": "Changelog 2.28.0",
+  "url": "changelog/v2.28.0.html",
+  "version": "2.28.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.29.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.29.0 v2.29.0 Release notes # — 2026-09-12 (Phase 78: SERVER — fondasi) Primitif aplikasi server, framework-agnostic (master Phase 78). Murni-Nusa + paket referensi; nol perubahan bahasa/IR/ABI. Ditambahkan # std/config.ns : env &gt; TOML &gt; fallback (str/int/bool; false/0 eksplisit menang via h",
+  "title": "Changelog 2.29.0",
+  "url": "changelog/v2.29.0.html",
+  "version": "2.29.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.3.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.3.0 v2.3.0 Release notes # — 2026-09-10 (Phase 52: NUSA IR, milestone 1 — MIR fondasi) Pipeline belum di-rewire (codegen tetap AST → LLVM; nol perilaku). Semantik bahasa tidak berubah (spec 2.0 normatif; tanpa RFC). Ditambahkan # compiler/mir/Mir.{h,cpp} ( nusa::mir ): typed values (I64/Bool/Str/",
+  "title": "Changelog 2.3.0",
+  "url": "changelog/v2.3.0.html",
+  "version": "2.3.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.30.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.30.0 v2.30.0 Release notes # — 2026-09-12 (Phase 79: DISTRIBUTED — fondasi) Primitif library-level, mayoritas non-compiler (master Phase 79; syarat concurrency-stabil terpenuhi). Murni-Nusa; nol perubahan bahasa/IR/ABI. Ditambahkan # std/rpc.ns : JSON-RPC-min atas TCP newline (call/serve_once + h",
+  "title": "Changelog 2.30.0",
+  "url": "changelog/v2.30.0.html",
+  "version": "2.30.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.30.1",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.30.1 v2.30.1 Release notes # — 2026-09-12 (Phase 80: STABILITY RELEASE) Freeze fitur bahasa (master Phase 80). Nol sintaks/semantik baru; nol perubahan parser/checker/codegen. Penomoran: master menarget &quot;2.5.0&quot; ganda (stale) — rilis ini patch monoton. Stabilitas # Cache registry hermeti",
+  "title": "Changelog 2.30.1",
+  "url": "changelog/v2.30.1.html",
+  "version": "2.30.1"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.4.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.4.0 v2.4.0 Release notes # — 2026-09-10 (Phase 53: OPTIMIZATION FRAMEWORK, milestone 1) Pass internal pertama di atas MIR (LLVM tetap optimizer utama). Pipeline .ns belum di-rewire (nol perilaku). Semantik tak berubah (spec 2.0 normatif; tanpa RFC). Ditambahkan # compiler/mir/Opt.{h,cpp} ( nusa::",
+  "title": "Changelog 2.4.0",
+  "url": "changelog/v2.4.0.html",
+  "version": "2.4.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.5.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.5.0 v2.5.0 Release notes # — 2026-09-10 (Phase 54: ADVANCED MEMORY SAFETY, milestone 1) Audit model memori + interno runtime. Tanpa sintaks baru (tanpa unsafe{} — language-level, butuh RFC bila kelak ada). Diperbaiki (terbukti ASan sebelum fix) # UAF/double-free handle concurrency di runtime/nusa",
+  "title": "Changelog 2.5.0",
+  "url": "changelog/v2.5.0.html",
+  "version": "2.5.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.6.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.6.0 v2.6.0 Release notes # — 2026-09-10 (Phase 55: RUNTIME 2.0, milestone 1 — modular) Split runtime/nusa_rt.c tanpa perubahan perilaku. Spec tak berubah. Diubah (pindah verbatim, nol logika) # runtime/ : rt_handle.c (registry), rt_thread.c , rt_sync.c (mutex+atomic), rt_chan.c , rt_time.c , rt_n",
+  "title": "Changelog 2.6.0",
+  "url": "changelog/v2.6.0.html",
+  "version": "2.6.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.7.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.7.0 v2.7.0 Terdampak: language/concurrency Release notes # — 2026-09-10 (Phase 56: CONCURRENCY 2.0, milestone 1) Observability channel + stress suite. Aditif, non-breaking (satu builtin baru; tanpa sintaks; async tetap reserved). Ditambahkan # chan_len(c: i64) -&gt; i64 (panjang antre, non-blocki",
+  "title": "Changelog 2.7.0",
+  "url": "changelog/v2.7.0.html",
+  "version": "2.7.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.8.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.8.0 v2.8.0 Terdampak: stdlib/tasks Release notes # — 2026-09-10 (Phase 57: ASYNC RUNTIME, milestone 1 — fondasi) Future/Task/cancellation kooperatif sebagai LIBRARY (tanpa sintaks async / await : tetap reserved, RFC-0004 Proposed; sintaks dilarang sebelum Accepted). Spec tak berubah. Ditambahkan",
+  "title": "Changelog 2.8.0",
+  "url": "changelog/v2.8.0.html",
+  "version": "2.8.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "2.9.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "2.9.0 v2.9.0 Terdampak: stdlib/http Release notes # — 2026-09-10 (Phase 58: NETWORKING, milestone 1 — HTTP) HTTP/1.x primitives murni Nusa di atas TCP (tanpa framework di compiler; tanpa builtin/compiler baru). Spec tak berubah (aditif). Ditambahkan # std/http.ns (modul std ke-18): http_status/http",
+  "title": "Changelog 2.9.0",
+  "url": "changelog/v2.9.0.html",
+  "version": "2.9.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "3.0.0 v3.0.0 Release notes # — Phase 89: NUSA 3.0.0 FINAL Rilis final stabil. NOL perubahan bahasa/arsitektur/API/format sejak beta; delta rc.1 → final = hapus suffix + gate + record. Label: NUSA_VERSION_STR 3.0.0 ; help RC → Stable ; project() = 3.0.0 (deb 3.0.0-1 ). Baru: compiler/tests/e2e_relea",
+  "title": "Changelog 3.0.0",
+  "url": "changelog/v3.0.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "3.0.0-rc.1 v3.0.0 Release notes # — Phase 88: NUSA 3.0 RELEASE CANDIDATE Rilis kandidat pertama. NOL perubahan bahasa/arsitektur/API/ format sejak beta (beku); delta = label 3.0.0-rc.1 + gate RC + record + website regen. rc.2+ hanya bila diperlukan. Label: NUSA_VERSION_STR 3.0.0-rc.1 ; help Beta →",
+  "title": "Changelog 3.0.0-rc.1",
+  "url": "changelog/v3.0.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "changelog",
+  "id": "changelog",
+  "keywords": [
+   "changelog",
+   "3.0.0",
+   "release"
+  ],
+  "signature": "",
+  "snippet": "3.0.0-beta v3.0.0 Release notes # — Phase 84: NUSA 3.0 BETA Rilis beta. Freeze: semantik bahasa, arsitektur compiler, API stdlib, format paket. NOL perubahan bahasa sejak 2.30.1 (label versi + harness saja). Catatan rilis # nusa --version → 3.0.0-beta ; help → Beta; stdlib header v3.0.0-beta; paket",
+  "title": "Changelog 3.0.0-beta",
+  "url": "changelog/v3.0.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "compiler",
+  "id": "compiler",
+  "keywords": [
+   "compiler",
+   "llvm",
+   "pipeline",
+   "runtime",
+   "MIR"
+  ],
+  "signature": "",
+  "snippet": "Compiler Internals v3.0.0 Pipeline Source (.ns) ↓ Lexer → Parser → AST → Semantic → TypeChecker ↓ MIR (2.3+) → Opt (2.4+) → LLVM 21.1.8 Backend → Native Binary Architecture 2.2.0 — Peta lapisan ~26.000 baris: Frontend (lexer/parser/ast + Builtin) → Semantic (namespace/scope) → Typ Frontend (Lexer/P",
+  "title": "Compiler Internals",
+  "url": "compiler/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "compiler",
+  "id": "architecture",
+  "keywords": [
+   "architecture",
+   "layer",
+   "coupling",
+   "frontend",
+   "backend",
+   "semantic"
+  ],
+  "signature": "",
+  "snippet": "Architecture v2.2.0 Overview Peta lapisan ~26.000 baris: Frontend (lexer/parser/ast + Builtin) → Semantic (namespace/scope) → TypeChecker → MIR/Opt → Codegen (LLVM) → Driver. Aturan v2.2.0: Backend nol-include semantic/Semantic.h + TypeChecker.h (dikunci e2e_arch). Source compiler/frontend/Builtin.",
+  "title": "Architecture",
+  "url": "compiler/architecture.html",
+  "version": "2.2.0"
+ },
+ {
+  "category": "compiler",
+  "id": "bootstrap",
+  "keywords": [
+   "bootstrap",
+   "selfhost",
+   "lexer",
+   "Stage 0",
+   "deterministic"
+  ],
+  "signature": "",
+  "snippet": "Bootstrap &amp; Self-Hosting v1.20.0 Overview selfhost/lex.ns: lexer streaming murni-Nusa ekuivalen lexer C++ (differential 33 file) + builtin int_to_str. nusa bootstrap [lex.ns]: Stage 0 (C++) → Stage 1 (biner native) → byte-identik Stage 2 = Stage 0 + cek determinisme 2x + diagnosis byte beda per",
+  "title": "Bootstrap & Self-Hosting",
+  "url": "compiler/bootstrap.html",
+  "version": "1.20.0"
+ },
+ {
+  "category": "compiler",
+  "id": "debugging",
+  "keywords": [
+   "DWARF",
+   "debug",
+   "dwarfdump",
+   "gdb",
+   "debugging",
+   "-g"
+  ],
+  "signature": "",
+  "snippet": "Debugging (DWARF) v2.15.0 Overview DWARF via DIBuilder di balik -g: compile-unit malas-per-file, subprogram, line table per statement, lokal skalar (1.18.0) + composite struct/member/offset LP64 + formal params + array bound (2.15.0). Verifikasi llvm-dwarfdump (lldb/gdb tak tersedia di CI). Source",
+  "title": "Debugging (DWARF)",
+  "url": "compiler/debugging.html",
+  "version": "2.15.0"
+ },
+ {
+  "category": "compiler",
+  "id": "c",
+  "keywords": [
+   "FFI",
+   "extern",
+   "bindgen",
+   "C",
+   "link",
+   "ABI"
+  ],
+  "signature": "",
+  "snippet": "C FFI &amp; Bindgen v2.17.0 Overview extern fn primitif (i64/string/bool; return i64/bool/void) ABI C (bool=int, zext arg + icmp return). Linker: --link/--link-dir repeatable + manifest [link]. bindgen 2.17.0: nusa bindgen header.h → extern fn (integer/_Bool/char*/void/typedef-umum/extern C/(void))",
+  "title": "C FFI & Bindgen",
+  "url": "compiler/ffi.html",
+  "version": "2.17.0"
+ },
+ {
+  "category": "compiler",
+  "id": "frontend",
+  "keywords": [
+   "lexer",
+   "parser",
+   "AST",
+   "semantic",
+   "typechecker",
+   "diagnostics"
+  ],
+  "signature": "",
+  "snippet": "Frontend (Lexer/Parser/AST/Semantic/TypeChecker) v2.0.0 Overview Lexer (token + // ///, keyword extern/enum/match/trait/impl/self/type, reserved async/await) → Parser (lookahead, lambda, match arm, extern fn) → AST (s-expr dump, clone) → Semantic (namespace, scope lambda/arm, builtin registry) → Ty",
+  "title": "Frontend (Lexer/Parser/AST/Semantic/TypeChecker)",
+  "url": "compiler/frontend.html",
+  "version": "2.0.0"
+ },
+ {
+  "category": "compiler",
+  "id": "incremental",
+  "keywords": [
+   "incremental",
+   "cache",
+   "fingerprint",
+   "fresh",
+   "build hangat"
+  ],
+  "signature": "",
+  "snippet": "Incremental Compilation v1.16.0 Overview Fingerprint sumber+flag + cache artefak hash IR (.nusa-cache/fingerprint: compiler/target/opt/emit/sysroot/links/modul/IR). Hangat ~7x: clang dilewati bila IR identik. Pesan Fresh &lt;out&gt; (cached) vs rebuilding: ~a.ns. --fresh mengabaikan cache; output h",
+  "title": "Incremental Compilation",
+  "url": "compiler/incremental.html",
+  "version": "1.16.0"
+ },
+ {
+  "category": "compiler",
+  "id": "llvm",
+  "keywords": [
+   "LLVM",
+   "codegen",
+   "triple",
+   "emit-ir",
+   "clang",
+   "21.1.8"
+  ],
+  "signature": "",
+  "snippet": "LLVM Integration v2.0.0 Overview Backend LLVM 21.1.8: functions/blocks/arrays/structs/libc, bool=i32 ABI untuk FFI, trampolin closure (ptr env, ...). nusa build: --target/--sysroot/--emit-ir/--emit-asm/-c, -O, -g, --fresh, --stats. IR &lt;file&gt;.ns.ll di samping source. Source compiler/codegen/ c",
+  "title": "LLVM Integration",
+  "url": "compiler/llvm.html",
+  "version": "2.0.0"
+ },
+ {
+  "category": "compiler",
+  "id": "language",
+  "keywords": [
+   "LSP",
+   "hover",
+   "completion",
+   "goto-definition",
+   "rename",
+   "references"
+  ],
+  "signature": "",
+  "snippet": "Language Server (LSP) v2.14.0 Overview nusa lsp (stdio): diagnostics, completion, hover, goto-definition, symbols, formatting, rename (1.17.0) + references di atas mesin scope-walk sama dengan rename (2.14.0). JSON minimal tanpa exceptions; transport Content-Length; use→def (let/param/bind-pola/lam",
+  "title": "Language Server (LSP)",
+  "url": "compiler/lsp.html",
+  "version": "2.14.0"
+ },
+ {
+  "category": "compiler",
+  "id": "memory",
+  "keywords": [
+   "memory",
+   "ownership",
+   "lifetime",
+   "heap",
+   "stack",
+   "unsafe",
+   "ASan"
+  ],
+  "signature": "",
+  "snippet": "Memory Model v2.5.0 Overview Owned values + program-lifetime heap (by-design, bukan bocor). 8 area docs/memory-model.md. Audit 2.5.0: UAF/double-free handle (terbukti ASan sebelum fix) dimitigasi registry + pesan runtime error: invalid handle in &lt;op&gt; + exit 1. Komentar bocor-sengaja diganti s",
+  "title": "Memory Model",
+  "url": "compiler/memory-model.html",
+  "version": "2.5.0"
+ },
+ {
+  "category": "compiler",
+  "id": "mir",
+  "keywords": [
+   "MIR",
+   "IR",
+   "MirBuilder",
+   "verify",
+   "dump"
+  ],
+  "signature": "",
+  "snippet": "MIR (Nusa IR) v2.3.0 Overview compiler/mir/Mir (nusa::mir): typed values I64/Bool/Str/Void/Ptr, instruksi arith/cmp/call/alloc/load/store/branch/condbr/return/unreachable/print, basic blocks, MirBuilder, verify() (terminator, def-use, target, arity/tipe call, return), dump() deterministik. Murni C+",
+  "title": "MIR (Nusa IR)",
+  "url": "compiler/mir.html",
+  "version": "2.3.0"
+ },
+ {
+  "category": "compiler",
+  "id": "optimizations",
+  "keywords": [
+   "optimization",
+   "foldConstants",
+   "DCE",
+   "O2",
+   "bench",
+   "perf"
+  ],
+  "signature": "",
+  "snippet": "Optimizations v2.4.0 Overview Pass internal pertama di atas MIR: foldConstants (arith/cmp konstanta; div aman: pembagi nol dan INT64_MIN/-1 tak difold), eliminateDeadCode (murni + tak-dipakai), optimizeFunction/Module (fixpoint berbatas). LLVM tetap optimizer utama (-O0..3/s/z, default O0). Bench:",
+  "title": "Optimizations",
+  "url": "compiler/optimizations.html",
+  "version": "2.4.0"
+ },
+ {
+  "category": "compiler",
+  "id": "profiling",
+  "keywords": [
+   "bench",
+   "stats",
+   "profiling",
+   "perf",
+   "maxRSS"
+  ],
+  "signature": "",
+  "snippet": "Profiling &amp; Build Stats v2.16.0 Overview nusa bench &lt;file&gt; [-n N]: build --fresh sekali + N run via fork+wait4 (dinding + maxRSS anak; min/median/max ke stderr; rc = rc program). nusa build --stats (+ pkg build): ms frontend/codegen/clang/total + byte IR/exe. Angka resmi tetap bench/ + do",
+  "title": "Profiling & Build Stats",
+  "url": "compiler/profiling.html",
+  "version": "2.16.0"
+ },
+ {
+  "category": "compiler",
+  "id": "runtime",
+  "keywords": [
+   "runtime",
+   "rt_chan",
+   "thread",
+   "mutex",
+   "atomic",
+   "handle",
+   "pthread"
+  ],
+  "signature": "",
+  "snippet": "Runtime v2.6.0 Overview runtime/nusa_rt.c = agregator satu TU; subsistem rt_handle/thread/sync/chan/time/net + rt_platform.h (kode platform-spesifik hanya di balik header ini). 30 simbol publik; registry handle hidup (mutex-global + list) dengan fail-fast 2.5.0. Driver memakai &lt;exe&gt;/nusa_rt.o",
+  "title": "Runtime",
+  "url": "compiler/runtime.html",
+  "version": "2.6.0"
+ },
+ {
+  "category": "compiler",
+  "id": "targets",
+  "keywords": [
+   "target",
+   "cross",
+   "sysroot",
+   "wasm32",
+   "aarch64",
+   "x86-64",
+   "triple"
+  ],
+  "signature": "",
+  "snippet": "Targets &amp; Cross Compilation v2.18.0 Overview Host Android AArch64. Cross Linux AArch64/x86-64 via clang --target (compile-only tanpa sysroot; link butuh --sysroot). wasm32 → wasm32-unknown-unknown compile-only alias (2.18.0, tanpa sysroot/WASI/runtime port; ILP32: handle/closure/thread/net tak",
+  "title": "Targets & Cross Compilation",
+  "url": "compiler/targets.html",
+  "version": "2.18.0"
+ },
+ {
+  "category": "docs",
+  "id": "docs",
+  "keywords": [
+   "docs",
+   "archive",
+   "markdown"
+  ],
+  "signature": "",
+  "snippet": "Docs Archive — 97 dokumen sumber Render verbatim dari docs/*.md (sumber tunggal). Halaman kurasi ada di Learn/Language/Compiler. abi-3.10.md actors-3.18.md architecture-2.2.md arrays.md async-2.8.md bootstrap-2.24.md bootstrap-full-2.25.md bootstrap.md build-2.13.md closures.md compiler.md comptime",
+  "title": "Docs Archive",
+  "url": "docs/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "abi-3.10.md",
+  "keywords": [
+   "abi-3.10",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "abi-3.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa ABI 3.10 — Spesifikasi (Phase 109) # Status: normatif atas codegen 3.0.0 (LLVM 21 backend). &quot;ABI&quot; di sini = kontrak biner antar unit kompilasi Nusa + batas C/FFI + platform. Diturunkan dari compiler",
+  "title": "abi-3.10.md",
+  "url": "docs/abi-3.10.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "actors-3.18.md",
+  "keywords": [
+   "actors-3.18",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "actors-3.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Actor / Message-Passing — Milestone 1: Pustaka (Phase 117) # Status: slice implementasi level-pustaka (target 3.18.0). Mandat master: bila bermanfaat, model actor/message-passing sebagai LIBRARY atau abstraksi",
+  "title": "actors-3.18.md",
+  "url": "docs/actors-3.18.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "architecture-2.2.md",
+  "keywords": [
+   "architecture-2.2",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "architecture-2.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Compiler Nusa 2.2 (Phase 51 — Design Proposal) # Status: Proposed → Implementation (satu milestone). Spec bahasa tidak berubah (normatif tetap docs/language-spec-2.0.md ). 1. Lapisan saat ini (t",
+  "title": "architecture-2.2.md",
+  "url": "docs/architecture-2.2.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "arrays.md",
+  "keywords": [
+   "arrays",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "arrays.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Array Nusa — v1.0.0 # fn main() { let numbers: [i64] = [1, 2, 3, 4]; print(numbers[0]); // 1 print(len(numbers)); // 4 } Literal dan tipe # [1, 2, 3] : elemen homogen, non- void , non-array (nested ditolak). [] dito",
+  "title": "arrays.md",
+  "url": "docs/arrays.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "async-2.8.md",
+  "keywords": [
+   "async-2.8",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "async-2.8.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Async Runtime — Design (Phase 57, target 2.8.0) # Status: audit + fondasi → Implementation (milestone 1: std/tasks di atas thread/channel). TANPA sintaks async / await baru: keyword tetap reserved, RFC-0004 tetap",
+  "title": "async-2.8.md",
+  "url": "docs/async-2.8.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "bootstrap-2.24.md",
+  "keywords": [
+   "bootstrap-2.24",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "bootstrap-2.24.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Bootstrap 2.0 — Design (Phase 73, target 2.24.0) # Status: rantai multi-komponen (lexer + parser). Payung master: PHASE 73 — COMPILER BOOTSTRAP 2.0 (&quot;frontend utama semakin banyak menggunakan N",
+  "title": "bootstrap-2.24.md",
+  "url": "docs/bootstrap-2.24.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "bootstrap-full-2.25.md",
+  "keywords": [
+   "bootstrap-full-2.25",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "bootstrap-full-2.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Full 4-Stage — Design (Phase 74, target 2.25.0) # Status: rantai penuh + validasi Stage N == Stage N+1 + dokumentasi lengkap. Mandat master: PHASE 74 — SELF-HOSTING COMPILER FULL (Stage 0→1→2→",
+  "title": "bootstrap-full-2.25.md",
+  "url": "docs/bootstrap-full-2.25.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "bootstrap.md",
+  "keywords": [
+   "bootstrap",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "bootstrap.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bootstrap Chain (Phase 39, v1.20.0; multi-komponen Phase 73, v2.24.0; full Phase 74, v2.25.0) # Dokumentasi proses lengkap (peta 4 stage, tabel Nusa-vs-C++, reproduksi manual, diagnosis): docs/bootstrap-full-2.25",
+  "title": "bootstrap.md",
+  "url": "docs/bootstrap.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "build-2.13.md",
+  "keywords": [
+   "build-2.13",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "build-2.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Build System 2.0 — Design (Phase 62, target 2.13.0) # Status: audit → Implementation (milestone 1: clean + --profile ). Spec tak berubah; tooling. 1. Audit CLI vs mandat (2.12.0) # Ada: build/test/run/check/inst",
+  "title": "build-2.13.md",
+  "url": "docs/build-2.13.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "closures.md",
+  "keywords": [
+   "closures",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "closures.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Closures &amp; Functional Features (Phase 27, v1.8.0) # Lambda |params| body adalah function value yang bisa menangkap (capture) variabel enclosing: fn apply(f: fn(i64) -&gt; i64, x: i64) -&gt; i64 { return f(x);",
+  "title": "closures.md",
+  "url": "docs/closures.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "compiler.md",
+  "keywords": [
+   "compiler",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "compiler.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Nusa — Design &amp; Implementation (aktual v2.0.0) # Phase 40: dokumen ini = Compiler Implementation (pilihan implementasi, bukan definisi bahasa). Definisi bahasa normatif: docs/language-spec-2.0.md ( do",
+  "title": "compiler.md",
+  "url": "docs/compiler.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "comptime-2.21.md",
+  "keywords": [
+   "comptime-2.21",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "comptime-2.21.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compile-Time Programming — Design (Phase 70, target 2.21.0) # Status: RFC-0009 Proposed → Implementation slice 1 ( const ). Spec 2.0 berubah aditif (§1/§2/§3/§4). Payung RFC: rfcs/RFC-0009-comptime.md (keaman",
+  "title": "comptime-2.21.md",
+  "url": "docs/comptime-2.21.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "concurrency-2.7.md",
+  "keywords": [
+   "concurrency-2.7",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "concurrency-2.7.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Concurrency 2.0 — Design (Phase 56, target 2.7.0) # Status: audit selesai → Implementation (milestone 1: observability + stress). Spec 2.0 tak berubah kecuali satu builtin baru (non-breaking, aditif). async",
+  "title": "concurrency-2.7.md",
+  "url": "docs/concurrency-2.7.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "concurrency-safe-3.17.md",
+  "keywords": [
+   "concurrency-safe-3.17",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "concurrency-safe-3.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Safe Concurrency Model — Milestone 1: Klaim-Join Atomik (Phase 116) # Status: slice implementasi (target 3.17.0). Mandat master: data-race resistance, semantik send/sync, thread safety, ownership lint",
+  "title": "concurrency-safe-3.17.md",
+  "url": "docs/concurrency-safe-3.17.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "concurrency.md",
+  "keywords": [
+   "concurrency",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "concurrency.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Concurrency (Phase 28, v1.9.0) # Model awal Nusa: threads (pthread) + channel + mutex + atomik . Target lanjutan ( async / await ) belum. fn work() -&gt; i64 { return 40 + 2; } fn main() { let h = thread_spawn(",
+  "title": "concurrency.md",
+  "url": "docs/concurrency.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "control-flow.md",
+  "keywords": [
+   "control-flow",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "control-flow.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Control Flow Nusa — v1.0.0 # fn main() { let x: i64 = 10; if x &gt; 5 { print(x); } else { print(0); } let n: i64 = 3; while n &gt; 0 { print(n); n = n - 1; } } // 10, 3, 2, 1 if / else # IfStmt := &quot;if&qu",
+  "title": "control-flow.md",
+  "url": "docs/control-flow.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "crypto-2.27.md",
+  "keywords": [
+   "crypto-2.27",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "crypto-2.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cryptography Foundation — Design (Phase 76, target 2.27.0) # Status: RFC-0011 Proposed → Implementation slice 1 (2 builtin + std/crypto.ns ). Bukan pustaka kripto umum (tanpa AES/HMAC/ base64 — butuh ord , ditu",
+  "title": "crypto-2.27.md",
+  "url": "docs/crypto-2.27.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "data-2.28.md",
+  "keywords": [
+   "data-2.28",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "data-2.28.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Database / Data Tooling — Design (Phase 77, target 2.28.0) # Status: implementasi slice ini. Mandat master: PHASE 77 (TANPA engine di stdlib; FFI stabil + networking + serialisasi + ekosistem paket agar ekosistem",
+  "title": "data-2.28.md",
+  "url": "docs/data-2.28.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "debugging-2.15.md",
+  "keywords": [
+   "debugging-2.15",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "debugging-2.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugger 2.0 — Design (Phase 64, target 2.15.0) # Status: audit → Implementation (milestone 1: DWARF composite + formal params). Tanpa debugger interaktif/DAP (tanpa engine; alasan §4). Spec tak berubah. 1.",
+  "title": "debugging-2.15.md",
+  "url": "docs/debugging-2.15.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "debugging.md",
+  "keywords": [
+   "debugging",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "debugging.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Debugging Nusa (Phase 37, v1.18.0) # nusa build app.ns -o app -g # DWARF penuh (juga via `pkg build -g`) Yang dihasilkan ( -g ) # Compile unit + subprogram per fungsi ( DW_TAG_subprogram + DW_AT_decl_line ), para",
+  "title": "debugging.md",
+  "url": "docs/debugging.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "diff-3.27.md",
+  "keywords": [
+   "diff-3.27",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "diff-3.27.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Differential Compiler Testing — Milestone 1: Matriks Opt (Phase 126) # Status: slice implementasi (target 3.27.0). Mandat master: bandingkan debug/release/optimized build, level LLVM berbeda, target berbeda; hasi",
+  "title": "diff-3.27.md",
+  "url": "docs/diff-3.27.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "dist-2.30.md",
+  "keywords": [
+   "dist-2.30",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "dist-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed System Foundation — Design (Phase 79, target 2.30.0) # Status: implementasi slice ini. Mandat master: PHASE 79 (kondisional: concurrency stabil — TERPENUHI, e2e_concurrency 13/13; library-level primit",
+  "title": "dist-2.30.md",
+  "url": "docs/dist-2.30.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "dist-3.19.md",
+  "keywords": [
+   "dist-3.19",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "dist-3.19.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed Programming Foundation — Milestone 1: Backpressure (Phase 118) # Status: slice implementasi (target 3.19.0). Mandat master: serialization, RPC, timeouts, retries, backpressure, komunikasi layanan; may",
+  "title": "dist-3.19.md",
+  "url": "docs/dist-3.19.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "dist-tooling-3.20.md",
+  "keywords": [
+   "dist-tooling-3.20",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "dist-tooling-3.20.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Distributed Tooling — Milestone 1: Tracing (Phase 119) # Status: slice implementasi (target 3.20.0). Mandat master: logging, tracing, metrics, request ID, structured error; CLI trace + inspect . Cakupan s",
+  "title": "dist-tooling-3.20.md",
+  "url": "docs/dist-tooling-3.20.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "ecosystem-2.11.md",
+  "keywords": [
+   "ecosystem-2.11",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "ecosystem-2.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Ecosystem 2.0 — Design (Phase 60, target 2.11.0) # Status: audit → Implementation (milestone 1: 4 perintah read-only). Spec bahasa tak berubah; tanpa RFC (tooling). 1. Status daftar mandat vs realita",
+  "title": "ecosystem-2.11.md",
+  "url": "docs/ecosystem-2.11.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "ecosystem.md",
+  "keywords": [
+   "ecosystem",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "ecosystem.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Ekosistem Nusa (Phase 43) # Inventaris resmi komponen ekosistem (mandat master §28) — apa yang ada di repo, di mana, dan statusnya (12/12 ✅ sejak Phase 43 lanjutan; riwayat penundaan website dicatat di CHANGELOG)",
+  "title": "ecosystem.md",
+  "url": "docs/ecosystem.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "enums.md",
+  "keywords": [
+   "enums",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "enums.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Enums &amp; Algebraic Data Types (Phase 26, v1.7.0) # Enum mendeklarasikan tipe jumlah (sum type): sebuah nilai adalah TEPAT SATU dari varian yang didaftar, masing-masing boleh membawa payload posisional: enum Color",
+  "title": "enums.md",
+  "url": "docs/enums.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "error-handling.md",
+  "keywords": [
+   "error-handling",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "error-handling.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Error Handling Nusa — v2.0 (Phase 45/B1) # Tanpa exception: error adalah NILAI ( Option / Result sebagai enum natif), diperiksa dengan match / if , dikombinasikan dengan fungsi, dipropagasikan dengan ? . BRE",
+  "title": "error-handling.md",
+  "url": "docs/error-handling.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "execution-3.6.md",
+  "keywords": [
+   "execution-3.6",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "execution-3.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Arsitektur Eksekusi — Milestone 1: Kapabilitas + Desain (Phase 105) # Status: slice arsitektur. Mandat master Phase 105 (arsitektur yang memungkinkan AOT + JIT opsional + interpreter opsional; AOT tetap defau",
+  "title": "execution-3.6.md",
+  "url": "docs/execution-3.6.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "ffi-bindgen-2.17.md",
+  "keywords": [
+   "ffi-bindgen-2.17",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "ffi-bindgen-2.17.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Bindgen — Design (Phase 66, target 2.17.0) # Status: audit → Implementation (milestone 1: nusa bindgen subset C). Tanpa perubahan checker/codegen (output = apa yang checker terima hari ini). C++ interop te",
+  "title": "ffi-bindgen-2.17.md",
+  "url": "docs/ffi-bindgen-2.17.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "ffi-headers-3.11.md",
+  "keywords": [
+   "ffi-headers-3.11",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "ffi-headers-3.11.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Native Interoperability 3.0 — Milestone 1: nusa headers (Phase 110) # Status: slice implementasi (target 3.11.0). Mandat master: C, pustaka C-kompatibel, system libs, shared libs natif; tooling bindgen/hea",
+  "title": "ffi-headers-3.11.md",
+  "url": "docs/ffi-headers-3.11.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "ffi.md",
+  "keywords": [
+   "ffi",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "ffi.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. C Interoperability — FFI (Phase 32, v1.13.0) # Nusa memanggil fungsi C native via deklarasi extern : extern fn strlen(s: string) -&gt; i64; extern fn isupper(c: i64) -&gt; bool; fn main() { print(strlen(&quot;abcd&quot",
+  "title": "ffi.md",
+  "url": "docs/ffi.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "foundation-3.1.md",
+  "keywords": [
+   "foundation-3.1",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "foundation-3.1.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.1 Foundation — Audit (Phase 100) # Status: audit slice. Mandat master Phase 100: stability, compatibility, performance atas 10 area (compiler, runtime, stdlib, package manager, registry, LSP, debugger",
+  "title": "foundation-3.1.md",
+  "url": "docs/foundation-3.1.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "freeze-3.0.md",
+  "keywords": [
+   "freeze-3.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "freeze-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Freeze — Design (Phase 81, kandidat spesifikasi 3.0) # Status: implementasi slice ini. Mandat master: PHASE 81 (freeze syntax, type semantics, memory semantics, module semantics, error semantics, c",
+  "title": "freeze-3.0.md",
+  "url": "docs/freeze-3.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "frontend-3.2.md",
+  "keywords": [
+   "frontend-3.2",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "frontend-3.2.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Frontend 2.0 — Milestone 1: Akurasi Diagnostik (Phase 101) # Status: slice implementasi. Mandat master Phase 101 (lexer, parser, AST, HIR, semantic, type checker; target 3.2.0). NOL perubahan semantik",
+  "title": "frontend-3.2.md",
+  "url": "docs/frontend-3.2.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "functions.md",
+  "keywords": [
+   "functions",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "functions.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Fungsi Nusa — v2.0.0 # fn add(a: i64, b: i64) -&gt; i64 { return a + b; } fn main() { let result = add(10, 20); print(result); // 30 } Deklarasi # FuncDecl := &quot;fn&quot; Ident &quot;(&quot; [Param (&quot;,&qu",
+  "title": "functions.md",
+  "url": "docs/functions.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "getting-started.md",
+  "keywords": [
+   "getting-started",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "getting-started.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Getting Started — Nusa v2.0.0 # 1. Verifikasi environment (Termux, AArch64) # uname -m # aarch64 llvm-config --version # 21.1.8 clang --version # clang version 21.1.8 ... Target: aarch64-unknown-linux-andro",
+  "title": "getting-started.md",
+  "url": "docs/getting-started.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "gpu-3.21.md",
+  "keywords": [
+   "gpu-3.21",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "gpu-3.21.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. GPU / Accelerator Abstraction — Milestone 1: Eksplorasi + Seam (Phase 120) # Status: slice eksplorasi + paket referensi (target 3.21.0). Mandat master: mulai eksplorasi; target awal device/query/transfer/kernel; J",
+  "title": "gpu-3.21.md",
+  "url": "docs/gpu-3.21.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "incremental.md",
+  "keywords": [
+   "incremental",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "incremental.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Incremental Compilation (Phase 35, v1.16.0) # nusa build app.ns -o app # Built ... (dingin: frontend + clang) nusa build app.ns -o app # Fresh app (cached) — 7x lebih cepat Model: frontend selalu, clang kondisi",
+  "title": "incremental.md",
+  "url": "docs/incremental.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "ir-2.3.md",
+  "keywords": [
+   "ir-2.3",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "ir-2.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR — Design (Phase 52, target 2.3.0) # Status: Proposed → Implementation (milestone 1: fondasi MIR). Pipeline belum di-rewire (codegen tetap AST → LLVM; nol perilaku). 1. Mengapa (mandat master) # Tidak semua l",
+  "title": "ir-2.3.md",
+  "url": "docs/ir-2.3.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "ir-3.3.md",
+  "keywords": [
+   "ir-3.3",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "ir-3.3.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa IR 2.0 — Milestone 1: Analisis Control-Flow MIR (Phase 102) # Status: slice implementasi. Mandat master Phase 102 (AST → HIR → MIR → Optimized MIR → LLVM IR + SSA/CFG/data-flow/lifetime/escape/ alias + verifier",
+  "title": "ir-3.3.md",
+  "url": "docs/ir-3.3.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "language-spec-1.0.md",
+  "keywords": [
+   "language-spec-1.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "language-spec-1.0.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 1.0 # Status: normative (mengikat implementasi, bukan sebaliknya). Describes: compiler Nusa 1.20.0 (LLVM 21.1.8, AArch64 Android). Detail per topik dirujuk ke docs/*.md ; bila",
+  "title": "language-spec-1.0.md",
+  "url": "docs/language-spec-1.0.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "language-spec-2.0.md",
+  "keywords": [
+   "language-spec-2.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "language-spec-2.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 2.0 # Status: normative (mengikat implementasi, bukan sebaliknya). Describes: compiler Nusa 2.0.0 (LLVM 21.1.8, AArch64 Android). Menggantikan docs/language-spec-1.0.md (1.20.0",
+  "title": "language-spec-2.0.md",
+  "url": "docs/language-spec-2.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "language-spec-3.0-candidate.md",
+  "keywords": [
+   "language-spec-3.0-candidate",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "language-spec-3.0-candidate.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 3.0 — Candidate (Phase 81 freeze) # HISTORIS (Phase 82): diratifikasi menjadi docs/language-spec-3.0.md (normatif final). Dokumen ini dipertahankan sebagai arsip lamp",
+  "title": "language-spec-3.0-candidate.md",
+  "url": "docs/language-spec-3.0-candidate.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "language-spec-3.0.md",
+  "keywords": [
+   "language-spec-3.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "language-spec-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Specification 3.0 # Status: normative (mengikat implementasi, bukan sebaliknya). Meratifikasi dan menggantikan docs/language-spec-2.0.md (disimpan sebagai riwayat; bila ada klaim bertentanga",
+  "title": "language-spec-3.0.md",
+  "url": "docs/language-spec-3.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "latency-3.25.md",
+  "keywords": [
+   "latency-3.25",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "latency-3.25.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-Time / Low-Latency Profile — Milestone 1: Ukur + Aturan (Phase 124) # Status: slice profil (target 3.25.0). Mandat master: profil low-latency BILA model+runtime memungkinkan; alokasi prediktabel, latensi",
+  "title": "latency-3.25.md",
+  "url": "docs/latency-3.25.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "lsp.md",
+  "keywords": [
+   "lsp",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "lsp.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Language Server (Phase 36, v1.17.0) # nusa lsp # LSP via stdio (JSON-RPC + Content-Length) Server bicara LSP murni — tanpa protokol proprietary. Colokkan ke client apa pun (VS Code, Neovim, helix, Emacs) sebagai c",
+  "title": "lsp.md",
+  "url": "docs/lsp.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "macro-2.20.md",
+  "keywords": [
+   "macro-2.20",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "macro-2.20.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Macro System — Evaluasi &amp; Desain (Phase 69, target 2.20.0) # Status: evaluasi SELESAI → TIDAK diimplementasikan (di bawah ambang kebutuhan; mandat master kondisional: &quot;jika diperlukan&quot;). Yang diker",
+  "title": "macro-2.20.md",
+  "url": "docs/macro-2.20.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "mem-2.5.md",
+  "keywords": [
+   "mem-2.5",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "mem-2.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Safety — Audit &amp; Design (Phase 54, target 2.5.0) # Status: audit selesai → Implementation (milestone 1: registry handle fail-fast). Spec 2.0 tidak berubah kecuali edge misuse (UB → error keras, didokumen",
+  "title": "mem-2.5.md",
+  "url": "docs/mem-2.5.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "memory-3.16.md",
+  "keywords": [
+   "memory-3.16",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "memory-3.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Memory Model 3.0 — Audit Menyeluruh (Phase 115, milestone 1) # Status: audit 8 area + kunci mesin cakupan OOM (target 3.16.0). NOL perubahan semantik (model tetap: owned values + heap program-lifetime + handle",
+  "title": "memory-3.16.md",
+  "url": "docs/memory-3.16.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "memory-model.md",
+  "keywords": [
+   "memory-model",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "memory-model.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Model Memori Nusa — v1.4.0 (Phase 23, Design Document) # Dokumen ini MEMILIH model memori resmi Nusa (mandat Phase 23: jangan implementasi sebelum dokumen ini ada) dan mencatat konsekuensinya untuk compiler, r",
+  "title": "memory-model.md",
+  "url": "docs/memory-model.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "migration-2.0.md",
+  "keywords": [
+   "migration-2.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "migration-2.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 1.x → 2.0 # Dua breaking change (B1, B2-keywords) + selebihnya aditif. Semua pola lama yang ditolak memiliki pesan dengan arahan. B1: Option/Result struct → enum natif # 1.x (ditolak di 2.0) 2.0 none(",
+  "title": "migration-2.0.md",
+  "url": "docs/migration-2.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "migration-3.0.md",
+  "keywords": [
+   "migration-3.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "migration-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Migrasi 2.x → 3.0 (Phase 83: COMPATIBILITY AUDIT) # Kesimpulan dulu: NOL migrasi bahasa diperlukan. Spec 3.0 final adalah ratifikasi freeze 2.x — nol sintaks/semantik baru, nol breaking change. Satu-satunya p",
+  "title": "migration-3.0.md",
+  "url": "docs/migration-3.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "min-2.19.md",
+  "keywords": [
+   "min-2.19",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "min-2.19.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Mobile / Embedded — Design (Phase 68, target 2.19.0) # Status: audit → Implementation (milestone 1: biner minimal). Spec tak berubah. Cocok model memori (tanpa GC/heap user = tanpa runtime bagi program murni). 1.",
+  "title": "min-2.19.md",
+  "url": "docs/min-2.19.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "min-3.24.md",
+  "keywords": [
+   "min-3.24",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "min-3.24.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Embedded / Freestanding — Milestone 1: Seam Alokator (Phase 123) # Status: slice implementasi (target 3.24.0). Mandat master: no_std, runtime minimal, custom allocator, target freestanding; tak semua stdlib harus",
+  "title": "min-3.24.md",
+  "url": "docs/min-3.24.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "modules.md",
+  "keywords": [
+   "modules",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "modules.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Modul Nusa — v2.0.0 # // project/main.ns import math; fn main() { print(add(2, 3)); } // project/math.ns fn add(a: i64, b: i64) -&gt; i64 { return a + b; } Resolution # import NAME; dicari berurutan (pertama yang a",
+  "title": "modules.md",
+  "url": "docs/modules.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "net-2.9.md",
+  "keywords": [
+   "net-2.9",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "net-2.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Networking — Design (Phase 58, target 2.9.0) # Status: audit → Implementation (milestone 1: HTTP primitives murni Nusa di atas TCP loopback). Tanpa framework web di compiler (mandat): semua di std/ . Spec tak berub",
+  "title": "net-2.9.md",
+  "url": "docs/net-2.9.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "nusa-2.0-design.md",
+  "keywords": [
+   "nusa-2.0-design",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "nusa-2.0-design.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.0 Design Review (Phase 44 — dokumen, tanpa code) # Evaluasi menyeluruh pra-2.0 per 15 area mandat master. Keputusan diusulkan di RFC-0005 ( rfcs/RFC-0005-nusa-2.0.md , Proposed); dokumen ini = bahan",
+  "title": "nusa-2.0-design.md",
+  "url": "docs/nusa-2.0-design.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "opt-2.4.md",
+  "keywords": [
+   "opt-2.4",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "opt-2.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Optimization Framework — Design (Phase 53, target 2.4.0) # Status: Proposed → Implementation (milestone 1: ConstFold + DCE). LLVM tetap optimizer utama backend; pass Nusa jalan di MIR dan semua punya benchmark (man",
+  "title": "opt-2.4.md",
+  "url": "docs/opt-2.4.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "opt-3.4.md",
+  "keywords": [
+   "opt-3.4",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "opt-3.4.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Advanced Optimizer — Milestone 1: Inlining (Phase 103) # Status: slice implementasi. Mandat master Phase 103 (interprosedural, inlining, constant propagation, DCE, loop, spesialisasi, devirtualisasi, escape, alokas",
+  "title": "opt-3.4.md",
+  "url": "docs/opt-3.4.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "parallel-3.22.md",
+  "keywords": [
+   "parallel-3.22",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "parallel-3.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Parallel Computing — Milestone 1: Partisi Statik (Phase 121) # Status: slice implementasi level-pustaka (target 3.22.0). Mandat master: parallel loop, task paralel, work stealing, koleksi paralel, abstraksi S",
+  "title": "parallel-3.22.md",
+  "url": "docs/parallel-3.22.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "pattern-matching.md",
+  "keywords": [
+   "pattern-matching",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "pattern-matching.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Pattern Matching (Phase 25, v1.6.0) # Statement match memilih satu dari banyak arm berdasarkan BENTUK nilai, bukan rantai if / else manual: fn f(x: i64) -&gt; i64 { match x { 1 =&gt; { return 10; }, 2 =&gt",
+  "title": "pattern-matching.md",
+  "url": "docs/pattern-matching.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "perf-2.16.md",
+  "keywords": [
+   "perf-2.16",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "perf-2.16.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profiler &amp; Observability — Design (Phase 65, target 2.16.0) # Status: audit → Implementation (milestone 1: bench + build --stats ). Spec tak berubah; tooling. Prinsip repo: angka resmi tetap via bench/ + EPOC",
+  "title": "perf-2.16.md",
+  "url": "docs/perf-2.16.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "perf-3.0.md",
+  "keywords": [
+   "perf-3.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "perf-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance Validation — Suite Resmi (Phase 86, beta 3.0.0) # Mandat: ukur 8 dimensi vs baseline relevan; NOL klaim tanpa angka. Suite: bash bench/suite.sh &lt;nusa-binary&gt; (semua di TMPDIR; deterministik; tanp",
+  "title": "perf-3.0.md",
+  "url": "docs/perf-3.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "perf.md",
+  "keywords": [
+   "perf",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "perf.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Performance — Benchmark &amp; Optimasi (Phase 34, v1.15.0) # Prinsip: tanpa optimasi tanpa benchmark . Semua angka di bawah diukur di Android AArch64 (Termux, clang 21.1.8) via bench/ + EPOCHREALTIME ; ulangi ≥3x (sel",
+  "title": "perf.md",
+  "url": "docs/perf.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "pgo-3.5.md",
+  "keywords": [
+   "pgo-3.5",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "pgo-3.5.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Profile-Guided Optimization — Milestone 1: Alur clang (Phase 104) # Status: slice implementasi. Mandat master Phase 104 (PGO: build instrumented → run workload → collect → optimize → release; CLI build --profile /",
+  "title": "pgo-3.5.md",
+  "url": "docs/pgo-3.5.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "pkg.md",
+  "keywords": [
+   "pkg",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "pkg.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Package Manager (Phase 30, v1.11.0; registry Phase 31, v1.12.0) # nusa pkg mengelola paket sumber-lokal: manifest, dependensi path, lock file + checksum, build reproduksibel, dan kemas tarball. Registry file-backed: pu",
+  "title": "pkg.md",
+  "url": "docs/pkg.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "playground.md",
+  "keywords": [
+   "playground",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "playground.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Playground (Phase 42) # Browser ↓ (HTTP loopback 127.0.0.1) Nusa Playground (`nusa playground`) ↓ (sumber → file sementara) Compiler Service (compiler ini sendiri) ↓ (`Sandbox::runSandboxed`) Sandbox (fork",
+  "title": "playground.md",
+  "url": "docs/playground.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "plugin-3.13.md",
+  "keywords": [
+   "plugin-3.13",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "plugin-3.13.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Plugin System — Milestone 1: Kontrak v1 Tersandbox-Proses (Phase 112) # Status: slice implementasi (target 3.13.0). Mandat master: arsitektur plugin (compiler/tooling/aplikasi), UTAMAKAN sandboxed WASM/WASI dar",
+  "title": "plugin-3.13.md",
+  "url": "docs/plugin-3.13.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "realworld-3.0.md",
+  "keywords": [
+   "realworld-3.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "realworld-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Real-World Validation — Phase 85 (beta 3.0.0) # Tujuan mandat: memakai Nusa untuk proyek nyata (bukan toy example) dan mencatat masalah desain bahasa yang muncul. Constraint: freeze beta — NOL perubahan bahas",
+  "title": "realworld-3.0.md",
+  "url": "docs/realworld-3.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "reflection-3.9.md",
+  "keywords": [
+   "reflection-3.9",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "reflection-3.9.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reflection &amp; Introspection — Milestone 1: Evaluasi + Metadata (Phase 108) # Status: slice evaluasi + implementasi tooling (target 3.9.0). Mandat master: evaluasi reflection; runtime reflection hanya bila",
+  "title": "reflection-3.9.md",
+  "url": "docs/reflection-3.9.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "release-3.0-beta.md",
+  "keywords": [
+   "release-3.0-beta",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "release-3.0-beta.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0-beta — Release Record (Phase 84) # Status: beta. Freeze (mengikat sampai final): semantik bahasa ( docs/language-spec-3.0.md normatif), arsitektur compiler ( docs/compiler.md ), API standard lib",
+  "title": "release-3.0-beta.md",
+  "url": "docs/release-3.0-beta.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "release-3.0-rc.1.md",
+  "keywords": [
+   "release-3.0-rc.1",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "release-3.0-rc.1.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0-rc.1 — Release Record (Phase 88) # Status: release candidate. Freeze (mengikat sampai final): semantik bahasa ( docs/language-spec-3.0.md normatif), arsitektur compiler ( docs/compiler.md ), API",
+  "title": "release-3.0-rc.1.md",
+  "url": "docs/release-3.0-rc.1.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "release-3.0.md",
+  "keywords": [
+   "release-3.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "release-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 3.0.0 — Release Record (Phase 89, FINAL) # Status: final stable. Freeze sejak beta dipertahankan: semantik bahasa ( docs/language-spec-3.0.md normatif), arsitektur compiler ( docs/compiler.md ), API standa",
+  "title": "release-3.0.md",
+  "url": "docs/release-3.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "repl-3.7.md",
+  "keywords": [
+   "repl-3.7",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "repl-3.7.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. NUSA REPL — Milestone 1: AOT-Loop (Phase 106) # Status: slice implementasi ( nusa repl ; target 3.7.0). Prinsip master: infrastruktur compiler yang sama, tanpa bahasa kedua. Dipilih AOT-loop (bukan JIT): subsystem",
+  "title": "repl-3.7.md",
+  "url": "docs/repl-3.7.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "repro-2.12.md",
+  "keywords": [
+   "repro-2.12",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "repro-2.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Reproducible Builds — Design (Phase 61, target 2.12.0) # Status: audit → Implementation (milestone 1: tarball deterministik + pin compiler di lock). Jaminan terdokumentasi §4. Spec tak berubah. 1. Audit non-dete",
+  "title": "repro-2.12.md",
+  "url": "docs/repro-2.12.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "runtime-2.6.md",
+  "keywords": [
+   "runtime-2.6",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "runtime-2.6.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Runtime 2.0 — Design (Phase 55, target 2.6.0) # Status: audit selesai → Implementation (milestone 1: modularisasi tanpa perubahan perilaku). Spec 2.0 tak berubah; tanpa RFC. 1. Audit batasan keras (mengapa buka",
+  "title": "runtime-2.6.md",
+  "url": "docs/runtime-2.6.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "security-2.10.md",
+  "keywords": [
+   "security-2.10",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "security-2.10.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Model — Audit &amp; Design (Phase 59, target 2.10.0) # Status: audit selesai → Implementation (milestone 1: capability declaration + 2 enforcement). nusa audit/tree/outdated/verify tetap milik Phase",
+  "title": "security-2.10.md",
+  "url": "docs/security-2.10.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "security-3.0.md",
+  "keywords": [
+   "security-3.0",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "security-3.0.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security Audit — Phase 87 (beta 3.0.0) # Mandat: audit 9 area terhadap 6 kelas; perbaiki semua critical/high sebelum rilis. Hasil: 0 critical, 0 high — 1 medium DIPERBAIKI (S1); sisanya bersih/info. Rilis tak",
+  "title": "security-3.0.md",
+  "url": "docs/security-3.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "selfhost-2.23.md",
+  "keywords": [
+   "selfhost-2.23",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "selfhost-2.23.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Milestone — Design (Phase 72, target 2.23.0) # Status: Langkah 2 (parser+AST) selesai; payung: docs/selfhosting.md . Spec bahasa tak berubah (murni aditif: 1 CLI debug + 1 program Nusa). 1. Arsit",
+  "title": "selfhost-2.23.md",
+  "url": "docs/selfhost-2.23.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "selfhosting.md",
+  "keywords": [
+   "selfhosting",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "selfhosting.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Self-Hosting Bootstrap (Phase 38, v1.19.0) # C++ compiler ↓ (langkah 1, fase ini) Nusa lexer (selfhost/lex.ns) — dibuktikan ekuivalen via differential test ↓ (fase mendatang) parser → AST → semantic … hingga Nu",
+  "title": "selfhosting.md",
+  "url": "docs/selfhosting.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "server-2.29.md",
+  "keywords": [
+   "server-2.29",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "server-2.29.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cloud / Server Foundation — Design (Phase 78, target 2.29.0) # Status: implementasi slice ini. Mandat master: PHASE 78 (async I/O, networking, HTTP, TLS, logging, configuration, metrics; framework-agnostic). Sp",
+  "title": "server-2.29.md",
+  "url": "docs/server-2.29.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "spec.md",
+  "keywords": [
+   "spec",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "spec.md sumber v1.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Spesifikasi Bahasa Nusa — v1.0.0 (dasar; riwayat) # Dokumen historis (beku sejak v1.0.0, diperkaya catatan versi hingga v1.13.0). Definisi bahasa yang berlaku saat ini: docs/language-spec-3.0.md (normatif final; bila",
+  "title": "spec.md",
+  "url": "docs/spec.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "stability-2.30.md",
+  "keywords": [
+   "stability-2.30",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "stability-2.30.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa 2.30.1 Stability Release — Design (Phase 80) # Status: implementasi slice ini. Mandat master: PHASE 80 (freeze fitur bahasa mayor; stabilitas, performa, keamanan, kompatibilitas, dokumentasi; tanpa RFC",
+  "title": "stability-2.30.md",
+  "url": "docs/stability-2.30.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "standard-library.md",
+  "keywords": [
+   "standard-library",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "standard-library.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Nusa Standard Library — v3.0.0 # Phase 40: dokumen ini = Standard Library Specification (kontrak API). Definisi bahasa normatif: docs/language-spec-2.0.md (§13 untuk daftar normatif; docs/language-spec-1.0",
+  "title": "standard-library.md",
+  "url": "docs/standard-library.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "stdlib-2.26.md",
+  "keywords": [
+   "stdlib-2.26",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "stdlib-2.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Standard Library 3.0 — Design (Phase 75, target 2.26.0) # Status: implementasi slice ini. Mandat master: PHASE 75 (matang; konsisten, terdokumentasi, teruji, portabel; platform-specific jelas). Spec bahasa tak",
+  "title": "stdlib-2.26.md",
+  "url": "docs/stdlib-2.26.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "structs.md",
+  "keywords": [
+   "structs",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "structs.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Struct Nusa — v2.0.0 # struct Person { name: string; age: i64; } fn main() { let person = Person { name: &quot;Nusa&quot;, age: 1 }; print(person.age); // 1 } Deklarasi # StructDecl := &quot;struct&quot; Ident [&qu",
+  "title": "structs.md",
+  "url": "docs/structs.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "supply-3.14.md",
+  "keywords": [
+   "supply-3.14",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "supply-3.14.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Security-First Package Ecosystem — Milestone 1: SBOM (Phase 113) # Status: slice implementasi (target 3.14.0). Mandat master: signatures, checksums, trusted publishers, audit, SBOM, metadata kerentanan; CLI aud",
+  "title": "supply-3.14.md",
+  "url": "docs/supply-3.14.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "supplychain-3.15.md",
+  "keywords": [
+   "supplychain-3.15",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "supplychain-3.15.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Supply-Chain Security — Milestone 1: Preseden + Beku (Phase 114) # Status: slice implementasi (target 3.15.0). Mandat master: confusion/substitusi/update-jahat/kompromi/registry-attack; pakai lock/signatur",
+  "title": "supplychain-3.15.md",
+  "url": "docs/supplychain-3.15.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "syntax.md",
+  "keywords": [
+   "syntax",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "syntax.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Sintaks Nusa — v2.0.0 # Spesifikasi sintaks yang didukung penuh (terkompilasi menjadi native executable), kecuali dinyatakan lain. Program &amp; modul # // project/main.ns import math; fn main() { print(add(2, 3));",
+  "title": "syntax.md",
+  "url": "docs/syntax.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "targets.md",
+  "keywords": [
+   "targets",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "targets.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Cross Compilation — Targets (Phase 33, v1.14.0) # Nusa mengemisikan LLVM IR tekstual lalu memanggil clang sistem. Cross-compilation = clang --target + sysroot yang cocok. nusa build app.ns --target linux-x86_64 -c",
+  "title": "targets.md",
+  "url": "docs/targets.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "traits.md",
+  "keywords": [
+   "traits",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "traits.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Trait Nusa — v1.3.0 (Phase 22) # Mekanisme abstraksi Nusa: trait mendeklarasikan metode, impl mengimplementasikannya untuk tipe konkret, panggilan p.m(...) di-resolve statis (ditulis ulang menjadi fungsi biasa berma",
+  "title": "traits.md",
+  "url": "docs/traits.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "types.md",
+  "keywords": [
+   "types",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "types.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Tipe Nusa — v2.0.0 # Sistem tipe statis Nusa: anotasi wajib di parameter, opsional di let (dengan inferensi), dicek penuh sebelum codegen. Generik via monomorphisasi (§Generik, §Struct generik); bounds via traits ( d",
+  "title": "types.md",
+  "url": "docs/types.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "verification-2.22.md",
+  "keywords": [
+   "verification-2.22",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "verification-2.22.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Verification Foundation — Design (Phase 71, target 2.22.0) # Status: RFC-0010 Proposed → Implementation slice 1 (properti + fuzz berseed + diferensial). Bukan proof penuh. Spec bahasa tak berubah. 1. Inva",
+  "title": "verification-2.22.md",
+  "url": "docs/verification-2.22.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "verify-3.26.md",
+  "keywords": [
+   "verify-3.26",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "verify-3.26.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Compiler Formal Verification — Milestone 1: Properti Metamorfik (Phase 125) # Status: slice verifikasi (target 3.26.0). Mandat master: verifikasi bagian compiler formal; prioritas parser/typechecker/MIR-verifie",
+  "title": "verify-3.26.md",
+  "url": "docs/verify-3.26.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "wasi-3.12.md",
+  "keywords": [
+   "wasi-3.12",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "wasi-3.12.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASI / Sandboxed Execution — Milestone 1: Model Kapabilitas (Phase 111) # Status: slice model + gate (target 3.12.0). Mandat master: WASI, program dalam sandbox, model keamanan eksplisit; pakai: plugin, server-wo",
+  "title": "wasi-3.12.md",
+  "url": "docs/wasi-3.12.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "docs",
+  "id": "wasm-2.18.md",
+  "keywords": [
+   "wasm-2.18",
+   "docs",
+   "sumber"
+  ],
+  "signature": "",
+  "snippet": "wasm-2.18.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. WASM Target — Design (Phase 67, target 2.18.0) # Status: audit → Implementation (milestone 1: alias wasm32 compile-only). Spec tak berubah. 1. Keputusan triple # wasm32 → wasm32-unknown-unknown (bare metal; diduk",
+  "title": "wasm-2.18.md",
+  "url": "docs/wasm-2.18.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "downloads",
+  "id": "downloads",
+  "keywords": [
+   "download",
+   "deb",
+   "install",
+   "aarch64"
+  ],
+  "signature": "",
+  "snippet": "Downloads v3.0.0 Hanya aarch64 (paket menolak arsitektur lain). Instalasi butuh apt (resolusi clang ). Hosting rilis = file di repo. Pilih versi stabil (tanpa JS) Versi tersedia 3.0.0 (stabil) — bangun via bash packaging/deb.sh bash packaging/deb.sh # hasil: website/downloads/nusa_3.0.0-1_aarch64.d",
+  "title": "Downloads",
+  "url": "downloads/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "ecosystem",
+  "id": "ecosystem",
+  "keywords": [
+   "ecosystem",
+   "pkg",
+   "registry",
+   "template",
+   "security"
+  ],
+  "signature": "",
+  "snippet": "Ecosystem v3.0.0 Packaging (nusa pkg) — Manajer paket sumber-lokal: init/add/remove/update/build/publish. Manifest nusa.toml subset-TOML + s Registry — Registry file-backed (tanpa server): index/&lt;name&gt;.toml + packages/*.tar.gz; sumber --registry/$NUSA_ Templates (nusa new) — nusa new &lt;temp",
+  "title": "Ecosystem",
+  "url": "ecosystem/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "ecosystem",
+  "id": "packaging",
+  "keywords": [
+   "pkg",
+   "nusa.toml",
+   "manifest",
+   "lock",
+   "capabilities",
+   "reproducible"
+  ],
+  "signature": "",
+  "snippet": "Packaging (nusa pkg) v2.12.0 Overview Manajer paket sumber-lokal: init/add/remove/update/build/publish. Manifest nusa.toml subset-TOML + semver + SHA-256 + resolver path-deps transitif + lock pin (nama/versi/registry/checksum + [meta] compiler eksak 2.12.0). [capabilities] filesystem/network/proces",
+  "title": "Packaging (nusa pkg)",
+  "url": "ecosystem/packaging.html",
+  "version": "2.12.0"
+ },
+ {
+  "category": "ecosystem",
+  "id": "registry",
+  "keywords": [
+   "registry",
+   "publish",
+   "install",
+   "search",
+   "tree",
+   "verify",
+   "outdated",
+   "audit"
+  ],
+  "signature": "",
+  "snippet": "Registry v2.11.0 Overview Registry file-backed (tanpa server): index/&lt;name&gt;.toml + packages/*.tar.gz; sumber --registry/$NUSA_REGISTRY. search/install/publish + resolver caret (0.x benar) + cache terverifikasi transport &amp; konten + sembuh-otomatis. Inspeksi read-only: tree/verify/outdated/",
+  "title": "Registry",
+  "url": "ecosystem/registry.html",
+  "version": "2.11.0"
+ },
+ {
+  "category": "ecosystem",
+  "id": "security",
+  "keywords": [
+   "security",
+   "capability",
+   "audit",
+   "traversal",
+   "sandbox",
+   "native"
+  ],
+  "signature": "",
+  "snippet": "Security Model v2.10.0 Overview Audit: tanpa eksekusi saat install (tanpa build script/hook); FFI tanpa deklarasi ditolak saat pkg build tanpa native=true (pindai AST gabungan; ad-hoc nusa build tak tersentuh); builtin fs/proses/net tanpa izin = kepercayaan eksplisit ad-hoc. Traversal guard install",
+  "title": "Security Model",
+  "url": "ecosystem/security.html",
+  "version": "2.10.0"
+ },
+ {
+  "category": "ecosystem",
+  "id": "templates",
+  "keywords": [
+   "new",
+   "template",
+   "scaffold",
+   "cli-app",
+   "server",
+   "library"
+  ],
+  "signature": "",
+  "snippet": "Templates (nusa new) v2.0.0 Overview nusa new &lt;template&gt; [name] [--dir] + --list. 4 template tertanam (hello-world/cli-app/library/server) yang semuanya build+run/test hijau. Template server = serve-once nyata (2.0). Scaffold menulis compiler = versi pen-scaffold; manifest invalid diuji via p",
+  "title": "Templates (nusa new)",
+  "url": "ecosystem/templates.html",
+  "version": "2.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "examples",
+  "keywords": [
+   "examples",
+   "sample",
+   "runnable"
+  ],
+  "signature": "",
+  "snippet": "Examples — 18 runnable Semua contoh diuji nusa run saat build. arithmetic.ns arrays.ns closures.ns concurrency.ns control.ns enums.ns error_option_result.ns expr.ns functions.ns generics.ns hello.ns main.ns match.ns math.ns nusa10.ns person.ns traits.ns types.ns",
+  "title": "Examples",
+  "url": "examples/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "arithmetic.ns",
+  "keywords": [
+   "example",
+   "arithmetic",
+   "runnable"
+  ],
+  "signature": "// Contoh v0.3.0: variables & expressions.",
+  "snippet": "arithmetic.ns v3.0.0 // Contoh v0.3.0: variables &amp; expressions. // Diharapkan mencetak: // 30 // 70 // true fn main() { let a = 10; let b = 20; let result = a + b; print(result); let x = 10 + 20 * 3; print(x); let bigger = result &gt; 20; print(bigger); } Output 30 70 true Coba di playground",
+  "title": "arithmetic.ns",
+  "url": "examples/arithmetic.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "arrays.ns",
+  "keywords": [
+   "example",
+   "arrays",
+   "runnable"
+  ],
+  "signature": "// Contoh v0.7.0: string & array (program milestone MASTER PROMPT).",
+  "snippet": "arrays.ns v3.0.0 // Contoh v0.7.0: string &amp; array (program milestone MASTER PROMPT). // Diharapkan mencetak: // Hello // 1 // 4 // 30 fn main() { let message: string = &quot;Hello&quot;; print(message); let numbers: [i64] = [1, 2, 3, 4]; print(numbers[0]); print(len(numbers)); let total: i64 =",
+  "title": "arrays.ns",
+  "url": "examples/arrays.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "closures.ns",
+  "keywords": [
+   "example",
+   "closures",
+   "runnable"
+  ],
+  "signature": "fn apply(f: fn(i64) -> i64, x: i64) -> i64 {",
+  "snippet": "closures.ns v3.0.0 fn apply(f: fn(i64) -&gt; i64, x: i64) -&gt; i64 { return f(x); } fn main() { let add = |a: i64, b: i64| a + b; print(add(1, 2)); print(apply(|x: i64| x * 2, 21)); let k = 10; let f = |x: i64| x + k; print(f(5)); print(apply(|x| x + k, 1)); } Output 3 42 15 11 Coba di playground",
+  "title": "closures.ns",
+  "url": "examples/closures.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "concurrency.ns",
+  "keywords": [
+   "example",
+   "concurrency",
+   "runnable"
+  ],
+  "signature": "fn produce(c: i64) -> i64 {",
+  "snippet": "concurrency.ns v3.0.0 fn produce(c: i64) -&gt; i64 { chan_send(c, 1); chan_send(c, 2); chan_send(c, 3); chan_send(c, 4); chan_send(c, 5); return 0; } fn work() -&gt; i64 { return 40 + 2; } fn main() { let h = thread_spawn(work); print(thread_join(h)); let c = chan_new(); let p = thread_spawn(|| pro",
+  "title": "concurrency.ns",
+  "url": "examples/concurrency.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "control.ns",
+  "keywords": [
+   "example",
+   "control",
+   "runnable"
+  ],
+  "signature": "// Contoh v0.6.0: control flow.",
+  "snippet": "control.ns v3.0.0 // Contoh v0.6.0: control flow. // Diharapkan mencetak: // 10 // 3 // 2 // 1 fn main() { let x: i64 = 10; if x &gt; 5 { print(x); } else { print(0); } let n: i64 = 3; while n &gt; 0 { print(n); n = n - 1; } } Output 10 3 2 1 Coba di playground",
+  "title": "control.ns",
+  "url": "examples/control.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "enums.ns",
+  "keywords": [
+   "example",
+   "enums",
+   "runnable"
+  ],
+  "signature": "enum Shape {",
+  "snippet": "enums.ns v3.0.0 enum Shape { Circle(i64), Rect(i64, i64), Dot } fn tag(s: Shape) -&gt; i64 { match s { Circle(r) =&gt; { return r; }, Rect(w, h) =&gt; { return w + h; }, Dot =&gt; { return 0 - 1; }, } return 0; } fn main() { print(tag(Shape.Circle(5))); print(tag(Shape.Rect(3, 4))); print(tag(Shape",
+  "title": "enums.ns",
+  "url": "examples/enums.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "error_option_result.ns",
+  "keywords": [
+   "example",
+   "error_option_result",
+   "runnable"
+  ],
+  "signature": "import option;",
+  "snippet": "error_option_result.ns v3.0.0 import option; import result; fn parse_age(s: string) -&gt; Result&lt;i64, string&gt; { let o = parse_int_opt(s); if is_none(o) { return Result &lt; i64, string &gt; .Err(str_concat(&quot;bad age: &quot;, s)); } match o { Some(v) =&gt; { return Result &lt; i64, string",
+  "title": "error_option_result.ns",
+  "url": "examples/error_option_result.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "expr.ns",
+  "keywords": [
+   "example",
+   "expr",
+   "runnable"
+  ],
+  "signature": "// Contoh front-end: `let` + operator precedence.",
+  "snippet": "expr.ns v3.0.0 // Contoh front-end: `let` + operator precedence. // Sejak v0.3.0 file ini terkompilasi penuh menjadi executable. fn main() { let x = 10 + 20 * 3; print(&quot;Hello, Nusa!&quot;); } Output Hello, Nusa! Coba di playground",
+  "title": "expr.ns",
+  "url": "examples/expr.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "functions.ns",
+  "keywords": [
+   "example",
+   "functions",
+   "runnable"
+  ],
+  "signature": "// Contoh v0.5.0: functions (program milestone MASTER PROMPT).",
+  "snippet": "functions.ns v3.0.0 // Contoh v0.5.0: functions (program milestone MASTER PROMPT). // Diharapkan mencetak: // 30 fn add(a: i64, b: i64) -&gt; i64 { return a + b; } fn main() { let result = add(10, 20); print(result); } Output 30 Coba di playground",
+  "title": "functions.ns",
+  "url": "examples/functions.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "generics.ns",
+  "keywords": [
+   "example",
+   "generics",
+   "runnable"
+  ],
+  "signature": "fn identity<T>(value: T) -> T {",
+  "snippet": "generics.ns v3.0.0 fn identity&lt;T&gt;(value: T) -&gt; T { return value; } fn first&lt;T&gt;(a: T, b: T) -&gt; T { return a; } fn apply&lt;T, U&gt;(f: fn(T) -&gt; U, x: T) -&gt; U { return f(x); } fn add1(x: i64) -&gt; i64 { return x + 1; } fn main() { print(identity(41) + 1); print(identity(&quot",
+  "title": "generics.ns",
+  "url": "examples/generics.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "hello.ns",
+  "keywords": [
+   "example",
+   "hello",
+   "runnable"
+  ],
+  "signature": "fn main() {",
+  "snippet": "hello.ns v3.0.0 fn main() { print(&quot;Hello, Nusa!&quot;); } Output Hello, Nusa! Coba di playground",
+  "title": "hello.ns",
+  "url": "examples/hello.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "main.ns",
+  "keywords": [
+   "example",
+   "main",
+   "runnable"
+  ],
+  "signature": "// Contoh modul v0.8.0 (program utama; lihat math.ns).",
+  "snippet": "main.ns v3.0.0 // Contoh modul v0.8.0 (program utama; lihat math.ns). // Diharapkan mencetak: // 6 // Ada import math; struct Person { name: string; age: i64; } fn main() { print(add(2, 3)); let ada = Person { name: &quot;Ada&quot;, age: 36 }; print(ada.name); } Output 6 Ada Coba di playground",
+  "title": "main.ns",
+  "url": "examples/main.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "match.ns",
+  "keywords": [
+   "example",
+   "match",
+   "runnable"
+  ],
+  "signature": "fn f(x: i64) -> i64 {",
+  "snippet": "match.ns v3.0.0 fn f(x: i64) -&gt; i64 { match x { 1 =&gt; { return 10; }, 2 =&gt; { return 20; }, _ =&gt; { return 30; }, } return 0; } fn bs(b: bool) -&gt; i64 { match b { true =&gt; { return 1; }, false =&gt; { return 0; }, } return 9; } fn main() { print(f(1)); print(f(2)); print(f(9)); print(b",
+  "title": "match.ns",
+  "url": "examples/match.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "math.ns",
+  "keywords": [
+   "example",
+   "math",
+   "runnable"
+  ],
+  "signature": "// Modul library v0.8.0: diimpor oleh main.ns.",
+  "snippet": "math.ns v3.0.0 // Modul library v0.8.0: diimpor oleh main.ns. // Semua item publik kecuali `_`-awalan (module-private). fn add(a: i64, b: i64) -&gt; i64 { return a + b + _bias(); } fn _bias() -&gt; i64 { return 1; } Coba di playground Contoh ini butuh argumen/konteks khusus (lihat komentar sumber)",
+  "title": "math.ns",
+  "url": "examples/math.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "nusa10.ns",
+  "keywords": [
+   "example",
+   "nusa10",
+   "runnable"
+  ],
+  "signature": "// Program uji Nusa 1.0 (verbatim dari MASTER PROMPT).",
+  "snippet": "nusa10.ns v3.0.0 // Program uji Nusa 1.0 (verbatim dari MASTER PROMPT). // Harus melalui Lexer → Parser → AST → Semantic → TypeCheck → // LLVM IR → LLVM 21.1.8 → AArch64 Android → Executable, // dan mencetak: // Result is greater than 20 // 30 // Nusa struct Person { name: string; age: i64; } fn ad",
+  "title": "nusa10.ns",
+  "url": "examples/nusa10.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "person.ns",
+  "keywords": [
+   "example",
+   "person",
+   "runnable"
+  ],
+  "signature": "// Contoh struct v0.8.0 (program milestone MASTER PROMPT).",
+  "snippet": "person.ns v3.0.0 // Contoh struct v0.8.0 (program milestone MASTER PROMPT). // Diharapkan mencetak: // Nusa // 1 struct Person { name: string; age: i64; } fn main() { let person = Person { name: &quot;Nusa&quot;, age: 1 }; print(person.name); print(person.age); } Output Nusa 1 Coba di playground",
+  "title": "person.ns",
+  "url": "examples/person.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "traits.ns",
+  "keywords": [
+   "example",
+   "traits",
+   "runnable"
+  ],
+  "signature": "trait Printable {",
+  "snippet": "traits.ns v3.0.0 trait Printable { fn print(self); fn describe(self) -&gt; string; } struct Person { name: string; } impl Printable for Person { fn print(self) { print(self.name); } fn describe(self) -&gt; string { return self.name; } } fn main() { let p = Person { name: &quot;Nusa&quot; }; p.print",
+  "title": "traits.ns",
+  "url": "examples/traits.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "examples",
+  "id": "types.ns",
+  "keywords": [
+   "example",
+   "types",
+   "runnable"
+  ],
+  "signature": "// Contoh v0.4.0: anotasi tipe + inferensi.",
+  "snippet": "types.ns v3.0.0 // Contoh v0.4.0: anotasi tipe + inferensi. // Diharapkan mencetak: // 15 // true // Nusa // 30 fn main() { let age: i64 = 15; let active: bool = true; let name: string = &quot;Nusa&quot;; print(age); print(active); print(name); let delta = 15; let doubled: i64 = delta * 2; print(do",
+  "title": "types.ns",
+  "url": "examples/types.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "home",
+  "id": "nusa",
+  "keywords": [
+   "nusa",
+   "dokumentasi",
+   "llvm",
+   "termux",
+   "aarch64",
+   "tutorial"
+  ],
+  "signature": "",
+  "snippet": "Nusa, dari sumber ke biner. Nusa adalah bahasa compiled modern oleh Padil (Banyumas) : tulis .ns , dapatkan executable native lewat LLVM 21.1.8 di Termux Android. Unduh Nusa 3.0.0 Mulai dari nol hello.ns fn main() { print(\"Hello, Nusa!\"); } $ nusa run hello.ns Hello, Nusa! biner ~20 KB · acuan benc",
+  "title": "Nusa Docs",
+  "url": "index.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "language",
+  "keywords": [
+   "language",
+   "reference",
+   "spec",
+   "2.0"
+  ],
+  "signature": "",
+  "snippet": "Language Reference 12 topik · spec normatif language-spec-2.0 · Migrasi 1.x → 2.0 BREAKING 2.0 Option/Result struct → enum natif; ctor qualified; field lama ditolak; async reserved. Syntax — Sintaks Nusa: item top-level (import, type, trait, impl, struct, enum, fn, extern fn), kom Variables — Dekla",
+  "title": "Language Reference",
+  "url": "language/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "concurrency",
+  "keywords": [
+   "thread",
+   "channel",
+   "chan_len",
+   "mutex",
+   "atomic",
+   "sleep_ms",
+   "concurrency"
+  ],
+  "signature": "fn main() {",
+  "snippet": "Concurrency v3.0.0 Overview Thread pthread + channel FIFO + mutex + atomik seq-cst + sleep sebagai 16 builtin (+chan_len di 2.7.0). Runtime C di-link otomatis (-pthread). Syntax let h = thread_spawn(work); print(thread_join(h)); let c = chan_new(); chan_send(c, 1); print(chan_len(c)); Example fn ma",
+  "title": "Concurrency",
+  "url": "language/concurrency.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "enum",
+  "keywords": [
+   "enum",
+   "Option",
+   "Result",
+   "Some",
+   "None",
+   "Ok",
+   "Err",
+   "exhaustiveness"
+  ],
+  "signature": "enum Color {",
+  "snippet": "Enum v3.0.0 Overview Enum dengan payload posisional dan konstruktor qualified E.V(...). BREAKING 2.0: Option/Result kini enum natif di std (bukan struct); ctor lama none()/ok(v,d)/err(d,e) dan field .value/.has_value/.is_ok/.error DITOLAK. Syntax enum Color { Red, Green, Blue } let c = Color.Red; e",
+  "title": "Enum",
+  "url": "language/enums.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "error",
+  "keywords": [
+   "Option",
+   "Result",
+   "error",
+   "?",
+   "Some",
+   "None",
+   "Ok",
+   "Err",
+   "opt_unwrap_or"
+  ],
+  "signature": "import option;",
+  "snippet": "Error Handling v3.0.0 Overview enum Option&lt;T&gt; { Some(T), None } dan enum Result&lt;T,E&gt; { Ok(T), Err(E) } + kombinator bebas generik + operator propagasi expr? (khusus Result; Option/void/E-beda DITOLAK). Syntax import option; let n = opt_unwrap_or(parse_int_opt(&quot;21&quot;), 0); fn get",
+  "title": "Error Handling",
+  "url": "language/error-handling.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "functions",
+  "keywords": [
+   "fn",
+   "functions",
+   "return",
+   "param",
+   "recursion"
+  ],
+  "signature": "fn add(a: i64, b: i64) -> i64 {",
+  "snippet": "Functions v3.0.0 Overview Fungsi top-level fn dengan param bertipe dan return eksplisit. Semua jalur harus return bila return type bukan void. Syntax fn add(a: i64, b: i64) -&gt; i64 { return a + b; } Example fn add(a: i64, b: i64) -&gt; i64 { return a + b; } fn main() { print(add(10, 20)); } Outpu",
+  "title": "Functions",
+  "url": "language/functions.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "generics",
+  "keywords": [
+   "generics",
+   "monomorphization",
+   "identity",
+   "type param"
+  ],
+  "signature": "fn identity<T>(value: T) -> T {",
+  "snippet": "Generics v3.0.0 Overview Fungsi/struct generik dengan monomorphisasi per instansiasi konkret. Inferensi via unify + eksplisit + mismatch per posisi. Syntax fn identity&lt;T&gt;(value: T) -&gt; T { return value; } Example fn identity&lt;T&gt;(value: T) -&gt; T { return value; } fn main() { print(ide",
+  "title": "Generics",
+  "url": "language/generics.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "modules",
+  "keywords": [
+   "modules",
+   "import",
+   "NUSA_PATH",
+   "package",
+   "nusa.toml"
+  ],
+  "signature": "fn main() {",
+  "snippet": "Modules v3.0.0 Overview import math; memuat &lt;dir&gt;/math.ns (transitif). Modul flat namespace publik; dependensi paket via nusa.toml + lock + NUSA_PATH otomatis. Syntax // project/math.ns fn add(a: i64, b: i64) -&gt; i64 { return a + b; } // project/main.ns import math; fn main() { print(add(2,",
+  "title": "Modules",
+  "url": "language/modules.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "pattern",
+  "keywords": [
+   "match",
+   "pattern",
+   "guard",
+   "wildcard",
+   "exhaustiveness",
+   "=>"
+  ],
+  "signature": "fn f(x: i64) -> i64 {",
+  "snippet": "Pattern Matching v3.0.0 Overview Statement match dengan pola literal int/bool/string, _, bind, struct, varian, dan guard if. Desugar ke let + rantai if/else (tanpa codegen baru). Syntax match x { 1 =&gt; { return 10; }, _ =&gt; { return 30; }, } Example fn f(x: i64) -&gt; i64 { match x { 1 =&gt; {",
+  "title": "Pattern Matching",
+  "url": "language/pattern-matching.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "struct",
+  "keywords": [
+   "struct",
+   "field",
+   "methods",
+   "Person"
+  ],
+  "signature": "struct Person {",
+  "snippet": "Struct v3.0.0 Overview Struct by-value dengan field publik. Konstruksi via literal Struct { field: value }. Method via impl trait (dispatch statis). Syntax struct Person { name: string; age: i64; } let p = Person { name: &quot;Nusa&quot;, age: 2 }; print(p.name); Example struct Person { name: strin",
+  "title": "Struct",
+  "url": "language/structs.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "syntax",
+  "keywords": [
+   "syntax",
+   "grammar",
+   "fn",
+   "import",
+   "keyword",
+   "async",
+   "await"
+  ],
+  "signature": "fn main() {",
+  "snippet": "Syntax v3.0.0 Overview Sintaks Nusa: item top-level (import, type, trait, impl, struct, enum, fn, extern fn), komentar // dan ///, dan operator ? =&gt; |. Keyword async/await di-reserved dan dilarang dipakai sebelum RFC-0004 Accepted. Syntax // komentar biasa /// komentar dokumentasi (dipakai nusa",
+  "title": "Syntax",
+  "url": "language/syntax.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "traits",
+  "keywords": [
+   "trait",
+   "impl",
+   "for",
+   "self",
+   "bounds",
+   "dispatch"
+  ],
+  "signature": "trait Show {",
+  "snippet": "Traits v3.0.0 Overview trait T { fn m(self, ...) ...; } tanpa body; impl Trait for Type dengan resolve statis menjadi fungsi mangled. Koherensi unik program-wide. Syntax trait Show { fn show(self) -&gt; string; } impl Show for A { fn show(self) -&gt; string { return &quot;A&quot;; } } fn f&lt;T: Sh",
+  "title": "Traits",
+  "url": "language/traits.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "types",
+  "keywords": [
+   "types",
+   "i64",
+   "bool",
+   "string",
+   "void",
+   "array",
+   "alias",
+   "static typing"
+  ],
+  "signature": "type UserId = i64;",
+  "snippet": "Types v3.0.0 Overview Static typing: i64/bool/string/void, fn, array [T], struct/enum bernama, dan alias type Name = T (transparan, forward-ref OK). Syntax type UserId = i64; let u: UserId = 7; let xs: [i64] = [1, 2]; Example type UserId = i64; fn main() { let u: UserId = 7; print(u); } Output 7 Co",
+  "title": "Types",
+  "url": "language/types.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "language",
+  "id": "variables",
+  "keywords": [
+   "let",
+   "variables",
+   "i64",
+   "bool",
+   "string",
+   "array",
+   "len"
+  ],
+  "signature": "fn main() {",
+  "snippet": "Variables v3.0.0 Overview Deklarasi dengan let, opsional anotasi tipe. Tipe dasar: i64, bool, string, array [T]. Indexing 0-based dengan cek batas runtime. Syntax let a = 10; let b: i64 = 20; let active: bool = true; let name: string = &quot;Nusa&quot;; let numbers: [i64] = [1, 2, 3, 4]; print(numb",
+  "title": "Variables",
+  "url": "language/variables.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn",
+  "id": "learn",
+  "keywords": [
+   "tutorial",
+   "belajar",
+   "kurikulum",
+   "beginner",
+   "advanced"
+  ],
+  "signature": "",
+  "snippet": "Learn Nusa — kurikulum 01–08 Centang progresmu (tersimpan lokal, tanpa akun): Beginner path 01-hello — Program Pertama (20 menit · prasyarat: Compiler sudah di-build (cmake --build build).) 02-variables — Variabel &amp; Tipe Dasar (30 menit · prasyarat: 01-hello selesai.) 03-functions — Fungsi &amp",
+  "title": "Learn Nusa",
+  "url": "learn/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/beginner",
+  "id": "01-hello",
+  "keywords": [
+   "tutorial",
+   "01-hello",
+   "program pertama"
+  ],
+  "signature": "fn main() {",
+  "snippet": "01-hello — Program Pertama v3.0.0 Estimasi 20 menit · Struktur fn main, print, perintah build/run/check. Penjelasan 01 — Hello, Nusa # Prasyarat: compiler sudah di-build ( cmake --build build ). Tujuan: program pertama + tiga perintah dasar. ./build/nusa run tutorials/01-hello/main.ns # Hello, Nusa",
+  "title": "01-hello Program Pertama",
+  "url": "learn/01-hello.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/beginner",
+  "id": "02-variables",
+  "keywords": [
+   "tutorial",
+   "02-variables",
+   "variabel & tipe dasar"
+  ],
+  "signature": "fn main() {",
+  "snippet": "02-variables — Variabel &amp; Tipe Dasar v3.0.0 Estimasi 30 menit · let, anotasi i64/bool/string/[i64], indexing, len. Penjelasan 02 — Variables &amp; types # Tujuan: let , anotasi i64 / bool / string , array + len . Prasyarat: tutorials/01-hello/ . ./build/nusa run tutorials/02-variables/main.ns #",
+  "title": "02-variables Variabel & Tipe Dasar",
+  "url": "learn/02-variables.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/beginner",
+  "id": "03-functions",
+  "keywords": [
+   "tutorial",
+   "03-functions",
+   "fungsi & struct"
+  ],
+  "signature": "struct Person {",
+  "snippet": "03-functions — Fungsi &amp; Struct v3.0.0 Estimasi 40 menit · fn, param/return, struct literal, field access. Penjelasan 03 — Functions, structs, modules # Tujuan: fn + return , struct literal + akses field, gambaran modul. Prasyarat: tutorials/02-variables/ . ./build/nusa run tutorials/03-function",
+  "title": "03-functions Fungsi & Struct",
+  "url": "learn/03-functions.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/intermediate",
+  "id": "04-generics-traits",
+  "keywords": [
+   "tutorial",
+   "04-generics-traits",
+   "generics & traits"
+  ],
+  "signature": "fn identity<T>(value: T) -> T {",
+  "snippet": "04-generics-traits — Generics &amp; Traits v3.0.0 Estimasi 60 menit · Tparam &lt;T&gt;, monomorphisasi, trait/impl, bound T: Show. Penjelasan 04 — Generics &amp; traits # Tujuan: fn f&lt;T&gt; , struct P&lt;T&gt; , trait / impl , bounds T: Trait . Prasyarat: tutorials/03-functions/ . ./build/nusa r",
+  "title": "04-generics-traits Generics & Traits",
+  "url": "learn/04-generics-traits.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/intermediate",
+  "id": "05-match-enum",
+  "keywords": [
+   "tutorial",
+   "05-match-enum",
+   "match & enum"
+  ],
+  "signature": "enum Color {",
+  "snippet": "05-match-enum — Match &amp; Enum v3.0.0 Estimasi 45 menit · enum, ctor Color.Red, pola literal/bind/_/varian, exhaustiveness. Penjelasan 05 — Match &amp; enum # Tujuan: statement match , pola literal/bind/wildcard/struct, enum payload + exhaustiveness. Prasyarat: tutorials/04-generics-traits/ . ./b",
+  "title": "05-match-enum Match & Enum",
+  "url": "learn/05-match-enum.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/intermediate",
+  "id": "06-error-handling",
+  "keywords": [
+   "tutorial",
+   "06-error-handling",
+   "error handling"
+  ],
+  "signature": "import option;",
+  "snippet": "06-error-handling — Error Handling v3.0.0 Estimasi 50 menit · Option/Result enum natif, ctor qualified, kombinator, operator ?. Penjelasan 06 — Error handling (Option/Result 2.0) # Tujuan: enum natif Option / Result , konstruktor eksplisit, kombinator, operator ? , match atas varian. Prasyarat: tut",
+  "title": "06-error-handling Error Handling",
+  "url": "learn/06-error-handling.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/advanced",
+  "id": "07-closures-concurrency",
+  "keywords": [
+   "tutorial",
+   "07-closures-concurrency",
+   "closures & concurrency"
+  ],
+  "signature": "fn apply(f: fn(i64) -> i64, x: i64) -> i64 {",
+  "snippet": "07-closures-concurrency — Closures &amp; Concurrency v3.0.0 Estimasi 60 menit · Lambda |x| by-value capture, thread_spawn/join, atomic. Penjelasan 07 — Closures &amp; concurrency # Tujuan: lambda |x| , capture by-value, thread_spawn / join , atomic (pola channel: lihat examples/concurrency.ns ). Pr",
+  "title": "07-closures-concurrency Closures & Concurrency",
+  "url": "learn/07-closures-concurrency.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "learn/advanced",
+  "id": "08-package-project",
+  "keywords": [
+   "tutorial",
+   "08-package-project",
+   "package project"
+  ],
+  "signature": "fn main() {",
+  "snippet": "08-package-project — Package Project v3.0.0 Estimasi 45 menit · nusa new, nusa pkg init/build/test, registry lokal. Penjelasan 08 — Package project # Tujuan: dari satu file ke proyek paket ( nusa.toml , nusa pkg , nusa test , nusa new , registry lokal). Prasyarat: tutorials/01-hello/ – 07-closures-",
+  "title": "08-package-project Package Project",
+  "url": "learn/08-package-project.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "playground",
+  "id": "playground",
+  "keywords": [
+   "playground",
+   "sandbox",
+   "try",
+   "run"
+  ],
+  "signature": "fn main() {",
+  "snippet": "Playground v3.0.0 Rantai: Browser → Playground API → Compiler Service → Sandbox → Output. Server memakai ulang nusa playground / nusa sandbox yang ada (tanpa engine baru). Contoh: hello chan_len fn main() { print(\"Hello, Nusa!\"); } Run (via lokal 127.0.0.1:8321) share-link Status: idle Output muncu",
+  "title": "Playground",
+  "url": "playground/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "reference",
+  "id": "reference",
+  "keywords": [
+   "reference",
+   "cli",
+   "fmt",
+   "docgen",
+   "diagnostics"
+  ],
+  "signature": "",
+  "snippet": "Reference CLI Formatter Docgen Diagnostics",
+  "title": "Reference",
+  "url": "reference/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "reference",
+  "id": "cli",
+  "keywords": [
+   "cli",
+   "nusa",
+   "build",
+   "run",
+   "pkg",
+   "playground"
+  ],
+  "signature": "",
+  "snippet": "CLI Reference v3.0.0 22+ subperintah nusa v3.0.0. Sumber: nusa --help verbatim. Nusa programming language v3.0.0 — Stable Usage: nusa --version Print version nusa --help Print this help nusa build &lt;file.ns&gt; [-o &lt;output&gt;] Compile to native executable [--profile &lt;dev|debug|release&gt;]",
+  "title": "CLI Reference",
+  "url": "reference/cli.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "reference",
+  "id": "diagnostics",
+  "keywords": [
+   "error",
+   "diagnostics",
+   "runtime error",
+   "help"
+  ],
+  "signature": "",
+  "snippet": "Diagnostics Catalog v3.0.0 Format: file:line:col + snippet + caret span + help: . Cari pesan verbatim via Search (mode error-message). Pesan Arti &amp; aksi Tahap Checked &lt;file&gt;: no errors nusa check sukses; file valid tanpa kompilasi. nusa check file:line:col + snippet + caret + help: Format",
+  "title": "Diagnostics",
+  "url": "reference/diagnostics.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "reference",
+  "id": "docgen",
+  "keywords": [
+   "doc",
+   "docgen",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "Docgen (nusa doc) v3.0.0 Generator API Markdown dari komentar /// : nusa doc std/math.ns [-o out.md] . Mencakup seksi Functions + Extern Functions + Traits + Enums. Website stdlib digenerate dari output ini.",
+  "title": "Docgen",
+  "url": "reference/docgen.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "reference",
+  "id": "formatter",
+  "keywords": [
+   "fmt",
+   "formatter",
+   "style"
+  ],
+  "signature": "",
+  "snippet": "Formatter (nusa fmt) v3.0.0 Formatter token-based idempoten: nusa fmt file.ns , cek via --check . Aturan: bar |x| menempel, ? menempel, arm match diformat, komentar doc /// DIPERTAHANKAN (regresi 2.8.0). ./build/nusa fmt --check examples/hello.ns ./build/nusa fmt tutorials/01-hello/main.ns",
+  "title": "Formatter",
+  "url": "reference/fmt.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc",
+  "keywords": [
+   "rfc",
+   "proposal",
+   "process",
+   "RFC-0001-generics",
+   "RFC-0002-traits",
+   "RFC-0003-ownership",
+   "RFC-0004-async",
+   "RFC-0005-nusa-2.0",
+   "RFC-0006-channels",
+   "RFC-0007-gc",
+   "RFC-0008-ffi",
+   "RFC-0009-comptime",
+   "RFC-0010-verification",
+   "RFC-0011-crypto",
+   "RFC-0012-macros",
+   "RFC-0013-vectors"
+  ],
+  "signature": "",
+  "snippet": "RFC Index Proses: Proposed → Accepted → Implemented (Rejected/Superseded bila batal). Perubahan bahasa besar WAJIB via RFC. Proposed = dilarang implementasi sebelum Accepted . Filter status: all Proposed Accepted Implemented Rejected Superseded RFC-0001-generics Implemented RFC-0002-traits Implemen",
+  "title": "RFC Index",
+  "url": "rfcs/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0001-generics",
+  "keywords": [
+   "rfc",
+   "rfc-0001-generics",
+   "implemented"
+  ],
+  "signature": "",
+  "snippet": "RFC-0001-generics Implemented RFC-0001: Generics # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Menggantikan: — Digantikan oleh: — Summary # Fungsi dan struct generik ( fn identity&lt;T&gt;(x: T) -&gt; T , struct Point&lt;T&gt; { … } ) dengan inferensi call-site dan monom",
+  "title": "RFC-0001-generics",
+  "url": "rfcs/RFC-0001-generics.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0002-traits",
+  "keywords": [
+   "rfc",
+   "rfc-0002-traits",
+   "implemented"
+  ],
+  "signature": "",
+  "snippet": "RFC-0002-traits Implemented RFC-0002: Traits # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Menggantikan: — Digantikan oleh: — Summary # Mekanisme abstraksi trait + impl Trait for Type dengan dispatch statis (rewrite ke fungsi mangled) dan bounds T: Trait (+ ganda). Terim",
+  "title": "RFC-0002-traits",
+  "url": "rfcs/RFC-0002-traits.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0003-ownership",
+  "keywords": [
+   "rfc",
+   "rfc-0003-ownership",
+   "implemented"
+  ],
+  "signature": "",
+  "snippet": "RFC-0003-ownership Implemented RFC-0003: Ownership &amp; memory model # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Menggantikan: — Digantikan oleh: — Summary # Model memori resmi: owned values di stack + heap string program-lifetime, tanpa GC/pinjaman/RC. Terimplementas",
+  "title": "RFC-0003-ownership",
+  "url": "rfcs/RFC-0003-ownership.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0004-async",
+  "keywords": [
+   "rfc",
+   "rfc-0004-async",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0004-async Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0004: Async/await # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # Menambahkan komputasi asinkron ( async fn , await , executor) DI ATAS primitif concurre",
+  "title": "RFC-0004-async",
+  "url": "rfcs/RFC-0004-async.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0005-nusa-2.0",
+  "keywords": [
+   "rfc",
+   "rfc-0005-nusa-2.0",
+   "accepted"
+  ],
+  "signature": "",
+  "snippet": "RFC-0005-nusa-2.0 Accepted RFC-0005: Nusa 2.0 # Status: Accepted Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # Rilis mayor 2.0 = stabilisasi, BUKAN fitur besar: kunci bahasa (spec 1.0 → 2.0), perbaiki satu bug terkonfirmasi (bare-return di main), putuskan dua k",
+  "title": "RFC-0005-nusa-2.0",
+  "url": "rfcs/RFC-0005-nusa-2.0.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0006-channels",
+  "keywords": [
+   "rfc",
+   "rfc-0006-channels",
+   "implemented"
+  ],
+  "signature": "",
+  "snippet": "RFC-0006-channels Implemented RFC-0006: Tagged channels # Status: Implemented Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # Channel untuk bool / string di samping i64 TANPA generik statis: tag tipe dicatat di handle saat create ( chan_new_bool , chan_new_str )",
+  "title": "RFC-0006-channels",
+  "url": "rfcs/RFC-0006-channels.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0007-gc",
+  "keywords": [
+   "rfc",
+   "rfc-0007-gc",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0007-gc Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0007: Garbage collection # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # Mengganti heap string program-lifetime (RFC-0003) dengan koleksi otomatis. RFC ini",
+  "title": "RFC-0007-gc",
+  "url": "rfcs/RFC-0007-gc.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0008-ffi",
+  "keywords": [
+   "rfc",
+   "rfc-0008-ffi",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0008-ffi Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0008: FFI expansion # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # Melampaui FFI primitif 1.13.0 (i64/string/bool/void): struct by-value dan callback C. R",
+  "title": "RFC-0008-ffi",
+  "url": "rfcs/RFC-0008-ffi.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0009-comptime",
+  "keywords": [
+   "rfc",
+   "rfc-0009-comptime",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0009-comptime Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0009: Compile-time programming # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-11 Menggantikan: — Digantikan oleh: — Summary # Menambahkan komputasi waktu-kompilasi bertahap ke Nusa: dimulai dari it",
+  "title": "RFC-0009-comptime",
+  "url": "rfcs/RFC-0009-comptime.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0010-verification",
+  "keywords": [
+   "rfc",
+   "rfc-0010-verification",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0010-verification Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0010: Formal Verification Foundation # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-11 Menggantikan: — Digantikan oleh: — Summary # Meletakkan fondasi verifikasi bertahap untuk pipeline Nusa (l",
+  "title": "RFC-0010-verification",
+  "url": "rfcs/RFC-0010-verification.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0011-crypto",
+  "keywords": [
+   "rfc",
+   "rfc-0011-crypto",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0011-crypto Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0011: Cryptography Builtins (slice 1) # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-11 Menggantikan: — Digantikan oleh: — Summary # Dua builtin global untuk fondasi kriptografi (mandat Phase 76, gat",
+  "title": "RFC-0011-crypto",
+  "url": "rfcs/RFC-0011-crypto.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0012-macros",
+  "keywords": [
+   "rfc",
+   "rfc-0012-macros",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0012-macros Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0012: Declarative macro system # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-20 Menggantikan: — Digantikan oleh: — Summary # Menambahkan makro deklaratif (pattern → template) ke Nusa secara bertahap",
+  "title": "RFC-0012-macros",
+  "url": "rfcs/RFC-0012-macros.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "rfcs",
+  "id": "rfc-0013-vectors",
+  "keywords": [
+   "rfc",
+   "rfc-0013-vectors",
+   "proposed"
+  ],
+  "signature": "",
+  "snippet": "RFC-0013-vectors Proposed Badge Proposed: implementasi DILARANG sebelum status Accepted. RFC-0013: Vector/SIMD types # Status: Proposed Penulis: Nusa team Tanggal: 2026-09-22 Menggantikan: — Digantikan oleh: — Summary # Menambahkan tipe vektor fixed-width vector&lt;T, N&gt; (slice 1: `T = i64 , N`",
+  "title": "RFC-0013-vectors",
+  "url": "rfcs/RFC-0013-vectors.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "search",
+  "id": "search",
+  "keywords": [
+   "search",
+   "chan_len",
+   "api",
+   "error"
+  ],
+  "signature": "",
+  "snippet": "Search 5 mode: keyword, code, API, error-message, version filter. Offline-first (indeks statis). all 2.x 1.x Ketik minimal 2 karakter. Contoh kontrak: chan_len → concurrency doc, stdlib, changelog 2.7.0. Indeks alfabetis (tanpa JS)",
+  "title": "Search",
+  "url": "search/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "search",
+  "id": "indeks",
+  "keywords": [
+   "index",
+   "alfabetis"
+  ],
+  "signature": "",
+  "snippet": "Indeks Alfabetis 309 halaman (fallback tanpa JS). 01-hello Program Pertama learn/beginner 02-variables Variabel &amp; Tipe Dasar learn/beginner 03-functions Fungsi &amp; Struct learn/beginner 04-generics-traits Generics &amp; Traits learn/intermediate 05-match-enum Match &amp; Enum learn/intermedia",
+  "title": "Indeks Alfabetis",
+  "url": "search/alpha.html",
+  "version": "3.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "standard",
+  "keywords": [
+   "stdlib",
+   "api",
+   "std",
+   "collections",
+   "error",
+   "fs",
+   "http",
+   "io",
+   "math",
+   "net",
+   "option",
+   "path",
+   "process",
+   "random",
+   "result",
+   "string",
+   "sync",
+   "system",
+   "tasks",
+   "thread",
+   "time"
+  ],
+  "signature": "",
+  "snippet": "Standard Library — 18 modul v3.0.0 Sumber: std/*.ns via nusa doc + kurasi. Contoh diuji run di CI. std.collections sejak 1.0.0 — Koleksi dasar di atas array. std.error sejak 1.5.0 — Era struct; 2.0: enum natif + operator ?. std.fs sejak 1.0.0 — File tanpa error rinci (&quot;&quot;/false); parse_int",
+  "title": "Standard Library",
+  "url": "stdlib/",
+  "version": "3.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.collections",
+  "keywords": [
+   "std.collections",
+   "collections",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.collections v1.0.0 Koleksi dasar di atas array. Module import collections; (atau import std.collections; — ekuivalen). Modul tanpa fungsi publik terdokumentasi. Source Lihat std/collections.ns di repo.",
+  "title": "std.collections",
+  "url": "stdlib/collections.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.error",
+  "keywords": [
+   "std.error",
+   "error",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.error v1.5.0 Era struct; 2.0: enum natif + operator ?. Module import error; (atau import std.error; — ekuivalen). error(message: string) -&gt; Error Signature: error(message: string) -&gt; Error *No documentation.* ## Structs Error behavior: kegagalan mengikuti konvensi modul — string → \"\" , bo",
+  "title": "std.error",
+  "url": "stdlib/error.html",
+  "version": "1.5.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.fs",
+  "keywords": [
+   "std.fs",
+   "fs",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.fs v1.0.0 File tanpa error rinci (&quot;&quot;/false); parse_int_opt/file_read_opt murni-Nusa (1.5.0). Module import fs; (atau import std.fs; — ekuivalen). copy_file(src: string, dst: string) -&gt; bool Signature: copy_file(src: string, dst: string) -&gt; bool Belum ada doc-comment ///; signatu",
+  "title": "std.fs",
+  "url": "stdlib/fs.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.http",
+  "keywords": [
+   "std.http",
+   "http",
+   "stdlib",
+   "api",
+   "http_get",
+   "http_serve_once"
+  ],
+  "signature": "",
+  "snippet": "std.http v2.9.0 HTTP/1.x murni Nusa: http_status/http_body/http_get/http_serve_once loopback. Module import http; (atau import std.http; — ekuivalen). _read_request(fd: i64) -&gt; string Signature: _read_request(fd: i64) -&gt; string Belum ada doc-comment ///; signature di atas adalah kontrak. Erro",
+  "title": "std.http",
+  "url": "stdlib/http.html",
+  "version": "2.9.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.io",
+  "keywords": [
+   "std.io",
+   "io",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.io v1.0.0 print/len/assert, I/O dasar. Module import io; (atau import std.io; — ekuivalen). read_int() -&gt; i64 Signature: read_int() -&gt; i64 Belum ada doc-comment ///; signature di atas adalah kontrak. Error behavior: kegagalan mengikuti konvensi modul — string → \"\" , bool → false , int par",
+  "title": "std.io",
+  "url": "stdlib/io.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.math",
+  "keywords": [
+   "std.math",
+   "math",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.math v1.0.0 abs/min/max/clamp/pow/fact/gcd. Module import math; (atau import std.math; — ekuivalen). abs(n: i64) -&gt; i64 Signature: abs(n: i64) -&gt; i64 Belum ada doc-comment ///; signature di atas adalah kontrak. Error behavior: kegagalan mengikuti konvensi modul — string → \"\" , bool → fals",
+  "title": "std.math",
+  "url": "stdlib/math.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.net",
+  "keywords": [
+   "std.net",
+   "net",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.net v1.10.0 TCP saja (getaddrinfo, loop-send, recv 1 MiB); 2.0: tcp_listen/tcp_accept + listen_on/accept_one. Module import net; (atau import std.net; — ekuivalen). dial(host: string, port: i64) -&gt; i64 Signature: dial(host: string, port: i64) -&gt; i64 Belum ada doc-comment ///; signature di",
+  "title": "std.net",
+  "url": "stdlib/net.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.option",
+  "keywords": [
+   "std.option",
+   "option",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.option v1.5.0 Era struct; 2.0: enum Option&lt;T&gt; { Some(T), None } + kombinator. Module import option; (atau import std.option; — ekuivalen). some&lt;T&gt;(value: T) -&gt; Option&lt;T&gt; Signature: some&lt;T&gt;(value: T) -&gt; Option&lt;T&gt; Belum ada doc-comment ///; signature di atas ad",
+  "title": "std.option",
+  "url": "stdlib/option.html",
+  "version": "1.5.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.path",
+  "keywords": [
+   "std.path",
+   "path",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.path v1.10.0 Murni Nusa: basename/dirname/ext/join/normalize. Module import path; (atau import std.path; — ekuivalen). path_is_absolute(p: string) -&gt; bool Signature: path_is_absolute(p: string) -&gt; bool Belum ada doc-comment ///; signature di atas adalah kontrak. Error behavior: kegagalan",
+  "title": "std.path",
+  "url": "stdlib/path.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.process",
+  "keywords": [
+   "std.process",
+   "process",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.process v1.10.0 process_exit/env/cwd/argc/argv; CLI args via process_argv. Module import process; (atau import std.process; — ekuivalen). prog_name() -&gt; string Signature: prog_name() -&gt; string Belum ada doc-comment ///; signature di atas adalah kontrak. Error behavior: kegagalan mengikuti",
+  "title": "std.process",
+  "url": "stdlib/process.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.random",
+  "keywords": [
+   "std.random",
+   "random",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.random v1.10.0 LCG MMIX + range/bool; builtin random_u64 (/dev/urandom, bukan kriptografis). Module import random; (atau import std.random; — ekuivalen). rand_seed() -&gt; i64 Signature: rand_seed() -&gt; i64 Belum ada doc-comment ///; signature di atas adalah kontrak. Error behavior: kegagalan",
+  "title": "std.random",
+  "url": "stdlib/random.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.result",
+  "keywords": [
+   "std.result",
+   "result",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.result v1.5.0 Era struct; 2.0: enum Result&lt;T,E&gt; { Ok(T), Err(E) } + kombinator. Module import result; (atau import std.result; — ekuivalen). is_ok&lt;T, E&gt;(r: Result&lt;T, E&gt;) -&gt; bool Signature: is_ok&lt;T, E&gt;(r: Result&lt;T, E&gt;) -&gt; bool Belum ada doc-comment ///; signat",
+  "title": "std.result",
+  "url": "stdlib/result.html",
+  "version": "1.5.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.string",
+  "keywords": [
+   "std.string",
+   "string",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.string v1.0.0 String buram; 1.19.0: str_index_of/str_contains; builtin str_char_at/slice clamp. Module import string; (atau import std.string; — ekuivalen). str_repeat(s: string, n: i64) -&gt; string Signature: str_repeat(s: string, n: i64) -&gt; string Belum ada doc-comment ///; signature di a",
+  "title": "std.string",
+  "url": "stdlib/string.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.sync",
+  "keywords": [
+   "std.sync",
+   "sync",
+   "stdlib",
+   "api",
+   "chan_len",
+   "channel"
+  ],
+  "signature": "",
+  "snippet": "std.sync v1.10.0 with_lock, atomic_inc/dec di atas builtin mutex/atomic. Module import sync; (atau import std.sync; — ekuivalen). Terkait: builtin chan_len(c: i64) -&gt; i64 (observability antrean channel, sejak 2.7.0, race-tolerant) — lihat Concurrency + Changelog 2.7.0 . lock_new() -&gt; i64 Sign",
+  "title": "std.sync",
+  "url": "stdlib/sync.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.system",
+  "keywords": [
+   "std.system",
+   "system",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.system v1.0.0 Utilitas sistem. Module import system; (atau import std.system; — ekuivalen). die(msg: string) -&gt; void Signature: die(msg: string) -&gt; void Belum ada doc-comment ///; signature di atas adalah kontrak. Error behavior: kegagalan mengikuti konvensi modul — string → \"\" , bool → f",
+  "title": "std.system",
+  "url": "stdlib/system.html",
+  "version": "1.0.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.tasks",
+  "keywords": [
+   "std.tasks",
+   "tasks",
+   "stdlib",
+   "api",
+   "Future",
+   "Cancel"
+  ],
+  "signature": "",
+  "snippet": "std.tasks v2.8.0 Future/Task/cancel kooperatif di atas thread/channel/atomic; tanpa sintaks async. Module import tasks; (atau import std.tasks; — ekuivalen). task_send(c: i64, f: fn() -&gt; i64) -&gt; i64 Signature: task_send(c: i64, f: fn() -&gt; i64) -&gt; i64 Belum ada doc-comment ///; signature",
+  "title": "std.tasks",
+  "url": "stdlib/tasks.html",
+  "version": "2.8.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.thread",
+  "keywords": [
+   "std.thread",
+   "thread",
+   "stdlib",
+   "api",
+   "chan_len",
+   "channel"
+  ],
+  "signature": "",
+  "snippet": "std.thread v1.10.0 par_map2 deterministik di atas builtin thread. Module import thread; (atau import std.thread; — ekuivalen). Terkait: builtin chan_len(c: i64) -&gt; i64 (observability antrean channel, sejak 2.7.0, race-tolerant) — lihat Concurrency + Changelog 2.7.0 . spawn(f: fn() -&gt; i64) -&g",
+  "title": "std.thread",
+  "url": "stdlib/thread.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "stdlib",
+  "id": "std.time",
+  "keywords": [
+   "std.time",
+   "time",
+   "stdlib",
+   "api"
+  ],
+  "signature": "",
+  "snippet": "std.time v1.10.0 Modul time + builtin time_now_ms/s. Module import time; (atau import std.time; — ekuivalen). now_ms() -&gt; i64 Signature: now_ms() -&gt; i64 Belum ada doc-comment ///; signature di atas adalah kontrak. Error behavior: kegagalan mengikuti konvensi modul — string → \"\" , bool → false",
+  "title": "std.time",
+  "url": "stdlib/time.html",
+  "version": "1.10.0"
+ },
+ {
+  "category": "tutorials",
+  "id": "tutorials",
+  "keywords": [
+   "tutorials",
+   "index"
+  ],
+  "signature": "",
+  "snippet": "Tutorials Index Cermin kurikulum Learn (sumber: tutorials/*/README.md ). 01-hello — Program Pertama 02-variables — Variabel &amp; Tipe Dasar 03-functions — Fungsi &amp; Struct 04-generics-traits — Generics &amp; Traits 05-match-enum — Match &amp; Enum 06-error-handling — Error Handling 07-closures-",
+  "title": "Tutorials Index",
+  "url": "tutorials/",
+  "version": "3.0.0"
+ }
+]

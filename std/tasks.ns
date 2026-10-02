@@ -1,0 +1,54 @@
+// Layer: task (thread + channel hasil; lihat docs/async-2.8.md).
+// Fondasi async runtime 2.8.0 — murni Nusa, tanpa sintaks baru.
+// Aturan milik: task_spawn memiliki thread+channel; future_await
+// satu-satunya penutup (recv + join + free). Await ganda atau
+// pakai pasca-await = `invalid handle` (registry runtime).
+struct Future {
+    chan: i64;
+    thread: i64;
+}
+// Helper: jalankan f, kirim hasil, kembalikan 0 (top-level:
+// tanpa capture; closure pemanggil yang mengikat c dan f).
+fn task_send(c: i64, f: fn() -> i64) -> i64 {
+    chan_send(c, f());
+    return 0;
+}
+/// Luncurkan tugas latar; kembalikan Future (milik pemanggil).
+fn task_spawn(f: fn() -> i64) -> Future {
+    let c = chan_new();
+    let h = thread_spawn(|| task_send(c, f));
+    return Future {
+        chan: c, thread: h
+    };
+}
+/// True bila hasil sudah tiba (non-blocking; race-tolerant).
+fn future_poll(f: Future) -> bool {
+    return chan_len(f.chan) > 0;
+}
+/// Tunggu hasil; alih milik (join thread + free channel).
+fn future_await(f: Future) -> i64 {
+    let r = chan_recv(f.chan);
+    thread_join(f.thread);
+    chan_free(f.chan);
+    return r;
+}
+// Layer: cancellation kooperatif (token atomic; lihat docs/async-2.8.md).
+// Pekerja wajib polling is_cancelled; tanpa preemptive kill (by-design:
+// join-or-cancel). Pola shutdown: cancel token → join semua → free.
+type Cancel = i64;
+/// Token pembatalan baru (0 = jalan).
+fn cancel_new() -> Cancel {
+    return atomic_new(0);
+}
+/// Minta pekerja berhenti (kooperatif).
+fn cancel(tok: Cancel) -> void {
+    atomic_set(tok, 1);
+}
+/// True bila pembatalan diminta.
+fn is_cancelled(tok: Cancel) -> bool {
+    return atomic_get(tok) != 0;
+}
+/// Bebaskan token (tepat sekali).
+fn cancel_free(tok: Cancel) -> void {
+    atomic_free(tok);
+}

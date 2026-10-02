@@ -1,0 +1,63 @@
+// Server metrics (pure Nusa; explicit state, Prometheus text).
+//
+// Tanpa global mutabel, metrik = struct yang di-threading
+// pemanggil (value semantics: tiap inc mengembalikan struct baru):
+//
+// ```nusa
+// let m = metrics_new();
+// m = m_req(m);
+// m = m_bytes(m, 128);
+// print(render_prometheus(m, "app"));
+// ```
+import time;
+// Counter server: request, error, byte + awal waktu.
+struct Metrics {
+    requests: i64;
+    errors: i64;
+    bytes: i64;
+    started_ms: i64;
+}
+// Nol + cap waktu awal.
+fn metrics_new() -> Metrics {
+    return Metrics {
+        requests: 0, errors: 0, bytes: 0, started_ms: time_now_ms()
+    };
+}
+// Satu request selesai.
+fn m_req(m: Metrics) -> Metrics {
+    return Metrics {
+        requests: m.requests + 1, errors: m.errors, bytes: m.bytes, started_ms: m.started_ms
+    };
+}
+// Satu request gagal (diwayat BUKAN request: panggil keduanya).
+fn m_err(m: Metrics) -> Metrics {
+    return Metrics {
+        requests: m.requests, errors: m.errors + 1, bytes: m.bytes, started_ms: m.started_ms
+    };
+}
+// Tambah byte terkirim.
+fn m_bytes(m: Metrics, n: i64) -> Metrics {
+    return Metrics {
+        requests: m.requests, errors: m.errors, bytes: m.bytes + n, started_ms: m.started_ms
+    };
+}
+// Milidetik sejak metrics_new.
+fn m_elapsed_ms(m: Metrics) -> i64 {
+    return time_now_ms() - m.started_ms;
+}
+// Eksposisi teks Prometheus (4 metrik + uptime).
+fn render_prometheus(m: Metrics, prefix: string) -> string {
+    let p: string = prefix;
+    let out: string = str_concat(str_concat("# TYPE ", p), "_requests counter\n");
+    out = str_concat(str_concat(out, str_concat(p, "_requests ")), int_to_str(m.requests));
+    out = str_concat(out, "\n");
+    out = str_concat(out, str_concat(str_concat("# TYPE ", p), "_errors counter\n"));
+    out = str_concat(str_concat(out, str_concat(p, "_errors ")), int_to_str(m.errors));
+    out = str_concat(out, "\n");
+    out = str_concat(out, str_concat(str_concat("# TYPE ", p), "_bytes counter\n"));
+    out = str_concat(str_concat(out, str_concat(p, "_bytes ")), int_to_str(m.bytes));
+    out = str_concat(out, "\n");
+    out = str_concat(out, str_concat(str_concat("# TYPE ", p), "_uptime_ms gauge\n"));
+    out = str_concat(str_concat(out, str_concat(p, "_uptime_ms ")), int_to_str(m_elapsed_ms(m)));
+    return out;
+}

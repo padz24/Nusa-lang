@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC-0005-nusa-2.0 — Nusa Docs 3.0.0</title>
+<meta name="description" content="RFC-0005-nusa-2.0 Accepted RFC-0005: Nusa 2.0 # Status: Accepted Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # R">
+<link rel="canonical" href="https://nusa-lang.org/docs/rfcs/RFC-0005-nusa-2.0.html">
+<meta property="og:title" content="RFC-0005-nusa-2.0 — Nusa Docs 3.0.0">
+<meta property="og:description" content="RFC-0005-nusa-2.0 Accepted RFC-0005: Nusa 2.0 # Status: Accepted Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # R">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="RFC-0005-nusa-2.0">
+<meta name="nusa:category" content="rfcs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="rfc, rfc-0005-nusa-2.0, accepted">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "RFC-0005-nusa-2.0", "category": "rfcs", "version": "3.0.0", "content": "RFC-0005-nusa-2.0 Accepted RFC-0005: Nusa 2.0 # Status: Accepted Penulis: Nusa team Tanggal: 2026-09-08 Menggantikan: — Digantikan oleh: — Summary # Rilis mayor 2.0 = stabilisasi, BUKAN fitur besar: kunci bahasa (spec 1.0 → 2.0), perbaiki satu bug terkonfirmasi (bare-return di main), putuskan dua k", "code_example": "", "keywords": "rfc, rfc-0005-nusa-2.0, accepted"}</script>
+</head>
+<body class="kind-rfcs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/" aria-current="page">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../rfcs/">Indeks</a></li><li><a href="../rfcs/RFC-0001-generics.html">RFC-0001-generics</a></li><li><a href="../rfcs/RFC-0002-traits.html">RFC-0002-traits</a></li><li><a href="../rfcs/RFC-0003-ownership.html">RFC-0003-ownership</a></li><li><a href="../rfcs/RFC-0004-async.html">RFC-0004-async</a></li><li><a href="../rfcs/RFC-0005-nusa-2.0.html" aria-current="page">RFC-0005-nusa-2.0</a></li><li><a href="../rfcs/RFC-0006-channels.html">RFC-0006-channels</a></li><li><a href="../rfcs/RFC-0007-gc.html">RFC-0007-gc</a></li><li><a href="../rfcs/RFC-0008-ffi.html">RFC-0008-ffi</a></li><li><a href="../rfcs/RFC-0009-comptime.html">RFC-0009-comptime</a></li><li><a href="../rfcs/RFC-0010-verification.html">RFC-0010-verification</a></li><li><a href="../rfcs/RFC-0011-crypto.html">RFC-0011-crypto</a></li><li><a href="../rfcs/RFC-0012-macros.html">RFC-0012-macros</a></li><li><a href="../rfcs/RFC-0013-vectors.html">RFC-0013-vectors</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../rfcs/">RFCs</a> / <a href="../rfcs/RFC-0005-nusa-2.0.html">RFC-0005-nusa-2.0</a></p><article><h1>RFC-0005-nusa-2.0</h1><p><span class="badge ">Accepted</span></p><h1 id="rfc-0005-nusa-2-0">RFC-0005: Nusa 2.0 <a href="#rfc-0005-nusa-2-0" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: Accepted</li>
+<li>Penulis: Nusa team</li>
+<li>Tanggal: 2026-09-08</li>
+<li>Menggantikan: —</li>
+<li>Digantikan oleh: —</li>
+</ul>
+<h2 id="summary">Summary <a href="#summary" aria-label="taut">#</a></h2>
+<p>Rilis mayor 2.0 = stabilisasi, BUKAN fitur besar: kunci bahasa</p>
+<p>(spec 1.0 → 2.0), perbaiki satu bug terkonfirmasi (bare-return di</p>
+<p>main), putuskan dua kandidat breaking (sum-type natif, keyword</p>
+<p>async), tambah <code>tcp_listen</code>/<code>accept</code>, nyatakan seluruh batas sadar</p>
+<p>sebagai kontrak, dan sediakan migration guide 1.x → 2.0. Bahan</p>
+<p>mentah: <code>docs/nusa-2.0-design.md</code> (15 area).</p>
+<h2 id="motivation">Motivation <a href="#motivation" aria-label="taut">#</a></h2>
+<p>Ekosistem 1.x (pkg/registry/LSP/playground/templates) membuat</p>
+<p>perubahan sewenang-wenang mahal. Tanpa RFC 2.0, utang kecil</p>
+<p>membusuk (bug main-return) dan batas-sadar tak pernah dikunci</p>
+<p>sehingga tiap rilis ditagih janji yang tak pernah dibuat</p>
+<p>(channel-generik, GC, async).</p>
+<h2 id="design">Design <a href="#design" aria-label="taut">#</a></h2>
+<p>Lingkup TERTUTUP 2.0 (di luar ini = RFC lanjutan):</p>
+<ul>
+<li>Perbaiki bug bare-<code>return;</code>-di-<code>if</code>-dalam-<code>main</code> (gagal verif</li>
+</ul>
+<p>   IR; repro di design §1). Bukan breaking (pemicu dziś tak build).</p>
+<ul>
+<li>Putuskan B1 (sum-type natif Option/Result) YA/TIDAK + migrasi.</li>
+<li>Putuskan B2 (keyword async/await) mengikuti RFC-0004.</li>
+<li>Tambah <code>tcp_listen</code>/<code>accept</code> (menutup janji template server).</li>
+<li>Kunci kontrak: caps (500/100/25), wrapping, leak-by-design,</li>
+</ul>
+<p>   channel-i64, registry-lokal, playground-sekuensial, DWARF-skalar,</p>
+<p>   LSP-satu-file → spec 2.0.</p>
+<ul>
+<li>Migration guide 1.x → 2.0 + Definition of Done §31 master</li>
+</ul>
+<p>   dicentang ulang satu-per-satu.</p>
+<h2 id="alternatives">Alternatives <a href="#alternatives" aria-label="taut">#</a></h2>
+<ul>
+<li>Big-bang 2.0 (tulis ulang + fitur): DITOLAK (mandat master:</li>
+</ul>
+<p>  jangan rewrite diam-diam; risiko regresi 47-test suite).</p>
+<ul>
+<li>2.0 = re-tag 1.20.0 tanpa perubahan: DITOLAK (bug main-return</li>
+</ul>
+<p>  + janji template tak tertutup = rilis tak jujur).</p>
+<ul>
+<li>Inkremental terkunci (dipilih): satu RFC payung ini + RFC</li>
+</ul>
+<p>  rincian (B1/RFC-0004) + checklist DoD.</p>
+<h2 id="compatibility">Compatibility <a href="#compatibility" aria-label="taut">#</a></h2>
+<p>B1/B2 = breaking terkontrol (daftar + migrasi + versi mayor =</p>
+<p>tempat yang tepat). Selain itu 2.0 WAJIB backward-compatible</p>
+<p>dengan 1.20.0 (suite 47 hijau + program korpus byte-identik).</p>
+<h2 id="tests">Tests <a href="#tests" aria-label="taut">#</a></h2>
+<ul>
+<li>Regression: seluruh suite kini + repro bug main-return sebagai</li>
+</ul>
+<p>  kasus <code>e2e_control</code>/typecheck (dari penolakan→penerimaan).</p>
+<ul>
+<li>Migrasi: korpus program 1.x (examples/bench/std) build+run</li>
+</ul>
+<p>  identik di bawah 2.0; bila B1: bonus migrasi <code>opt_map</code> otomatis?</p>
+<p>  (diputuskan di RFC rincian).</p>
+<ul>
+<li><code>e2e_spec</code> naik ke spec 2.0 (13 topik + revisi B-keputusan).</li>
+</ul>
+<h2 id="specification">Specification <a href="#specification" aria-label="taut">#</a></h2>
+<p><code>docs/language-spec-1.0.md</code> → <code>docs/language-spec-2.0.md</code></p>
+<p>(revisi §4/§5/§11/§13 + kontrak §15 diperluas); spec 1.0 disimpan</p>
+<p>(riwayat, bukan ditimpa).</p>
+<h2 id="discussion">Discussion <a href="#discussion" aria-label="taut">#</a></h2>
+<ul>
+<li>2026-09-08: dibuka sebagai Proposed; diputuskan Accepted hari</li>
+</ul>
+<p>  yang sama: B1 = YA (sum-type natif, breaking), B2 = parsial</p>
+<p>  (channel bertag RFC-0006 masuk 2.0; GC/FFI-callback sebagai</p>
+<p>  RFC-0007/0008 terdesain untuk 2.1 — klaim tanpa bukti ditolak).</p>
+<p>  Sisa keputusan: (1) migrasi B1 dikunci di migration-2.0.md;</p>
+<p>  (2) <code>tcp_listen</code> blocking-dulu (non-blocking = RFC lanjutan);</p>
+<p>  (3) checklist DoD §31 dicentang di laporan rilis 2.0.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>modules.md — Nusa Docs 3.0.0</title>
+<meta name="description" content="modules.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Modul Nusa — v2.0.0 # // project/main.ns import math; fn main() {">
+<link rel="canonical" href="https://nusa-lang.org/docs/docs/modules.html">
+<meta property="og:title" content="modules.md — Nusa Docs 3.0.0">
+<meta property="og:description" content="modules.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Modul Nusa — v2.0.0 # // project/main.ns import math; fn main() {">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="modules.md">
+<meta name="nusa:category" content="docs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="modules, docs, sumber">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "modules.md", "category": "docs", "version": "3.0.0", "content": "modules.md sumber v3.0.0 Dokumen sumber verbatim; untuk versi kurasi lihat navigasi. Modul Nusa — v2.0.0 # // project/main.ns import math; fn main() { print(add(2, 3)); } // project/math.ns fn add(a: i64, b: i64) -&gt; i64 { return a + b; } Resolution # import NAME; dicari berurutan (pertama yang a", "code_example": "", "keywords": "modules, docs, sumber"}</script>
+</head>
+<body class="kind-docs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"></aside>
+<main id="main"><p class="crumbs"><a href="../docs/">Docs</a> / <a href="../docs/modules.html">modules.md</a></p><article><h1>modules.md</h1><p><span class="badge stable">sumber v3.0.0</span> Dokumen sumber verbatim; untuk versi kurasi lihat navigasi.</p><h1 id="modul-nusa-v2-0-0">Modul Nusa — v2.0.0 <a href="#modul-nusa-v2-0-0" aria-label="taut">#</a></h1>
+<pre data-lang="nusa"><code class="lang-nusa">// project/main.ns
+import math;
+
+fn main() {
+    print(add(2, 3));
+}</code></pre>
+<pre data-lang="nusa"><code class="lang-nusa">// project/math.ns
+fn add(a: i64, b: i64) -&gt; i64 {
+    return a + b;
+}</code></pre>
+<h2 id="resolution">Resolution <a href="#resolution" aria-label="taut">#</a></h2>
+<p><code>import NAME;</code> dicari berurutan (pertama yang ada menang):</p>
+<ul>
+<li>Direktori file pengimpor (<code>&lt;dir&gt;/NAME.ns</code>).</li>
+<li>Entri <code>$NUSA_PATH</code> (dipisah <code>:</code>).</li>
+<li><code>&lt;direktori-executable&gt;/../std</code> (standard library).</li>
+</ul>
+<p>Lokal menang atas std (bisa override). <code>import string;</code> valid</p>
+<p>(keyword tipe diterima sebagai nama modul). Flat saja: tanpa</p>
+<p>subdir (<code>import a/b</code>), tanpa <code>::</code>. Dependensi antar-paket</p>
+<p>dikelola package manager (<code>nusa.toml</code>, lihat <code>docs/pkg.md</code>) —</p>
+<p>level file tetap flat seperti di sini.</p>
+<h2 id="namespace-dan-visibilitas">Namespace dan visibilitas <a href="#namespace-dan-visibilitas" aria-label="taut">#</a></h2>
+<ul>
+<li>Tiap modul namespace sendiri; <code>import</code> menggabung nama <strong>publik</strong>.</li>
+</ul>
+<p>  Konflik (nama sama dari dua modul, atau dengan definisi lokal) →</p>
+<p>  error duplikat.</p>
+<ul>
+<li>Visibilitas dasar: nama <code>_</code>-awalan <strong>module-private</strong> — dipakai dari</li>
+</ul>
+<p>  file lain → error <code>is private to module</code>. Berlaku untuk fungsi dan</p>
+<p>  struct (field selalu publik).</p>
+<ul>
+<li>Import transitif (modul mengimpor modul) dan duplikat diam-diam</li>
+</ul>
+<p>  (idempoten) didukung.</p>
+<h2 id="circular-dan-error">Circular dan error <a href="#circular-dan-error" aria-label="taut">#</a></h2>
+<ul>
+<li>Siklus → <code>circular import detected: a -&gt; b -&gt; a</code> (exit 1, tanpa hang).</li>
+<li>Modul hilang → <code>cannot read module file</code> + hint lokasi.</li>
+<li>Rantai &gt; 100 modul ditolak bersih (anti stack overflow).</li>
+<li>Diagnostic selalu memakai file yang tepat (engine per file).</li>
+</ul>
+<h2 id="batasan-stabil-v2-0-0">Batasan (stabil v2.0.0) <a href="#batasan-stabil-v2-0-0" aria-label="taut">#</a></h2>
+<ul>
+<li>Level file: tanpa versioning, <code>pub</code> eksplisit, re-export,</li>
+</ul>
+<p>  glob-import, subdir. Versioning + dependensi = layer paket</p>
+<p>  (<code>docs/pkg.md</code>), bukan sintaks <code>import</code>.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

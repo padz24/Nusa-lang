@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC-0003-ownership — Nusa Docs 3.0.0</title>
+<meta name="description" content="RFC-0003-ownership Implemented RFC-0003: Ownership &amp;amp; memory model # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Mengga">
+<link rel="canonical" href="https://nusa-lang.org/docs/rfcs/RFC-0003-ownership.html">
+<meta property="og:title" content="RFC-0003-ownership — Nusa Docs 3.0.0">
+<meta property="og:description" content="RFC-0003-ownership Implemented RFC-0003: Ownership &amp;amp; memory model # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Mengga">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="RFC-0003-ownership">
+<meta name="nusa:category" content="rfcs">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="rfc, rfc-0003-ownership, implemented">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "RFC-0003-ownership", "category": "rfcs", "version": "3.0.0", "content": "RFC-0003-ownership Implemented RFC-0003: Ownership &amp; memory model # Status: Implemented Penulis: Nusa team (retroaktif) Tanggal: 2026-09-06 Menggantikan: — Digantikan oleh: — Summary # Model memori resmi: owned values di stack + heap string program-lifetime, tanpa GC/pinjaman/RC. Terimplementas", "code_example": "", "keywords": "rfc, rfc-0003-ownership, implemented"}</script>
+</head>
+<body class="kind-rfcs">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/" aria-current="page">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../rfcs/">Indeks</a></li><li><a href="../rfcs/RFC-0001-generics.html">RFC-0001-generics</a></li><li><a href="../rfcs/RFC-0002-traits.html">RFC-0002-traits</a></li><li><a href="../rfcs/RFC-0003-ownership.html" aria-current="page">RFC-0003-ownership</a></li><li><a href="../rfcs/RFC-0004-async.html">RFC-0004-async</a></li><li><a href="../rfcs/RFC-0005-nusa-2.0.html">RFC-0005-nusa-2.0</a></li><li><a href="../rfcs/RFC-0006-channels.html">RFC-0006-channels</a></li><li><a href="../rfcs/RFC-0007-gc.html">RFC-0007-gc</a></li><li><a href="../rfcs/RFC-0008-ffi.html">RFC-0008-ffi</a></li><li><a href="../rfcs/RFC-0009-comptime.html">RFC-0009-comptime</a></li><li><a href="../rfcs/RFC-0010-verification.html">RFC-0010-verification</a></li><li><a href="../rfcs/RFC-0011-crypto.html">RFC-0011-crypto</a></li><li><a href="../rfcs/RFC-0012-macros.html">RFC-0012-macros</a></li><li><a href="../rfcs/RFC-0013-vectors.html">RFC-0013-vectors</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../rfcs/">RFCs</a> / <a href="../rfcs/RFC-0003-ownership.html">RFC-0003-ownership</a></p><article><h1>RFC-0003-ownership</h1><p><span class="badge stable">Implemented</span></p><h1 id="rfc-0003-ownership-memory-model">RFC-0003: Ownership &amp; memory model <a href="#rfc-0003-ownership-memory-model" aria-label="taut">#</a></h1>
+<ul>
+<li>Status: Implemented</li>
+<li>Penulis: Nusa team (retroaktif)</li>
+<li>Tanggal: 2026-09-06</li>
+<li>Menggantikan: —</li>
+<li>Digantikan oleh: —</li>
+</ul>
+<h2 id="summary">Summary <a href="#summary" aria-label="taut">#</a></h2>
+<p>Model memori resmi: owned values di stack + heap string</p>
+<p>program-lifetime, tanpa GC/pinjaman/RC. Terimplementasi sebagai</p>
+<p>Phase 23 (v1.4.0): dokumen desain dulu, lalu status by-design di</p>
+<p>kode (mengganti komentar &quot;bocor sengaja&quot;).</p>
+<h2 id="motivation">Motivation <a href="#motivation" aria-label="taut">#</a></h2>
+<p>Concurrency (Phase 28) dan FFI (Phase 32) DILARANG tanpa model</p>
+<p>memori stabil (mandat master). Opsi harus dipilih eksplisit dan</p>
+<p>dijelaskan sederhana agar cocok LLVM + Android/Bionic.</p>
+<h2 id="design">Design <a href="#design" aria-label="taut">#</a></h2>
+<ul>
+<li>Owned values; variabel = slot stack per scope; copy semantik</li>
+</ul>
+<p>  nilai untuk agregat; string heap bocor by-design hingga roadmap GC.</p>
+<ul>
+<li>8 area normatif: Allocation, Deallocation, Ownership, References</li>
+</ul>
+<p>  (tidak ada referensi user-level), Mutability, Lifetime, Stack, Heap.</p>
+<ul>
+<li>Konsekuensi tercatat: loop alokasi tumbuh per iterasi; tanpa TCO;</li>
+</ul>
+<p>  closure capture by-value (RFC lanjutan bila perlu move/borrow).</p>
+<h2 id="alternatives">Alternatives <a href="#alternatives" aria-label="taut">#</a></h2>
+<ul>
+<li>Borrowing ala Rust: ditolak (kompleksitas checker vs nilai;</li>
+</ul>
+<p>  dievaluasi ulang bila referensi user-level ditambahkan).</p>
+<ul>
+<li>GC (tracing/RC): ditolak untuk 1.x (prediktabilitas + footprint</li>
+</ul>
+<p>  Android); pintu dibuka untuk 2.x.</p>
+<ul>
+<li>Arena per-scope: ditolak (lifetime tak cocok untuk return).</li>
+</ul>
+<h2 id="compatibility">Compatibility <a href="#compatibility" aria-label="taut">#</a></h2>
+<p>Klarifikasi (bukan perubahan perilaku): program yang berjalan</p>
+<p>tetap berjalan; yang mengandalkan <code>free</code> manual tetap tak ada.</p>
+<h2 id="tests">Tests <a href="#tests" aria-label="taut">#</a></h2>
+<p><code>e2e_memory.sh</code> (copy, concat-loop, input-EOF, struct);</p>
+<p><code>e2e_concurrency.sh</code> memvalidasi interaksi model × threads.</p>
+<h2 id="specification">Specification <a href="#specification" aria-label="taut">#</a></h2>
+<p><code>docs/language-spec-1.0.md</code> §5; <code>docs/memory-model.md</code> (normatif).</p>
+<h2 id="discussion">Discussion <a href="#discussion" aria-label="taut">#</a></h2>
+<ul>
+<li>2026-09-06: &quot;jangan implementasi sebelum dokumen ada&quot; dipatuhi;</li>
+</ul>
+<p>  evaluasi opsi didokumentasikan di <code>memory-model.md</code> sebelum</p>
+<p>  status kode diubah.</p></article></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>

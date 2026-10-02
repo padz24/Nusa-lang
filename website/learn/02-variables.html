@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02-variables Variabel &amp; Tipe Dasar — Nusa Docs 3.0.0</title>
+<meta name="description" content="02-variables — Variabel &amp;amp; Tipe Dasar v3.0.0 Estimasi 30 menit · let, anotasi i64/bool/string/[i64], indexing, len. Penjelasan 02 — Variables &amp;amp;">
+<link rel="canonical" href="https://nusa-lang.org/docs/learn/02-variables.html">
+<meta property="og:title" content="02-variables Variabel &amp; Tipe Dasar — Nusa Docs 3.0.0">
+<meta property="og:description" content="02-variables — Variabel &amp;amp; Tipe Dasar v3.0.0 Estimasi 30 menit · let, anotasi i64/bool/string/[i64], indexing, len. Penjelasan 02 — Variables &amp;amp;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*; img-src 'self' data:">
+<meta name="nusa:title" content="02-variables Variabel &amp; Tipe Dasar">
+<meta name="nusa:category" content="learn/beginner">
+<meta name="nusa:version" content="3.0.0">
+<meta name="nusa:keywords" content="tutorial, 02-variables, variabel &amp; tipe dasar">
+<meta name="nusa-base" content="..">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="manifest" href="../manifest.webmanifest">
+<script type="application/ld+json">{"title": "02-variables Variabel & Tipe Dasar", "category": "learn/beginner", "version": "3.0.0", "content": "02-variables — Variabel &amp; Tipe Dasar v3.0.0 Estimasi 30 menit · let, anotasi i64/bool/string/[i64], indexing, len. Penjelasan 02 — Variables &amp; types # Tujuan: let , anotasi i64 / bool / string , array + len . Prasyarat: tutorials/01-hello/ . ./build/nusa run tutorials/02-variables/main.ns #", "code_example": "fn main() {\n    let a = 10;\n    let b: i64 = 20;\n    print(a + b);\n    let active: bool = true;\n    print(active);\n    let name: string = \"Nusa\";\n    print(name);\n    let numbers: [i64] = [1, 2, 3, 4];\n    print(numbers[0]);\n    print(len(numbers));\n}\n", "keywords": "tutorial, 02-variables, variabel & tipe dasar"}</script>
+</head>
+<body class="kind-learn-beginner">
+<a class="skip-link" href="#main">Lewati ke konten</a>
+<header class="top">
+<button id="hamburger" aria-label="Menu">☰</button>
+<a class="brand" href="../index.html"><b>▚</b> Nusa Docs</a>
+<span class="ver-badge">docs 0.1.0</span> <span class="ver-badge hot">nusa 3.0.0</span>
+<nav class="global"><a href="../learn/" aria-current="page">Learn</a><a href="../language/">Language</a><a href="../stdlib/">Stdlib</a><a href="../compiler/">Compiler</a><a href="../ecosystem/">Ecosystem</a><a href="../reference/">Reference</a><a href="../rfcs/">RFCs</a><a href="../changelog/">Changelog</a><a href="../downloads/">Downloads</a><a href="../playground/">Playground</a><a href="../search/">Search</a></nav>
+<a class="btn" href="../downloads/">Unduh</a>
+</header>
+<div class="layout">
+<aside class="side" aria-label="Navigasi bagian"><ul><li><a href="../learn/">Kurikulum</a></li><li><a href="../learn/01-hello.html">01-hello Program Pertama</a></li><li><a href="../learn/02-variables.html" aria-current="page">02-variables Variabel &amp; Tipe Dasar</a></li><li><a href="../learn/03-functions.html">03-functions Fungsi &amp; Struct</a></li><li><a href="../learn/04-generics-traits.html">04-generics-traits Generics &amp; Traits</a></li><li><a href="../learn/05-match-enum.html">05-match-enum Match &amp; Enum</a></li><li><a href="../learn/06-error-handling.html">06-error-handling Error Handling</a></li><li><a href="../learn/07-closures-concurrency.html">07-closures-concurrency Closures &amp; Concurrency</a></li><li><a href="../learn/08-package-project.html">08-package-project Package Project</a></li></ul></aside>
+<main id="main"><p class="crumbs"><a href="../learn/">Learn</a> / <a href="../learn/02-variables.html">02-variables</a></p><article><h1>02-variables — Variabel &amp; Tipe Dasar</h1><span class="badge historic">v3.0.0</span> <p><small>Estimasi 30 menit · let, anotasi i64/bool/string/[i64], indexing, len.</small></p><h2>Penjelasan</h2><h1 id="02-variables-types">02 — Variables &amp; types <a href="#02-variables-types" aria-label="taut">#</a></h1>
+<p>Tujuan: <code>let</code>, anotasi <code>i64</code>/<code>bool</code>/<code>string</code>, array + <code>len</code>.</p>
+<p>Prasyarat: <code>tutorials/01-hello/</code>.</p>
+<pre data-lang="bash"><code class="lang-bash">./build/nusa run tutorials/02-variables/main.ns
+# 30
+# true
+# Nusa
+# 1
+# 4</code></pre>
+<p>Aturan: tanpa anotasi tipe disimpulkan (<code>let x = 10</code> → <code>i64</code>);</p>
+<p>salah tipe ditolak checker (<code>mismatched types</code>).</p>
+<p>Index di luar batas = runtime error + exit 1 (bounds check selalu aktif).</p>
+<p>Lihat: <code>docs/types.md</code>, <code>docs/arrays.md</code>.</p>
+<p>Lanjut: <code>tutorials/03-functions/</code>.</p><h2>Source code (.ns)</h2><pre data-lang="nusa"><code class="lang-nusa">fn main() {
+    let a = 10;
+    let b: i64 = 20;
+    print(a + b);
+    let active: bool = true;
+    print(active);
+    let name: string = &quot;Nusa&quot;;
+    print(name);
+    let numbers: [i64] = [1, 2, 3, 4];
+    print(numbers[0]);
+    print(len(numbers));
+}
+</code></pre><h2>Output program</h2><samp class="out">30
+true
+Nusa
+1
+4
+</samp><p><a class="btn sec" href="../playground/?code=fn%20main%28%29%20%7B%0A%20%20%20%20let%20a%20%3D%2010%3B%0A%20%20%20%20let%20b%3A%20i64%20%3D%2020%3B%0A%20%20%20%20print%28a%20%2B%20b%29%3B%0A%20%20%20%20let%20active%3A%20bool%20%3D%20true%3B%0A%20%20%20%20print%28active%29%3B%0A%20%20%20%20let%20name%3A%20string%20%3D%20%22Nusa%22%3B%0A%20%20%20%20print%28name%29%3B%0A%20%20%20%20let%20numbers%3A%20%5Bi64%5D%20%3D%20%5B1%2C%202%2C%203%2C%204%5D%3B%0A%20%20%20%20print%28numbers%5B0%5D%29%3B%0A%20%20%20%20print%28len%28numbers%29%29%3B%0A%7D%0A">Coba di playground</a></p><h2>Exercise</h2><ol><li>Tambahkan variabel Pi dan cetak 2 * Pi.<details><summary>Solusi</summary><p>let pi = 3; print(2 * pi); // i64 saja, tanpa float</p></details></li><li>Apa yang terjadi jika mengakses numbers[99]?<details><summary>Solusi</summary><p>Runtime error (out-of-bounds) — program exit != 0.</p></details></li></ol><h2>Next step</h2><ul><li>Lanjut: <a href="03-functions.html">03-functions — Fungsi &amp; Struct</a></li><li>Referensi: <a href="../language/variables.html">language/variables</a></li><li>Referensi: <a href="../language/types.html">language/types</a></li></ul></article><div class="prevnext"><a href="../learn/01-hello.html">← 01-hello</a><a href="../learn/03-functions.html">03-functions →</a></div></main>
+<aside class="toc" aria-label="Daftar isi"><p><b>Stabilitas</b><br><span class="badge historic">3.0.0</span></p></aside>
+</div>
+<footer><div class="fin"><p>Nusa Docs 0.1.0 untuk Bahasa Nusa 3.0.0 (LLVM 21.1.8, AArch64/Termux). Semua halaman bisa dibaca offline lewat service worker.</p><nav><a href="../sitemap.xml">Peta situs</a><a href="../ai/">Data AI</a><a href="../search/alpha.html">Indeks A–Z</a></nav></div></footer>
+<script src="../assets/app.js" defer></script>
+</body>
+</html>
